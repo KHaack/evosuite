@@ -51,22 +51,10 @@ public class ClientNodeImpl<T extends Chromosome<T>>
 
     private static final Logger logger = LoggerFactory.getLogger(ClientNodeImpl.class);
     private static final long serialVersionUID = 485858845631346580L;
-
-    /**
-     * The current state/phase in which this client process is (eg, search or assertion generation)
-     */
-    private volatile ClientState state;
-
-    /**
-     * RMI reference used to communicate with the master node
-     */
-    private MasterNodeRemote masterNode;
-
-    /**
-     * A unique identifier for this client process (needed if running several clients in parallel)
-     */
-    private String clientRmiIdentifier;
-
+    protected final Collection<Listener<Set<T>>> listeners = Collections.synchronizedList(
+            new ArrayList<>());
+    protected final ExecutorService searchExecutor = Executors.newSingleThreadExecutor();
+    private final BlockingQueue<OutputVariable> outputVariableQueue = new LinkedBlockingQueue<>();
     /**
      * A latch used to wait till the test generation is done
      */
@@ -79,14 +67,18 @@ public class ClientNodeImpl<T extends Chromosome<T>>
 
 
     protected Registry registry;
-
-    protected final Collection<Listener<Set<T>>> listeners = Collections.synchronizedList(
-            new ArrayList<>());
-
-    protected final ExecutorService searchExecutor = Executors.newSingleThreadExecutor();
-
-    private final BlockingQueue<OutputVariable> outputVariableQueue = new LinkedBlockingQueue<>();
-
+    /**
+     * The current state/phase in which this client process is (eg, search or assertion generation)
+     */
+    private volatile ClientState state;
+    /**
+     * RMI reference used to communicate with the master node
+     */
+    private MasterNodeRemote masterNode;
+    /**
+     * A unique identifier for this client process (needed if running several clients in parallel)
+     */
+    private String clientRmiIdentifier;
     private Collection<Set<T>> bestSolutions;
 
     private Thread statisticsThread;
@@ -102,17 +94,6 @@ public class ClientNodeImpl<T extends Chromosome<T>>
         doneLatch = new CountDownLatch(1);
         finishedLatch = new CountDownLatch(1);
         this.bestSolutions = Collections.synchronizedList(new ArrayList<>(Properties.NUM_PARALLEL_CLIENTS));
-    }
-
-    private static class OutputVariable {
-        public RuntimeVariable variable;
-        public Object value;
-
-        public OutputVariable(RuntimeVariable variable, Object value) {
-            super();
-            this.variable = variable;
-            this.value = value;
-        }
     }
 
     @Override
@@ -567,5 +548,16 @@ public class ClientNodeImpl<T extends Chromosome<T>>
         } while (finishedLatch.getCount() != 0);
 
         return null;
+    }
+
+    private static class OutputVariable {
+        public RuntimeVariable variable;
+        public Object value;
+
+        public OutputVariable(RuntimeVariable variable, Object value) {
+            super();
+            this.variable = variable;
+            this.value = value;
+        }
     }
 }

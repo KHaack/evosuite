@@ -35,15 +35,13 @@ public class BudgetConsumptionMonitor implements Serializable {
 
     private static final Logger logger = LoggerFactory.getLogger(BudgetConsumptionMonitor.class);
     /**
-     * Coverage achieved in the previous generation
-     */
-    private double past_coverage;
-
-    /**
      * To keep track when the overall search started
      */
     private final long startGlobalSearch;
-
+    /**
+     * Coverage achieved in the previous generation
+     */
+    private double past_coverage;
     /**
      * Time required to achieve the maximum coverage
      */

@@ -28,28 +28,23 @@ import org.slf4j.LoggerFactory;
 public class TimeDeltaStoppingCondition<T extends Chromosome<T>> extends StoppingConditionImpl<T> {
 
     private static final long serialVersionUID = -7029615280866928031L;
-
+    private final static Logger logger = LoggerFactory.getLogger(TimeDeltaStoppingCondition.class);
     /**
      * Assume the search has not started until start_time != 0
      */
     protected long startTime;
-
     /**
      * Time at which the best fitness value was last improved
      */
     protected long lastImprovement;
-
     /**
      * Time at which the fitness value was last checked
      */
     protected long lastGeneration;
-
     /**
      * Best fitness value observed so far
      */
     protected double lastFitness;
-
-    private final static Logger logger = LoggerFactory.getLogger(TimeDeltaStoppingCondition.class);
 
     public TimeDeltaStoppingCondition() {
         startTime = 0L;
@@ -172,17 +167,17 @@ public class TimeDeltaStoppingCondition<T extends Chromosome<T>> extends Stoppin
      * {@inheritDoc}
      */
     @Override
-    public void setLimit(long limit) {
-        // TODO Auto-generated method stub
-
+    public long getLimit() {
+        return Properties.GLOBAL_TIMEOUT;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public long getLimit() {
-        return Properties.GLOBAL_TIMEOUT;
+    public void setLimit(long limit) {
+        // TODO Auto-generated method stub
+
     }
 
     @Override

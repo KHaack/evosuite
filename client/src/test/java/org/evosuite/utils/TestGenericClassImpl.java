@@ -111,9 +111,6 @@ public class TestGenericClassImpl {
         Assert.assertTrue(clazzConcrete.isAssignableTo(clazzWildcard));
     }
 
-    private static class A {
-    }
-
     @SuppressWarnings({"unused"})
     @Test
     public void test01() throws Throwable {
@@ -181,7 +178,6 @@ public class TestGenericClassImpl {
         Assert.assertFalse(listOfStringClass.isAssignableTo(listOfIntegerClass));
     }
 
-
     @Test
     public void test2() {
         Type listOfString = new TypeToken<List<String>>() {
@@ -224,16 +220,6 @@ public class TestGenericClassImpl {
 
         Assert.assertTrue(listOfIntegerClass.isAssignableFrom(listOfIntegerClass));
         Assert.assertTrue(listOfSerializableClass.isAssignableFrom(listOfSerializableClass));
-    }
-
-    private class NumberBoundary<T extends Number> {
-    }
-
-    private class ComparableBoundary<T extends Comparable<T>> {
-    }
-
-    private class RefinedComparableBoundary<T extends java.util.Date> extends
-            ComparableBoundary<java.util.Date> {
     }
 
     @Test
@@ -525,7 +511,6 @@ public class TestGenericClassImpl {
         Assert.assertFalse(listOfInteger.canBeInstantiatedTo(linkedlistOfWildcard));
     }
 
-
     @Test
     public void testGenericSuperclassToTypeVariableList() {
         GenericClass<?> listOfTypeVariable = GenericClassFactory.get(new TypeToken<List>() {
@@ -537,7 +522,6 @@ public class TestGenericClassImpl {
         Assert.assertTrue(linkedlistOfInteger.canBeInstantiatedTo(listOfTypeVariable));
         Assert.assertFalse(listOfTypeVariable.canBeInstantiatedTo(linkedlistOfInteger));
     }
-
 
     @Test
     public void testGenericSuperclassFromTypeVariableList() {
@@ -560,7 +544,6 @@ public class TestGenericClassImpl {
         Assert.assertFalse(intClass.canBeInstantiatedTo(integerClass));
     }
 
-
     @Test
     public void testGenericInstantiationIntegerList() throws ConstructionFailedException {
         GenericClass<?> listOfInteger = GenericClassFactory.get(new TypeToken<List<Integer>>() {
@@ -573,7 +556,6 @@ public class TestGenericClassImpl {
         //GenericClass instantiatedClass = linkedlistOfTypeVariable.getGenericInstantiation(listOfInteger.getTypeVariableMap());
         Assert.assertEquals(Integer.class, instantiatedClass.getParameterTypes().get(0));
     }
-
 
     @Test
     public void testGenericInstantiationMapSubclass() throws ConstructionFailedException {
@@ -620,7 +602,6 @@ public class TestGenericClassImpl {
         Type parameterType = instantiatedList.getParameterTypes().get(0);
         Assert.assertEquals(Integer.class, GenericTypeReflector.erase(parameterType));
     }
-
 
     @Test
     public void testIterableAndListBoundaries() {
@@ -809,5 +790,18 @@ public class TestGenericClassImpl {
         GenericClass<?> integerWildcardListInstantiation = numberWildcardListClass.getGenericInstantiation();
         System.out.println(integerWildcardListInstantiation.toString());
         Assert.assertTrue(numberWildcardListClass.isAssignableFrom(integerWildcardListInstantiation));
+    }
+
+    private static class A {
+    }
+
+    private class NumberBoundary<T extends Number> {
+    }
+
+    private class ComparableBoundary<T extends Comparable<T>> {
+    }
+
+    private class RefinedComparableBoundary<T extends java.util.Date> extends
+            ComparableBoundary<java.util.Date> {
     }
 }

@@ -42,23 +42,18 @@ import java.util.Set;
  */
 public class CoverageArchive extends Archive {
 
+    public static final CoverageArchive instance = new CoverageArchive();
     private static final long serialVersionUID = -4046845573050661961L;
-
     private static final Logger logger = LoggerFactory.getLogger(CoverageArchive.class);
-
     /**
      * Map used to store all covered targets (keys of the map) and the corresponding covering
      * solutions (values of the map)
      */
     private final Map<TestFitnessFunction, TestChromosome> covered = new LinkedHashMap<>();
-
     /**
      * Set used to store all targets that have not been covered yet
      */
     private final Set<TestFitnessFunction> uncovered = new LinkedHashSet<>();
-
-    public static final CoverageArchive instance = new CoverageArchive();
-
 
     /**
      * {@inheritDoc}

@@ -41,11 +41,9 @@ import java.util.Set;
 public class TransformerForTests implements ClassFileTransformer {
 
     protected static final Logger logger = LoggerFactory.getLogger(TransformerForTests.class);
-
-    private volatile boolean active;
     private final RuntimeInstrumentation instrumenter;
-
     private final Set<String> instrumentedClasses;
+    private volatile boolean active;
 
     public TransformerForTests() {
         active = false;

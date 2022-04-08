@@ -55,6 +55,10 @@ public final class TestCaseRecycler<T extends Chromosome<T>> implements SearchLi
 
     private final Set<TestCase> testPool;
 
+    private TestCaseRecycler() {
+        testPool = new LinkedHashSet<>();
+    }
+
     /**
      * <p>
      * Getter for the field <code>instance</code>.
@@ -68,11 +72,6 @@ public final class TestCaseRecycler<T extends Chromosome<T>> implements SearchLi
             instance = new TestCaseRecycler<>();
         return (TestCaseRecycler<T>) instance;
     }
-
-    private TestCaseRecycler() {
-        testPool = new LinkedHashSet<>();
-    }
-
 
     @Override
     public void searchStarted(GeneticAlgorithm<T> algorithm) {

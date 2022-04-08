@@ -51,46 +51,6 @@ public class MathRuntimeException extends RuntimeException {
     private final Object[] arguments;
 
     /**
-     * Translate a string to a given locale.
-     *
-     * @param s      string to translate
-     * @param locale locale into which to translate the string
-     * @return translated string or original string
-     * for unsupported locales or unknown strings
-     */
-    private static String translate(final String s, final Locale locale) {
-        try {
-            ResourceBundle bundle =
-                    ResourceBundle.getBundle("org.apache.commons.math.MessagesResources", locale);
-            if (bundle.getLocale().getLanguage().equals(locale.getLanguage())) {
-                // the value of the resource is the translated string
-                return bundle.getString(s);
-            }
-
-        } catch (MissingResourceException mre) {
-            // do nothing here
-        }
-
-        // the locale is not supported or the resource is unknown
-        // don't translate and fall back to using the string as is
-        return s;
-
-    }
-
-    /**
-     * Builds a message string by from a pattern and its arguments.
-     *
-     * @param locale    Locale in which the message should be translated
-     * @param pattern   format specifier
-     * @param arguments format arguments
-     * @return a message string
-     */
-    private static String buildMessage(final Locale locale, final String pattern,
-                                       final Object... arguments) {
-        return (pattern == null) ? "" : new MessageFormat(translate(pattern, locale), locale).format(arguments);
-    }
-
-    /**
      * Constructs a new <code>MathRuntimeException</code> with specified
      * formatted detail message.
      * Message formatting is delegated to {@link java.text.MessageFormat}.
@@ -135,62 +95,43 @@ public class MathRuntimeException extends RuntimeException {
     }
 
     /**
-     * Gets the pattern used to build the message of this throwable.
+     * Translate a string to a given locale.
      *
-     * @return the pattern used to build the message of this throwable
+     * @param s      string to translate
+     * @param locale locale into which to translate the string
+     * @return translated string or original string
+     * for unsupported locales or unknown strings
      */
-    public String getPattern() {
-        return pattern;
-    }
+    private static String translate(final String s, final Locale locale) {
+        try {
+            ResourceBundle bundle =
+                    ResourceBundle.getBundle("org.apache.commons.math.MessagesResources", locale);
+            if (bundle.getLocale().getLanguage().equals(locale.getLanguage())) {
+                // the value of the resource is the translated string
+                return bundle.getString(s);
+            }
 
-    /**
-     * Gets the arguments used to build the message of this throwable.
-     *
-     * @return the arguments used to build the message of this throwable
-     */
-    public Object[] getArguments() {
-        return arguments.clone();
-    }
-
-    /**
-     * Gets the message in a specified locale.
-     *
-     * @param locale Locale in which the message should be translated
-     * @return localized message
-     */
-    public String getMessage(final Locale locale) {
-        return buildMessage(locale, pattern, arguments);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getLocalizedMessage() {
-        return getMessage(Locale.getDefault());
-    }
-
-    /**
-     * Prints the stack trace of this exception to the standard error stream.
-     */
-    @Override
-    public void printStackTrace() {
-        printStackTrace(System.err);
-    }
-
-    /**
-     * Prints the stack trace of this exception to the specified stream.
-     *
-     * @param out the <code>PrintStream</code> to use for output
-     */
-    @Override
-    public void printStackTrace(final PrintStream out) {
-        synchronized (out) {
-            PrintWriter pw = new PrintWriter(out, false);
-            printStackTrace(pw);
-            // Flush the PrintWriter before it's GC'ed.
-            pw.flush();
+        } catch (MissingResourceException mre) {
+            // do nothing here
         }
+
+        // the locale is not supported or the resource is unknown
+        // don't translate and fall back to using the string as is
+        return s;
+
+    }
+
+    /**
+     * Builds a message string by from a pattern and its arguments.
+     *
+     * @param locale    Locale in which the message should be translated
+     * @param pattern   format specifier
+     * @param arguments format arguments
+     * @return a message string
+     */
+    private static String buildMessage(final Locale locale, final String pattern,
+                                       final Object... arguments) {
+        return (pattern == null) ? "" : new MessageFormat(translate(pattern, locale), locale).format(arguments);
     }
 
     /**
@@ -468,6 +409,65 @@ public class MathRuntimeException extends RuntimeException {
 
         };
 
+    }
+
+    /**
+     * Gets the pattern used to build the message of this throwable.
+     *
+     * @return the pattern used to build the message of this throwable
+     */
+    public String getPattern() {
+        return pattern;
+    }
+
+    /**
+     * Gets the arguments used to build the message of this throwable.
+     *
+     * @return the arguments used to build the message of this throwable
+     */
+    public Object[] getArguments() {
+        return arguments.clone();
+    }
+
+    /**
+     * Gets the message in a specified locale.
+     *
+     * @param locale Locale in which the message should be translated
+     * @return localized message
+     */
+    public String getMessage(final Locale locale) {
+        return buildMessage(locale, pattern, arguments);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getLocalizedMessage() {
+        return getMessage(Locale.getDefault());
+    }
+
+    /**
+     * Prints the stack trace of this exception to the standard error stream.
+     */
+    @Override
+    public void printStackTrace() {
+        printStackTrace(System.err);
+    }
+
+    /**
+     * Prints the stack trace of this exception to the specified stream.
+     *
+     * @param out the <code>PrintStream</code> to use for output
+     */
+    @Override
+    public void printStackTrace(final PrintStream out) {
+        synchronized (out) {
+            PrintWriter pw = new PrintWriter(out, false);
+            printStackTrace(pw);
+            // Flush the PrintWriter before it's GC'ed.
+            pw.flush();
+        }
     }
 
 }

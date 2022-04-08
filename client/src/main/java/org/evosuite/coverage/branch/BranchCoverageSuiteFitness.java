@@ -50,33 +50,27 @@ public class BranchCoverageSuiteFitness extends TestSuiteFitnessFunction {
     private static final long serialVersionUID = 2991632394620406243L;
 
     private final static Logger logger = LoggerFactory.getLogger(BranchCoverageSuiteFitness.class);
-
+    protected final Set<Integer> branchesId = new LinkedHashSet<>();
+    private final Set<String> branchlessMethods = new LinkedHashSet<>();
+    private final Set<String> methods = new LinkedHashSet<>();
+    private final Set<Integer> toRemoveBranchesT = new LinkedHashSet<>();
+    private final Set<Integer> toRemoveBranchesF = new LinkedHashSet<>();
+    private final Set<String> toRemoveRootBranches = new LinkedHashSet<>();
+    private final Set<Integer> removedBranchesT = new LinkedHashSet<>();
+    private final Set<Integer> removedBranchesF = new LinkedHashSet<>();
+    private final Set<String> removedRootBranches = new LinkedHashSet<>();
     // Coverage targets
     public int totalGoals;
     public int totalMethods;
     public int totalBranches;
-    private final Set<String> branchlessMethods = new LinkedHashSet<>();
-    private final Set<String> methods = new LinkedHashSet<>();
-
-    protected final Set<Integer> branchesId = new LinkedHashSet<>();
-
     // Some stuff for debug output
     public int maxCoveredBranches = 0;
     public int maxCoveredMethods = 0;
     public double bestFitness = Double.MAX_VALUE;
-
     // Each test gets a set of distinct covered goals, these are mapped by branch id
     protected transient Map<Integer, TestFitnessFunction> branchCoverageTrueMap = new LinkedHashMap<>();
     protected transient Map<Integer, TestFitnessFunction> branchCoverageFalseMap = new LinkedHashMap<>();
     private transient Map<String, TestFitnessFunction> branchlessMethodCoverageMap = new LinkedHashMap<>();
-
-    private final Set<Integer> toRemoveBranchesT = new LinkedHashSet<>();
-    private final Set<Integer> toRemoveBranchesF = new LinkedHashSet<>();
-    private final Set<String> toRemoveRootBranches = new LinkedHashSet<>();
-
-    private final Set<Integer> removedBranchesT = new LinkedHashSet<>();
-    private final Set<Integer> removedBranchesF = new LinkedHashSet<>();
-    private final Set<String> removedRootBranches = new LinkedHashSet<>();
 
     /**
      * <p>

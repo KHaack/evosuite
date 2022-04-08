@@ -68,6 +68,19 @@ public abstract class Archive implements Serializable {
     protected boolean hasBeenUpdated = false;
 
     /**
+     * @return
+     */
+    public static Archive getArchiveInstance() {
+        switch (Properties.ARCHIVE_TYPE) {
+            case COVERAGE:
+            default:
+                return CoverageArchive.instance;
+            case MIO:
+                return MIOArchive.instance;
+        }
+    }
+
+    /**
      * Register a target.
      *
      * @param target the target to register
@@ -519,18 +532,5 @@ public abstract class Archive implements Serializable {
      */
     public void setHasBeenUpdated(boolean b) {
         this.hasBeenUpdated = b;
-    }
-
-    /**
-     * @return
-     */
-    public static Archive getArchiveInstance() {
-        switch (Properties.ARCHIVE_TYPE) {
-            case COVERAGE:
-            default:
-                return CoverageArchive.instance;
-            case MIO:
-                return MIOArchive.instance;
-        }
     }
 }

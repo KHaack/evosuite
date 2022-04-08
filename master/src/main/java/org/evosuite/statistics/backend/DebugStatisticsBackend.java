@@ -34,15 +34,15 @@ public class DebugStatisticsBackend extends ConsoleStatisticsBackend {
 
     private static Map<String, OutputVariable<?>> latestWritten;
 
+    public static Map<String, OutputVariable<?>> getLatestWritten() {
+        return latestWritten;
+    }
+
     @Override
     public void writeData(Chromosome<?> result, Map<String, OutputVariable<?>> data) {
         super.writeData(result, data);
         latestWritten = new LinkedHashMap<>();
         latestWritten.putAll(data);
-    }
-
-    public static Map<String, OutputVariable<?>> getLatestWritten() {
-        return latestWritten;
     }
 
 }

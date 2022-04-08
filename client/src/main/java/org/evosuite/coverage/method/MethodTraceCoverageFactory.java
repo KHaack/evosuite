@@ -72,6 +72,40 @@ public class MethodTraceCoverageFactory extends
      */
 
     /**
+     * Create a fitness function for branch coverage aimed at covering the root
+     * branch of the given method in the given class. Covering a root branch
+     * means entering the method.
+     *
+     * @param className a {@link java.lang.String} object.
+     * @param method    a {@link java.lang.String} object.
+     * @return a {@link org.evosuite.coverage.branch.BranchCoverageTestFitness}
+     * object.
+     */
+    public static MethodTraceCoverageTestFitness createMethodTestFitness(
+            String className, String method) {
+
+        return new MethodTraceCoverageTestFitness(className,
+                method.substring(method.lastIndexOf(".") + 1));
+    }
+
+    /**
+     * Convenience method calling createMethodTestFitness(class,method) with
+     * the respective class and method of the given BytecodeInstruction.
+     *
+     * @param instruction a {@link org.evosuite.graphs.cfg.BytecodeInstruction} object.
+     * @return a {@link org.evosuite.coverage.branch.BranchCoverageTestFitness}
+     * object.
+     */
+    public static MethodTraceCoverageTestFitness createMethodTestFitness(
+            BytecodeInstruction instruction) {
+        if (instruction == null)
+            throw new IllegalArgumentException("null given");
+
+        return createMethodTestFitness(instruction.getClassName(),
+                instruction.getMethodName());
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -129,39 +163,5 @@ public class MethodTraceCoverageFactory extends
             }
         }
         return goals;
-    }
-
-    /**
-     * Create a fitness function for branch coverage aimed at covering the root
-     * branch of the given method in the given class. Covering a root branch
-     * means entering the method.
-     *
-     * @param className a {@link java.lang.String} object.
-     * @param method    a {@link java.lang.String} object.
-     * @return a {@link org.evosuite.coverage.branch.BranchCoverageTestFitness}
-     * object.
-     */
-    public static MethodTraceCoverageTestFitness createMethodTestFitness(
-            String className, String method) {
-
-        return new MethodTraceCoverageTestFitness(className,
-                method.substring(method.lastIndexOf(".") + 1));
-    }
-
-    /**
-     * Convenience method calling createMethodTestFitness(class,method) with
-     * the respective class and method of the given BytecodeInstruction.
-     *
-     * @param instruction a {@link org.evosuite.graphs.cfg.BytecodeInstruction} object.
-     * @return a {@link org.evosuite.coverage.branch.BranchCoverageTestFitness}
-     * object.
-     */
-    public static MethodTraceCoverageTestFitness createMethodTestFitness(
-            BytecodeInstruction instruction) {
-        if (instruction == null)
-            throw new IllegalArgumentException("null given");
-
-        return createMethodTestFitness(instruction.getClassName(),
-                instruction.getMethodName());
     }
 }

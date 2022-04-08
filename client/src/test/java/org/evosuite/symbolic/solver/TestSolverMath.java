@@ -46,18 +46,6 @@ public abstract class TestSolverMath extends TestSolver {
         return tc.getDefaultTestCase();
     }
 
-    @Test
-    public void testAbs() throws SecurityException, NoSuchMethodException, SolverTimeoutException {
-
-        DefaultTestCase tc = buildTestCaseAbs();
-        Collection<Constraint<?>> constraints = DefaultTestCaseConcolicExecutor.execute(tc);
-        Map<String, Object> solution = solve(getSolver(), constraints);
-        assertNotNull(solution);
-        Long var0 = (Long) solution.get("var0");
-
-        assertTrue(Math.abs(var0.intValue()) > 0);
-    }
-
     private static DefaultTestCase buildTestCaseMax() throws SecurityException, NoSuchMethodException {
         TestCaseBuilder tc = new TestCaseBuilder();
         VariableReference int0 = tc.appendIntPrimitive(Integer.MIN_VALUE);
@@ -85,6 +73,18 @@ public abstract class TestSolverMath extends TestSolver {
         Method method = TestCaseMin.class.getMethod("test", int.class, int.class);
         tc.appendMethod(null, method, int0, int1);
         return tc.getDefaultTestCase();
+    }
+
+    @Test
+    public void testAbs() throws SecurityException, NoSuchMethodException, SolverTimeoutException {
+
+        DefaultTestCase tc = buildTestCaseAbs();
+        Collection<Constraint<?>> constraints = DefaultTestCaseConcolicExecutor.execute(tc);
+        Map<String, Object> solution = solve(getSolver(), constraints);
+        assertNotNull(solution);
+        Long var0 = (Long) solution.get("var0");
+
+        assertTrue(Math.abs(var0.intValue()) > 0);
     }
 
     @Test

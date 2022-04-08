@@ -27,16 +27,10 @@ import java.io.Serializable;
 public class TestMutationHistoryEntry implements MutationHistoryEntry, Serializable {
 
     private static final long serialVersionUID = -4278409687247714553L;
-
-    public enum TestMutation {
-        CHANGE, INSERTION, DELETION
-    }
-
+    public String whatwasit;
     protected TestMutation mutationType;
 
     protected Statement statement;
-
-    public String whatwasit;
 
     public TestMutationHistoryEntry(TestMutation type, Statement statement) {
         this.mutationType = type;
@@ -72,5 +66,9 @@ public class TestMutationHistoryEntry implements MutationHistoryEntry, Serializa
     @Override
     public String toString() {
         return mutationType + " at " + statement;
+    }
+
+    public enum TestMutation {
+        CHANGE, INSERTION, DELETION
     }
 }

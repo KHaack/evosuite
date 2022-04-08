@@ -54,14 +54,6 @@ public abstract class TestSolver {
         Properties.CVC4_PATH = DEFAULT_CVC4_PATH;
     }
 
-    @Before
-    public void checkSolverPaths() {
-        Assume.assumeTrue(Properties.Z3_PATH != null);
-        Assume.assumeTrue(Properties.CVC4_PATH != null);
-    }
-
-    public abstract Solver getSolver();
-
     public static Map<String, Object> solve(Solver solver, Collection<Constraint<?>> constraints)
             throws SolverTimeoutException {
         SolverResult solverResult;
@@ -83,4 +75,12 @@ public abstract class TestSolver {
             return null;
         }
     }
+
+    @Before
+    public void checkSolverPaths() {
+        Assume.assumeTrue(Properties.Z3_PATH != null);
+        Assume.assumeTrue(Properties.CVC4_PATH != null);
+    }
+
+    public abstract Solver getSolver();
 }

@@ -195,6 +195,553 @@ public class TP118 {
 
     }
 
+    public static int TP118method6(int var0, int var1, int var2, int var3, int var4, int var5, int var6) {
+        if (((((var0 / 335) * (var5 % 217)) > (var3 % 92))
+                && ((var5 / 415) != (var5 - var6)))) {
+            System.out.println("TP118 - TP118method6- LineInMethod: 4");
+        } else {
+            System.out.println("TP118 - TP118method6- LineInMethod: 5");
+        }
+        if (((var5 + var0) > (var4 + var0))) {
+            var6 = 70;
+        } else {
+            System.out.println("TP118 - TP118method6- LineInMethod: 13");
+        }
+        if ((((var2 + var0) * (var1 + var5)) == (var1 - var4))) {
+            var4 = ((((var3 + var0) * (var5 % 39)) + (var0 - var4)) * (var6 * 380))
+                    * ((var2 % 244) - (var5 * var3));
+        }
+        for (int i = 0; i < 14; i++) {
+            var2 = (var2 * var3) * (var4 * var5);
+        }
+        if (((var6 / 215) <= (var4 + var2))) {
+            System.out.println("TP118 - TP118method6- LineInMethod: 27");
+        } else {
+            System.out.println("TP118 - TP118method6- LineInMethod: 31");
+        }
+        if ((((var4 * var2) <= (var6 + var0)) && ((var0 % 213) < (var6 - var1)))) {
+            System.out.println("TP118 - TP118method6- LineInMethod: 39");
+        } else {
+            var1 = var5 / 474;
+        }
+        if (((var2 * var0) != (var0 / 51))) {
+            var0 = 243;
+        }
+        switch ((var0 + var2)) {
+            case 0:
+                var5 = TP118method22(var4, var0, var6, var5, var2, var0, var0, var3, var0, var4, var2);
+                break;
+            case 1:
+                System.out.println("TP118 - TP118method6- LineInMethod: 49");
+                break;
+            case 2:
+                var3 = (var4 + var5) + ((var6 / 425)
+                        - ((var5 - var0) - (((var2 % 241) - ((var3 - var5) * (var0 * var6))) - (var3 * var1))));
+                break;
+            case 3:
+                var5 = (var6 + 192) - (var0 % 395);
+                break;
+            case 4:
+                TP118method14(var1, var6, var3, var3, var4, var6, var6, var4, var3, var6, var0, var3);
+                break;
+            case 5:
+                System.out.println("TP118 - TP118method6- LineInMethod: 61");
+                break;
+            default:
+                var0 = var0 * var2;
+        }
+        return var3;
+
+    }
+
+    public static int TP118method14(int var0, int var1, int var2, int var3, int var4, int var5, int var6, int var7,
+                                    int var8, int var9, int var10, int var11) {
+        switch (((var6 - 254) * ((var7 * 459) % 69))) {
+            case 0:
+                var7 = (var0 - var6) / 406;
+                break;
+            case 1:
+                var4 = (var10 - var0) - (var5 - var7);
+                break;
+            case 2:
+                var3 = (var6 * 426) - (var3 * var7);
+                break;
+            case 3:
+                System.out.println("TP118 - TP118method14- LineInMethod: 11");
+                break;
+            case 4:
+                var11 = ((var3 + var4) + (var0 / 295)) * (var7 * 275);
+                break;
+            case 5:
+                var5 = var7 % 95;
+                break;
+            case 6:
+                System.out.println("TP118 - TP118method14- LineInMethod: 22");
+                break;
+            case 7:
+                TP118method18(var2, var9, var7, var0, var4, var10, var4);
+                break;
+            case 8:
+                System.out.println("TP118 - TP118method14- LineInMethod: 28");
+                break;
+            default:
+                var8 = TP118method21(var5, var2, var9, var1, var3, var1, var7, var6, var9, var5, var6);
+        }
+        for (int i = 0; i < 7; i++) {
+            System.out.println("TP118 - TP118method14- LineInMethod: 36");
+        }
+        for (int i = 0; i < 10; i++) {
+            if ((((var9 - 188) != (var6 * var9)) && (((var11 + var4) * (var11 - var8)) == (var9 - var8)))) {
+                if (((var4 + var3) >= (var10 - var11))) {
+                    if (((var0 - var1) > (((var4 * var3) * (((var8 / 396) % 149) % 485))
+                            - (var10 % 396)))) {
+                        var10 = var1 / 285;
+                    }
+                }
+            }
+        }
+        return var6;
+
+    }
+
+    public static int TP118method17(int var0, int var1, int var2, int var3, int var4, int var5, int var6, int var7) {
+        switch ((var2 % 144)) {
+            case 0:
+                System.out.println("TP118 - TP118method17- LineInMethod: 2");
+                break;
+            case 1:
+                var6 = (var0 + 35) + (var3 * var6);
+                break;
+            default:
+                var5 = (var0 + var7) - (var2 / 39);
+        }
+        switch ((var6 % 23)) {
+            case 0:
+                System.out.println("TP118 - TP118method17- LineInMethod: 13");
+                break;
+            case 1:
+                System.out.println("TP118 - TP118method17- LineInMethod: 20");
+                break;
+            case 2:
+                System.out.println("TP118 - TP118method17- LineInMethod: 26");
+                break;
+            case 3:
+                var2 = (var5 / 146) * (var0 + 149);
+                break;
+            case 4:
+                var5 = (var5 - 24) - (var6 / 122);
+                break;
+            default:
+                TP118method18(var4, var6, var1, var1, var0, var3, var3);
+        }
+        switch ((var1 * 175)) {
+            case 0:
+                var2 = (var5 - var2) + (var5 + var4);
+                break;
+            case 1:
+                System.out.println("TP118 - TP118method17- LineInMethod: 43");
+                break;
+            case 2:
+                System.out.println("TP118 - TP118method17- LineInMethod: 48");
+                break;
+            case 3:
+                System.out.println("TP118 - TP118method17- LineInMethod: 52");
+                break;
+            default:
+                System.out.println("TP118 - TP118method17- LineInMethod: 59");
+        }
+        return var0;
+
+    }
+
+    public static int TP118method18(int var0, int var1, int var2, int var3, int var4, int var5, int var6) {
+        if (((var2 + var0) <= (var4 / 36))) {
+            if (((var0 - var6) != (var5 - var2))) {
+                if (((var0 / 248) < (var1 / 302))) {
+                    if (((var5 + var4) > (var1 / 204))) {
+                        if ((((var1 * var3) * (var2 / 215)) <= (var1 - var2))) {
+                            System.out.println("TP118 - TP118method18- LineInMethod: 10");
+                        }
+                    }
+                }
+            }
+        }
+        if ((((var3 * var0) != (var5 / 146)) || (((((var0 / 290) / 458) / 160)
+                + (var6 + 202)) == (var2 % 428)))) {
+            var0 = (var3 + var2) / 192;
+        }
+        if (((var1 + var0) >= (var0 * var6))) {
+            if ((((((var5 + var4) % 467) % 391) < (var5 / 53))
+                    && (((var6 * var2) >= (var1 + var2)) && ((var4 - 478) == (var5 + var0))))) {
+                if (((var4 * var6) < ((var1 - var4) - (var0 * var1)))) {
+                    if ((((var5 - var6) + (var2 - 31)) != (var6 + var1))) {
+                        if (((var1 * var4) <= (var5 / 425))) {
+                            if (((var5 % 61) == (var5 + var6))) {
+                                if (((var5 - var3) == (var0 * var3))) {
+                                    TP118method20(var2, var5, var3, var0, var0, var2, var1);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if (((var5 - 139) < (var2 / 277))) {
+            System.out.println("TP118 - TP118method18- LineInMethod: 36");
+        } else {
+            var4 = (var0 * var6) % 344;
+        }
+        for (int i = 0; i < 13; i++) {
+            if (((var4 * var2) < (var0 + 481))) {
+                var4 = 250;
+            }
+        }
+        if (((var0 * var1) != ((var2 * var3) - (var4 - var1)))) {
+            var3 = (var4 - var3) / 201;
+        }
+        switch (((var5 + 62) - (var0 * 241))) {
+            case 0:
+                var5 = (var6 + var1) * (var4 + var5);
+                break;
+            case 1:
+                System.out.println("TP118 - TP118method18- LineInMethod: 51");
+                break;
+            case 2:
+                var5 = var2 - var4;
+                break;
+            case 3:
+                var3 = TP118method21(var6, var4, var6, var2, var1, var6, var6, var1, var5, var0, var4);
+                break;
+            case 4:
+                System.out.println("TP118 - TP118method18- LineInMethod: 61");
+                break;
+            case 5:
+                var0 = var4 + 251;
+                break;
+            case 6:
+                System.out.println("TP118 - TP118method18- LineInMethod: 68");
+                break;
+            case 7:
+                TP118method20(var4, var5, var6, var0, var5, var1, var5);
+                break;
+            case 8:
+                System.out.println("TP118 - TP118method18- LineInMethod: 78");
+                break;
+            default:
+                TP118method25(var1, var1, var6, var5, var6, var1, var3);
+        }
+        return var0;
+
+    }
+
+    public static int TP118method20(int var0, int var1, int var2, int var3, int var4, int var5, int var6) {
+        switch ((var0 + var3)) {
+            case 0:
+                var1 = var5 + var2;
+                break;
+            case 1:
+                System.out.println("TP118 - TP118method20- LineInMethod: 5");
+                break;
+            case 2:
+                var6 = (var4 % 248) - (var4 % 185);
+                break;
+            case 3:
+                var5 = (var6 - var5) + ((var4 + var2) * ((var2 % 312) * (var0 + var2)));
+                break;
+            default:
+                var0 = (var4 % 455) * (var3 * var5);
+        }
+        if (((var0 * var2) == (var4 + var3))) {
+            System.out.println("TP118 - TP118method20- LineInMethod: 21");
+        } else {
+            System.out.println("TP118 - TP118method20- LineInMethod: 24");
+        }
+        switch ((var4 + 482)) {
+            case 0:
+                System.out.println("TP118 - TP118method20- LineInMethod: 28");
+                break;
+            case 1:
+                var0 = 345;
+                break;
+            case 2:
+                var4 = TP118method25(var0, var1, var5, var6, var5, var2, var5);
+                break;
+            case 3:
+                System.out.println("TP118 - TP118method20- LineInMethod: 38");
+                break;
+            case 4:
+                System.out.println("TP118 - TP118method20- LineInMethod: 43");
+                break;
+            case 5:
+                var3 = (var1 / 422) % 479;
+                break;
+            default:
+                var0 = (var1 + var2) * (var3 * var5);
+        }
+        return var4;
+
+    }
+
+    public static int TP118method21(int var0, int var1, int var2, int var3, int var4, int var5, int var6, int var7,
+                                    int var8, int var9, int var10) {
+        switch ((var1 + 54)) {
+            case 0:
+                System.out.println("TP118 - TP118method21- LineInMethod: 2");
+                break;
+            case 1:
+                var5 = 316;
+                break;
+            case 2:
+                System.out.println("TP118 - TP118method21- LineInMethod: 10");
+                break;
+            case 3:
+                var6 = TP118method22(var0, var0, var2, var2, var0, var4, var0, var5, var6, var1, var2);
+                break;
+            case 4:
+                var8 = TP118method25(var10, var2, var7, var2, var8, var6, var10);
+                break;
+            case 5:
+                var2 = ((var3 / 159) % 154) / 267;
+                break;
+            case 6:
+                var3 = (var0 - var1) * (var0 + var9);
+                break;
+            case 7:
+                var3 = 222;
+                break;
+            case 8:
+                System.out.println("TP118 - TP118method21- LineInMethod: 29");
+                break;
+            default:
+                var0 = 363;
+        }
+        if (((var0 + var8) <= ((var10 * var0) - ((var8 / 211) + (var3 - var10))))) {
+            System.out.println("TP118 - TP118method21- LineInMethod: 39");
+        } else {
+            var2 = ((((var5 + var9) * (var8 - var0))
+                    + (((var5 % 75) - (var1 / 249)) * (var2 + var5))) % 13) - (var3 - var9);
+        }
+        if (((var1 * var8) != (var5 * var8))) {
+            System.out.println("TP118 - TP118method21- LineInMethod: 45");
+        } else {
+            System.out.println("TP118 - TP118method21- LineInMethod: 47");
+        }
+        return var0;
+
+    }
+
+    public static int TP118method22(int var0, int var1, int var2, int var3, int var4, int var5, int var6, int var7,
+                                    int var8, int var9, int var10) {
+        if (((var10 + var6) != (var4 - 343))) {
+            if (((var0 + var10) == ((var10 + var5) * (var1 - var0)))) {
+                if (((((var9 + var6) - (var9 % 254)) >= (var8 - var10))
+                        && ((var0 + var4) == ((var5 - var0) % 460)))) {
+                    if (((var3 - var2) != (var3 - 195))) {
+                        if ((((var2 + var7) >= (var6 / 403))
+                                && ((var1 / 361) != ((var3 % 39) - (var7 * var3))))) {
+                            var10 = 92;
+                        }
+                    }
+                }
+            }
+        }
+        if (((var0 * var5) != (var2 - var6))) {
+            var10 = (var8 % 368) + (((var2 - var8) + (var6 / 328)) % 24);
+        }
+        if ((((var4 % 21) % 377) <= (var2 - var9))) {
+            System.out.println("TP118 - TP118method22- LineInMethod: 17");
+        } else {
+            var6 = (var0 + var3) * (var6 * var9);
+        }
+        for (int i = 0; i < 0; i++) {
+            if (((var10 % 156) == (var2 + var4))) {
+                var0 = 309;
+            }
+        }
+        if ((((var3 * 260) * (var2 + var0)) > (var2 / 264))) {
+            var4 = var7 + var8;
+        } else {
+            System.out.println("TP118 - TP118method22- LineInMethod: 32");
+        }
+        if ((((var9 * 8) + (var4 % 152)) >= (var10 - var1))) {
+            if (((var7 * var4) == (((var2 - var1) - (var6 * var1)) / 331))) {
+                var2 = (var10 - var5) / 348;
+            }
+        }
+        if (((var0 * var3) >= (var7 % 475))) {
+            System.out.println("TP118 - TP118method22- LineInMethod: 46");
+        } else {
+            var8 = (var0 - var1) - (var7 + var0);
+        }
+        return var2;
+
+    }
+
+    public static int TP118method25(int var0, int var1, int var2, int var3, int var4, int var5, int var6) {
+        if (((var4 * var1) < (var0 % 234))) {
+            var3 = 272;
+        } else {
+            System.out.println("TP118 - TP118method25- LineInMethod: 4");
+        }
+        if ((((var4 * var3) - (var6 * var1)) > (var4 * var5))) {
+            if (((((var3 * var0) * (var1 / 281)) + (var2 / 281)) >= (var4 * var2))) {
+                if (((var3 - var2) > (var6 * var1))) {
+                    var4 = (var5 * var0) - ((var1 / 314) % 306);
+                }
+            }
+        }
+        switch ((var4 * 444)) {
+            case 0:
+                var5 = 3;
+                break;
+            case 1:
+                System.out.println("TP118 - TP118method25- LineInMethod: 19");
+                break;
+            case 2:
+                System.out.println("TP118 - TP118method25- LineInMethod: 26");
+                break;
+            case 3:
+                System.out.println("TP118 - TP118method25- LineInMethod: 32");
+                break;
+            case 4:
+                var3 = ((var2 + var6) - (var3 + var5)) / 369;
+                break;
+            default:
+                var3 = ((var4 * var0) * (var4 / 153)) - (var5 + var0);
+        }
+        if (((var2 * var4) >= ((var6 % 410) - (var0 * var3)))) {
+            var1 = var5 + var2;
+        } else {
+            System.out.println("TP118 - TP118method25- LineInMethod: 44");
+        }
+        return var5;
+
+    }
+
+    public static int TP118method27(int var0, int var1, int var2, int var3, int var4, int var5, int var6) {
+        if ((((var5 + var2) % 349) < (var6 % 365))) {
+            var5 = 44;
+        }
+        if (((((var3 * var6) < (var3 / 418)) || (((var4 + var2) > (var0 / 229))
+                && (((var6 + var0) > (var6 / 348)) && ((var3 % 290) != (var3 - var1)))))
+                && ((var5 - var6) > (var5 + var6)))) {
+            var6 = 294;
+        } else {
+            System.out.println("TP118 - TP118method27- LineInMethod: 6");
+        }
+        for (int i = 0; i < 1; i++) {
+            if (((((var6 + 339) != (var1 - var2)) && ((var5 - var1) == (var4 + var3)))
+                    && (((var4 * 403) * ((var4 * var3) % 486)) <= (var5 / 464)))) {
+                if ((((var6 + var0) > ((var0 + var2) - (var2 * var4)))
+                        && ((var0 + var5) > ((var0 + var1) * (var2 * 413))))) {
+                    if (((var3 - var2) <= (var3 * var2))) {
+                        if ((((var4 * var6) != (var1 + 168)) && ((var5 + var4) >= (var5 * var0)))) {
+                            var6 = (var1 / 447) / 356;
+                        }
+                    }
+                }
+            }
+        }
+        if (((((var2 + var0) * (var6 - var2)) * (var1 + var5)) == (var0 - 331))) {
+            System.out.println("TP118 - TP118method27- LineInMethod: 24");
+        } else {
+            System.out.println("TP118 - TP118method27- LineInMethod: 29");
+        }
+        if ((((var2 - var4) == (var6 * var1)) && ((var4 + var2) < (var2 - var4)))) {
+            var5 = 395;
+        }
+        if (((var4 + var2) <= (var6 * var5))) {
+            System.out.println("TP118 - TP118method27- LineInMethod: 37");
+        } else {
+            var1 = (var4 + var5) - (var4 - 29);
+        }
+        if (((var4 * var1) > (var5 % 2))) {
+            System.out.println("TP118 - TP118method27- LineInMethod: 43");
+        } else {
+            var0 = (var1 - var6) + (var5 * var4);
+        }
+        return var4;
+
+    }
+
+    public static void main(String[] args) {
+        TP118 obj = new TP118();
+        TP118method0(489, 295, 206, 147, 488, 17, 139,
+                70, 157, 121, 400, 399, 275);
+        TP118method1(117, 34, 371, 458, 133, 187, 88);
+        TP118method2(188, 489, 259, 347, 165, 129, 20,
+                74, 38, 300, 263, 368);
+        obj.TP118method3(235, 111, 452, 41, 432, 180, 144);
+        obj.TP118method4(311, 424, 243, 84, 329, 166, 489);
+        obj.TP118method5(162, 315, 321, 71, 412, 231, 338,
+                319, 96, 60, 132, 307);
+        TP118method6(335, 32, 217, 116, 85, 485, 402);
+        obj.TP118method7(94, 352, 253, 12, 262, 163, 481);
+        obj.TP118method8(294, 484, 252, 344, 92, 196, 15);
+        obj.TP118method9(197, 284, 43, 295, 191, 450, 203,
+                171, 293, 130, 78, 42, 332);
+        obj.TP118method10(422, 258, 222, 387, 150, 114, 331);
+        obj.TP118method11(490, 421, 74, 320, 326, 480, 69,
+                196, 332, 296, 383, 5);
+        obj.TP118method12(409, 14, 460, 338, 302, 367, 56);
+        obj.TP118method13(346, 404, 373, 191, 384, 9, 468);
+        TP118method14(296, 132, 101, 65, 312, 136, 142,
+                359, 354, 322, 141, 334);
+        obj.TP118method15(133, 361, 57, 51, 15, 466, 469,
+                370, 269, 220, 215, 283, 389);
+        obj.TP118method16(19, 67, 31, 279, 119, 438, 274,
+                379, 361);
+        TP118method17(377, 136, 389, 288, 395, 296, 405,
+                228);
+        TP118method18(282, 429, 371, 272, 30, 276, 177);
+        obj.TP118method19(71, 290, 131, 13, 215, 331, 167,
+                109, 256, 347);
+        TP118method20(244, 98, 497, 24, 115, 92, 429);
+        TP118method21(147, 450, 286, 250, 339, 427, 263,
+                86, 263, 163, 132);
+        TP118method22(389, 395, 390, 294, 225, 189, 26,
+                135, 134, 435, 4);
+        obj.TP118method23(135, 269, 376, 485, 301, 496, 392,
+                208, 137);
+        obj.TP118method24(382, 408, 167, 430, 441, 199, 163);
+        TP118method25(152, 446, 452, 333, 458, 277, 382);
+        obj.TP118method26(463, 222, 311, 64, 339, 73, 413);
+        TP118method27(376, 49, 428, 199, 457, 336, 235);
+    }
+
+    public static void singleEntry(int i0, int i1, int i2, int i3, int i4, int i5, int i6, int i7, int i8, int i9,
+                                   int i10, int i11, int i12, int i13, int i14) {
+        TP118 obj = new TP118();
+        TP118method0(i4, i1, i5, i11, i2, i14, i3, i12, i8, i13, i7, i10, i9);
+        TP118method1(i14, i6, i11, i1, i9, i10, i5);
+        TP118method2(i14, i13, i4, i0, i5, i1, i9, i8, i3, i10, i11, i12);
+        obj.TP118method3(i8, i9, i1, i0, i2, i3, i7);
+        obj.TP118method4(i8, i3, i1, i10, i13, i11, i4);
+        obj.TP118method5(i2, i3, i12, i11, i8, i6, i7, i5, i10, i0, i4, i13);
+        TP118method6(i5, i1, i0, i9, i12, i14, i10);
+        obj.TP118method7(i14, i1, i6, i10, i7, i4, i3);
+        obj.TP118method8(i11, i14, i4, i13, i12, i9, i1);
+        obj.TP118method9(i13, i7, i1, i6, i11, i2, i10, i12, i5, i3, i4, i0, i14);
+        obj.TP118method10(i10, i5, i1, i2, i6, i4, i3);
+        obj.TP118method11(i13, i12, i0, i1, i14, i3, i5, i11, i6, i4, i10, i2);
+        obj.TP118method12(i3, i8, i6, i14, i4, i2, i5);
+        obj.TP118method13(i7, i8, i0, i1, i10, i5, i9);
+        TP118method14(i9, i12, i14, i4, i2, i3, i13, i0, i11, i5, i1, i7);
+        obj.TP118method15(i5, i2, i1, i9, i7, i6, i14, i13, i4, i12, i3, i11, i8);
+        obj.TP118method16(i2, i10, i13, i4, i12, i3, i6, i7, i0);
+        TP118method17(i2, i7, i6, i13, i8, i10, i4, i5);
+        TP118method18(i5, i3, i7, i6, i14, i13, i1);
+        obj.TP118method19(i2, i8, i4, i0, i10, i1, i12, i9, i14, i5);
+        TP118method20(i11, i2, i4, i13, i10, i1, i6);
+        TP118method21(i8, i2, i13, i0, i6, i14, i11, i1, i12, i7, i9);
+        TP118method22(i3, i10, i9, i0, i14, i4, i13, i1, i12, i8, i11);
+        obj.TP118method23(i12, i0, i14, i8, i6, i11, i13, i7, i5);
+        obj.TP118method24(i5, i14, i13, i9, i3, i10, i6);
+        TP118method25(i7, i13, i6, i5, i8, i1, i11);
+        obj.TP118method26(i13, i11, i0, i14, i8, i2, i12);
+        TP118method27(i13, i7, i8, i11, i10, i5, i14);
+    }
+
     public int TP118method3(int var0, int var1, int var2, int var3, int var4, int var5, int var6) {
         if ((((var1 - 312) > (var2 + var1)) && ((var3 * var4) >= (var3 + 179)))) {
             if ((((var0 * var6) % 451) != (var6 - var0))) {
@@ -336,65 +883,6 @@ public class TP118 {
             System.out.println("TP118 - TP118method5- LineInMethod: 43");
         }
         return var8;
-
-    }
-
-    public static int TP118method6(int var0, int var1, int var2, int var3, int var4, int var5, int var6) {
-        if (((((var0 / 335) * (var5 % 217)) > (var3 % 92))
-                && ((var5 / 415) != (var5 - var6)))) {
-            System.out.println("TP118 - TP118method6- LineInMethod: 4");
-        } else {
-            System.out.println("TP118 - TP118method6- LineInMethod: 5");
-        }
-        if (((var5 + var0) > (var4 + var0))) {
-            var6 = 70;
-        } else {
-            System.out.println("TP118 - TP118method6- LineInMethod: 13");
-        }
-        if ((((var2 + var0) * (var1 + var5)) == (var1 - var4))) {
-            var4 = ((((var3 + var0) * (var5 % 39)) + (var0 - var4)) * (var6 * 380))
-                    * ((var2 % 244) - (var5 * var3));
-        }
-        for (int i = 0; i < 14; i++) {
-            var2 = (var2 * var3) * (var4 * var5);
-        }
-        if (((var6 / 215) <= (var4 + var2))) {
-            System.out.println("TP118 - TP118method6- LineInMethod: 27");
-        } else {
-            System.out.println("TP118 - TP118method6- LineInMethod: 31");
-        }
-        if ((((var4 * var2) <= (var6 + var0)) && ((var0 % 213) < (var6 - var1)))) {
-            System.out.println("TP118 - TP118method6- LineInMethod: 39");
-        } else {
-            var1 = var5 / 474;
-        }
-        if (((var2 * var0) != (var0 / 51))) {
-            var0 = 243;
-        }
-        switch ((var0 + var2)) {
-            case 0:
-                var5 = TP118method22(var4, var0, var6, var5, var2, var0, var0, var3, var0, var4, var2);
-                break;
-            case 1:
-                System.out.println("TP118 - TP118method6- LineInMethod: 49");
-                break;
-            case 2:
-                var3 = (var4 + var5) + ((var6 / 425)
-                        - ((var5 - var0) - (((var2 % 241) - ((var3 - var5) * (var0 * var6))) - (var3 * var1))));
-                break;
-            case 3:
-                var5 = (var6 + 192) - (var0 % 395);
-                break;
-            case 4:
-                TP118method14(var1, var6, var3, var3, var4, var6, var6, var4, var3, var6, var0, var3);
-                break;
-            case 5:
-                System.out.println("TP118 - TP118method6- LineInMethod: 61");
-                break;
-            default:
-                var0 = var0 * var2;
-        }
-        return var3;
 
     }
 
@@ -783,56 +1271,6 @@ public class TP118 {
 
     }
 
-    public static int TP118method14(int var0, int var1, int var2, int var3, int var4, int var5, int var6, int var7,
-                                    int var8, int var9, int var10, int var11) {
-        switch (((var6 - 254) * ((var7 * 459) % 69))) {
-            case 0:
-                var7 = (var0 - var6) / 406;
-                break;
-            case 1:
-                var4 = (var10 - var0) - (var5 - var7);
-                break;
-            case 2:
-                var3 = (var6 * 426) - (var3 * var7);
-                break;
-            case 3:
-                System.out.println("TP118 - TP118method14- LineInMethod: 11");
-                break;
-            case 4:
-                var11 = ((var3 + var4) + (var0 / 295)) * (var7 * 275);
-                break;
-            case 5:
-                var5 = var7 % 95;
-                break;
-            case 6:
-                System.out.println("TP118 - TP118method14- LineInMethod: 22");
-                break;
-            case 7:
-                TP118method18(var2, var9, var7, var0, var4, var10, var4);
-                break;
-            case 8:
-                System.out.println("TP118 - TP118method14- LineInMethod: 28");
-                break;
-            default:
-                var8 = TP118method21(var5, var2, var9, var1, var3, var1, var7, var6, var9, var5, var6);
-        }
-        for (int i = 0; i < 7; i++) {
-            System.out.println("TP118 - TP118method14- LineInMethod: 36");
-        }
-        for (int i = 0; i < 10; i++) {
-            if ((((var9 - 188) != (var6 * var9)) && (((var11 + var4) * (var11 - var8)) == (var9 - var8)))) {
-                if (((var4 + var3) >= (var10 - var11))) {
-                    if (((var0 - var1) > (((var4 * var3) * (((var8 / 396) % 149) % 485))
-                            - (var10 % 396)))) {
-                        var10 = var1 / 285;
-                    }
-                }
-            }
-        }
-        return var6;
-
-    }
-
     public int TP118method15(int var0, int var1, int var2, int var3, int var4, int var5, int var6, int var7, int var8,
                              int var9, int var10, int var11, int var12) {
         switch ((var12 / 426)) {
@@ -935,136 +1373,6 @@ public class TP118 {
 
     }
 
-    public static int TP118method17(int var0, int var1, int var2, int var3, int var4, int var5, int var6, int var7) {
-        switch ((var2 % 144)) {
-            case 0:
-                System.out.println("TP118 - TP118method17- LineInMethod: 2");
-                break;
-            case 1:
-                var6 = (var0 + 35) + (var3 * var6);
-                break;
-            default:
-                var5 = (var0 + var7) - (var2 / 39);
-        }
-        switch ((var6 % 23)) {
-            case 0:
-                System.out.println("TP118 - TP118method17- LineInMethod: 13");
-                break;
-            case 1:
-                System.out.println("TP118 - TP118method17- LineInMethod: 20");
-                break;
-            case 2:
-                System.out.println("TP118 - TP118method17- LineInMethod: 26");
-                break;
-            case 3:
-                var2 = (var5 / 146) * (var0 + 149);
-                break;
-            case 4:
-                var5 = (var5 - 24) - (var6 / 122);
-                break;
-            default:
-                TP118method18(var4, var6, var1, var1, var0, var3, var3);
-        }
-        switch ((var1 * 175)) {
-            case 0:
-                var2 = (var5 - var2) + (var5 + var4);
-                break;
-            case 1:
-                System.out.println("TP118 - TP118method17- LineInMethod: 43");
-                break;
-            case 2:
-                System.out.println("TP118 - TP118method17- LineInMethod: 48");
-                break;
-            case 3:
-                System.out.println("TP118 - TP118method17- LineInMethod: 52");
-                break;
-            default:
-                System.out.println("TP118 - TP118method17- LineInMethod: 59");
-        }
-        return var0;
-
-    }
-
-    public static int TP118method18(int var0, int var1, int var2, int var3, int var4, int var5, int var6) {
-        if (((var2 + var0) <= (var4 / 36))) {
-            if (((var0 - var6) != (var5 - var2))) {
-                if (((var0 / 248) < (var1 / 302))) {
-                    if (((var5 + var4) > (var1 / 204))) {
-                        if ((((var1 * var3) * (var2 / 215)) <= (var1 - var2))) {
-                            System.out.println("TP118 - TP118method18- LineInMethod: 10");
-                        }
-                    }
-                }
-            }
-        }
-        if ((((var3 * var0) != (var5 / 146)) || (((((var0 / 290) / 458) / 160)
-                + (var6 + 202)) == (var2 % 428)))) {
-            var0 = (var3 + var2) / 192;
-        }
-        if (((var1 + var0) >= (var0 * var6))) {
-            if ((((((var5 + var4) % 467) % 391) < (var5 / 53))
-                    && (((var6 * var2) >= (var1 + var2)) && ((var4 - 478) == (var5 + var0))))) {
-                if (((var4 * var6) < ((var1 - var4) - (var0 * var1)))) {
-                    if ((((var5 - var6) + (var2 - 31)) != (var6 + var1))) {
-                        if (((var1 * var4) <= (var5 / 425))) {
-                            if (((var5 % 61) == (var5 + var6))) {
-                                if (((var5 - var3) == (var0 * var3))) {
-                                    TP118method20(var2, var5, var3, var0, var0, var2, var1);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        if (((var5 - 139) < (var2 / 277))) {
-            System.out.println("TP118 - TP118method18- LineInMethod: 36");
-        } else {
-            var4 = (var0 * var6) % 344;
-        }
-        for (int i = 0; i < 13; i++) {
-            if (((var4 * var2) < (var0 + 481))) {
-                var4 = 250;
-            }
-        }
-        if (((var0 * var1) != ((var2 * var3) - (var4 - var1)))) {
-            var3 = (var4 - var3) / 201;
-        }
-        switch (((var5 + 62) - (var0 * 241))) {
-            case 0:
-                var5 = (var6 + var1) * (var4 + var5);
-                break;
-            case 1:
-                System.out.println("TP118 - TP118method18- LineInMethod: 51");
-                break;
-            case 2:
-                var5 = var2 - var4;
-                break;
-            case 3:
-                var3 = TP118method21(var6, var4, var6, var2, var1, var6, var6, var1, var5, var0, var4);
-                break;
-            case 4:
-                System.out.println("TP118 - TP118method18- LineInMethod: 61");
-                break;
-            case 5:
-                var0 = var4 + 251;
-                break;
-            case 6:
-                System.out.println("TP118 - TP118method18- LineInMethod: 68");
-                break;
-            case 7:
-                TP118method20(var4, var5, var6, var0, var5, var1, var5);
-                break;
-            case 8:
-                System.out.println("TP118 - TP118method18- LineInMethod: 78");
-                break;
-            default:
-                TP118method25(var1, var1, var6, var5, var6, var1, var3);
-        }
-        return var0;
-
-    }
-
     public int TP118method19(int var0, int var1, int var2, int var3, int var4, int var5, int var6, int var7, int var8,
                              int var9) {
         if ((((var4 + var3) > (var3 - var6)) || ((var3 * 167) != (var2 + var3)))) {
@@ -1110,149 +1418,6 @@ public class TP118 {
                 System.out.println("TP118 - TP118method19- LineInMethod: 50");
         }
         return var8;
-
-    }
-
-    public static int TP118method20(int var0, int var1, int var2, int var3, int var4, int var5, int var6) {
-        switch ((var0 + var3)) {
-            case 0:
-                var1 = var5 + var2;
-                break;
-            case 1:
-                System.out.println("TP118 - TP118method20- LineInMethod: 5");
-                break;
-            case 2:
-                var6 = (var4 % 248) - (var4 % 185);
-                break;
-            case 3:
-                var5 = (var6 - var5) + ((var4 + var2) * ((var2 % 312) * (var0 + var2)));
-                break;
-            default:
-                var0 = (var4 % 455) * (var3 * var5);
-        }
-        if (((var0 * var2) == (var4 + var3))) {
-            System.out.println("TP118 - TP118method20- LineInMethod: 21");
-        } else {
-            System.out.println("TP118 - TP118method20- LineInMethod: 24");
-        }
-        switch ((var4 + 482)) {
-            case 0:
-                System.out.println("TP118 - TP118method20- LineInMethod: 28");
-                break;
-            case 1:
-                var0 = 345;
-                break;
-            case 2:
-                var4 = TP118method25(var0, var1, var5, var6, var5, var2, var5);
-                break;
-            case 3:
-                System.out.println("TP118 - TP118method20- LineInMethod: 38");
-                break;
-            case 4:
-                System.out.println("TP118 - TP118method20- LineInMethod: 43");
-                break;
-            case 5:
-                var3 = (var1 / 422) % 479;
-                break;
-            default:
-                var0 = (var1 + var2) * (var3 * var5);
-        }
-        return var4;
-
-    }
-
-    public static int TP118method21(int var0, int var1, int var2, int var3, int var4, int var5, int var6, int var7,
-                                    int var8, int var9, int var10) {
-        switch ((var1 + 54)) {
-            case 0:
-                System.out.println("TP118 - TP118method21- LineInMethod: 2");
-                break;
-            case 1:
-                var5 = 316;
-                break;
-            case 2:
-                System.out.println("TP118 - TP118method21- LineInMethod: 10");
-                break;
-            case 3:
-                var6 = TP118method22(var0, var0, var2, var2, var0, var4, var0, var5, var6, var1, var2);
-                break;
-            case 4:
-                var8 = TP118method25(var10, var2, var7, var2, var8, var6, var10);
-                break;
-            case 5:
-                var2 = ((var3 / 159) % 154) / 267;
-                break;
-            case 6:
-                var3 = (var0 - var1) * (var0 + var9);
-                break;
-            case 7:
-                var3 = 222;
-                break;
-            case 8:
-                System.out.println("TP118 - TP118method21- LineInMethod: 29");
-                break;
-            default:
-                var0 = 363;
-        }
-        if (((var0 + var8) <= ((var10 * var0) - ((var8 / 211) + (var3 - var10))))) {
-            System.out.println("TP118 - TP118method21- LineInMethod: 39");
-        } else {
-            var2 = ((((var5 + var9) * (var8 - var0))
-                    + (((var5 % 75) - (var1 / 249)) * (var2 + var5))) % 13) - (var3 - var9);
-        }
-        if (((var1 * var8) != (var5 * var8))) {
-            System.out.println("TP118 - TP118method21- LineInMethod: 45");
-        } else {
-            System.out.println("TP118 - TP118method21- LineInMethod: 47");
-        }
-        return var0;
-
-    }
-
-    public static int TP118method22(int var0, int var1, int var2, int var3, int var4, int var5, int var6, int var7,
-                                    int var8, int var9, int var10) {
-        if (((var10 + var6) != (var4 - 343))) {
-            if (((var0 + var10) == ((var10 + var5) * (var1 - var0)))) {
-                if (((((var9 + var6) - (var9 % 254)) >= (var8 - var10))
-                        && ((var0 + var4) == ((var5 - var0) % 460)))) {
-                    if (((var3 - var2) != (var3 - 195))) {
-                        if ((((var2 + var7) >= (var6 / 403))
-                                && ((var1 / 361) != ((var3 % 39) - (var7 * var3))))) {
-                            var10 = 92;
-                        }
-                    }
-                }
-            }
-        }
-        if (((var0 * var5) != (var2 - var6))) {
-            var10 = (var8 % 368) + (((var2 - var8) + (var6 / 328)) % 24);
-        }
-        if ((((var4 % 21) % 377) <= (var2 - var9))) {
-            System.out.println("TP118 - TP118method22- LineInMethod: 17");
-        } else {
-            var6 = (var0 + var3) * (var6 * var9);
-        }
-        for (int i = 0; i < 0; i++) {
-            if (((var10 % 156) == (var2 + var4))) {
-                var0 = 309;
-            }
-        }
-        if ((((var3 * 260) * (var2 + var0)) > (var2 / 264))) {
-            var4 = var7 + var8;
-        } else {
-            System.out.println("TP118 - TP118method22- LineInMethod: 32");
-        }
-        if ((((var9 * 8) + (var4 % 152)) >= (var10 - var1))) {
-            if (((var7 * var4) == (((var2 - var1) - (var6 * var1)) / 331))) {
-                var2 = (var10 - var5) / 348;
-            }
-        }
-        if (((var0 * var3) >= (var7 % 475))) {
-            System.out.println("TP118 - TP118method22- LineInMethod: 46");
-        } else {
-            var8 = (var0 - var1) - (var7 + var0);
-        }
-        return var2;
 
     }
 
@@ -1382,47 +1547,6 @@ public class TP118 {
 
     }
 
-    public static int TP118method25(int var0, int var1, int var2, int var3, int var4, int var5, int var6) {
-        if (((var4 * var1) < (var0 % 234))) {
-            var3 = 272;
-        } else {
-            System.out.println("TP118 - TP118method25- LineInMethod: 4");
-        }
-        if ((((var4 * var3) - (var6 * var1)) > (var4 * var5))) {
-            if (((((var3 * var0) * (var1 / 281)) + (var2 / 281)) >= (var4 * var2))) {
-                if (((var3 - var2) > (var6 * var1))) {
-                    var4 = (var5 * var0) - ((var1 / 314) % 306);
-                }
-            }
-        }
-        switch ((var4 * 444)) {
-            case 0:
-                var5 = 3;
-                break;
-            case 1:
-                System.out.println("TP118 - TP118method25- LineInMethod: 19");
-                break;
-            case 2:
-                System.out.println("TP118 - TP118method25- LineInMethod: 26");
-                break;
-            case 3:
-                System.out.println("TP118 - TP118method25- LineInMethod: 32");
-                break;
-            case 4:
-                var3 = ((var2 + var6) - (var3 + var5)) / 369;
-                break;
-            default:
-                var3 = ((var4 * var0) * (var4 / 153)) - (var5 + var0);
-        }
-        if (((var2 * var4) >= ((var6 % 410) - (var0 * var3)))) {
-            var1 = var5 + var2;
-        } else {
-            System.out.println("TP118 - TP118method25- LineInMethod: 44");
-        }
-        return var5;
-
-    }
-
     public int TP118method26(int var0, int var1, int var2, int var3, int var4, int var5, int var6) {
         for (int i = 0; i < 14; i++) {
             if ((((((var2 * var6) % 400) + (var5 * var0)) > ((var2 + var4) - (var6 * var2)))
@@ -1474,130 +1598,6 @@ public class TP118 {
         }
         return var5;
 
-    }
-
-    public static int TP118method27(int var0, int var1, int var2, int var3, int var4, int var5, int var6) {
-        if ((((var5 + var2) % 349) < (var6 % 365))) {
-            var5 = 44;
-        }
-        if (((((var3 * var6) < (var3 / 418)) || (((var4 + var2) > (var0 / 229))
-                && (((var6 + var0) > (var6 / 348)) && ((var3 % 290) != (var3 - var1)))))
-                && ((var5 - var6) > (var5 + var6)))) {
-            var6 = 294;
-        } else {
-            System.out.println("TP118 - TP118method27- LineInMethod: 6");
-        }
-        for (int i = 0; i < 1; i++) {
-            if (((((var6 + 339) != (var1 - var2)) && ((var5 - var1) == (var4 + var3)))
-                    && (((var4 * 403) * ((var4 * var3) % 486)) <= (var5 / 464)))) {
-                if ((((var6 + var0) > ((var0 + var2) - (var2 * var4)))
-                        && ((var0 + var5) > ((var0 + var1) * (var2 * 413))))) {
-                    if (((var3 - var2) <= (var3 * var2))) {
-                        if ((((var4 * var6) != (var1 + 168)) && ((var5 + var4) >= (var5 * var0)))) {
-                            var6 = (var1 / 447) / 356;
-                        }
-                    }
-                }
-            }
-        }
-        if (((((var2 + var0) * (var6 - var2)) * (var1 + var5)) == (var0 - 331))) {
-            System.out.println("TP118 - TP118method27- LineInMethod: 24");
-        } else {
-            System.out.println("TP118 - TP118method27- LineInMethod: 29");
-        }
-        if ((((var2 - var4) == (var6 * var1)) && ((var4 + var2) < (var2 - var4)))) {
-            var5 = 395;
-        }
-        if (((var4 + var2) <= (var6 * var5))) {
-            System.out.println("TP118 - TP118method27- LineInMethod: 37");
-        } else {
-            var1 = (var4 + var5) - (var4 - 29);
-        }
-        if (((var4 * var1) > (var5 % 2))) {
-            System.out.println("TP118 - TP118method27- LineInMethod: 43");
-        } else {
-            var0 = (var1 - var6) + (var5 * var4);
-        }
-        return var4;
-
-    }
-
-    public static void main(String[] args) {
-        TP118 obj = new TP118();
-        TP118method0(489, 295, 206, 147, 488, 17, 139,
-                70, 157, 121, 400, 399, 275);
-        TP118method1(117, 34, 371, 458, 133, 187, 88);
-        TP118method2(188, 489, 259, 347, 165, 129, 20,
-                74, 38, 300, 263, 368);
-        obj.TP118method3(235, 111, 452, 41, 432, 180, 144);
-        obj.TP118method4(311, 424, 243, 84, 329, 166, 489);
-        obj.TP118method5(162, 315, 321, 71, 412, 231, 338,
-                319, 96, 60, 132, 307);
-        TP118method6(335, 32, 217, 116, 85, 485, 402);
-        obj.TP118method7(94, 352, 253, 12, 262, 163, 481);
-        obj.TP118method8(294, 484, 252, 344, 92, 196, 15);
-        obj.TP118method9(197, 284, 43, 295, 191, 450, 203,
-                171, 293, 130, 78, 42, 332);
-        obj.TP118method10(422, 258, 222, 387, 150, 114, 331);
-        obj.TP118method11(490, 421, 74, 320, 326, 480, 69,
-                196, 332, 296, 383, 5);
-        obj.TP118method12(409, 14, 460, 338, 302, 367, 56);
-        obj.TP118method13(346, 404, 373, 191, 384, 9, 468);
-        TP118method14(296, 132, 101, 65, 312, 136, 142,
-                359, 354, 322, 141, 334);
-        obj.TP118method15(133, 361, 57, 51, 15, 466, 469,
-                370, 269, 220, 215, 283, 389);
-        obj.TP118method16(19, 67, 31, 279, 119, 438, 274,
-                379, 361);
-        TP118method17(377, 136, 389, 288, 395, 296, 405,
-                228);
-        TP118method18(282, 429, 371, 272, 30, 276, 177);
-        obj.TP118method19(71, 290, 131, 13, 215, 331, 167,
-                109, 256, 347);
-        TP118method20(244, 98, 497, 24, 115, 92, 429);
-        TP118method21(147, 450, 286, 250, 339, 427, 263,
-                86, 263, 163, 132);
-        TP118method22(389, 395, 390, 294, 225, 189, 26,
-                135, 134, 435, 4);
-        obj.TP118method23(135, 269, 376, 485, 301, 496, 392,
-                208, 137);
-        obj.TP118method24(382, 408, 167, 430, 441, 199, 163);
-        TP118method25(152, 446, 452, 333, 458, 277, 382);
-        obj.TP118method26(463, 222, 311, 64, 339, 73, 413);
-        TP118method27(376, 49, 428, 199, 457, 336, 235);
-    }
-
-    public static void singleEntry(int i0, int i1, int i2, int i3, int i4, int i5, int i6, int i7, int i8, int i9,
-                                   int i10, int i11, int i12, int i13, int i14) {
-        TP118 obj = new TP118();
-        TP118method0(i4, i1, i5, i11, i2, i14, i3, i12, i8, i13, i7, i10, i9);
-        TP118method1(i14, i6, i11, i1, i9, i10, i5);
-        TP118method2(i14, i13, i4, i0, i5, i1, i9, i8, i3, i10, i11, i12);
-        obj.TP118method3(i8, i9, i1, i0, i2, i3, i7);
-        obj.TP118method4(i8, i3, i1, i10, i13, i11, i4);
-        obj.TP118method5(i2, i3, i12, i11, i8, i6, i7, i5, i10, i0, i4, i13);
-        TP118method6(i5, i1, i0, i9, i12, i14, i10);
-        obj.TP118method7(i14, i1, i6, i10, i7, i4, i3);
-        obj.TP118method8(i11, i14, i4, i13, i12, i9, i1);
-        obj.TP118method9(i13, i7, i1, i6, i11, i2, i10, i12, i5, i3, i4, i0, i14);
-        obj.TP118method10(i10, i5, i1, i2, i6, i4, i3);
-        obj.TP118method11(i13, i12, i0, i1, i14, i3, i5, i11, i6, i4, i10, i2);
-        obj.TP118method12(i3, i8, i6, i14, i4, i2, i5);
-        obj.TP118method13(i7, i8, i0, i1, i10, i5, i9);
-        TP118method14(i9, i12, i14, i4, i2, i3, i13, i0, i11, i5, i1, i7);
-        obj.TP118method15(i5, i2, i1, i9, i7, i6, i14, i13, i4, i12, i3, i11, i8);
-        obj.TP118method16(i2, i10, i13, i4, i12, i3, i6, i7, i0);
-        TP118method17(i2, i7, i6, i13, i8, i10, i4, i5);
-        TP118method18(i5, i3, i7, i6, i14, i13, i1);
-        obj.TP118method19(i2, i8, i4, i0, i10, i1, i12, i9, i14, i5);
-        TP118method20(i11, i2, i4, i13, i10, i1, i6);
-        TP118method21(i8, i2, i13, i0, i6, i14, i11, i1, i12, i7, i9);
-        TP118method22(i3, i10, i9, i0, i14, i4, i13, i1, i12, i8, i11);
-        obj.TP118method23(i12, i0, i14, i8, i6, i11, i13, i7, i5);
-        obj.TP118method24(i5, i14, i13, i9, i3, i10, i6);
-        TP118method25(i7, i13, i6, i5, i8, i1, i11);
-        obj.TP118method26(i13, i11, i0, i14, i8, i2, i12);
-        TP118method27(i13, i7, i8, i11, i10, i5, i14);
     }
 
 }

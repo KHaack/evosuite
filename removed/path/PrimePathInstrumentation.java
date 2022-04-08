@@ -37,70 +37,81 @@ import org.slf4j.LoggerFactory;
  * <p>
  * PrimePathInstrumentation class.
  * </p>
- * 
+ *
  * @author Gordon Fraser
  */
 public class PrimePathInstrumentation implements MethodInstrumentation {
 
-	/** Constant <code>logger</code> */
-	private static final Logger logger = LoggerFactory.getLogger(PrimePathInstrumentation.class);
+    /**
+     * Constant <code>logger</code>
+     */
+    private static final Logger logger = LoggerFactory.getLogger(PrimePathInstrumentation.class);
 
-	/* (non-Javadoc)
-	 * @see org.evosuite.cfg.MethodInstrumentation#analyze(org.objectweb.asm.tree.MethodNode, org.jgrapht.Graph, java.lang.String, java.lang.String, int)
-	 */
-	/** {@inheritDoc} */
-	@Override
-	public void analyze(ClassLoader classLoader, MethodNode mn, String className,
-	        String methodName, int access) {
-		RawControlFlowGraph graph = GraphPool.getInstance(classLoader).getRawCFG(className,
-		                                                                         methodName);
-		Queue<PrimePath> path_queue = new LinkedList<PrimePath>();
-		for (BytecodeInstruction vertex : graph.vertexSet()) {
-			if (graph.inDegreeOf(vertex) == 0) {
-				PrimePath initial = new PrimePath(className, methodName);
-				initial.append(vertex);
-				path_queue.add(initial);
-			}
-		}
-		while (!path_queue.isEmpty()) {
-			PrimePath current = path_queue.poll();
-			for (ControlFlowEdge edge : graph.outgoingEdgesOf(current.getLast())) {
-				if (!current.contains(graph.getEdgeTarget(edge))) {
-					PrimePath next = current.getAppended(graph.getEdgeTarget(edge));
-					path_queue.add(next);
-				}
-			}
-			if (current.getLast().isReturn() || current.getLast().isThrow()) {
-				logger.warn("New path:");
-				for (int i = 0; i < current.getSize(); i++) {
-					if (current.get(i).isBranch() || current.get(i).isLabel())
-						logger.warn(" -> " + current.get(i));
-				}
-				logger.warn(current.toString());
-				PrimePathPool.add(current);
-			}
-		}
-		logger.info("Found " + PrimePathPool.getSize() + " prime paths");
+    /* (non-Javadoc)
+     * @see org.evosuite.cfg.MethodInstrumentation#analyze(org.objectweb.asm.tree.MethodNode, org.jgrapht.Graph, java.lang.String, java.lang.String, int)
+     */
 
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void analyze(ClassLoader classLoader, MethodNode mn, String className,
+                        String methodName, int access) {
+        RawControlFlowGraph graph = GraphPool.getInstance(classLoader).getRawCFG(className,
+                methodName);
+        Queue<PrimePath> path_queue = new LinkedList<PrimePath>();
+        for (BytecodeInstruction vertex : graph.vertexSet()) {
+            if (graph.inDegreeOf(vertex) == 0) {
+                PrimePath initial = new PrimePath(className, methodName);
+                initial.append(vertex);
+                path_queue.add(initial);
+            }
+        }
+        while (!path_queue.isEmpty()) {
+            PrimePath current = path_queue.poll();
+            for (ControlFlowEdge edge : graph.outgoingEdgesOf(current.getLast())) {
+                if (!current.contains(graph.getEdgeTarget(edge))) {
+                    PrimePath next = current.getAppended(graph.getEdgeTarget(edge));
+                    path_queue.add(next);
+                }
+            }
+            if (current.getLast().isReturn() || current.getLast().isThrow()) {
+                logger.warn("New path:");
+                for (int i = 0; i < current.getSize(); i++) {
+                    if (current.get(i).isBranch() || current.get(i).isLabel())
+                        logger.warn(" -> " + current.get(i));
+                }
+                logger.warn(current.toString());
+                PrimePathPool.add(current);
+            }
+        }
+        logger.info("Found " + PrimePathPool.getSize() + " prime paths");
 
-	/* (non-Javadoc)
-	 * @see org.evosuite.cfg.MethodInstrumentation#executeOnMainMethod()
-	 */
-	/** {@inheritDoc} */
-	@Override
-	public boolean executeOnMainMethod() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    }
 
-	/* (non-Javadoc)
-	 * @see org.evosuite.cfg.MethodInstrumentation#executeOnExcludedMethods()
-	 */
-	/** {@inheritDoc} */
-	@Override
-	public boolean executeOnExcludedMethods() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    /* (non-Javadoc)
+     * @see org.evosuite.cfg.MethodInstrumentation#executeOnMainMethod()
+     */
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean executeOnMainMethod() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    /* (non-Javadoc)
+     * @see org.evosuite.cfg.MethodInstrumentation#executeOnExcludedMethods()
+     */
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean executeOnExcludedMethods() {
+        // TODO Auto-generated method stub
+        return false;
+    }
 }

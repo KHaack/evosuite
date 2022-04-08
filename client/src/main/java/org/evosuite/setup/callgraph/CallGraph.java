@@ -40,6 +40,9 @@ import java.util.*;
 
 public class CallGraph implements Iterable<CallGraphEntry> {
 
+    @SuppressWarnings("unused")
+    private static final Logger logger = LoggerFactory
+            .getLogger(CallGraph.class);
     /**
      * The CallGraphImpl class is a wrap of the Graph class. Internally the
      * graph is represented reversed, i.e. if a method m1 points to a method m2,
@@ -47,11 +50,6 @@ public class CallGraph implements Iterable<CallGraphEntry> {
      * this class however mask this representation.
      */
     private final ReverseCallGraph graph = new ReverseCallGraph();
-
-    @SuppressWarnings("unused")
-    private static final Logger logger = LoggerFactory
-            .getLogger(CallGraph.class);
-
     private final String className;
 
     private final Set<CallGraphEntry> cutNodes = Collections.synchronizedSet(new LinkedHashSet<>());

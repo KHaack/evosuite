@@ -58,6 +58,41 @@ public class MockJOptionPaneTest {
         ClassPathHandler.getInstance().addElementToTargetProjectClassPath(cp);
     }
 
+    private static TestCase buildTestCase0(InstrumentingClassLoader cl)
+            throws ClassNotFoundException, NoSuchMethodException, SecurityException {
+        TestCaseBuilder builder = new TestCaseBuilder();
+
+        Class<?> clazz = cl.loadClass(TARGET_CLASS);
+        Constructor<?> constructor = clazz.getConstructor();
+        VariableReference showMessageDialogExample0 = builder.appendConstructor(constructor);
+
+        Method showConfirmDialogsMethod = clazz.getMethod("ask");
+        builder.appendMethod(showMessageDialogExample0, showConfirmDialogsMethod);
+
+        return builder.getDefaultTestCase();
+    }
+
+    private static TestCase buildTestCase1(InstrumentingClassLoader cl)
+            throws ClassNotFoundException, NoSuchMethodException, SecurityException {
+        TestCaseBuilder builder = new TestCaseBuilder();
+
+        VariableReference string0 = builder.appendStringPrimitive("input0");
+
+        Class<?> jOptionPaneInputsClass = JOptionPaneInputs.class;
+        final String ENQUEUE_INPUT_STRING = "enqueueInputString";
+        Method enqueueStringMethod = jOptionPaneInputsClass.getMethod(ENQUEUE_INPUT_STRING, String.class);
+        builder.appendMethod(null, enqueueStringMethod, string0);
+
+        Class<?> clazz = cl.loadClass(TARGET_CLASS);
+        Constructor<?> constructor = clazz.getConstructor();
+        VariableReference showMessageDialogExample0 = builder.appendConstructor(constructor);
+
+        Method showConfirmDialogsMethod = clazz.getMethod("ask");
+        builder.appendMethod(showMessageDialogExample0, showConfirmDialogsMethod);
+
+        return builder.getDefaultTestCase();
+    }
+
     @Before
     public void setUp() {
         Properties.CRITERION = new Properties.Criterion[]{Criterion.BRANCH};
@@ -113,41 +148,6 @@ public class MockJOptionPaneTest {
         Set<TestFitnessFunction> coveredGoals = suite.getCoveredGoals();
         Assert.assertEquals(3, coveredGoals.size());
 
-    }
-
-    private static TestCase buildTestCase0(InstrumentingClassLoader cl)
-            throws ClassNotFoundException, NoSuchMethodException, SecurityException {
-        TestCaseBuilder builder = new TestCaseBuilder();
-
-        Class<?> clazz = cl.loadClass(TARGET_CLASS);
-        Constructor<?> constructor = clazz.getConstructor();
-        VariableReference showMessageDialogExample0 = builder.appendConstructor(constructor);
-
-        Method showConfirmDialogsMethod = clazz.getMethod("ask");
-        builder.appendMethod(showMessageDialogExample0, showConfirmDialogsMethod);
-
-        return builder.getDefaultTestCase();
-    }
-
-    private static TestCase buildTestCase1(InstrumentingClassLoader cl)
-            throws ClassNotFoundException, NoSuchMethodException, SecurityException {
-        TestCaseBuilder builder = new TestCaseBuilder();
-
-        VariableReference string0 = builder.appendStringPrimitive("input0");
-
-        Class<?> jOptionPaneInputsClass = JOptionPaneInputs.class;
-        final String ENQUEUE_INPUT_STRING = "enqueueInputString";
-        Method enqueueStringMethod = jOptionPaneInputsClass.getMethod(ENQUEUE_INPUT_STRING, String.class);
-        builder.appendMethod(null, enqueueStringMethod, string0);
-
-        Class<?> clazz = cl.loadClass(TARGET_CLASS);
-        Constructor<?> constructor = clazz.getConstructor();
-        VariableReference showMessageDialogExample0 = builder.appendConstructor(constructor);
-
-        Method showConfirmDialogsMethod = clazz.getMethod("ask");
-        builder.appendMethod(showMessageDialogExample0, showConfirmDialogsMethod);
-
-        return builder.getDefaultTestCase();
     }
 
     @Test

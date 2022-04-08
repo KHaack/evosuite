@@ -39,15 +39,13 @@ import java.io.Serializable;
 public class ProgressMonitor<T extends Chromosome<T>> implements SearchListener<T>, Serializable {
 
     private static final long serialVersionUID = -8518559681906649686L;
-
-    private StoppingCondition<T> stoppingCondition;
-    private long max;
-    private int currentCoverage;
-
     protected int lastCoverage;
     protected int lastProgress;
     protected int iteration;
     protected ClientState state;
+    private StoppingCondition<T> stoppingCondition;
+    private long max;
+    private int currentCoverage;
 
     public ProgressMonitor() {
         stoppingCondition = null;

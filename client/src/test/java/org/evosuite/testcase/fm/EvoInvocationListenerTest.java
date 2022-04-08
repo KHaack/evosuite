@@ -39,26 +39,6 @@ import static org.mockito.Mockito.*;
  */
 public class EvoInvocationListenerTest {
 
-    public interface Foo {
-        int parseString(String s);
-
-        int parseString(String s, boolean flag);
-
-        int parseString(String s, Object obj);
-
-        int parseString(String s, Foo foo);
-    }
-
-    public class AClassWithFinal {
-        public final boolean getFoo() {
-            return true;
-        }
-    }
-
-    public interface AGenericClass<T> {
-        boolean genericAsInput(T t);
-    }
-
     @Test
     public void testGenerics() {
 
@@ -98,7 +78,6 @@ public class EvoInvocationListenerTest {
         Assert.assertEquals(0, list.size());
     }
 
-
     @Test
     public void testBase() {
 
@@ -134,5 +113,25 @@ public class EvoInvocationListenerTest {
 
         list = listener.getCopyOfMethodDescriptors();
         Assert.assertEquals(4, list.size());
+    }
+
+    public interface Foo {
+        int parseString(String s);
+
+        int parseString(String s, boolean flag);
+
+        int parseString(String s, Object obj);
+
+        int parseString(String s, Foo foo);
+    }
+
+    public interface AGenericClass<T> {
+        boolean genericAsInput(T t);
+    }
+
+    public class AClassWithFinal {
+        public final boolean getFoo() {
+            return true;
+        }
     }
 }

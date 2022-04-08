@@ -34,6 +34,80 @@ import java.util.*;
 public class PutStaticMethodCollector {
 
     private static final String CLINIT = "<clinit>";
+    private final Map<String, Set<String>> getStaticFields;
+
+    //private static final Logger logger = LoggerFactory
+    //		.getLogger(PutStaticMethodCollector.class);
+
+    public PutStaticMethodCollector(String targetClassName) {
+        this(targetClassName, createStaticFields(targetClassName));
+    }
+
+    public PutStaticMethodCollector(String targetClassName,
+                                    Map<String, Set<String>> getStaticFields) {
+        this.getStaticFields = getStaticFields;
+        // this.targetClassName = targetClassName;
+    }
+
+    private static Map<String, Set<String>> createStaticFields(
+            String targetClassName) {
+        GetStaticGraph getStaticGraph = GetStaticGraphGenerator
+                .generate(targetClassName);
+        return getStaticGraph.getStaticFields();
+    }
+
+    @SuppressWarnings("unchecked")
+    public Set<MethodIdentifier> collectMethods() {
+
+        Set<MethodIdentifier> methods = new LinkedHashSet<>();
+
+        for (String calledClassName : getStaticFields.keySet()) {
+            ClassNode classNode = DependencyAnalysis
+                    .getClassNode(calledClassName);
+            List<MethodNode> classMethods = classNode.methods;
+            for (MethodNode mn : classMethods) {
+                if (mn.name.equals(CLINIT))
+                    continue;
+
+                InsnList instructions = mn.instructions;
+                Iterator<AbstractInsnNode> it = instructions.iterator();
+                while (it.hasNext()) {
+                    AbstractInsnNode insn = it.next();
+                    if (insn instanceof FieldInsnNode) {
+                        FieldInsnNode fieldInsn = (FieldInsnNode) insn;
+                        if (fieldInsn.getOpcode() != Opcodes.PUTSTATIC) {
+                            continue;
+                        }
+                        String calleeClassName = fieldInsn.owner.replaceAll(
+                                "/", ".");
+                        String calleeFieldName = fieldInsn.name;
+
+                        if (contains(getStaticFields, calleeClassName,
+                                calleeFieldName)) {
+
+                            MethodIdentifier methodIdentifier = new MethodIdentifier(
+                                    calledClassName, mn.name, mn.desc);
+                            methods.add(methodIdentifier);
+
+                        }
+                    }
+                }
+
+            }
+
+        }
+        return methods;
+    }
+
+    private boolean contains(Map<String, Set<String>> fields, String className,
+                             String fieldName) {
+        if (!fields.containsKey(className))
+            return false;
+
+        return fields.get(className).contains(fieldName);
+    }
+
+    // private final String targetClassName;
 
     public static class MethodIdentifier {
         private final String className;
@@ -97,81 +171,6 @@ public class PutStaticMethodCollector {
         public String getDesc() {
             return desc;
         }
-    }
-
-    //private static final Logger logger = LoggerFactory
-    //		.getLogger(PutStaticMethodCollector.class);
-
-    private static Map<String, Set<String>> createStaticFields(
-            String targetClassName) {
-        GetStaticGraph getStaticGraph = GetStaticGraphGenerator
-                .generate(targetClassName);
-        return getStaticGraph.getStaticFields();
-    }
-
-    public PutStaticMethodCollector(String targetClassName) {
-        this(targetClassName, createStaticFields(targetClassName));
-    }
-
-    public PutStaticMethodCollector(String targetClassName,
-                                    Map<String, Set<String>> getStaticFields) {
-        this.getStaticFields = getStaticFields;
-        // this.targetClassName = targetClassName;
-    }
-
-    private final Map<String, Set<String>> getStaticFields;
-
-    @SuppressWarnings("unchecked")
-    public Set<MethodIdentifier> collectMethods() {
-
-        Set<MethodIdentifier> methods = new LinkedHashSet<>();
-
-        for (String calledClassName : getStaticFields.keySet()) {
-            ClassNode classNode = DependencyAnalysis
-                    .getClassNode(calledClassName);
-            List<MethodNode> classMethods = classNode.methods;
-            for (MethodNode mn : classMethods) {
-                if (mn.name.equals(CLINIT))
-                    continue;
-
-                InsnList instructions = mn.instructions;
-                Iterator<AbstractInsnNode> it = instructions.iterator();
-                while (it.hasNext()) {
-                    AbstractInsnNode insn = it.next();
-                    if (insn instanceof FieldInsnNode) {
-                        FieldInsnNode fieldInsn = (FieldInsnNode) insn;
-                        if (fieldInsn.getOpcode() != Opcodes.PUTSTATIC) {
-                            continue;
-                        }
-                        String calleeClassName = fieldInsn.owner.replaceAll(
-                                "/", ".");
-                        String calleeFieldName = fieldInsn.name;
-
-                        if (contains(getStaticFields, calleeClassName,
-                                calleeFieldName)) {
-
-                            MethodIdentifier methodIdentifier = new MethodIdentifier(
-                                    calledClassName, mn.name, mn.desc);
-                            methods.add(methodIdentifier);
-
-                        }
-                    }
-                }
-
-            }
-
-        }
-        return methods;
-    }
-
-    // private final String targetClassName;
-
-    private boolean contains(Map<String, Set<String>> fields, String className,
-                             String fieldName) {
-        if (!fields.containsKey(className))
-            return false;
-
-        return fields.get(className).contains(fieldName);
     }
 
 }

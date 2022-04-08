@@ -53,6 +53,36 @@ public class GraphPool {
     private static final Map<ClassLoader, GraphPool> instanceMap = new HashMap<>();
 
     private final ClassLoader classLoader;
+    /**
+     * Complete control flow graph, contains each bytecode instruction, each
+     * label and line number node Think of the direct Known Subclasses of
+     * http://
+     * asm.ow2.org/asm33/javadoc/user/org/objectweb/asm/tree/AbstractInsnNode
+     * .html for a complete list of the nodes in this cfg
+     * <p>
+     * Maps from classNames to methodNames to corresponding RawCFGs
+     */
+    private final Map<String, Map<String, RawControlFlowGraph>> rawCFGs = new HashMap<>();
+    /**
+     * Minimized control flow graph. This graph only contains the first and last
+     * node (usually a LABEL and IRETURN), nodes which create branches (all
+     * jumps/switches except GOTO) and nodes which were mutated.
+     * <p>
+     * Maps from classNames to methodNames to corresponding ActualCFGs
+     */
+    private final Map<String, Map<String, ActualControlFlowGraph>> actualCFGs = new HashMap<>();
+    /**
+     * Control Dependence Graphs for each method.
+     * <p>
+     * Maps from classNames to methodNames to corresponding CDGs
+     */
+    private final Map<String, Map<String, ControlDependenceGraph>> controlDependencies = new HashMap<>();
+    /**
+     * Cache of all created CCFGs
+     * <p>
+     * Maps from classNames to computed CCFG of that class
+     */
+    private final Map<String, ClassControlFlowGraph> ccfgs = new HashMap<>();
 
     /**
      * Private constructor
@@ -69,41 +99,19 @@ public class GraphPool {
         return instanceMap.get(classLoader);
     }
 
-    /**
-     * Complete control flow graph, contains each bytecode instruction, each
-     * label and line number node Think of the direct Known Subclasses of
-     * http://
-     * asm.ow2.org/asm33/javadoc/user/org/objectweb/asm/tree/AbstractInsnNode
-     * .html for a complete list of the nodes in this cfg
-     * <p>
-     * Maps from classNames to methodNames to corresponding RawCFGs
-     */
-    private final Map<String, Map<String, RawControlFlowGraph>> rawCFGs = new HashMap<>();
-
-    /**
-     * Minimized control flow graph. This graph only contains the first and last
-     * node (usually a LABEL and IRETURN), nodes which create branches (all
-     * jumps/switches except GOTO) and nodes which were mutated.
-     * <p>
-     * Maps from classNames to methodNames to corresponding ActualCFGs
-     */
-    private final Map<String, Map<String, ActualControlFlowGraph>> actualCFGs = new HashMap<>();
-
-    /**
-     * Control Dependence Graphs for each method.
-     * <p>
-     * Maps from classNames to methodNames to corresponding CDGs
-     */
-    private final Map<String, Map<String, ControlDependenceGraph>> controlDependencies = new HashMap<>();
-
-    /**
-     * Cache of all created CCFGs
-     * <p>
-     * Maps from classNames to computed CCFG of that class
-     */
-    private final Map<String, ClassControlFlowGraph> ccfgs = new HashMap<>();
-
     // retrieve graphs
+
+    public static void clearAll(String className) {
+        instanceMap.values().forEach(pool -> pool.clear(className));
+    }
+
+    public static void clearAll(String className, String methodName) {
+        instanceMap.values().forEach(pool -> pool.clear(className, methodName));
+    }
+
+    public static void clearAll() {
+        instanceMap.clear();
+    }
 
     /**
      * Returns the {@link RawControlFlowGraph} of the specified method. To this end, one has to
@@ -128,6 +136,8 @@ public class GraphPool {
 
         return rawCFGs.get(className).get(methodName);
     }
+
+    // register graphs
 
     /**
      * <p>
@@ -180,8 +190,6 @@ public class GraphPool {
 
         return controlDependencies.get(className).get(methodName);
     }
-
-    // register graphs
 
     /**
      * <p>
@@ -351,18 +359,6 @@ public class GraphPool {
             actualCFGs.get(className).remove(methodName);
         if (controlDependencies.containsKey(className))
             controlDependencies.get(className).remove(methodName);
-    }
-
-    public static void clearAll(String className) {
-        instanceMap.values().forEach(pool -> pool.clear(className));
-    }
-
-    public static void clearAll(String className, String methodName) {
-        instanceMap.values().forEach(pool -> pool.clear(className, methodName));
-    }
-
-    public static void clearAll() {
-        instanceMap.clear();
     }
 
 }

@@ -38,13 +38,11 @@ import static java.util.stream.Collectors.toCollection;
  */
 public abstract class SelectionFunction<T extends Chromosome<T>> implements Serializable {
 
-    private static final long serialVersionUID = -2514933149542277609L;
-
     /**
      * Constant <code>logger</code>
      */
     protected static final Logger logger = LoggerFactory.getLogger(SelectionFunction.class);
-
+    private static final long serialVersionUID = -2514933149542277609L;
     /**
      * Do we want to minimize or maximize fitness?
      */
@@ -83,15 +81,6 @@ public abstract class SelectionFunction<T extends Chromosome<T>> implements Seri
     }
 
     /**
-     * Are we maximizing or minimizing fitness?
-     *
-     * @param max a boolean.
-     */
-    public void setMaximize(boolean max) {
-        maximize = max;
-    }
-
-    /**
      * <p>
      * isMaximize
      * </p>
@@ -100,6 +89,15 @@ public abstract class SelectionFunction<T extends Chromosome<T>> implements Seri
      */
     public boolean isMaximize() {
         return maximize;
+    }
+
+    /**
+     * Are we maximizing or minimizing fitness?
+     *
+     * @param max a boolean.
+     */
+    public void setMaximize(boolean max) {
+        maximize = max;
     }
 
 }

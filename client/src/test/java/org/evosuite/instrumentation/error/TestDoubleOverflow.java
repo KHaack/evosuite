@@ -40,6 +40,11 @@ public class TestDoubleOverflow {
     private double x;
     private double y;
 
+    public TestDoubleOverflow(double x, double y) {
+        this.x = x;
+        this.y = y;
+    }
+
     // Creates the test data
     @Parameters
     public static Collection<Object[]> data() {
@@ -52,12 +57,6 @@ public class TestDoubleOverflow {
         }
         return valuePairs;
     }
-
-    public TestDoubleOverflow(double x, double y) {
-        this.x = x;
-        this.y = y;
-    }
-
 
     private void assertOverflow(BigDecimal preciseResult, int distance, double doubleResult) {
         BigDecimal maxResult = new BigDecimal(Double.MAX_VALUE);

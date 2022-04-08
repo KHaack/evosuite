@@ -34,6 +34,8 @@ import static org.junit.Assert.*;
 
 public abstract class TestSolverMathFloat extends TestSolver {
 
+    private static final double DELTA = 1e-15;
+
     private static DefaultTestCase buildTestCaseFloatAbs() throws SecurityException, NoSuchMethodException {
         TestCaseBuilder tc = new TestCaseBuilder();
         VariableReference double0 = tc.appendDoublePrimitive(-Math.PI);
@@ -43,18 +45,6 @@ public abstract class TestSolverMathFloat extends TestSolver {
         return tc.getDefaultTestCase();
     }
 
-    @Test
-    public void testAbs() throws SecurityException, NoSuchMethodException, SolverTimeoutException {
-
-        DefaultTestCase tc = buildTestCaseFloatAbs();
-        Collection<Constraint<?>> constraints = DefaultTestCaseConcolicExecutor.execute(tc);
-        Map<String, Object> solution = solve(getSolver(), constraints);
-        assertNotNull(solution);
-        Double var0 = (Double) solution.get("var0");
-
-        assertTrue(Math.abs(var0) > 0);
-    }
-
     private static DefaultTestCase buildTestCaseFloatTrigonometry() throws SecurityException, NoSuchMethodException {
         TestCaseBuilder tc = new TestCaseBuilder();
         VariableReference double0 = tc.appendDoublePrimitive(-Math.PI);
@@ -62,14 +52,6 @@ public abstract class TestSolverMathFloat extends TestSolver {
         Method method = TestCaseFloatTrigonometry.class.getMethod("test", double.class);
         tc.appendMethod(null, method, double0);
         return tc.getDefaultTestCase();
-    }
-
-    @Test
-    public void testTrigonometry() throws SecurityException, NoSuchMethodException, SolverTimeoutException {
-
-        DefaultTestCase tc = buildTestCaseFloatTrigonometry();
-        Collection<Constraint<?>> constraints = DefaultTestCaseConcolicExecutor.execute(tc);
-        Map<String, Object> solution = solve(getSolver(), constraints);
     }
 
     private static DefaultTestCase buildTestCaseMax() throws SecurityException, NoSuchMethodException {
@@ -90,6 +72,36 @@ public abstract class TestSolverMathFloat extends TestSolver {
         Method method = TestCaseFloatMin.class.getMethod("test", double.class, double.class);
         tc.appendMethod(null, method, double0, double1);
         return tc.getDefaultTestCase();
+    }
+
+    private static DefaultTestCase buildTestCaseRound() throws SecurityException, NoSuchMethodException {
+        TestCaseBuilder tc = new TestCaseBuilder();
+        VariableReference double0 = tc.appendDoublePrimitive(Math.PI);
+        VariableReference int1 = tc.appendIntPrimitive((int) Math.round(Math.PI));
+
+        Method method = TestCaseFloatRound.class.getMethod("test", double.class, int.class);
+        tc.appendMethod(null, method, double0, int1);
+        return tc.getDefaultTestCase();
+    }
+
+    @Test
+    public void testAbs() throws SecurityException, NoSuchMethodException, SolverTimeoutException {
+
+        DefaultTestCase tc = buildTestCaseFloatAbs();
+        Collection<Constraint<?>> constraints = DefaultTestCaseConcolicExecutor.execute(tc);
+        Map<String, Object> solution = solve(getSolver(), constraints);
+        assertNotNull(solution);
+        Double var0 = (Double) solution.get("var0");
+
+        assertTrue(Math.abs(var0) > 0);
+    }
+
+    @Test
+    public void testTrigonometry() throws SecurityException, NoSuchMethodException, SolverTimeoutException {
+
+        DefaultTestCase tc = buildTestCaseFloatTrigonometry();
+        Collection<Constraint<?>> constraints = DefaultTestCaseConcolicExecutor.execute(tc);
+        Map<String, Object> solution = solve(getSolver(), constraints);
     }
 
     @Test
@@ -116,18 +128,6 @@ public abstract class TestSolverMathFloat extends TestSolver {
         Double var1 = (Double) solution.get("var1");
 
         assertEquals(10, Math.min(var0, var1), DELTA);
-    }
-
-    private static final double DELTA = 1e-15;
-
-    private static DefaultTestCase buildTestCaseRound() throws SecurityException, NoSuchMethodException {
-        TestCaseBuilder tc = new TestCaseBuilder();
-        VariableReference double0 = tc.appendDoublePrimitive(Math.PI);
-        VariableReference int1 = tc.appendIntPrimitive((int) Math.round(Math.PI));
-
-        Method method = TestCaseFloatRound.class.getMethod("test", double.class, int.class);
-        tc.appendMethod(null, method, double0, int1);
-        return tc.getDefaultTestCase();
     }
 
     @Test

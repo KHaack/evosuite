@@ -157,6 +157,13 @@ public interface Statement {
     Set<Assertion> getAssertions();
 
     /**
+     * Sets the set of assertions to statement
+     *
+     * @param assertions a {@link java.util.Set} object.
+     */
+    void setAssertions(Set<Assertion> assertions);
+
+    /**
      * Create a string representing the statement as Java code
      *
      * @return a {@link java.lang.String} object.
@@ -177,7 +184,6 @@ public interface Statement {
      * @return
      */
     String getComment();
-
 
     /**
      * <p>
@@ -358,13 +364,6 @@ public interface Statement {
      * @return a boolean.
      */
     boolean same(Statement s);
-
-    /**
-     * Sets the set of assertions to statement
-     *
-     * @param assertions a {@link java.util.Set} object.
-     */
-    void setAssertions(Set<Assertion> assertions);
 
     /**
      * <p>

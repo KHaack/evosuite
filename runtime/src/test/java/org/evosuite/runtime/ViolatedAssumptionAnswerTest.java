@@ -27,23 +27,6 @@ import static org.mockito.Mockito.*;
 
 public class ViolatedAssumptionAnswerTest {
 
-    private class Foo {
-        public void doSomething() {
-        }
-
-        public int getX() {
-            return -1;
-        }
-
-        public int getY() {
-            return 2;
-        }
-
-        public int bar(int x, Foo foo) {
-            return 7;
-        }
-    }
-
     @Test
     public void test() {
 
@@ -69,5 +52,22 @@ public class ViolatedAssumptionAnswerTest {
 
         res = foo.bar(4, null);
         assertEquals(bar, res);
+    }
+
+    private class Foo {
+        public void doSomething() {
+        }
+
+        public int getX() {
+            return -1;
+        }
+
+        public int getY() {
+            return 2;
+        }
+
+        public int bar(int x, Foo foo) {
+            return 7;
+        }
     }
 }

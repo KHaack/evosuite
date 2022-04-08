@@ -42,23 +42,6 @@ public class RankSelection<T extends Chromosome<T>> extends SelectionFunction<T>
         // empty copy constructor
     }
 
-    /**
-     * Returns the index of the next individual selected from the given
-     * population, which is assumed to be already sorted.
-     *
-     * @param population the population to select an individual from
-     * @return the index of the selected individual in the population
-     * @implNote Approximates the index of the selected individual in {@code
-     * O(1)} by transforming an equally distributed random variable {@code
-     * 0 <= r <= 1}, as described by Whitley in the GENITOR algorithm (1989).
-     * For rank biases between 1 and 2, this produces results almost identical
-     * to the text-book specification of rank selection.
-     */
-    @Override
-    public int getIndex(List<T> population) {
-        return RankSelection.getIdx(population);
-    }
-
     public static int getIdx(final List<?> list) {
         double r = Randomness.nextDouble();
         double d = Properties.RANK_BIAS
@@ -74,5 +57,22 @@ public class RankSelection<T extends Chromosome<T>> extends SelectionFunction<T>
 
         int index = (int) (length * d);
         return index;
+    }
+
+    /**
+     * Returns the index of the next individual selected from the given
+     * population, which is assumed to be already sorted.
+     *
+     * @param population the population to select an individual from
+     * @return the index of the selected individual in the population
+     * @implNote Approximates the index of the selected individual in {@code
+     * O(1)} by transforming an equally distributed random variable {@code
+     * 0 <= r <= 1}, as described by Whitley in the GENITOR algorithm (1989).
+     * For rank biases between 1 and 2, this produces results almost identical
+     * to the text-book specification of rank selection.
+     */
+    @Override
+    public int getIndex(List<T> population) {
+        return RankSelection.getIdx(population);
     }
 }

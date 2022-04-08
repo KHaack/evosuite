@@ -30,17 +30,17 @@ import java.time.chrono.MinguoDate;
  * Created by gordon on 25/01/2016.
  */
 public class MockMinguoChronology implements StaticReplacementMock {
-    @Override
-    public String getMockedClassName() {
-        return MinguoChronology.class.getName();
-    }
-
     public static MinguoDate dateNow(MinguoChronology instance) {
         return instance.dateNow(MockClock.systemDefaultZone());
     }
 
     public static MinguoDate dateNow(MinguoChronology instance, ZoneId zone) {
         return instance.dateNow(MockClock.system(zone));
+    }
+
+    @Override
+    public String getMockedClassName() {
+        return MinguoChronology.class.getName();
     }
 
 }

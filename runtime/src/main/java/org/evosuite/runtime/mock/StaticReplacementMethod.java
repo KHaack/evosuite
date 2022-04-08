@@ -27,9 +27,9 @@ import java.lang.annotation.*;
  * A typical example is "final" methods.
  *
  * <p>
- *     These methods will be handled like they were static
- *     replacement ones: ie, same method name, but static, and
- *     with class instance as first input parameter
+ * These methods will be handled like they were static
+ * replacement ones: ie, same method name, but static, and
+ * with class instance as first input parameter
  *
  * <p>
  * Note: such tag cannot be used in unspecialized EvoSuiteMocks,
@@ -45,7 +45,7 @@ import java.lang.annotation.*;
  *
  * <p>
  * WARNING: should only be used on mocking _static_ methods
- *
+ * <p>
  * Created by arcuri on 9/25/14.
  */
 @Documented

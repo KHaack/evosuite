@@ -40,10 +40,11 @@ import java.util.Set;
 public final class StringBinaryComparison extends AbstractExpression<Long> implements
         StringComparison {
 
-    private static final long serialVersionUID = -2959676064390810341L;
-
     protected static final Logger log = LoggerFactory.getLogger(StringBinaryComparison.class);
-
+    private static final long serialVersionUID = -2959676064390810341L;
+    private final Expression<String> left;
+    private final Operator op;
+    private final Expression<?> right;
     /**
      * <p>
      * Constructor for StringComparison.
@@ -67,10 +68,6 @@ public final class StringBinaryComparison extends AbstractExpression<Long> imple
             throw new ConstraintTooLongException(getSize());
         }
     }
-
-    private final Expression<String> left;
-    private final Operator op;
-    private final Expression<?> right;
 
     /**
      * {@inheritDoc}

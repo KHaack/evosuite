@@ -30,10 +30,6 @@ import static org.mockito.Mockito.when;
  */
 public class SpecifiedValuesAnswerTest {
 
-    public interface BaseString {
-        String getString();
-    }
-
     private static boolean checkString_3different(BaseString s) {
         if (s.getString().equals("foo") && s.getString().equals("bar") && s.getString().equals("42")) {
             return true;
@@ -50,6 +46,16 @@ public class SpecifiedValuesAnswerTest {
         }
     }
 
+    private static boolean checkInteger(BaseInteger i) {
+        Integer v = i.getInteger();
+        return v == 42;
+    }
+
+    private static boolean checkInt(BaseInt i) {
+        int v = i.getInt();
+        return v == 42;
+    }
+
     @Test
     public void testBasicWithString_3different() {
 
@@ -64,7 +70,6 @@ public class SpecifiedValuesAnswerTest {
         Assert.assertTrue(res);
     }
 
-
     @Test
     public void testBasicWithString_allSame() {
 
@@ -77,16 +82,6 @@ public class SpecifiedValuesAnswerTest {
         when(s.getString()).thenAnswer(new SpecifiedValuesAnswer<>("foo")); //1 "foo" should be enough
         res = checkString_allSame(s);
         Assert.assertTrue(res);
-    }
-
-
-    public interface BaseInteger {
-        Integer getInteger();
-    }
-
-    private static boolean checkInteger(BaseInteger i) {
-        Integer v = i.getInteger();
-        return v == 42;
     }
 
     @Test
@@ -106,15 +101,6 @@ public class SpecifiedValuesAnswerTest {
         Assert.assertTrue(res);
     }
 
-    public interface BaseInt {
-        int getInt();
-    }
-
-    private static boolean checkInt(BaseInt i) {
-        int v = i.getInt();
-        return v == 42;
-    }
-
     @Test
     public void testBasicInt() {
 
@@ -130,5 +116,17 @@ public class SpecifiedValuesAnswerTest {
         when(i.getInt()).thenAnswer(new SpecifiedValuesAnswer<>(42));
         res = checkInt(i);
         Assert.assertTrue(res);
+    }
+
+    public interface BaseString {
+        String getString();
+    }
+
+    public interface BaseInteger {
+        Integer getInteger();
+    }
+
+    public interface BaseInt {
+        int getInt();
     }
 }

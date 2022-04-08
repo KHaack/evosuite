@@ -40,10 +40,8 @@ public class ToolsJarLocator {
      * Full name of a class in tools.jar that is used inside EvoSuite
      */
     private static final String EXAMPLE_CLASS = "com.sun.tools.attach.VirtualMachine";
-
-    private String locationNotOnClasspath;
-
     private final String manuallySpecifiedToolLocation;
+    private String locationNotOnClasspath;
 
     public ToolsJarLocator(String manuallySpecifiedToolLocation) {
         this.manuallySpecifiedToolLocation = manuallySpecifiedToolLocation;

@@ -91,16 +91,16 @@ public class MaxTimeStoppingCondition<T extends Chromosome<T>> extends StoppingC
      * {@inheritDoc}
      */
     @Override
-    public void setLimit(long limit) {
-        maxSeconds = limit;
+    public long getLimit() {
+        return maxSeconds;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public long getLimit() {
-        return maxSeconds;
+    public void setLimit(long limit) {
+        maxSeconds = limit;
     }
 
     /* (non-Javadoc)

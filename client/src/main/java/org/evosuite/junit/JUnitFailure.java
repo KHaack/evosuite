@@ -30,6 +30,12 @@ import java.util.List;
  */
 public class JUnitFailure {
 
+    private final String descriptionMethodName;
+    private final String exceptionClassName;
+    private final String message;
+    private final boolean isAssertionError;
+    private final String trace;
+    private final ArrayList<String> exceptionStackTrace = new ArrayList<>();
     public JUnitFailure(String message, String exceptionClassName,
                         String descriptionMethodName, boolean isAssertionError, String trace) {
         super();
@@ -39,13 +45,6 @@ public class JUnitFailure {
         this.isAssertionError = isAssertionError;
         this.trace = trace;
     }
-
-    private final String descriptionMethodName;
-    private final String exceptionClassName;
-    private final String message;
-    private final boolean isAssertionError;
-    private final String trace;
-    private final ArrayList<String> exceptionStackTrace = new ArrayList<>();
 
     public void addToExceptionStackTrace(String elemToString) {
         exceptionStackTrace.add(elemToString);

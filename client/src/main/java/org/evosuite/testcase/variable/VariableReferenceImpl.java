@@ -37,11 +37,8 @@ import java.util.Map;
 public class VariableReferenceImpl implements VariableReference {
 
     private static final long serialVersionUID = -2621368452798208805L;
-
-    private int distance = 0;
-
     private static final Logger logger = LoggerFactory.getLogger(VariableReferenceImpl.class);
-
+    protected final PassiveChangeListener<Void> changeListener = new PassiveChangeListener<>();
     /**
      * Type (class) of the variable
      */
@@ -51,8 +48,8 @@ public class VariableReferenceImpl implements VariableReference {
      * The testCase in which this VariableReference is valid
      */
     protected TestCase testCase;
-    protected final PassiveChangeListener<Void> changeListener = new PassiveChangeListener<>();
     protected Integer stPosition;
+    private int distance = 0;
     private String originalCode;
 
     /**
@@ -381,16 +378,6 @@ public class VariableReferenceImpl implements VariableReference {
 
     /**
      * {@inheritDoc}
-     * <p>
-     * Set the actual object represented by this variable in a given scope
-     */
-    @Override
-    public void setObject(Scope scope, Object value) throws CodeUnderTestException {
-        scope.setObject(this, value);
-    }
-
-    /**
-     * {@inheritDoc}
      */
     @Override
     public void setOriginalCode(String code) {
@@ -402,6 +389,16 @@ public class VariableReferenceImpl implements VariableReference {
         if (code != null) {
             this.originalCode = code.trim();
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Set the actual object represented by this variable in a given scope
+     */
+    @Override
+    public void setObject(Scope scope, Object value) throws CodeUnderTestException {
+        scope.setObject(this, value);
     }
 
     /**

@@ -55,50 +55,53 @@ import org.objectweb.asm.tree.TryCatchBlockNode;
  * <p>
  * LCSAJsInstrumentation class.
  * </p>
- * 
+ *
  * @author copied from CFGMethodAdapter
  */
 public class LCSAJsInstrumentation implements MethodInstrumentation {
 
-	/* (non-Javadoc)
-	 * @see org.evosuite.cfg.MethodInstrumentation#analyze(org.objectweb.asm.tree.MethodNode, org.jgrapht.Graph, java.lang.String, java.lang.String)
-	 */
-	/** {@inheritDoc} */
-	@SuppressWarnings("unchecked")
-	//using external lib
-	@Override
-	public void analyze(ClassLoader classLoader, MethodNode mn, String className,
-	        String methodName, int access) {
+    /* (non-Javadoc)
+     * @see org.evosuite.cfg.MethodInstrumentation#analyze(org.objectweb.asm.tree.MethodNode, org.jgrapht.Graph, java.lang.String, java.lang.String)
+     */
 
-		Queue<LCSAJ> lcsaj_queue = new LinkedList<LCSAJ>();
-		HashSet<Integer> targets_reached = new HashSet<Integer>();
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    //using external lib
+    @Override
+    public void analyze(ClassLoader classLoader, MethodNode mn, String className,
+                        String methodName, int access) {
 
-		AbstractInsnNode start = mn.instructions.getFirst();
-		int startID = 0;
+        Queue<LCSAJ> lcsaj_queue = new LinkedList<LCSAJ>();
+        HashSet<Integer> targets_reached = new HashSet<Integer>();
 
-		// TODO: This should replace the hack below
-		if (methodName.startsWith("<init>")) {
-			Iterator<AbstractInsnNode> j = mn.instructions.iterator();
-			boolean constructorInvoked = false;
-			while (j.hasNext()) {
-				AbstractInsnNode in = j.next();
-				startID++;
-				if(!constructorInvoked) {
-					if (in.getOpcode() == Opcodes.INVOKESPECIAL) {
-						MethodInsnNode cn = (MethodInsnNode) in;
-						Collection<String> superClasses = DependencyAnalysis.getInheritanceTree().getSuperclasses(className);
-						superClasses.add(className);
-						String classNameWithDots = ResourceList.getClassNameFromResourcePath(cn.owner);
-						if (superClasses.contains(classNameWithDots)) {
-							constructorInvoked = true;
-							break;
-						}
-					} else {
-						continue;
-					}
-				}
-			}
-		}
+        AbstractInsnNode start = mn.instructions.getFirst();
+        int startID = 0;
+
+        // TODO: This should replace the hack below
+        if (methodName.startsWith("<init>")) {
+            Iterator<AbstractInsnNode> j = mn.instructions.iterator();
+            boolean constructorInvoked = false;
+            while (j.hasNext()) {
+                AbstractInsnNode in = j.next();
+                startID++;
+                if (!constructorInvoked) {
+                    if (in.getOpcode() == Opcodes.INVOKESPECIAL) {
+                        MethodInsnNode cn = (MethodInsnNode) in;
+                        Collection<String> superClasses = DependencyAnalysis.getInheritanceTree().getSuperclasses(className);
+                        superClasses.add(className);
+                        String classNameWithDots = ResourceList.getClassNameFromResourcePath(cn.owner);
+                        if (superClasses.contains(classNameWithDots)) {
+                            constructorInvoked = true;
+                            break;
+                        }
+                    } else {
+                        continue;
+                    }
+                }
+            }
+        }
 		
 		/*
 		if (methodName.startsWith("<init>")) {
@@ -108,188 +111,194 @@ public class LCSAJsInstrumentation implements MethodInstrumentation {
 			}
 		}
 		*/
-		
-		LCSAJ a = new LCSAJ(
-		        className,
-		        methodName,
-		        BytecodeInstructionPool.getInstance(classLoader).getInstruction(className,
-		                                                                        methodName,
-		                                                                        startID,
-		                                                                        start));
-		lcsaj_queue.add(a);
 
-		targets_reached.add(0);
+        LCSAJ a = new LCSAJ(
+                className,
+                methodName,
+                BytecodeInstructionPool.getInstance(classLoader).getInstruction(className,
+                        methodName,
+                        startID,
+                        start));
+        lcsaj_queue.add(a);
 
-		ArrayList<TryCatchBlockNode> tc_blocks = (ArrayList<TryCatchBlockNode>) mn.tryCatchBlocks;
+        targets_reached.add(0);
 
-		for (TryCatchBlockNode t : tc_blocks) {
-			LCSAJ b = new LCSAJ(
-			        className,
-			        methodName,
-			        BytecodeInstructionPool.getInstance(classLoader).getInstruction(className,
-			                                                                        methodName,
-			                                                                        mn.instructions.indexOf(t.handler),
-			                                                                        t.handler));
-			lcsaj_queue.add(b);
-		}
+        ArrayList<TryCatchBlockNode> tc_blocks = (ArrayList<TryCatchBlockNode>) mn.tryCatchBlocks;
 
-		while (!lcsaj_queue.isEmpty()) {
+        for (TryCatchBlockNode t : tc_blocks) {
+            LCSAJ b = new LCSAJ(
+                    className,
+                    methodName,
+                    BytecodeInstructionPool.getInstance(classLoader).getInstruction(className,
+                            methodName,
+                            mn.instructions.indexOf(t.handler),
+                            t.handler));
+            lcsaj_queue.add(b);
+        }
 
-			LCSAJ currentLCSAJ = lcsaj_queue.poll();
-			int position = mn.instructions.indexOf(currentLCSAJ.getLastNodeAccessed());
-			// go to next bytecode instruction
-			position++;
+        while (!lcsaj_queue.isEmpty()) {
 
-			if (position >= mn.instructions.size()) {
-				// New LCSAJ for current + return
-				LCSAJPool.add_lcsaj(className, methodName, currentLCSAJ);
-				continue;
-			}
+            LCSAJ currentLCSAJ = lcsaj_queue.poll();
+            int position = mn.instructions.indexOf(currentLCSAJ.getLastNodeAccessed());
+            // go to next bytecode instruction
+            position++;
 
-			AbstractInsnNode next = mn.instructions.get(position);
-			currentLCSAJ.lookupInstruction(position,
-			                               BytecodeInstructionPool.getInstance(classLoader).getInstruction(className,
-			                                                                                               methodName,
-			                                                                                               position,
-			                                                                                               next));
+            if (position >= mn.instructions.size()) {
+                // New LCSAJ for current + return
+                LCSAJPool.add_lcsaj(className, methodName, currentLCSAJ);
+                continue;
+            }
 
-			if (next instanceof JumpInsnNode) {
+            AbstractInsnNode next = mn.instructions.get(position);
+            currentLCSAJ.lookupInstruction(position,
+                    BytecodeInstructionPool.getInstance(classLoader).getInstruction(className,
+                            methodName,
+                            position,
+                            next));
 
-				JumpInsnNode jump = (JumpInsnNode) next;
-				// New LCSAJ for current + jump to target
-				LCSAJPool.add_lcsaj(className, methodName, currentLCSAJ);
-				LabelNode target = jump.label;
-				int targetPosition = mn.instructions.indexOf(target);
+            if (next instanceof JumpInsnNode) {
 
-				if (jump.getOpcode() != Opcodes.GOTO) {
+                JumpInsnNode jump = (JumpInsnNode) next;
+                // New LCSAJ for current + jump to target
+                LCSAJPool.add_lcsaj(className, methodName, currentLCSAJ);
+                LabelNode target = jump.label;
+                int targetPosition = mn.instructions.indexOf(target);
 
-					LCSAJ copy = new LCSAJ(currentLCSAJ);
-					lcsaj_queue.add(copy);
+                if (jump.getOpcode() != Opcodes.GOTO) {
 
-				}
+                    LCSAJ copy = new LCSAJ(currentLCSAJ);
+                    lcsaj_queue.add(copy);
 
-				if (!targets_reached.contains(targetPosition)) {
-					LCSAJ c = new LCSAJ(
-					        className,
-					        methodName,
-					        BytecodeInstructionPool.getInstance(classLoader).getInstruction(className,
-					                                                                        methodName,
-					                                                                        targetPosition,
-					                                                                        target));
-					lcsaj_queue.add(c);
+                }
 
-					targets_reached.add(targetPosition);
-				}
+                if (!targets_reached.contains(targetPosition)) {
+                    LCSAJ c = new LCSAJ(
+                            className,
+                            methodName,
+                            BytecodeInstructionPool.getInstance(classLoader).getInstruction(className,
+                                    methodName,
+                                    targetPosition,
+                                    target));
+                    lcsaj_queue.add(c);
 
-			} else if (next instanceof TableSwitchInsnNode) {
+                    targets_reached.add(targetPosition);
+                }
 
-				TableSwitchInsnNode tswitch = (TableSwitchInsnNode) next;
-				List<LabelNode> allTargets = tswitch.labels;
+            } else if (next instanceof TableSwitchInsnNode) {
 
-				for (LabelNode target : allTargets) {
+                TableSwitchInsnNode tswitch = (TableSwitchInsnNode) next;
+                List<LabelNode> allTargets = tswitch.labels;
 
-					int targetPosition = mn.instructions.indexOf(target);
+                for (LabelNode target : allTargets) {
 
-					if (!targets_reached.contains(targetPosition)) {
+                    int targetPosition = mn.instructions.indexOf(target);
 
-						LCSAJ b = new LCSAJ(
-						        className,
-						        methodName,
-						        BytecodeInstructionPool.getInstance(classLoader).getInstruction(className,
-						                                                                        methodName,
-						                                                                        targetPosition,
-						                                                                        target));
-						lcsaj_queue.add(b);
+                    if (!targets_reached.contains(targetPosition)) {
 
-						targets_reached.add(targetPosition);
-					}
-				}
+                        LCSAJ b = new LCSAJ(
+                                className,
+                                methodName,
+                                BytecodeInstructionPool.getInstance(classLoader).getInstruction(className,
+                                        methodName,
+                                        targetPosition,
+                                        target));
+                        lcsaj_queue.add(b);
 
-			} else if (next instanceof InsnNode) {
-				InsnNode insn = (InsnNode) next;
-				// New LCSAJ for current + throw / return
-				if (insn.getOpcode() == Opcodes.ATHROW
-				        || insn.getOpcode() == Opcodes.RETURN
-				        || insn.getOpcode() == Opcodes.ARETURN
-				        || insn.getOpcode() == Opcodes.IRETURN
-				        || insn.getOpcode() == Opcodes.DRETURN
-				        || insn.getOpcode() == Opcodes.LRETURN
-				        || insn.getOpcode() == Opcodes.FRETURN) {
+                        targets_reached.add(targetPosition);
+                    }
+                }
 
-					LCSAJPool.add_lcsaj(className, methodName, currentLCSAJ);
-				} else
-					lcsaj_queue.add(currentLCSAJ);
-			} else
-				lcsaj_queue.add(currentLCSAJ);
-		}
+            } else if (next instanceof InsnNode) {
+                InsnNode insn = (InsnNode) next;
+                // New LCSAJ for current + throw / return
+                if (insn.getOpcode() == Opcodes.ATHROW
+                        || insn.getOpcode() == Opcodes.RETURN
+                        || insn.getOpcode() == Opcodes.ARETURN
+                        || insn.getOpcode() == Opcodes.IRETURN
+                        || insn.getOpcode() == Opcodes.DRETURN
+                        || insn.getOpcode() == Opcodes.LRETURN
+                        || insn.getOpcode() == Opcodes.FRETURN) {
 
-		if (Properties.STRATEGY != Strategy.EVOSUITE)
-			addInstrumentation(classLoader, mn, className, methodName);
+                    LCSAJPool.add_lcsaj(className, methodName, currentLCSAJ);
+                } else
+                    lcsaj_queue.add(currentLCSAJ);
+            } else
+                lcsaj_queue.add(currentLCSAJ);
+        }
 
-		//		if (Properties.WRITE_CFG)
-		//			for (LCSAJ l : LCSAJPool.getLCSAJs(className, methodName)) {
-		//				LCSAJGraph graph = new LCSAJGraph(l, false);
-		//				String graphDestination = "evosuite-graphs/LCSAJGraphs/" + className
-		//				        + "/" + methodName;
-		//				File dir = new File(graphDestination);
-		//				if (dir.mkdirs())
-		//					graph.generate(new File(graphDestination + "/LCSAJGraph no: "
-		//					        + l.getID() + ".dot"));
-		//				else if (dir.exists())
-		//					graph.generate(new File(graphDestination + "/LCSAJGraph no: "
-		//					        + l.getID() + ".dot"));
-		//			}
-	}
+        if (Properties.STRATEGY != Strategy.EVOSUITE)
+            addInstrumentation(classLoader, mn, className, methodName);
 
-	@SuppressWarnings("unchecked")
-	private void addInstrumentation(ClassLoader classLoader, MethodNode mn,
-	        String className, String methodName) {
-		RawControlFlowGraph graph = GraphPool.getInstance(classLoader).getRawCFG(className,
-		                                                                         methodName);
-		Iterator<AbstractInsnNode> j = mn.instructions.iterator();
-		while (j.hasNext()) {
-			AbstractInsnNode in = j.next();
-			for (BytecodeInstruction v : graph.vertexSet()) {
+        //		if (Properties.WRITE_CFG)
+        //			for (LCSAJ l : LCSAJPool.getLCSAJs(className, methodName)) {
+        //				LCSAJGraph graph = new LCSAJGraph(l, false);
+        //				String graphDestination = "evosuite-graphs/LCSAJGraphs/" + className
+        //				        + "/" + methodName;
+        //				File dir = new File(graphDestination);
+        //				if (dir.mkdirs())
+        //					graph.generate(new File(graphDestination + "/LCSAJGraph no: "
+        //					        + l.getID() + ".dot"));
+        //				else if (dir.exists())
+        //					graph.generate(new File(graphDestination + "/LCSAJGraph no: "
+        //					        + l.getID() + ".dot"));
+        //			}
+    }
 
-				// If this is in the CFG and it's a branch...
-				if (in.equals(v.getASMNode())) {
-					if (v.isForcedBranch()) {
-						LCSAJPool.addLCSAJBranch(BranchPool.getInstance(classLoader).getBranchForInstruction(v));
+    @SuppressWarnings("unchecked")
+    private void addInstrumentation(ClassLoader classLoader, MethodNode mn,
+                                    String className, String methodName) {
+        RawControlFlowGraph graph = GraphPool.getInstance(classLoader).getRawCFG(className,
+                methodName);
+        Iterator<AbstractInsnNode> j = mn.instructions.iterator();
+        while (j.hasNext()) {
+            AbstractInsnNode in = j.next();
+            for (BytecodeInstruction v : graph.vertexSet()) {
 
-						int branchId = BranchPool.getInstance(classLoader).getActualBranchIdForNormalBranchInstruction(v);
-						InsnList instrumentation = new InsnList();
-						instrumentation.add(new LdcInsnNode(v.getASMNode().getOpcode()));
-						instrumentation.add(new LdcInsnNode(branchId));
-						instrumentation.add(new LdcInsnNode(v.getInstructionId()));
-						instrumentation.add(new MethodInsnNode(Opcodes.INVOKESTATIC,
-						        "org/evosuite/testcase/ExecutionTracer",
-						        "passedUnconditionalBranch", "(III)V"));
-						if (v.isLabel())
-							mn.instructions.insert(v.getASMNode(), instrumentation);
-						else
-							mn.instructions.insertBefore(v.getASMNode(), instrumentation);
-					}
-				}
-			}
-		}
-	}
+                // If this is in the CFG and it's a branch...
+                if (in.equals(v.getASMNode())) {
+                    if (v.isForcedBranch()) {
+                        LCSAJPool.addLCSAJBranch(BranchPool.getInstance(classLoader).getBranchForInstruction(v));
 
-	/* (non-Javadoc)
-	 * @see org.evosuite.cfg.MethodInstrumentation#executeOnExcludedMethods()
-	 */
-	/** {@inheritDoc} */
-	@Override
-	public boolean executeOnExcludedMethods() {
-		return false;
-	}
+                        int branchId = BranchPool.getInstance(classLoader).getActualBranchIdForNormalBranchInstruction(v);
+                        InsnList instrumentation = new InsnList();
+                        instrumentation.add(new LdcInsnNode(v.getASMNode().getOpcode()));
+                        instrumentation.add(new LdcInsnNode(branchId));
+                        instrumentation.add(new LdcInsnNode(v.getInstructionId()));
+                        instrumentation.add(new MethodInsnNode(Opcodes.INVOKESTATIC,
+                                "org/evosuite/testcase/ExecutionTracer",
+                                "passedUnconditionalBranch", "(III)V"));
+                        if (v.isLabel())
+                            mn.instructions.insert(v.getASMNode(), instrumentation);
+                        else
+                            mn.instructions.insertBefore(v.getASMNode(), instrumentation);
+                    }
+                }
+            }
+        }
+    }
 
-	/* (non-Javadoc)
-	 * @see org.evosuite.cfg.MethodInstrumentation#executeOnMainMethod()
-	 */
-	/** {@inheritDoc} */
-	@Override
-	public boolean executeOnMainMethod() {
-		return false;
-	}
-	
+    /* (non-Javadoc)
+     * @see org.evosuite.cfg.MethodInstrumentation#executeOnExcludedMethods()
+     */
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean executeOnExcludedMethods() {
+        return false;
+    }
+
+    /* (non-Javadoc)
+     * @see org.evosuite.cfg.MethodInstrumentation#executeOnMainMethod()
+     */
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean executeOnMainMethod() {
+        return false;
+    }
+
 }

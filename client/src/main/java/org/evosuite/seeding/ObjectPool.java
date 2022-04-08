@@ -42,14 +42,103 @@ import java.util.*;
  */
 public class ObjectPool implements Serializable {
 
+    protected static final Logger logger = LoggerFactory.getLogger(ObjectPool.class);
     private static final long serialVersionUID = 2016387518459994272L;
-
     /**
      * The actual object pool
      */
     protected final Map<GenericClass<?>, Set<TestCase>> pool = new HashMap<>();
 
-    protected static final Logger logger = LoggerFactory.getLogger(ObjectPool.class);
+    /**
+     * Read a serialized pool
+     *
+     * @param fileName
+     */
+    public static ObjectPool getPoolFromFile(String fileName) {
+        try {
+            InputStream in = new FileInputStream(fileName);
+            ObjectInputStream objectIn = new ObjectInputStream(in);
+            ObjectPool pool = (ObjectPool) objectIn.readObject();
+            in.close();
+            // TODO: Do we also need to call that in the other factory methods?
+            pool.filterUnaccessibleTests();
+            return pool;
+        } catch (Exception e) {
+            logger.error("Exception while trying to get object pool from " + fileName
+                    + " , " + e.getMessage(), e);
+        }
+        return null;
+    }
+
+    /**
+     * Convert a test suite to a pool
+     *
+     * @param testSuite
+     */
+    public static ObjectPool getPoolFromTestSuite(TestSuiteChromosome testSuite) {
+        ObjectPool pool = new ObjectPool();
+
+        for (TestChromosome testChromosome : testSuite.getTestChromosomes()) {
+            TestCase test = testChromosome.getTestCase().clone();
+            test.removeAssertions();
+			/*
+			if (testChromosome.hasException()) {
+				// No code including or after an exception should be in the pool
+				Integer pos = testChromosome.getLastExecutionResult().getFirstPositionOfThrownException();
+				if (pos != null) {
+					test.chop(pos);
+				} else {
+					test.chop(test.size() - 1);
+				}
+			}
+			*/
+            Class<?> targetClass = Properties.getTargetClassAndDontInitialise();
+
+            if (!testChromosome.hasException()
+                    && test.hasObject(targetClass, test.size())) {
+                pool.addSequence(GenericClassFactory.get(targetClass), test);
+            }
+        }
+
+        return pool;
+    }
+
+    /**
+     * Execute all tests in a JUnit test suite and add resulting sequences from
+     * carver
+     *
+     * @param targetClass
+     * @param testSuite
+     */
+    public static ObjectPool getPoolFromJUnit(GenericClass<?> targetClass, Class<?> testSuite) {
+        final JUnitCore runner = new JUnitCore();
+        final CarvingRunListener listener = new CarvingRunListener();
+        runner.addListener(listener);
+
+        final org.evosuite.testcarver.extraction.CarvingClassLoader classLoader = new org.evosuite.testcarver.extraction.CarvingClassLoader();
+
+        try {
+            // instrument target class
+            classLoader.loadClass(Properties.TARGET_CLASS);
+        } catch (final ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        ObjectPool pool = new ObjectPool();
+        //final Result result =
+        runner.run(testSuite);
+
+
+        for (TestCase test : listener.getTestCases().get(Properties.getTargetClassAndDontInitialise())) {
+            // TODO: Maybe we would get the targetClass from the last object generated in the sequence?
+            pool.addSequence(targetClass, test);
+        }
+
+        // TODO: Some messages based on result
+
+        return pool;
+
+    }
 
     /**
      * Insert a new sequence for given Type
@@ -137,27 +226,6 @@ public class ObjectPool implements Serializable {
         return pool.isEmpty();
     }
 
-    /**
-     * Read a serialized pool
-     *
-     * @param fileName
-     */
-    public static ObjectPool getPoolFromFile(String fileName) {
-        try {
-            InputStream in = new FileInputStream(fileName);
-            ObjectInputStream objectIn = new ObjectInputStream(in);
-            ObjectPool pool = (ObjectPool) objectIn.readObject();
-            in.close();
-            // TODO: Do we also need to call that in the other factory methods?
-            pool.filterUnaccessibleTests();
-            return pool;
-        } catch (Exception e) {
-            logger.error("Exception while trying to get object pool from " + fileName
-                    + " , " + e.getMessage(), e);
-        }
-        return null;
-    }
-
     protected void filterUnaccessibleTests() {
         for (Set<TestCase> testSet : pool.values()) {
             Iterator<TestCase> testIterator = testSet.iterator();
@@ -169,76 +237,6 @@ public class ObjectPool implements Serializable {
                 }
             }
         }
-    }
-
-    /**
-     * Convert a test suite to a pool
-     *
-     * @param testSuite
-     */
-    public static ObjectPool getPoolFromTestSuite(TestSuiteChromosome testSuite) {
-        ObjectPool pool = new ObjectPool();
-
-        for (TestChromosome testChromosome : testSuite.getTestChromosomes()) {
-            TestCase test = testChromosome.getTestCase().clone();
-            test.removeAssertions();
-			/*
-			if (testChromosome.hasException()) {
-				// No code including or after an exception should be in the pool
-				Integer pos = testChromosome.getLastExecutionResult().getFirstPositionOfThrownException();
-				if (pos != null) {
-					test.chop(pos);
-				} else {
-					test.chop(test.size() - 1);
-				}
-			}
-			*/
-            Class<?> targetClass = Properties.getTargetClassAndDontInitialise();
-
-            if (!testChromosome.hasException()
-                    && test.hasObject(targetClass, test.size())) {
-                pool.addSequence(GenericClassFactory.get(targetClass), test);
-            }
-        }
-
-        return pool;
-    }
-
-    /**
-     * Execute all tests in a JUnit test suite and add resulting sequences from
-     * carver
-     *
-     * @param targetClass
-     * @param testSuite
-     */
-    public static ObjectPool getPoolFromJUnit(GenericClass<?> targetClass, Class<?> testSuite) {
-        final JUnitCore runner = new JUnitCore();
-        final CarvingRunListener listener = new CarvingRunListener();
-        runner.addListener(listener);
-
-        final org.evosuite.testcarver.extraction.CarvingClassLoader classLoader = new org.evosuite.testcarver.extraction.CarvingClassLoader();
-
-        try {
-            // instrument target class
-            classLoader.loadClass(Properties.TARGET_CLASS);
-        } catch (final ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-
-        ObjectPool pool = new ObjectPool();
-        //final Result result =
-        runner.run(testSuite);
-
-
-        for (TestCase test : listener.getTestCases().get(Properties.getTargetClassAndDontInitialise())) {
-            // TODO: Maybe we would get the targetClass from the last object generated in the sequence?
-            pool.addSequence(targetClass, test);
-        }
-
-        // TODO: Some messages based on result
-
-        return pool;
-
     }
 
     public void writePool(String fileName) {

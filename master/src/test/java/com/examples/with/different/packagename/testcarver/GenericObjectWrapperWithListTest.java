@@ -25,18 +25,6 @@ import org.junit.Test;
 import java.util.List;
 
 public class GenericObjectWrapperWithListTest {
-    public static class Foo {
-        private int x = 0;
-
-        public int getX() {
-            return x;
-        }
-
-        public void setX(int x) {
-            this.x = x;
-        }
-    }
-
     @Test
     public void test() {
         int x = 42;
@@ -49,5 +37,17 @@ public class GenericObjectWrapperWithListTest {
         // list.clear();
         wrapper.setList(list);
         Assert.assertFalse(wrapper.getList().isEmpty());
+    }
+
+    public static class Foo {
+        private int x = 0;
+
+        public int getX() {
+            return x;
+        }
+
+        public void setX(int x) {
+            this.x = x;
+        }
     }
 }

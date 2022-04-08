@@ -47,6 +47,13 @@ public interface StoppingCondition extends SearchListener {
     long getLimit();
 
     /**
+     * Set new upper limit of resources
+     *
+     * @param limit a long.
+     */
+    void setLimit(long limit) throws InvalidParameterException;
+
+    /**
      * <p>isFinished</p>
      *
      * @return a boolean.
@@ -57,11 +64,4 @@ public interface StoppingCondition extends SearchListener {
      * Reset everything
      */
     void reset();
-
-    /**
-     * Set new upper limit of resources
-     *
-     * @param limit a long.
-     */
-    void setLimit(long limit) throws InvalidParameterException;
 }

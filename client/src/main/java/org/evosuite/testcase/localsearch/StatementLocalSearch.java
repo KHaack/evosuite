@@ -30,57 +30,6 @@ public abstract class StatementLocalSearch {
 
     private TestChromosome backup = null;
 
-    protected void backup(TestChromosome test) {
-        backup = test.clone();
-    }
-
-    protected void restore(TestChromosome test) {
-        if (backup == null)
-            return;
-
-        test.setTestCase(backup.getTestCase().clone());
-        test.copyCachedResults(backup);
-        //test.setFitness(backup.getFitness());
-        test.setFitnessValues(backup.getFitnessValues());
-        test.setPreviousFitnessValues(backup.getPreviousFitnessValues());
-        test.setChanged(backup.isChanged());
-    }
-
-
-    /**
-     * <p>
-     * doSearch
-     * </p>
-     *
-     * @param test      a {@link org.evosuite.testcase.TestChromosome} object.
-     * @param statement a int.
-     * @param objective a {@link org.evosuite.ga.localsearch.LocalSearchObjective} object.
-     */
-    public abstract boolean doSearch(TestChromosome test, int statement,
-                                     LocalSearchObjective<TestChromosome> objective);
-
-
-    public boolean doSearch(TestChromosome test, Set<Integer> statements,
-                            LocalSearchObjective<TestChromosome> objective) {
-        boolean success = false;
-        for (Integer statement : statements) {
-            if (doSearch(test, statement, objective))
-                success = true;
-        }
-
-        return success;
-    }
-
-    /**
-     * If the position of the statement on which the local search was performed
-     * has changed, then we need to tell this to the outside world
-     *
-     * @return
-     */
-    public int getPositionDelta() {
-        return 0;
-    }
-
     public static StatementLocalSearch getLocalSearchFor(Statement statement) {
 
         StatementLocalSearch search = null;
@@ -140,5 +89,54 @@ public abstract class StatementLocalSearch {
             search = new ReferenceLocalSearch();
         }
         return search;
+    }
+
+    protected void backup(TestChromosome test) {
+        backup = test.clone();
+    }
+
+    protected void restore(TestChromosome test) {
+        if (backup == null)
+            return;
+
+        test.setTestCase(backup.getTestCase().clone());
+        test.copyCachedResults(backup);
+        //test.setFitness(backup.getFitness());
+        test.setFitnessValues(backup.getFitnessValues());
+        test.setPreviousFitnessValues(backup.getPreviousFitnessValues());
+        test.setChanged(backup.isChanged());
+    }
+
+    /**
+     * <p>
+     * doSearch
+     * </p>
+     *
+     * @param test      a {@link org.evosuite.testcase.TestChromosome} object.
+     * @param statement a int.
+     * @param objective a {@link org.evosuite.ga.localsearch.LocalSearchObjective} object.
+     */
+    public abstract boolean doSearch(TestChromosome test, int statement,
+                                     LocalSearchObjective<TestChromosome> objective);
+
+    public boolean doSearch(TestChromosome test, Set<Integer> statements,
+                            LocalSearchObjective<TestChromosome> objective) {
+        boolean success = false;
+        for (Integer statement : statements) {
+            if (doSearch(test, statement, objective))
+                success = true;
+        }
+
+        return success;
+    }
+
+    /**
+     * If the position of the statement on which the local search was performed
+     * has changed, then we need to tell this to the outside world
+     *
+     * @return
+     */
+    public int getPositionDelta() {
+        return 0;
     }
 }

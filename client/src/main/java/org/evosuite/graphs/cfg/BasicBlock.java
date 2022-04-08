@@ -63,20 +63,16 @@ public class BasicBlock implements Serializable, Iterable<BytecodeInstruction> {
     private static final Logger logger = LoggerFactory.getLogger(BasicBlock.class);
 
     private static int blockCount = 0;
-
-    private int id = -1;
+    private final List<BytecodeInstruction> instructions = new ArrayList<>();
     protected ClassLoader classLoader;
     protected String className;
     protected String methodName;
-
+    protected boolean isAuxiliaryBlock = false;
+    private int id = -1;
     // experiment: since finding the control dependent branches in the CDG might
     // take a little to long, we might want to remember them
     private Set<ControlDependency> controlDependencies;
     private Set<Integer> controlDependentBranchIDs;
-
-    protected boolean isAuxiliaryBlock = false;
-
-    private final List<BytecodeInstruction> instructions = new ArrayList<>();
 
     // DONE reference each BytecodeInstruction's BasicBlock at the instruction
     // DONE determine ControlDependentBranches once for each BasicBlock, then

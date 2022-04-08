@@ -21,6 +21,8 @@ package com.examples.with.different.packagename.concolic;
 
 public class MathFloat {
 
+    private Float f = 3.1416f;
+
     public float divide(float a, float b) {
         return a / b;
     }
@@ -40,8 +42,6 @@ public class MathFloat {
     public float substract(float a, float b) {
         return a - b;
     }
-
-    private Float f = 3.1416f;
 
     public void unreach() {
         if (f == null) {

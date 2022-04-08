@@ -24,15 +24,15 @@ package com.examples.with.different.packagename.fm;
  */
 public class SimpleFM_finalMethod {
 
-    public static class Foo {
-        public final boolean foo() {
-            return false;
-        }
-    }
-
     public static void bar(Foo foo) {
         if (foo.foo()) {
             System.out.println("Covered");
+        }
+    }
+
+    public static class Foo {
+        public final boolean foo() {
+            return false;
         }
     }
 }

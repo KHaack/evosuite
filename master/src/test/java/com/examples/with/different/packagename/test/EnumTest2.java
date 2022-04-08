@@ -26,12 +26,12 @@ public class EnumTest2 {
         this.e = e;
     }
 
+    public MyEnum getEnum() {
+        return e;
+    }
+
     public void setEnum(MyEnum e) {
         if (e == MyEnum.GEQ)
             this.e = e;
-    }
-
-    public MyEnum getEnum() {
-        return e;
     }
 }

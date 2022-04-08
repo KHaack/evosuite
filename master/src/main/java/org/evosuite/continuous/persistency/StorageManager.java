@@ -72,6 +72,92 @@ public class StorageManager {
         this.df.applyPattern("#0.00");
     }
 
+    public static File getBestTestFolder() {
+        return getBestTestFolder(null);
+    }
+
+    public static File getBestTestFolder(File baseDir) {
+        String base = "";
+        if (baseDir != null) {
+            base = baseDir.getAbsolutePath() + File.separator;
+        }
+        return new File(base + Properties.CTG_DIR +
+                File.separator + Properties.CTG_BESTS_DIR_NAME);
+    }
+
+    public static File getSeedInFolder() {
+        return new File(new File(Properties.CTG_DIR), "evosuite-" + Properties.CTG_SEEDS_DIR_NAME);
+    }
+
+    private static File getProjectInfoFile() {
+        return new File(Properties.CTG_DIR + File.separator + Properties.CTG_PROJECT_INFO);
+    }
+
+    /**
+     * Get current representation of the test cases in the database
+     *
+     * @return
+     */
+    public static Project getDatabaseProject() {
+
+        File current = getProjectInfoFile();
+        InputStream stream = null;
+        if (!current.exists()) {
+            stream = getDefaultXmlStream();
+            return getProject(current, stream);
+        } else {
+            try {
+                stream = getCurrentXmlStream(current);
+                return getProject(current, stream);
+            } catch (Exception e) {
+                //this could happen if it was an old file, and EvoSuite did not have a proper backward compatibility
+                stream = getDefaultXmlStream();
+                return getProject(current, stream);
+            }
+        }
+
+
+    }
+
+    private static InputStream getCurrentXmlStream(File current) {
+        InputStream stream;
+        try {
+            stream = new FileInputStream(current);
+        } catch (FileNotFoundException e) {
+            assert false; // this should never happen
+            throw new RuntimeException("Bug in EvoSuite framework: " + e.getMessage());
+        }
+        return stream;
+    }
+
+    private static InputStream getDefaultXmlStream() {
+        InputStream stream;/*
+         * this will happen the first time CTG is run
+         */
+        String empty = "/xsd/ctg_project_report_empty.xml";
+        try {
+            stream = StorageManager.class.getResourceAsStream(empty);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to read resource " + empty + " , " + e.getMessage());
+        }
+        return stream;
+    }
+
+    private static Project getProject(File current, InputStream stream) {
+        try {
+            JAXBContext jaxbContext = JAXBContext.newInstance(Project.class);
+            SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+            Schema schema = factory.newSchema(new StreamSource(StorageManager.class.getResourceAsStream("/xsd/ctg_project_report.xsd")));
+            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+            jaxbUnmarshaller.setSchema(schema);
+            return (Project) jaxbUnmarshaller.unmarshal(stream);
+        } catch (Exception e) {
+            String msg = "Error in reading " + current.getAbsolutePath() + " , " + e;
+            logger.error(msg, e);
+            throw new RuntimeException(msg);
+        }
+    }
+
     /**
      * Open connection to Storage Manager
      * Note: Here we just make sure we can write on disk
@@ -125,23 +211,6 @@ public class StorageManager {
         return true;
     }
 
-    public static File getBestTestFolder() {
-        return getBestTestFolder(null);
-    }
-
-    public static File getBestTestFolder(File baseDir) {
-        String base = "";
-        if (baseDir != null) {
-            base = baseDir.getAbsolutePath() + File.separator;
-        }
-        return new File(base + Properties.CTG_DIR +
-                File.separator + Properties.CTG_BESTS_DIR_NAME);
-    }
-
-    public static File getSeedInFolder() {
-        return new File(new File(Properties.CTG_DIR), "evosuite-" + Properties.CTG_SEEDS_DIR_NAME);
-    }
-
     /**
      * Create a new tmp folder for this CTG session
      *
@@ -190,7 +259,6 @@ public class StorageManager {
         return this.tmpSeeds.exists() || this.tmpSeeds.mkdirs();
     }
 
-
     public void deleteAllOldTmpFolders() {
 
         File root = new File(Properties.CTG_DIR);
@@ -221,30 +289,6 @@ public class StorageManager {
             return false;
         }
         return true;
-    }
-
-    public static class TestsOnDisk {
-        public final File testSuite;
-        public final String cut;
-        public final CsvJUnitData csvData;
-        public final File serializedSuite;
-
-        public TestsOnDisk(File testSuite, CsvJUnitData csvData, File serializedSuite) {
-            super();
-            this.testSuite = testSuite;
-            this.csvData = csvData;
-            this.cut = csvData.getTargetClass();
-            this.serializedSuite = serializedSuite; //this might be null
-        }
-
-        public boolean isValid() {
-            return testSuite != null && testSuite.exists() &&
-                    cut != null && !cut.isEmpty() &&
-                    csvData != null &&
-                    cut.equals(csvData.getTargetClass()) &&
-                    (serializedSuite == null || serializedSuite.getName().endsWith(Properties.CTG_SEEDS_EXT))
-                    ;
-        }
     }
 
     /**
@@ -427,7 +471,6 @@ public class StorageManager {
         return name;
     }
 
-
     private void commitDatabase(Project db) {
 
         StringWriter writer = null;
@@ -452,10 +495,6 @@ public class StorageManager {
         } catch (IOException e) {
             logger.error("Failed to write to database: " + e.getMessage(), e);
         }
-    }
-
-    private static File getProjectInfoFile() {
-        return new File(Properties.CTG_DIR + File.separator + Properties.CTG_PROJECT_INFO);
     }
 
     /**
@@ -851,7 +890,7 @@ public class StorageManager {
             return false;
         }
 
-        // if we got same coverage, look at size 
+        // if we got same coverage, look at size
         int oldSize = previousTestSuite.getTotalNumberOfStatements().intValue();
         int newSize = suite.csvData.getTotalNumberOfStatements();
         if (newSize != oldSize) {
@@ -915,71 +954,6 @@ public class StorageManager {
         return new File(getBestTestFolder() + File.separator + path);
     }
 
-    /**
-     * Get current representation of the test cases in the database
-     *
-     * @return
-     */
-    public static Project getDatabaseProject() {
-
-        File current = getProjectInfoFile();
-        InputStream stream = null;
-        if (!current.exists()) {
-            stream = getDefaultXmlStream();
-            return getProject(current, stream);
-        } else {
-            try {
-                stream = getCurrentXmlStream(current);
-                return getProject(current, stream);
-            } catch (Exception e) {
-                //this could happen if it was an old file, and EvoSuite did not have a proper backward compatibility
-                stream = getDefaultXmlStream();
-                return getProject(current, stream);
-            }
-        }
-
-
-    }
-
-    private static InputStream getCurrentXmlStream(File current) {
-        InputStream stream;
-        try {
-            stream = new FileInputStream(current);
-        } catch (FileNotFoundException e) {
-            assert false; // this should never happen
-            throw new RuntimeException("Bug in EvoSuite framework: " + e.getMessage());
-        }
-        return stream;
-    }
-
-    private static InputStream getDefaultXmlStream() {
-        InputStream stream;/*
-         * this will happen the first time CTG is run
-         */
-        String empty = "/xsd/ctg_project_report_empty.xml";
-        try {
-            stream = StorageManager.class.getResourceAsStream(empty);
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to read resource " + empty + " , " + e.getMessage());
-        }
-        return stream;
-    }
-
-    private static Project getProject(File current, InputStream stream) {
-        try {
-            JAXBContext jaxbContext = JAXBContext.newInstance(Project.class);
-            SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-            Schema schema = factory.newSchema(new StreamSource(StorageManager.class.getResourceAsStream("/xsd/ctg_project_report.xsd")));
-            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-            jaxbUnmarshaller.setSchema(schema);
-            return (Project) jaxbUnmarshaller.unmarshal(stream);
-        } catch (Exception e) {
-            String msg = "Error in reading " + current.getAbsolutePath() + " , " + e;
-            logger.error(msg, e);
-            throw new RuntimeException(msg);
-        }
-    }
-
     public File getTmpLogs() {
         return tmpLogs;
     }
@@ -1002,5 +976,29 @@ public class StorageManager {
 
     public boolean isStorageOk() {
         return this.isStorageOk;
+    }
+
+    public static class TestsOnDisk {
+        public final File testSuite;
+        public final String cut;
+        public final CsvJUnitData csvData;
+        public final File serializedSuite;
+
+        public TestsOnDisk(File testSuite, CsvJUnitData csvData, File serializedSuite) {
+            super();
+            this.testSuite = testSuite;
+            this.csvData = csvData;
+            this.cut = csvData.getTargetClass();
+            this.serializedSuite = serializedSuite; //this might be null
+        }
+
+        public boolean isValid() {
+            return testSuite != null && testSuite.exists() &&
+                    cut != null && !cut.isEmpty() &&
+                    csvData != null &&
+                    cut.equals(csvData.getTargetClass()) &&
+                    (serializedSuite == null || serializedSuite.getName().endsWith(Properties.CTG_SEEDS_EXT))
+                    ;
+        }
     }
 }

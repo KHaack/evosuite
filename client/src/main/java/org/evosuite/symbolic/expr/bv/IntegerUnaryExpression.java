@@ -32,10 +32,8 @@ import java.util.Set;
 public final class IntegerUnaryExpression extends AbstractExpression<Long> implements
         IntegerValue, UnaryExpression<Long> {
 
-    private static final long serialVersionUID = 1966395070897274841L;
-
     protected static final Logger log = LoggerFactory.getLogger(IntegerUnaryExpression.class);
-
+    private static final long serialVersionUID = 1966395070897274841L;
     private final Operator op;
     private final Expression<Long> expr;
 

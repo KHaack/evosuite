@@ -37,6 +37,11 @@ public class FinalSingletonArrayUser {
         System.arraycopy(CONSTANT_ARRAY, 0, myArray, 0, CONSTANT_ARRAY.length);
     }
 
+    public static void clear() {
+        CONSTANT_ARRAY[0] = -1;
+        CONSTANT_ARRAY[1] = -1;
+    }
+
     public boolean isEqualToFirst(byte myFloat) {
         if (myFloat == CONSTANT_ARRAY[0])
             return true;
@@ -63,11 +68,6 @@ public class FinalSingletonArrayUser {
             return true;
         else
             return false;
-    }
-
-    public static void clear() {
-        CONSTANT_ARRAY[0] = -1;
-        CONSTANT_ARRAY[1] = -1;
     }
 
 }

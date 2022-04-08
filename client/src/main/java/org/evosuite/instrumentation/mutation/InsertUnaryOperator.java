@@ -45,9 +45,8 @@ import java.util.List;
  */
 public class InsertUnaryOperator implements MutationOperator {
 
-    private static final Logger logger = LoggerFactory.getLogger(InsertUnaryOperator.class);
-
     public static final String NAME = "InsertUnaryOp";
+    private static final Logger logger = LoggerFactory.getLogger(InsertUnaryOperator.class);
 
     /* (non-Javadoc)
      * @see org.evosuite.cfg.instrumentation.mutation.MutationOperator#apply(org.objectweb.asm.tree.MethodNode, java.lang.String, java.lang.String, org.evosuite.cfg.BytecodeInstruction)

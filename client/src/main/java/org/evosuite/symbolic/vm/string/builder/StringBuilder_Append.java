@@ -35,11 +35,13 @@ import org.evosuite.symbolic.vm.string.Types;
 
 public abstract class StringBuilder_Append extends SymbolicFunction {
 
-    private static final String APPEND = "append";
-
     protected static final String NULL_STRING = "null";
-
+    private static final String APPEND = "append";
     protected String conc_str_builder_to_string_pre;
+
+    public StringBuilder_Append(SymbolicEnvironment env, String desc) {
+        super(env, Types.JAVA_LANG_STRING_BUILDER, APPEND, desc);
+    }
 
     protected abstract StringValue appendExpression(StringValue leftExpr,
                                                     StringBuilder res);
@@ -81,10 +83,6 @@ public abstract class StringBuilder_Append extends SymbolicFunction {
             conc_str_builder_to_string_pre = null;
         }
         return null;
-    }
-
-    public StringBuilder_Append(SymbolicEnvironment env, String desc) {
-        super(env, Types.JAVA_LANG_STRING_BUILDER, APPEND, desc);
     }
 
     public static final class Append_C extends StringBuilder_Append {

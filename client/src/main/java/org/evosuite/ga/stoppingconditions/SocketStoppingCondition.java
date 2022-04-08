@@ -37,13 +37,10 @@ import java.net.ServerSocket;
 public class SocketStoppingCondition<T extends Chromosome<T>> implements StoppingCondition<T> {
 
     private static final long serialVersionUID = -8260473153410290373L;
-
+    private static final Logger logger = LoggerFactory.getLogger(SocketStoppingCondition.class);
     // There should only be one instance that opens the socket -> singleton design pattern
     private static SocketStoppingCondition<?> instance = null;
-
     private volatile boolean interrupted = false;
-
-    private static final Logger logger = LoggerFactory.getLogger(SocketStoppingCondition.class);
 
     private SocketStoppingCondition() {
         // singleton pattern
@@ -213,8 +210,9 @@ public class SocketStoppingCondition<T extends Chromosome<T>> implements Stoppin
      * {@inheritDoc}
      */
     @Override
-    public boolean isFinished() {
-        return interrupted;
+    public void setLimit(long limit) {
+        // TODO Auto-generated method stub
+
     }
 
     /* (non-Javadoc)
@@ -225,8 +223,8 @@ public class SocketStoppingCondition<T extends Chromosome<T>> implements Stoppin
      * {@inheritDoc}
      */
     @Override
-    public void reset() {
-        interrupted = false;
+    public boolean isFinished() {
+        return interrupted;
     }
 
     /* (non-Javadoc)
@@ -237,9 +235,8 @@ public class SocketStoppingCondition<T extends Chromosome<T>> implements Stoppin
      * {@inheritDoc}
      */
     @Override
-    public void setLimit(long limit) {
-        // TODO Auto-generated method stub
-
+    public void reset() {
+        interrupted = false;
     }
 
 }

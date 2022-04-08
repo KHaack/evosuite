@@ -28,12 +28,9 @@ import java.util.Set;
 
 public class Stubbing extends BaseRule {
 
-    private final Map<String, String> propertiesToSet = new HashMap<>();
-
-    private final Set<String> propertiesToClear = new LinkedHashSet<>();
-
     private static final java.util.Properties defaultProperties = (java.util.Properties) java.lang.System.getProperties().clone();
-
+    private final Map<String, String> propertiesToSet = new HashMap<>();
+    private final Set<String> propertiesToClear = new LinkedHashSet<>();
     private PrintStream systemOut = null;
 
     private PrintStream systemErr = null;

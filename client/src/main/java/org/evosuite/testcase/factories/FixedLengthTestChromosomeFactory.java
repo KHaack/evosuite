@@ -31,12 +31,11 @@ import org.slf4j.LoggerFactory;
 public class FixedLengthTestChromosomeFactory implements
         ChromosomeFactory<TestChromosome> {
 
-    private static final long serialVersionUID = -3860201346772188495L;
-
     /**
      * Constant <code>logger</code>
      */
     protected static final Logger logger = LoggerFactory.getLogger(FixedLengthTestChromosomeFactory.class);
+    private static final long serialVersionUID = -3860201346772188495L;
 
     /**
      * Constructor

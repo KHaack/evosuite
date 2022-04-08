@@ -21,6 +21,8 @@ package com.examples.with.different.packagename.concolic;
 
 public class MathInt {
 
+    private Object f = new Object();
+
     public int divide(int a, int b) {
         return a / b;
     }
@@ -40,8 +42,6 @@ public class MathInt {
     public int substract(int a, int b) {
         return a - b;
     }
-
-    private Object f = new Object();
 
     public void unreach() {
         if (f == null) {

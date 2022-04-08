@@ -33,16 +33,16 @@ public class CanInitializeClass {
         value = counter;
     }
 
+    public static int useNotInitializedClass() {
+        int value = CannotInitializeClass.init();
+        return value;
+    }
+
     public boolean isValue(int value) {
         if (value == this.value) {
             return true;
         } else {
             return false;
         }
-    }
-
-    public static int useNotInitializedClass() {
-        int value = CannotInitializeClass.init();
-        return value;
     }
 }

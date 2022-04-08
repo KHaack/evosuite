@@ -63,22 +63,39 @@ import static java.util.stream.Collectors.toCollection;
  */
 public final class TestChromosome extends AbstractTestChromosome<TestChromosome> {
 
+    public final static TestChromosomeCollector toTestSuiteCollector = new TestChromosomeCollector();
     private static final long serialVersionUID = 7532366007973252782L;
-
     private static final Logger logger = LoggerFactory.getLogger(TestChromosome.class);
-
-
+    /**
+     * Secondary objectives used during ranking
+     */
+    private static final List<SecondaryObjective<TestChromosome>> secondaryObjectives =
+            new ArrayList<>();
     /**
      * To keep track of what has changed since last fitness evaluation
      */
     protected MutationHistory<TestMutationHistoryEntry> mutationHistory = new MutationHistory<>();
 
     /**
-     * Secondary objectives used during ranking
+     * Add an additional secondary objective to the end of the list of
+     * objectives
+     *
+     * @param objective a {@link org.evosuite.ga.SecondaryObjective} object.
      */
-    private static final List<SecondaryObjective<TestChromosome>> secondaryObjectives =
-            new ArrayList<>();
+    public static void addSecondaryObjective(SecondaryObjective<TestChromosome> objective) {
+        secondaryObjectives.add(objective);
+    }
 
+    /**
+     * <p>
+     * Getter for the field <code>secondaryObjectives</code>.
+     * </p>
+     *
+     * @return a {@link java.util.List} object.
+     */
+    public static List<SecondaryObjective<TestChromosome>> getSecondaryObjectives() {
+        return secondaryObjectives;
+    }
 
     /**
      * {@inheritDoc}
@@ -90,6 +107,11 @@ public final class TestChromosome extends AbstractTestChromosome<TestChromosome>
         assert lastExecutionResult.test.equals(this.test);
         this.lastExecutionResult = lastExecutionResult;
     }
+
+
+    /* (non-Javadoc)
+     * @see org.evosuite.testcase.ExecutableChromosome#copyCachedResults(org.evosuite.testcase.ExecutableChromosome)
+     */
 
     /**
      * {@inheritDoc}
@@ -136,11 +158,6 @@ public final class TestChromosome extends AbstractTestChromosome<TestChromosome>
         return c;
     }
 
-
-    /* (non-Javadoc)
-     * @see org.evosuite.testcase.ExecutableChromosome#copyCachedResults(org.evosuite.testcase.ExecutableChromosome)
-     */
-
     /**
      * {@inheritDoc}
      */
@@ -162,7 +179,6 @@ public final class TestChromosome extends AbstractTestChromosome<TestChromosome>
             }
         }
     }
-
 
     /**
      * {@inheritDoc}
@@ -191,7 +207,6 @@ public final class TestChromosome extends AbstractTestChromosome<TestChromosome>
         }
     }
 
-
     /**
      * {@inheritDoc}
      * <p>
@@ -218,6 +233,11 @@ public final class TestChromosome extends AbstractTestChromosome<TestChromosome>
     public int hashCode() {
         return test.hashCode();
     }
+
+
+    /* (non-Javadoc)
+     * @see org.evosuite.ga.Chromosome#localSearch()
+     */
 
     public MutationHistory<TestMutationHistoryEntry> getMutationHistory() {
         return mutationHistory;
@@ -273,11 +293,6 @@ public final class TestChromosome extends AbstractTestChromosome<TestChromosome>
         }
         return false;
     }
-
-
-    /* (non-Javadoc)
-     * @see org.evosuite.ga.Chromosome#localSearch()
-     */
 
     /**
      * {@inheritDoc}
@@ -339,7 +354,6 @@ public final class TestChromosome extends AbstractTestChromosome<TestChromosome>
 
         test.forEach(Statement::isValid);
     }
-
 
     private boolean mockChange() {
 
@@ -647,7 +661,6 @@ public final class TestChromosome extends AbstractTestChromosome<TestChromosome>
         return lastExecutionResult != null && !lastExecutionResult.noThrownExceptions();
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -656,7 +669,6 @@ public final class TestChromosome extends AbstractTestChromosome<TestChromosome>
             TestSuiteFitnessFunction testSuiteFitnessFunction) {
         return testSuiteFitnessFunction.runTest(this.test);
     }
-
 
     @Override
     public int compareSecondaryObjective(TestChromosome o) {
@@ -673,33 +685,9 @@ public final class TestChromosome extends AbstractTestChromosome<TestChromosome>
         return c;
     }
 
-    /**
-     * Add an additional secondary objective to the end of the list of
-     * objectives
-     *
-     * @param objective a {@link org.evosuite.ga.SecondaryObjective} object.
-     */
-    public static void addSecondaryObjective(SecondaryObjective<TestChromosome> objective) {
-        secondaryObjectives.add(objective);
-    }
-    
-    /**
-     * <p>
-     * Getter for the field <code>secondaryObjectives</code>.
-     * </p>
-     *
-     * @return a {@link java.util.List} object.
-     */
-    public static List<SecondaryObjective<TestChromosome>> getSecondaryObjectives() {
-        return secondaryObjectives;
-    }
-
-
     public TestSuiteChromosome toSuite() {
         return Stream.of(this).collect(toTestSuiteCollector);
     }
-
-    public final static TestChromosomeCollector toTestSuiteCollector = new TestChromosomeCollector();
 
     public static class TestChromosomeCollector implements Collector<TestChromosome, TestSuiteChromosome, TestSuiteChromosome> {
         private final static Set<Characteristics> characteristics =

@@ -32,19 +32,19 @@ public class MockDefaultListSelectionModel extends DefaultListSelectionModel imp
     private static final long serialVersionUID = 8871874273079985592L;
 
     public String toString() {
-        String s =  ((getValueIsAdjusting()) ? "~" : "=");
+        String s = ((getValueIsAdjusting()) ? "~" : "=");
         try {
             // Value is private...
             Field f = DefaultListSelectionModel.class.getField("value");
             f.setAccessible(true);
             Object value = f.get(this);
-            if(value != null)
+            if (value != null)
                 s += value.toString();
         } catch (Throwable t) {
-           // ignore
+            // ignore
         }
         // Integer.toString(System.identityHashCode(this))  -- Ignoring hash code in string
-        return DefaultListSelectionModel.class.getName() + " " +  s;
+        return DefaultListSelectionModel.class.getName() + " " + s;
     }
 
 }

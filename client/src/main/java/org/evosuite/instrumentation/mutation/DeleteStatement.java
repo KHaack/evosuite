@@ -43,13 +43,36 @@ import java.util.List;
  */
 public class DeleteStatement implements MutationOperator {
 
-    private static final Logger logger = LoggerFactory.getLogger(DeleteStatement.class);
-
     public static final String NAME = "DeleteStatement";
+    private static final Logger logger = LoggerFactory.getLogger(DeleteStatement.class);
 
     /* (non-Javadoc)
      * @see org.evosuite.cfg.instrumentation.MutationOperator#apply(org.objectweb.asm.tree.MethodNode, java.lang.String, java.lang.String, org.evosuite.cfg.BytecodeInstruction)
      */
+
+    private static AbstractInsnNode getDefault(Type type) {
+        if (type.equals(Type.BOOLEAN_TYPE)) {
+            return new LdcInsnNode(0);
+        } else if (type.equals(Type.INT_TYPE)) {
+            return new LdcInsnNode(0);
+        } else if (type.equals(Type.BYTE_TYPE)) {
+            return new LdcInsnNode(0);
+        } else if (type.equals(Type.CHAR_TYPE)) {
+            return new LdcInsnNode(0);
+        } else if (type.equals(Type.DOUBLE_TYPE)) {
+            return new LdcInsnNode(0.0);
+        } else if (type.equals(Type.FLOAT_TYPE)) {
+            return new LdcInsnNode(0.0F);
+        } else if (type.equals(Type.LONG_TYPE)) {
+            return new LdcInsnNode(0L);
+        } else if (type.equals(Type.SHORT_TYPE)) {
+            return new LdcInsnNode(0);
+        } else if (type.equals(Type.VOID_TYPE)) {
+            return new LabelNode();
+        } else {
+            return new InsnNode(Opcodes.ACONST_NULL);
+        }
+    }
 
     /**
      * {@inheritDoc}
@@ -115,30 +138,6 @@ public class DeleteStatement implements MutationOperator {
 
         mutations.add(mutationObject);
         return mutations;
-    }
-
-    private static AbstractInsnNode getDefault(Type type) {
-        if (type.equals(Type.BOOLEAN_TYPE)) {
-            return new LdcInsnNode(0);
-        } else if (type.equals(Type.INT_TYPE)) {
-            return new LdcInsnNode(0);
-        } else if (type.equals(Type.BYTE_TYPE)) {
-            return new LdcInsnNode(0);
-        } else if (type.equals(Type.CHAR_TYPE)) {
-            return new LdcInsnNode(0);
-        } else if (type.equals(Type.DOUBLE_TYPE)) {
-            return new LdcInsnNode(0.0);
-        } else if (type.equals(Type.FLOAT_TYPE)) {
-            return new LdcInsnNode(0.0F);
-        } else if (type.equals(Type.LONG_TYPE)) {
-            return new LdcInsnNode(0L);
-        } else if (type.equals(Type.SHORT_TYPE)) {
-            return new LdcInsnNode(0);
-        } else if (type.equals(Type.VOID_TYPE)) {
-            return new LabelNode();
-        } else {
-            return new InsnNode(Opcodes.ACONST_NULL);
-        }
     }
 
     /* (non-Javadoc)

@@ -31,9 +31,9 @@ import org.evosuite.testsuite.TestSuiteChromosome;
  */
 public class IBranchSecondaryObjective extends SecondaryObjective<TestSuiteChromosome> {
 
+    private static final long serialVersionUID = 7211557650429998223L;
     //Ibranch fitness
     private final IBranchSuiteFitness ff;
-    private static final long serialVersionUID = 7211557650429998223L;
 
     public IBranchSecondaryObjective() {
         ff = new IBranchSuiteFitness();

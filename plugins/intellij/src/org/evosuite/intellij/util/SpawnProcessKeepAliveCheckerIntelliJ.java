@@ -39,10 +39,9 @@ public class SpawnProcessKeepAliveCheckerIntelliJ {
     private final static ExecutorService executor = Executors.newCachedThreadPool();
     private final static String STILL_ALIVE = "still_alive";
     private final static int DELTA_MS = 5_000;
-
+    private final AsyncGUINotifier notifier;
     private volatile ServerSocket server;
     private volatile Thread serverThread;
-    private final AsyncGUINotifier notifier;
 
     public SpawnProcessKeepAliveCheckerIntelliJ(AsyncGUINotifier notifier) {
         this.notifier = notifier;

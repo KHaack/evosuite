@@ -38,40 +38,6 @@ public abstract class DateFormat extends java.text.DateFormat {
 
     private static final long serialVersionUID = -5974612860032396630L;
 
-    public final StringBuffer format_final(Object obj, StringBuffer toAppendTo,
-                                           FieldPosition fieldPosition) {
-        Capturer.capture(Instrumenter.CAPTURE_ID_JAVA_TEXT_DATEFORMAT, this, "format", "(Ljava/lang/Object;Ljava/lang/StringBuffer;Ljava/text/FieldPosition;)Ljava/lang/StringBuffer;", new Object[]{obj, toAppendTo, fieldPosition});
-        StringBuffer ret = super.format(obj, toAppendTo, fieldPosition);
-        Capturer.enable(Instrumenter.CAPTURE_ID_JAVA_TEXT_DATEFORMAT, this, ret);
-        return ret;
-    }
-
-    public final String format_final(java.util.Date date) {
-        Capturer.capture(Instrumenter.CAPTURE_ID_JAVA_TEXT_DATEFORMAT, this, "format", "(Ljava/util/Date;)Ljava/lang/String;", new Object[]{date});
-        String ret = super.format(date);
-        Capturer.enable(Instrumenter.CAPTURE_ID_JAVA_TEXT_DATEFORMAT, this, ret);
-        return ret;
-    }
-
-    public java.util.Date parse(String source) throws ParseException {
-        Capturer.capture(Instrumenter.CAPTURE_ID_JAVA_TEXT_DATEFORMAT, this, "parse", "(Ljava/lang/String;)Ljava/lang/Object;", new Object[]{source});
-        java.util.Date date = super.parse(source);
-        Date ret = new Date(date.getTime());
-        Capturer.enable(Instrumenter.CAPTURE_ID_JAVA_TEXT_DATEFORMAT, this, ret);
-        return ret;
-    }
-
-    public Object parseObject(String source, ParsePosition pos) {
-        Capturer.capture(Instrumenter.CAPTURE_ID_JAVA_TEXT_DATEFORMAT, this, "parse", "(Ljava/lang/String;Ljava/text/ParsePosition;)Ljava/lang/Object;", new Object[]{source, pos});
-        Object ret = super.parseObject(source, pos);
-        if (ret instanceof java.util.Date) {
-            long time = ((java.util.Date) ret).getTime();
-            ret = new Date(time);
-        }
-        Capturer.enable(Instrumenter.CAPTURE_ID_JAVA_TEXT_DATEFORMAT, this, ret);
-        return ret;
-    }
-
     // TODO: This needs to create an instance of the wrapper class, which it currently doesn't do!
     public static java.text.DateFormat getTimeInstance_final() {
         Capturer.capture(Instrumenter.CAPTURE_ID_JAVA_TEXT_DATEFORMAT, CaptureUtil.loadClass("java/text/DateFormat"), "getTimeInstance", "()Ljava/text/DateFormat;", new Object[]{});
@@ -174,10 +140,38 @@ public abstract class DateFormat extends java.text.DateFormat {
         return ret;
     }
 
-    public void setCalendar(java.util.Calendar newCalendar) {
-        Capturer.capture(Instrumenter.CAPTURE_ID_JAVA_TEXT_DATEFORMAT, this, "setCalendar", "(Ljava/util/Calendar;)V", new Object[]{newCalendar});
-        super.setCalendar(newCalendar);
-        Capturer.enable(Instrumenter.CAPTURE_ID_JAVA_TEXT_DATEFORMAT, this, CaptureLog.RETURN_TYPE_VOID);
+    public final StringBuffer format_final(Object obj, StringBuffer toAppendTo,
+                                           FieldPosition fieldPosition) {
+        Capturer.capture(Instrumenter.CAPTURE_ID_JAVA_TEXT_DATEFORMAT, this, "format", "(Ljava/lang/Object;Ljava/lang/StringBuffer;Ljava/text/FieldPosition;)Ljava/lang/StringBuffer;", new Object[]{obj, toAppendTo, fieldPosition});
+        StringBuffer ret = super.format(obj, toAppendTo, fieldPosition);
+        Capturer.enable(Instrumenter.CAPTURE_ID_JAVA_TEXT_DATEFORMAT, this, ret);
+        return ret;
+    }
+
+    public final String format_final(java.util.Date date) {
+        Capturer.capture(Instrumenter.CAPTURE_ID_JAVA_TEXT_DATEFORMAT, this, "format", "(Ljava/util/Date;)Ljava/lang/String;", new Object[]{date});
+        String ret = super.format(date);
+        Capturer.enable(Instrumenter.CAPTURE_ID_JAVA_TEXT_DATEFORMAT, this, ret);
+        return ret;
+    }
+
+    public java.util.Date parse(String source) throws ParseException {
+        Capturer.capture(Instrumenter.CAPTURE_ID_JAVA_TEXT_DATEFORMAT, this, "parse", "(Ljava/lang/String;)Ljava/lang/Object;", new Object[]{source});
+        java.util.Date date = super.parse(source);
+        Date ret = new Date(date.getTime());
+        Capturer.enable(Instrumenter.CAPTURE_ID_JAVA_TEXT_DATEFORMAT, this, ret);
+        return ret;
+    }
+
+    public Object parseObject(String source, ParsePosition pos) {
+        Capturer.capture(Instrumenter.CAPTURE_ID_JAVA_TEXT_DATEFORMAT, this, "parse", "(Ljava/lang/String;Ljava/text/ParsePosition;)Ljava/lang/Object;", new Object[]{source, pos});
+        Object ret = super.parseObject(source, pos);
+        if (ret instanceof java.util.Date) {
+            long time = ((java.util.Date) ret).getTime();
+            ret = new Date(time);
+        }
+        Capturer.enable(Instrumenter.CAPTURE_ID_JAVA_TEXT_DATEFORMAT, this, ret);
+        return ret;
     }
 
     public java.util.Calendar getCalendar() {
@@ -187,9 +181,9 @@ public abstract class DateFormat extends java.text.DateFormat {
         return ret;
     }
 
-    public void setNumberFormat(NumberFormat newNumberFormat) {
-        Capturer.capture(Instrumenter.CAPTURE_ID_JAVA_TEXT_DATEFORMAT, this, "setNumberFormat", "(Ljava/text/NumberFormat;)V", new Object[]{newNumberFormat});
-        super.setNumberFormat(newNumberFormat);
+    public void setCalendar(java.util.Calendar newCalendar) {
+        Capturer.capture(Instrumenter.CAPTURE_ID_JAVA_TEXT_DATEFORMAT, this, "setCalendar", "(Ljava/util/Calendar;)V", new Object[]{newCalendar});
+        super.setCalendar(newCalendar);
         Capturer.enable(Instrumenter.CAPTURE_ID_JAVA_TEXT_DATEFORMAT, this, CaptureLog.RETURN_TYPE_VOID);
     }
 
@@ -200,9 +194,9 @@ public abstract class DateFormat extends java.text.DateFormat {
         return ret;
     }
 
-    public void setTimeZone(TimeZone zone) {
-        Capturer.capture(Instrumenter.CAPTURE_ID_JAVA_TEXT_DATEFORMAT, this, "setTimeZone", "(Ljava/util/TimeZone;", new Object[]{zone});
-        super.setTimeZone(zone);
+    public void setNumberFormat(NumberFormat newNumberFormat) {
+        Capturer.capture(Instrumenter.CAPTURE_ID_JAVA_TEXT_DATEFORMAT, this, "setNumberFormat", "(Ljava/text/NumberFormat;)V", new Object[]{newNumberFormat});
+        super.setNumberFormat(newNumberFormat);
         Capturer.enable(Instrumenter.CAPTURE_ID_JAVA_TEXT_DATEFORMAT, this, CaptureLog.RETURN_TYPE_VOID);
     }
 
@@ -213,9 +207,9 @@ public abstract class DateFormat extends java.text.DateFormat {
         return ret;
     }
 
-    public void setLenient(boolean lenient) {
-        Capturer.capture(Instrumenter.CAPTURE_ID_JAVA_TEXT_DATEFORMAT, this, "setLenient", "(Z)V", new Object[]{lenient});
-        super.setLenient(lenient);
+    public void setTimeZone(TimeZone zone) {
+        Capturer.capture(Instrumenter.CAPTURE_ID_JAVA_TEXT_DATEFORMAT, this, "setTimeZone", "(Ljava/util/TimeZone;", new Object[]{zone});
+        super.setTimeZone(zone);
         Capturer.enable(Instrumenter.CAPTURE_ID_JAVA_TEXT_DATEFORMAT, this, CaptureLog.RETURN_TYPE_VOID);
     }
 
@@ -224,6 +218,12 @@ public abstract class DateFormat extends java.text.DateFormat {
         boolean ret = super.isLenient();
         Capturer.enable(Instrumenter.CAPTURE_ID_JAVA_TEXT_DATEFORMAT, this, ret);
         return ret;
+    }
+
+    public void setLenient(boolean lenient) {
+        Capturer.capture(Instrumenter.CAPTURE_ID_JAVA_TEXT_DATEFORMAT, this, "setLenient", "(Z)V", new Object[]{lenient});
+        super.setLenient(lenient);
+        Capturer.enable(Instrumenter.CAPTURE_ID_JAVA_TEXT_DATEFORMAT, this, CaptureLog.RETURN_TYPE_VOID);
     }
 
     public int hashCode() {

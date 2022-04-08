@@ -21,8 +21,12 @@ package com.examples.with.different.packagename.purity;
 
 public class ImpureEquals {
 
-    private boolean flag = false;
     private final int value;
+    private boolean flag = false;
+
+    public ImpureEquals(int value) {
+        this.value = value;
+    }
 
     public int getValue() {
         return value;
@@ -30,10 +34,6 @@ public class ImpureEquals {
 
     public boolean getFlag() {
         return flag;
-    }
-
-    public ImpureEquals(int value) {
-        this.value = value;
     }
 
     @Override

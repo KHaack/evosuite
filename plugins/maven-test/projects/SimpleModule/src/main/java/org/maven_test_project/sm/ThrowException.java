@@ -20,14 +20,14 @@
 package org.maven_test_project.sm;
 
 
-public class ThrowException{
+public class ThrowException {
 
-    static{
-        System.out.println("Calling static initialazer of ThrowException");       
+    static {
+        System.out.println("Calling static initialazer of ThrowException");
     }
 
-	public void foo(){
-		throw new IllegalArgumentException("");
-	}
-	
+    public void foo() {
+        throw new IllegalArgumentException("");
+    }
+
 }

@@ -108,6 +108,19 @@ public class Mutation implements Comparable<Mutation> {
 
     /**
      * <p>
+     * getDefaultInfectionDistance
+     * </p>
+     *
+     * @return a {@link org.objectweb.asm.tree.InsnList} object.
+     */
+    public static InsnList getDefaultInfectionDistance() {
+        InsnList defaultDistance = new InsnList();
+        defaultDistance.add(new LdcInsnNode(0.0));
+        return defaultDistance;
+    }
+
+    /**
+     * <p>
      * Getter for the field <code>id</code>.
      * </p>
      *
@@ -212,19 +225,6 @@ public class Mutation implements Comparable<Mutation> {
      */
     public InsnList getInfectionDistance() {
         return infection;
-    }
-
-    /**
-     * <p>
-     * getDefaultInfectionDistance
-     * </p>
-     *
-     * @return a {@link org.objectweb.asm.tree.InsnList} object.
-     */
-    public static InsnList getDefaultInfectionDistance() {
-        InsnList defaultDistance = new InsnList();
-        defaultDistance.add(new LdcInsnNode(0.0));
-        return defaultDistance;
     }
 
     /* (non-Javadoc)

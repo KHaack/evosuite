@@ -204,6 +204,17 @@ public class Randomness implements Serializable {
 
     /**
      * <p>
+     * Getter for the field <code>seed</code>.
+     * </p>
+     *
+     * @return a long.
+     */
+    public static long getSeed() {
+        return seed;
+    }
+
+    /**
+     * <p>
      * Setter for the field <code>seed</code>.
      * </p>
      *
@@ -212,17 +223,6 @@ public class Randomness implements Serializable {
     public static void setSeed(long seed) {
         Randomness.seed = seed;
         random.setSeed(seed);
-    }
-
-    /**
-     * <p>
-     * Getter for the field <code>seed</code>.
-     * </p>
-     *
-     * @return a long.
-     */
-    public static long getSeed() {
-        return seed;
     }
 
     /**

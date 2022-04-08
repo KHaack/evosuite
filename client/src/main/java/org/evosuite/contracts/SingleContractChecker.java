@@ -36,10 +36,8 @@ import org.slf4j.LoggerFactory;
  */
 public class SingleContractChecker extends ExecutionObserver {
 
-    private final Contract contract;
-
     private final static Logger logger = LoggerFactory.getLogger(SingleContractChecker.class);
-
+    private final Contract contract;
     private boolean valid = true;
 
     /**

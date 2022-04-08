@@ -47,28 +47,35 @@ import java.util.List;
 public abstract class TestGenerationStrategy {
 
     /**
-     * Generate a set of tests; assume that all analyses are already completed
-     *
-     * @return
-     */
-    public abstract TestSuiteChromosome generateTests();
-
-    /**
      * There should only be one
      */
     protected final ProgressMonitor<TestSuiteChromosome> progressMonitor = new ProgressMonitor<>();
-
     /**
      * There should only be one
      */
     protected ZeroFitnessStoppingCondition<TestSuiteChromosome> zeroFitness =
             new ZeroFitnessStoppingCondition<>();
-
     /**
      * There should only be one
      */
     protected StoppingCondition<TestSuiteChromosome> globalTime =
             new GlobalTimeStoppingCondition<>();
+
+    /**
+     * Convert criterion names to factories for test case fitness functions
+     *
+     * @return
+     */
+    public static List<TestFitnessFactory<? extends TestFitnessFunction>> getFitnessFactories() {
+        return FitnessFunctionsUtils.getFitnessFactories(Properties.CRITERION);
+    }
+
+    /**
+     * Generate a set of tests; assume that all analyses are already completed
+     *
+     * @return
+     */
+    public abstract TestSuiteChromosome generateTests();
 
     protected void sendExecutionStatistics() {
         ClientServices.getInstance().getClientNode().trackOutputVariable(RuntimeVariable.Statements_Executed, MaxStatementsStoppingCondition.getNumExecutedStatements());
@@ -82,15 +89,6 @@ public abstract class TestGenerationStrategy {
      */
     protected List<TestSuiteFitnessFunction> getFitnessFunctions() {
         return FitnessFunctionsUtils.getFitnessFunctions(Properties.CRITERION);
-    }
-
-    /**
-     * Convert criterion names to factories for test case fitness functions
-     *
-     * @return
-     */
-    public static List<TestFitnessFactory<? extends TestFitnessFunction>> getFitnessFactories() {
-        return FitnessFunctionsUtils.getFitnessFactories(Properties.CRITERION);
     }
 
     /**

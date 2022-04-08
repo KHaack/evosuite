@@ -21,14 +21,7 @@ package com.examples.with.different.packagename.concolic;
 
 public class MyLinkedList {
 
-    private static class Node {
-        Node next;
-        Node previous;
-        Object value;
-    }
-
     private Node header = null;
-
     private int size;
 
     public MyLinkedList() {
@@ -74,6 +67,12 @@ public class MyLinkedList {
             // unreachable branch
             size = -1;
         }
+    }
+
+    private static class Node {
+        Node next;
+        Node previous;
+        Object value;
     }
 
 }

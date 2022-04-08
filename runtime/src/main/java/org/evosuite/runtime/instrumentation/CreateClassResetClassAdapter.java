@@ -41,79 +41,63 @@ import java.util.regex.Pattern;
  */
 public class CreateClassResetClassAdapter extends ClassVisitor {
 
+    private static final Logger logger = LoggerFactory.getLogger(CreateClassResetClassAdapter.class);
+    private static final Pattern ANONYMOUS_MATCHER1 = Pattern.compile(".*\\$\\d+.*$");
+    /**
+     * Constant <code>static_classes</code>
+     */
+    public static List<String> staticClasses = new ArrayList<>();
     /**
      * This flag indicates that final static fields should be transformed into
      * non-final static fields.
      */
     private final boolean removeFinalModifierOnStaticFields;
-
+    /**
+     * The current class name being visited
+     */
+    private final String className;
+    /**
+     * The final fields of this class
+     */
+    private final List<String> finalFields = new ArrayList<>();
+    /**
+     * The list of the static fields declared in the class being visited
+     */
+    private final List<StaticField> static_fields = new LinkedList<>();
+    /**
+     * This list saves the static fields whose <code>final</code> modifier was
+     * removed in the target class
+     */
+    private final ArrayList<String> modifiedStaticFields = new ArrayList<>();
     /**
      * This flag indicates that any update on final static fields should be
      * removed.
      */
     private boolean removeUpdatesOnFinalFields = true;
-
-    /**
-     * Allows to define if the current transformation should remove any updated
-     * on those static fields that are final fields. If the
-     * <code>removeFinalModifierOnStaticFields</code> is active, then no update
-     * is removed since all static final fields are transformed into non-final
-     * fields.
-     *
-     * @param removeUpdatesOnFinalFields
-     */
-    public void setRemoveUpdatesOnFinalFields(boolean removeUpdatesOnFinalFields) {
-        this.removeUpdatesOnFinalFields = removeUpdatesOnFinalFields;
-    }
-
-    /**
-     * The current class name being visited
-     */
-    private final String className;
-
-    /**
-     * Constant <code>static_classes</code>
-     */
-    public static List<String> staticClasses = new ArrayList<>();
-
-    private static final Logger logger = LoggerFactory.getLogger(CreateClassResetClassAdapter.class);
-
     /**
      * Indicates if the current class being visited is an interface
      */
     private boolean isInterface = false;
-
     /**
      * Indicates if the current class being visited is an anonymous classs
      */
     private boolean isAnonymous = false;
-
     /**
      * Indicates if the <clinit> method was already found during the visit of
      * this class
      */
     private boolean clinitFound = false;
-
     private boolean definesUid = false;
     private long serialUID = -1L;
-
     /**
      * Indicates if the __STATIC_RESET() method has been already added to this
      * class definition
      */
     private boolean resetMethodAdded = false;
-
-    /**
-     * The final fields of this class
-     */
-    private final List<String> finalFields = new ArrayList<>();
-
     /**
      * Indicates if the current class being visited is an enumeration
      */
     private boolean isEnum = false;
-
-    private static final Pattern ANONYMOUS_MATCHER1 = Pattern.compile(".*\\$\\d+.*$");
 
     /**
      * Creates a new <code>CreateClassResetClassAdapter</code> instance
@@ -131,6 +115,19 @@ public class CreateClassResetClassAdapter extends ClassVisitor {
     }
 
     /**
+     * Allows to define if the current transformation should remove any updated
+     * on those static fields that are final fields. If the
+     * <code>removeFinalModifierOnStaticFields</code> is active, then no update
+     * is removed since all static final fields are transformed into non-final
+     * fields.
+     *
+     * @param removeUpdatesOnFinalFields
+     */
+    public void setRemoveUpdatesOnFinalFields(boolean removeUpdatesOnFinalFields) {
+        this.removeUpdatesOnFinalFields = removeUpdatesOnFinalFields;
+    }
+
+    /**
      * Detects if the current class is an anonymous class
      */
     @Override
@@ -145,50 +142,6 @@ public class CreateClassResetClassAdapter extends ClassVisitor {
         }
     }
 
-    /**
-     * This class represents a static field that was declared in the current
-     * visited class.
-     *
-     * @author galeotti
-     */
-    static class StaticField {
-        /**
-         * Name of the static field
-         */
-        String name;
-
-        /**
-         * Field descriptor (ie type) of the static field
-         */
-        String desc;
-
-        /**
-         * Initial value (if any) for the static field
-         */
-        Object value;
-
-        @Override
-        public String toString() {
-            return "StaticField [name=" + name + "]";
-        }
-    }
-
-    /**
-     * The list of the static fields declared in the class being visited
-     */
-    private final List<StaticField> static_fields = new LinkedList<>();
-
-    /**
-     * This list saves the static fields whose <code>final</code> modifier was
-     * removed in the target class
-     */
-    private final ArrayList<String> modifiedStaticFields = new ArrayList<>();
-
-    /**
-     * During the visit of each field, static fields are collected. If the
-     * <code>removeFinalModifierOnStaticFields</code> is active, final static
-     * fields are transformed into non-final static fields.
-     */
     /**
      * {@inheritDoc}
      */
@@ -224,6 +177,12 @@ public class CreateClassResetClassAdapter extends ClassVisitor {
             return super.visitField(access, name, desc, signature, value);
         }
     }
+
+    /**
+     * During the visit of each field, static fields are collected. If the
+     * <code>removeFinalModifierOnStaticFields</code> is active, final static
+     * fields are transformed into non-final static fields.
+     */
 
     /**
      * Returns true iif the access modifiers has a final modifier
@@ -398,5 +357,33 @@ public class CreateClassResetClassAdapter extends ClassVisitor {
         mv.visitMaxs(0, 0);
         mv.visitEnd();
 
+    }
+
+    /**
+     * This class represents a static field that was declared in the current
+     * visited class.
+     *
+     * @author galeotti
+     */
+    static class StaticField {
+        /**
+         * Name of the static field
+         */
+        String name;
+
+        /**
+         * Field descriptor (ie type) of the static field
+         */
+        String desc;
+
+        /**
+         * Initial value (if any) for the static field
+         */
+        Object value;
+
+        @Override
+        public String toString() {
+            return "StaticField [name=" + name + "]";
+        }
     }
 }

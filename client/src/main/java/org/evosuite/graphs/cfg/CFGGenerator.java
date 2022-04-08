@@ -56,14 +56,12 @@ import java.util.List;
 public class CFGGenerator {
 
     private static final Logger logger = LoggerFactory.getLogger(CFGGenerator.class);
-
+    private final ClassLoader classLoader;
     private RawControlFlowGraph rawGraph;
-
     private boolean nodeRegistered = false;
     private MethodNode currentMethod;
     private String className;
     private String methodName;
-    private final ClassLoader classLoader;
 
     /**
      * Initializes this generator to generate the CFG for the method identified

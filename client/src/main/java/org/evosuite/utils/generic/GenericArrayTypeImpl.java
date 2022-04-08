@@ -27,6 +27,11 @@ public class GenericArrayTypeImpl implements GenericArrayType {
 
     private final Type componentType;
 
+    private GenericArrayTypeImpl(Type componentType) {
+        super();
+        this.componentType = componentType;
+    }
+
     public static Class<?> createArrayType(Class<?> componentType) {
         // there's no (clean) other way to create a array class, than creating an instance of it
         return Array.newInstance(componentType, 0).getClass();
@@ -38,11 +43,6 @@ public class GenericArrayTypeImpl implements GenericArrayType {
         } else {
             return new GenericArrayTypeImpl(componentType);
         }
-    }
-
-    private GenericArrayTypeImpl(Type componentType) {
-        super();
-        this.componentType = componentType;
     }
 
     public Type getGenericComponentType() {

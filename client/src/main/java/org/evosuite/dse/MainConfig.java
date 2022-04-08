@@ -41,46 +41,9 @@ import org.evosuite.PackageInfo;
 public class MainConfig {
 
     public static final String LAMBDA_CLASS_NAME_FRAGMENT = "$$Lambda$";
-
+    public final static String CLINIT = "<clinit>"; //$NON-NLS-1$
+    public final static String INIT = "<init>"; //$NON-NLS-1$
     private static MainConfig singleton;
-
-    /**
-     * Singleton
-     */
-    public static MainConfig get() {
-        return singleton;
-    }
-
-    /**
-     * If no config set yet, then set a new MainConfig.
-     */
-    public static MainConfig setInstance() {
-        if (singleton == null)
-            singleton = new MainConfig();
-        return get();
-    }
-
-    /**
-     * If no config set yet, then set conf. This method should only be called if
-     * conf is an instance of a sub-class of MainConfig.
-     */
-    public static MainConfig setInstance(MainConfig conf) {
-        if (singleton == null)
-            singleton = conf;
-        return get();
-    }
-
-    /**
-     * Constructor.
-     *
-     * <p>
-     * <b>Should only be called from subclass constructor</b> (or
-     * {@link #setInstance()}).
-     */
-    protected MainConfig() {
-        // empty
-    }
-
     @Help("Do not instrument any of the classes that have any of these prefixes. "
             + "IMPORTANT: InstrumentConfig maintains the same list. "
             + "Both lists have to be updated for Dsc to work properly! "
@@ -127,7 +90,6 @@ public class MainConfig {
 
             "org.apache.oro.text.regex." //$NON-NLS-1$
     );
-
     @Help("Prefixes of classes that will always be explored symbolically, "
             + "regardless if they appear in DO_NOT_INSTRUMENT_PREFIXES. "
             + "IMPORTANT: InstrumentConfig maintains the same list. "
@@ -137,6 +99,10 @@ public class MainConfig {
             "com.sun.javadoc.", //$NON-NLS-1$
             "roops.util.RoopsArray" //$NON-NLS-1$
     );
+    @Help("Artificial maximum number of local variables in a method/constructor")
+    public int MAX_LOCALS_DEFAULT = 200;
+    @Help("Class path for finding new classes")
+    public String CLASS_PATH = System.getProperty("java.class.path");
 
     /* JUNIT options of generated JUnit test cases */
 
@@ -163,11 +129,32 @@ public class MainConfig {
     // "execution path through user code")
     // public int MAX_SAT_CALLS_PATH = 5;
 
-    @Help("Artificial maximum number of local variables in a method/constructor")
-    public int MAX_LOCALS_DEFAULT = 200;
+    /**
+     * Constructor.
+     *
+     * <p>
+     * <b>Should only be called from subclass constructor</b> (or
+     * {@link #setInstance()}).
+     */
+    protected MainConfig() {
+        // empty
+    }
 
-    public final static String CLINIT = "<clinit>"; //$NON-NLS-1$
-    public final static String INIT = "<init>"; //$NON-NLS-1$
+    /**
+     * Singleton
+     */
+    public static MainConfig get() {
+        return singleton;
+    }
+
+    /**
+     * If no config set yet, then set a new MainConfig.
+     */
+    public static MainConfig setInstance() {
+        if (singleton == null)
+            singleton = new MainConfig();
+        return get();
+    }
 
     // TODO: Implement this, should be similar to running all Roops methods
     // @Help("Run on all public static methods declared by public classes")
@@ -176,6 +163,34 @@ public class MainConfig {
     // TODO: Refactor the Roops flags
     // @Help("Run on all Roops benchmark methods")
     // public boolean RUN_ON_ALL_ROOPS_BENCHMARK_METHODS = false;
+
+    /**
+     * If no config set yet, then set conf. This method should only be called if
+     * conf is an instance of a sub-class of MainConfig.
+     */
+    public static MainConfig setInstance(MainConfig conf) {
+        if (singleton == null)
+            singleton = conf;
+        return get();
+    }
+
+    /* LOG options */
+
+    // @Help("log trivially true conjuncts (x==x) etc. when logging the path condition in Dsc notation")
+    // public boolean LOG_PATH_COND_DSC_TRIVIAL_TRUE = false;
+
+    /* Convention: We represent a Z3 parameter PPP with as Z3PARAM_PPP */
+
+    /*
+     * Z3 configuration parameters.<br><br>
+     *
+     * The parameters (together with their default values and description) are
+     * <b>copied verbatim from the output of Z3 version 1.3</b>: <pre> z3.exe
+     * -ini? </pre>
+     *
+     * You have to set these flags before creating a Z3 context, otherwise your
+     * settings will be ignored.
+     */
 
     /**
      * TODO: Get a more precise answer by calling getAllLoadedClasses() on the
@@ -199,25 +214,4 @@ public class MainConfig {
 
         return false;
     }
-
-    /* LOG options */
-
-    // @Help("log trivially true conjuncts (x==x) etc. when logging the path condition in Dsc notation")
-    // public boolean LOG_PATH_COND_DSC_TRIVIAL_TRUE = false;
-
-    /* Convention: We represent a Z3 parameter PPP with as Z3PARAM_PPP */
-
-    /*
-     * Z3 configuration parameters.<br><br>
-     *
-     * The parameters (together with their default values and description) are
-     * <b>copied verbatim from the output of Z3 version 1.3</b>: <pre> z3.exe
-     * -ini? </pre>
-     *
-     * You have to set these flags before creating a Z3 context, otherwise your
-     * settings will be ignored.
-     */
-
-    @Help("Class path for finding new classes")
-    public String CLASS_PATH = System.getProperty("java.class.path");
 }

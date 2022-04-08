@@ -39,6 +39,7 @@ import java.lang.reflect.Type;
 public class ConstantValue extends VariableReferenceImpl {
 
     private static final long serialVersionUID = -3760942087575495415L;
+    private Object value;
 
     /**
      * <p>Constructor for ConstantValue.</p>
@@ -87,8 +88,6 @@ public class ConstantValue extends VariableReferenceImpl {
         }
         throw new IllegalArgumentException("Constant value not defined in new test");
     }
-
-    private Object value;
 
     /**
      * <p>Getter for the field <code>value</code>.</p>

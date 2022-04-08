@@ -29,23 +29,13 @@ public final class SolverCache {
     private static final SolverCache instance = new SolverCache();
     private static final String CONTRAINT_NOT_CACHED_EXCEPTION_MESSAGE = "The constraint is not cached!";
     private static final String SOLVER_RESULT_CANNOT_BE_NULL_EXCEPTION_MESSAGE = "Unable to save solver result as its null.";
-
+    private final HashMap<Collection<Constraint<?>>, SolverResult> cached_solver_results = new HashMap<>();
     private int number_of_hits = 0;
     private int number_of_accesses = 0;
     private int cached_sat_result_count = 0;
     private int cached_unsat_result_count = 0;
     private boolean valid_cached_solution = false;
-
-    private final HashMap<Collection<Constraint<?>>, SolverResult> cached_solver_results = new HashMap<>();
     private SolverResult cached_solution = null;
-
-    public int getNumberOfUNSATs() {
-        return cached_unsat_result_count;
-    }
-
-    public int getNumberOfSATs() {
-        return cached_sat_result_count;
-    }
 
     private SolverCache() {
         /* empty constructor */
@@ -53,6 +43,14 @@ public final class SolverCache {
 
     public static SolverCache getInstance() {
         return instance;
+    }
+
+    public int getNumberOfUNSATs() {
+        return cached_unsat_result_count;
+    }
+
+    public int getNumberOfSATs() {
+        return cached_sat_result_count;
     }
 
     private void addUNSAT(Collection<Constraint<?>> unsat_constraints, SolverResult unsatResult) {

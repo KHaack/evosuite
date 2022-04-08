@@ -52,11 +52,6 @@ public class ReferenceLocalSearch extends StatementLocalSearch {
         return positionDelta;
     }
 
-
-    private enum Mutations {
-        REPLACE, PARAMETER, CALL
-    }
-
     /* (non-Javadoc)
      * @see org.evosuite.testcase.LocalSearch#doSearch(org.evosuite.testcase.TestChromosome, int, org.evosuite.ga.LocalSearchObjective)
      */
@@ -337,6 +332,10 @@ public class ReferenceLocalSearch extends StatementLocalSearch {
         }
 
         return false;
+    }
+
+    private enum Mutations {
+        REPLACE, PARAMETER, CALL
     }
 
 }

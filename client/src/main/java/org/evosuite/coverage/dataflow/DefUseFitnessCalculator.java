@@ -40,15 +40,12 @@ import java.util.*;
  */
 public class DefUseFitnessCalculator {
 
+    private final static boolean DEBUG = Properties.DEFUSE_DEBUG_MODE;
+    private static final Logger logger = LoggerFactory.getLogger(DefUseFitnessCalculator.class);
     /**
      * Constant <code>alternativeTime=0l</code>
      */
     public static long alternativeTime = 0L;
-
-    private final static boolean DEBUG = Properties.DEFUSE_DEBUG_MODE;
-
-    private static final Logger logger = LoggerFactory.getLogger(DefUseFitnessCalculator.class);
-
     private final DefUseCoverageTestFitness goal;
     private final TestChromosome individual;
     private final ExecutionResult result;
@@ -91,6 +88,225 @@ public class DefUseFitnessCalculator {
     }
 
     // main Definition-Use fitness calculation methods
+
+    /**
+     * Determines whether the given definition is assumed to always be covered
+     * <p>
+     * This is the case for static definitions in <clinit> and
+     * Parameter-Definitions
+     */
+    private static boolean isSpecialDefinition(Definition definition) {
+        if (definition == null
+                || (definition.isStaticDefUse() && definition.getMethodName().startsWith("<clinit>"))) {
+
+            if (definition == null)
+                logger.debug("Assume Parameter-Definition to be covered if the Parameter-Use is covered");
+            else
+                logger.debug("Assume definition from <clinit> to always be covered");
+
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Determines the object Pool of the given trace for this DefUsePair
+     * <p>
+     * If the goalVariable is static all objects are considered otherwise only
+     * those objects that have passed both the goalUse and the goalDefinition
+     * are considered
+     */
+    private static Set<Integer> determineConsiderableObjects(
+            DefUseCoverageTestFitness goal, ExecutionTrace trace) {
+        String goalVariable = goal.getGoalVariable();
+        Definition goalDefinition = goal.getGoalDefinition();
+
+        Set<Integer> objectPool = new HashSet<>();
+        if (trace.getPassedUses(goalVariable) == null)
+            return objectPool;
+        if (trace.getPassedDefinitions(goalVariable) != null)
+            objectPool.addAll(trace.getPassedDefinitions(goalVariable).keySet());
+        if (goalDefinition == null || goalDefinition.isStaticDefUse()) {
+            // in the static case all objects have to be considered
+            objectPool.addAll(trace.getPassedUses(goalVariable).keySet());
+            if (DEBUG)
+                logger.debug("Static-goalVariable! Using all known Objects");
+        } else {
+            // on non-static goalVariables only look at objects that have traces
+            // of defs and uses for the goalVariable
+            int oldSize = objectPool.size();
+            objectPool.retainAll(trace.getPassedUses(goalVariable).keySet());
+            if (DEBUG) {
+                logger.debug("NON-Static-goalVariable " + goalVariable);
+                logger.debug("#unused objects: " + (oldSize - objectPool.size()));
+                Set<Integer> discardedObjects = new HashSet<>(trace.getPassedDefinitions(goalVariable).keySet());
+                discardedObjects.removeAll(trace.getPassedUses(goalVariable).keySet());
+                for (Integer id : discardedObjects) {
+                    logger.debug("  discarded object " + id);
+                }
+            }
+        }
+        if (DEBUG) {
+            logger.debug("#considered objects: " + objectPool.size());
+            for (Integer id : objectPool) {
+                logger.debug("  object " + id);
+            }
+        }
+        return objectPool;
+    }
+
+    /**
+     * <p>
+     * normalize
+     * </p>
+     *
+     * @param value a double.
+     * @return a double.
+     */
+    public static double normalize(double value) {
+        // TODO just copied this from FitnessFunction because it was not visible
+        // from here
+        return value / (1.0 + value);
+    }
+
+    /**
+     * <p>
+     * hasEntryLowerThan
+     * </p>
+     *
+     * @param list   a {@link java.util.List} object.
+     * @param border a {@link java.lang.Integer} object.
+     * @return a boolean.
+     */
+    public static boolean hasEntryLowerThan(List<Integer> list, Integer border) {
+        for (Integer pos : list)
+            if (pos < border)
+                return true;
+        return false;
+    }
+
+    /**
+     * <p>
+     * hasEntryInBetween
+     * </p>
+     *
+     * @param list  a {@link java.util.List} object.
+     * @param start a {@link java.lang.Integer} object.
+     * @param end   a {@link java.lang.Integer} object.
+     * @return a boolean.
+     */
+    public static boolean hasEntryInBetween(List<Integer> list, Integer start, Integer end) {
+        for (Integer pos : list)
+            if (start < pos && pos < end)
+                return true;
+        return false;
+    }
+
+    /**
+     * <p>
+     * getMaxEntryLowerThan
+     * </p>
+     *
+     * @param list   a {@link java.util.List} object.
+     * @param border a {@link java.lang.Integer} object.
+     * @return a {@link java.lang.Integer} object.
+     */
+    public static Integer getMaxEntryLowerThan(List<Integer> list, Integer border) {
+        int lastPos = -1;
+        for (Integer defPos : list)
+            if (defPos < border && defPos > lastPos)
+                lastPos = defPos;
+        return lastPos;
+    }
+
+    /**
+     * <p>
+     * hasEntriesForId
+     * </p>
+     *
+     * @param objectDUMap a {@link java.util.Map} object.
+     * @param targetId    a int.
+     * @return a boolean.
+     */
+    public static boolean hasEntriesForId(
+            Map<Integer, HashMap<Integer, Integer>> objectDUMap, int targetId) {
+        if (objectDUMap == null)
+            return false;
+        for (Integer objectId : objectDUMap.keySet())
+            if (hasEntriesForId(objectDUMap, objectId, targetId))
+                return true;
+
+        return false;
+    }
+
+    // other core methods
+
+    /**
+     * <p>
+     * hasEntriesForId
+     * </p>
+     *
+     * @param objectDUMap a {@link java.util.Map} object.
+     * @param objectId    a {@link java.lang.Integer} object.
+     * @param targetId    a int.
+     * @return a boolean.
+     */
+    public static boolean hasEntriesForId(
+            Map<Integer, HashMap<Integer, Integer>> objectDUMap, Integer objectId,
+            int targetId) {
+        if (objectDUMap == null)
+            return false;
+        if (objectDUMap.get(objectId) == null)
+            return false;
+        for (Integer defId : objectDUMap.get(objectId).values())
+            if (defId == targetId)
+                return true;
+        return false;
+    }
+
+    /**
+     * Only a sanity check function for testing purposes
+     *
+     * @param goal       a
+     *                   {@link org.evosuite.coverage.dataflow.DefUseCoverageTestFitness}
+     *                   object.
+     * @param individual a {@link org.evosuite.ga.Chromosome} object.
+     * @param trace      a {@link org.evosuite.testcase.execution.ExecutionTrace} object.
+     * @return a boolean.
+     */
+    public static boolean traceCoversGoal(DefUseCoverageTestFitness goal,
+                                          Chromosome<?> individual, ExecutionTrace trace) {
+        String goalVariable = goal.getGoalVariable();
+        Use goalUse = goal.getGoalUse();
+        Definition goalDefinition = goal.getGoalDefinition();
+
+        if (trace.getPassedUses(goalVariable) == null)
+            return false;
+        Set<Integer> objectPool = determineConsiderableObjects(goal, trace);
+
+        for (Integer objectID : objectPool) {
+            List<Integer> usePositions = DefUseExecutionTraceAnalyzer.getUsePositions(goalUse,
+                    trace,
+                    objectID);
+            // use not reached
+            if (usePositions.size() == 0)
+                continue;
+            //			if (goalUse.isParameterUse())
+            //				return true;
+            if (isSpecialDefinition(goalDefinition))
+                return true;
+
+            for (Integer usePos : usePositions) {
+
+                if (DefUseExecutionTraceAnalyzer.getActiveDefinitionIdAt(goalVariable,
+                        trace, usePos,
+                        objectID) == goalDefinition.getDefId())
+                    return true;
+            }
+        }
+
+        return false;
+    }
 
     /**
      * Calculates the DefinitionUseCoverage fitness for the given DUPair on the
@@ -167,6 +383,8 @@ public class DefUseFitnessCalculator {
         // and possibly overwriting/alternativeFitness
         return calculateFitnessForObjects();
     }
+
+    // auxiliary methods
 
     public double calculateFitnessForObjects() {
 
@@ -284,7 +502,6 @@ public class DefUseFitnessCalculator {
             }
         return fitness;
     }
-
 
     /**
      * Determines the BranchCoverageTestFitness of goalDefinitionBranch
@@ -450,8 +667,6 @@ public class DefUseFitnessCalculator {
         return fitness;
     }
 
-    // other core methods
-
     /**
      * Executes the TestFitnessFunction.getFitness() function on the given
      * ExecutionResult but using the given targetTrace
@@ -466,225 +681,6 @@ public class DefUseFitnessCalculator {
         double fitness = targetFitness.getFitness(individual, result);
         result.setTrace(originalTrace);
         return fitness;
-    }
-
-    /**
-     * Determines whether the given definition is assumed to always be covered
-     * <p>
-     * This is the case for static definitions in <clinit> and
-     * Parameter-Definitions
-     */
-    private static boolean isSpecialDefinition(Definition definition) {
-        if (definition == null
-                || (definition.isStaticDefUse() && definition.getMethodName().startsWith("<clinit>"))) {
-
-            if (definition == null)
-                logger.debug("Assume Parameter-Definition to be covered if the Parameter-Use is covered");
-            else
-                logger.debug("Assume definition from <clinit> to always be covered");
-
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Determines the object Pool of the given trace for this DefUsePair
-     * <p>
-     * If the goalVariable is static all objects are considered otherwise only
-     * those objects that have passed both the goalUse and the goalDefinition
-     * are considered
-     */
-    private static Set<Integer> determineConsiderableObjects(
-            DefUseCoverageTestFitness goal, ExecutionTrace trace) {
-        String goalVariable = goal.getGoalVariable();
-        Definition goalDefinition = goal.getGoalDefinition();
-
-        Set<Integer> objectPool = new HashSet<>();
-        if (trace.getPassedUses(goalVariable) == null)
-            return objectPool;
-        if (trace.getPassedDefinitions(goalVariable) != null)
-            objectPool.addAll(trace.getPassedDefinitions(goalVariable).keySet());
-        if (goalDefinition == null || goalDefinition.isStaticDefUse()) {
-            // in the static case all objects have to be considered
-            objectPool.addAll(trace.getPassedUses(goalVariable).keySet());
-            if (DEBUG)
-                logger.debug("Static-goalVariable! Using all known Objects");
-        } else {
-            // on non-static goalVariables only look at objects that have traces
-            // of defs and uses for the goalVariable
-            int oldSize = objectPool.size();
-            objectPool.retainAll(trace.getPassedUses(goalVariable).keySet());
-            if (DEBUG) {
-                logger.debug("NON-Static-goalVariable " + goalVariable);
-                logger.debug("#unused objects: " + (oldSize - objectPool.size()));
-                Set<Integer> discardedObjects = new HashSet<>(trace.getPassedDefinitions(goalVariable).keySet());
-                discardedObjects.removeAll(trace.getPassedUses(goalVariable).keySet());
-                for (Integer id : discardedObjects) {
-                    logger.debug("  discarded object " + id);
-                }
-            }
-        }
-        if (DEBUG) {
-            logger.debug("#considered objects: " + objectPool.size());
-            for (Integer id : objectPool) {
-                logger.debug("  object " + id);
-            }
-        }
-        return objectPool;
-    }
-
-    // auxiliary methods
-
-    /**
-     * <p>
-     * normalize
-     * </p>
-     *
-     * @param value a double.
-     * @return a double.
-     */
-    public static double normalize(double value) {
-        // TODO just copied this from FitnessFunction because it was not visible
-        // from here
-        return value / (1.0 + value);
-    }
-
-    /**
-     * <p>
-     * hasEntryLowerThan
-     * </p>
-     *
-     * @param list   a {@link java.util.List} object.
-     * @param border a {@link java.lang.Integer} object.
-     * @return a boolean.
-     */
-    public static boolean hasEntryLowerThan(List<Integer> list, Integer border) {
-        for (Integer pos : list)
-            if (pos < border)
-                return true;
-        return false;
-    }
-
-    /**
-     * <p>
-     * hasEntryInBetween
-     * </p>
-     *
-     * @param list  a {@link java.util.List} object.
-     * @param start a {@link java.lang.Integer} object.
-     * @param end   a {@link java.lang.Integer} object.
-     * @return a boolean.
-     */
-    public static boolean hasEntryInBetween(List<Integer> list, Integer start, Integer end) {
-        for (Integer pos : list)
-            if (start < pos && pos < end)
-                return true;
-        return false;
-    }
-
-    /**
-     * <p>
-     * getMaxEntryLowerThan
-     * </p>
-     *
-     * @param list   a {@link java.util.List} object.
-     * @param border a {@link java.lang.Integer} object.
-     * @return a {@link java.lang.Integer} object.
-     */
-    public static Integer getMaxEntryLowerThan(List<Integer> list, Integer border) {
-        int lastPos = -1;
-        for (Integer defPos : list)
-            if (defPos < border && defPos > lastPos)
-                lastPos = defPos;
-        return lastPos;
-    }
-
-    /**
-     * <p>
-     * hasEntriesForId
-     * </p>
-     *
-     * @param objectDUMap a {@link java.util.Map} object.
-     * @param targetId    a int.
-     * @return a boolean.
-     */
-    public static boolean hasEntriesForId(
-            Map<Integer, HashMap<Integer, Integer>> objectDUMap, int targetId) {
-        if (objectDUMap == null)
-            return false;
-        for (Integer objectId : objectDUMap.keySet())
-            if (hasEntriesForId(objectDUMap, objectId, targetId))
-                return true;
-
-        return false;
-    }
-
-    /**
-     * <p>
-     * hasEntriesForId
-     * </p>
-     *
-     * @param objectDUMap a {@link java.util.Map} object.
-     * @param objectId    a {@link java.lang.Integer} object.
-     * @param targetId    a int.
-     * @return a boolean.
-     */
-    public static boolean hasEntriesForId(
-            Map<Integer, HashMap<Integer, Integer>> objectDUMap, Integer objectId,
-            int targetId) {
-        if (objectDUMap == null)
-            return false;
-        if (objectDUMap.get(objectId) == null)
-            return false;
-        for (Integer defId : objectDUMap.get(objectId).values())
-            if (defId == targetId)
-                return true;
-        return false;
-    }
-
-    /**
-     * Only a sanity check function for testing purposes
-     *
-     * @param goal       a
-     *                   {@link org.evosuite.coverage.dataflow.DefUseCoverageTestFitness}
-     *                   object.
-     * @param individual a {@link org.evosuite.ga.Chromosome} object.
-     * @param trace      a {@link org.evosuite.testcase.execution.ExecutionTrace} object.
-     * @return a boolean.
-     */
-    public static boolean traceCoversGoal(DefUseCoverageTestFitness goal,
-                                          Chromosome<?> individual, ExecutionTrace trace) {
-        String goalVariable = goal.getGoalVariable();
-        Use goalUse = goal.getGoalUse();
-        Definition goalDefinition = goal.getGoalDefinition();
-
-        if (trace.getPassedUses(goalVariable) == null)
-            return false;
-        Set<Integer> objectPool = determineConsiderableObjects(goal, trace);
-
-        for (Integer objectID : objectPool) {
-            List<Integer> usePositions = DefUseExecutionTraceAnalyzer.getUsePositions(goalUse,
-                    trace,
-                    objectID);
-            // use not reached
-            if (usePositions.size() == 0)
-                continue;
-            //			if (goalUse.isParameterUse())
-            //				return true;
-            if (isSpecialDefinition(goalDefinition))
-                return true;
-
-            for (Integer usePos : usePositions) {
-
-                if (DefUseExecutionTraceAnalyzer.getActiveDefinitionIdAt(goalVariable,
-                        trace, usePos,
-                        objectID) == goalDefinition.getDefId())
-                    return true;
-            }
-        }
-
-        return false;
     }
 
 }

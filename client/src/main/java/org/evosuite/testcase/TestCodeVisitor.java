@@ -57,19 +57,17 @@ import static java.util.stream.Collectors.toCollection;
  */
 public class TestCodeVisitor extends TestVisitor {
 
-    protected String testCode = "";
-
     protected static final String NEWLINE = System.getProperty("line.separator");
-
     protected final Map<Integer, Throwable> exceptions = new HashMap<>();
-
-    protected TestCase test = null;
-
     protected final Map<VariableReference, String> variableNames = new HashMap<>();
-
     protected final Map<Class<?>, String> classNames = new HashMap<>();
-
     protected final Map<String, Integer> nextIndices = new HashMap<>();
+    private final List<Class<?>> invalidExceptions = Arrays.asList(new Class<?>[]{
+            StackOverflowError.class, // Might be thrown at different places
+            AssertionError.class}     // Depends whether assertions are enabled or not
+    );
+    protected String testCode = "";
+    protected TestCase test = null;
 
     /**
      * <p>
@@ -446,6 +444,12 @@ public class TestCodeVisitor extends TestVisitor {
         return variableNames.values();
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.evosuite.testcase.TestVisitor#visitTestCase(org.evosuite.testcase.TestCase)
+     */
+
     /**
      * Retrieve the names of all known classes
      *
@@ -454,12 +458,6 @@ public class TestCodeVisitor extends TestVisitor {
     public Collection<String> getClassNames() {
         return classNames.values();
     }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.evosuite.testcase.TestVisitor#visitTestCase(org.evosuite.testcase.TestCase)
-     */
 
     /**
      * {@inheritDoc}
@@ -527,7 +525,6 @@ public class TestCodeVisitor extends TestVisitor {
 
         testCode += stmt;
     }
-
 
     protected void visitArrayEqualsAssertion(ArrayEqualsAssertion assertion) {
         VariableReference source = assertion.getSource();
@@ -867,7 +864,6 @@ public class TestCodeVisitor extends TestVisitor {
         return test != null && test.isUnstable();
     }
 
-
     protected void visitAssertion(Assertion assertion) {
 
         if (isTestUnstable()) {
@@ -930,6 +926,14 @@ public class TestCodeVisitor extends TestVisitor {
             testCode += NEWLINE;
     }
 
+
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.evosuite.testcase.TestVisitor#visitPrimitiveStatement(org.evosuite.testcase.PrimitiveStatement)
+     */
+
     protected String getEnumValue(EnumPrimitiveStatement<?> statement) {
         Object value = statement.getValue();
         Class<?> clazz = statement.getEnumClass();
@@ -957,14 +961,6 @@ public class TestCodeVisitor extends TestVisitor {
         return className + ".valueOf(\"" + value + "\")";
 
     }
-
-
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.evosuite.testcase.TestVisitor#visitPrimitiveStatement(org.evosuite.testcase.PrimitiveStatement)
-     */
 
     /**
      * {@inheritDoc}
@@ -1008,6 +1004,14 @@ public class TestCodeVisitor extends TestVisitor {
         addAssertions(statement);
     }
 
+
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.evosuite.testcase.TestVisitor#visitFieldStatement(org.evosuite.testcase.FieldStatement)
+     */
+
     /**
      * {@inheritDoc}
      */
@@ -1022,14 +1026,6 @@ public class TestCodeVisitor extends TestVisitor {
         testCode += expression + ";" + NEWLINE;
         addAssertions(statement);
     }
-
-
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.evosuite.testcase.TestVisitor#visitFieldStatement(org.evosuite.testcase.FieldStatement)
-     */
 
     /**
      * {@inheritDoc}
@@ -1175,7 +1171,6 @@ public class TestCodeVisitor extends TestVisitor {
         return parameterString;
     }
 
-
     @Override
     public void visitFunctionalMockStatement(FunctionalMockStatement st) {
 
@@ -1287,6 +1282,14 @@ public class TestCodeVisitor extends TestVisitor {
         testCode += result;
     }
 
+
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.evosuite.testcase.TestVisitor#visitMethodStatement(org.evosuite.testcase.MethodStatement)
+     */
+
     private String getParameterStringForFMthatReturnPrimitive(Class<?> returnType, List<VariableReference> parameters) {
 
         assert returnType.isPrimitive();
@@ -1360,14 +1363,6 @@ public class TestCodeVisitor extends TestVisitor {
 
         return parameterString;
     }
-
-
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.evosuite.testcase.TestVisitor#visitMethodStatement(org.evosuite.testcase.MethodStatement)
-     */
 
     /**
      * {@inheritDoc}
@@ -1578,11 +1573,6 @@ public class TestCodeVisitor extends TestVisitor {
                 !sourceClass.startsWith("jdk.internal.") &&
                 !sourceClass.startsWith("<evosuite>");
     }
-
-    private final List<Class<?>> invalidExceptions = Arrays.asList(new Class<?>[]{
-            StackOverflowError.class, // Might be thrown at different places
-            AssertionError.class}     // Depends whether assertions are enabled or not
-    );
 
     private boolean isExceptionToAssertThrownBy(Class<?> exceptionClass) {
         return !invalidExceptions.contains(exceptionClass);

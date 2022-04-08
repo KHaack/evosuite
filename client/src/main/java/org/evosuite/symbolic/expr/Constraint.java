@@ -28,6 +28,18 @@ import java.util.Set;
 public abstract class Constraint<T extends Object> implements Serializable {
 
     private static final long serialVersionUID = 7547747352755232472L;
+    protected int size = 0;
+    private int hash = 0;
+
+    /**
+     * Returns x/(x+1)
+     *
+     * @param x
+     * @return a normalized double value
+     */
+    protected static double normalize(double x) {
+        return x / (x + 1.0);
+    }
 
     /**
      * <p>
@@ -57,8 +69,6 @@ public abstract class Constraint<T extends Object> implements Serializable {
      */
     abstract public Expression<?> getRightOperand();
 
-    private int hash = 0;
-
     /**
      * {@inheritDoc}
      */
@@ -72,8 +82,6 @@ public abstract class Constraint<T extends Object> implements Serializable {
         }
         return hash;
     }
-
-    protected int size = 0;
 
     /**
      * <p>
@@ -123,16 +131,6 @@ public abstract class Constraint<T extends Object> implements Serializable {
     }
 
     public abstract Constraint<T> negate();
-
-    /**
-     * Returns x/(x+1)
-     *
-     * @param x
-     * @return a normalized double value
-     */
-    protected static double normalize(double x) {
-        return x / (x + 1.0);
-    }
 
     public Set<Variable<?>> getVariables() {
         Set<Variable<?>> result = new HashSet<>();

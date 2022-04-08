@@ -21,11 +21,6 @@ package com.examples.with.different.packagename.reset;
 
 public class StaticInitCatchImplicitNullPointer {
 
-    public boolean someMethod() {
-        return false;
-
-    }
-
     static {
         try {
             StaticInitCatchImplicitNullPointer obj = getSomeObject();
@@ -37,5 +32,10 @@ public class StaticInitCatchImplicitNullPointer {
 
     private static StaticInitCatchImplicitNullPointer getSomeObject() {
         return null;
+    }
+
+    public boolean someMethod() {
+        return false;
+
     }
 }

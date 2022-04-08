@@ -53,34 +53,6 @@ import java.util.*;
 public class ArrayStatement extends AbstractStatement {
 
     private static final long serialVersionUID = -2858236370873914156L;
-
-    private static int[] createRandom(int dimensions) {
-        int[] result = new int[dimensions];
-        for (int idx = 0; idx < dimensions; idx++) {
-            result[idx] = Randomness.nextInt(Properties.MAX_ARRAY);
-        }
-        return result;
-    }
-
-    /**
-     * <p>
-     * determineDimensions
-     * </p>
-     *
-     * @param type a {@link java.lang.reflect.Type} object.
-     * @return a int.
-     */
-    public static int determineDimensions(java.lang.reflect.Type type) {
-        String name = type.toString().replace("class", "").trim();
-        int count = 0;
-        for (int i = 0; i < name.length(); i++) {
-            if (name.charAt(i) == '[') {
-                count++;
-            }
-        }
-        return count;
-    }
-
     private int[] lengths;
 
     /**
@@ -147,6 +119,33 @@ public class ArrayStatement extends AbstractStatement {
      */
     public ArrayStatement(TestCase tc, java.lang.reflect.Type type, int[] length) {
         this(tc, new ArrayReference(tc, GenericClassFactory.get(type), length), length);
+    }
+
+    private static int[] createRandom(int dimensions) {
+        int[] result = new int[dimensions];
+        for (int idx = 0; idx < dimensions; idx++) {
+            result[idx] = Randomness.nextInt(Properties.MAX_ARRAY);
+        }
+        return result;
+    }
+
+    /**
+     * <p>
+     * determineDimensions
+     * </p>
+     *
+     * @param type a {@link java.lang.reflect.Type} object.
+     * @return a int.
+     */
+    public static int determineDimensions(java.lang.reflect.Type type) {
+        String name = type.toString().replace("class", "").trim();
+        int count = 0;
+        for (int i = 0; i < name.length(); i++) {
+            if (name.charAt(i) == '[') {
+                count++;
+            }
+        }
+        return count;
     }
 
     /**
@@ -232,6 +231,19 @@ public class ArrayStatement extends AbstractStatement {
      */
 
     /**
+     * <p>
+     * Setter for the field <code>lengths</code>.
+     * </p>
+     *
+     * @param lengths an array of int.
+     */
+    public void setLengths(int[] lengths) {
+        this.lengths = new int[lengths.length];
+        System.arraycopy(lengths, 0, this.lengths, 0, lengths.length);
+        ((ArrayReference) retval).setLengths(lengths);
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -260,6 +272,10 @@ public class ArrayStatement extends AbstractStatement {
         return result;
     }
 
+    /* (non-Javadoc)
+     * @see org.evosuite.testcase.StatementInterface#isValid()
+     */
+
     /**
      * {@inheritDoc}
      */
@@ -269,7 +285,7 @@ public class ArrayStatement extends AbstractStatement {
     }
 
     /* (non-Javadoc)
-     * @see org.evosuite.testcase.StatementInterface#isValid()
+     * @see org.evosuite.testcase.AbstractStatement#mutate(org.evosuite.testcase.TestCase, org.evosuite.testcase.AbstractTestFactory)
      */
 
     /**
@@ -298,7 +314,7 @@ public class ArrayStatement extends AbstractStatement {
     }
 
     /* (non-Javadoc)
-     * @see org.evosuite.testcase.AbstractStatement#mutate(org.evosuite.testcase.TestCase, org.evosuite.testcase.AbstractTestFactory)
+     * @see org.evosuite.testcase.StatementInterface#replace(org.evosuite.testcase.VariableReference, org.evosuite.testcase.VariableReference)
      */
 
     /**
@@ -355,10 +371,6 @@ public class ArrayStatement extends AbstractStatement {
         return true;
     }
 
-    /* (non-Javadoc)
-     * @see org.evosuite.testcase.StatementInterface#replace(org.evosuite.testcase.VariableReference, org.evosuite.testcase.VariableReference)
-     */
-
     /**
      * {@inheritDoc}
      */
@@ -382,19 +394,6 @@ public class ArrayStatement extends AbstractStatement {
         if (!Arrays.equals(lengths, as.lengths))
             return false;
         return retval.same(as.retval);
-    }
-
-    /**
-     * <p>
-     * Setter for the field <code>lengths</code>.
-     * </p>
-     *
-     * @param lengths an array of int.
-     */
-    public void setLengths(int[] lengths) {
-        this.lengths = new int[lengths.length];
-        System.arraycopy(lengths, 0, this.lengths, 0, lengths.length);
-        ((ArrayReference) retval).setLengths(lengths);
     }
 
     /**

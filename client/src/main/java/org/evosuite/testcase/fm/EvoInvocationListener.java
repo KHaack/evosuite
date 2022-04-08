@@ -46,14 +46,12 @@ public class EvoInvocationListener implements InvocationListener, Serializable {
     private static final long serialVersionUID = 8351121388007697168L;
 
     private final Map<String, MethodDescriptor> map = new LinkedHashMap<>();
-
+    private final GenericClass<?> retvalType;
     /**
      * By default, we should not log events, otherwise we would end up
      * logging also cases like "when(...)" which are set before a mock is used
      */
     private volatile boolean active = false;
-
-    private final GenericClass<?> retvalType;
 
     public EvoInvocationListener(Type retvalType) {
         this.retvalType = GenericClassFactory.get(retvalType);

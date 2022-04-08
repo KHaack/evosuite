@@ -40,7 +40,7 @@ public class JavaExecCmdUtil {
      * master<->client communication will have no results.
      *
      * @param isFullOriginalJavaExecRequired - original behavior switch: "java" or JAVA_CMD from
-     * (@link org.evosuite.EvoSuite#JAVA_CMD)
+     *                                       (@link org.evosuite.EvoSuite#JAVA_CMD)
      * @return current runtime java executable path based on $JAVA_HOME environment variable
      * @apiNote under maven java.home property is ${JAVA_HOME}/jre/bin/java
      */

@@ -44,10 +44,8 @@ import java.util.Set;
  */
 public class MethodDescriptor implements Comparable<MethodDescriptor>, Serializable {
 
-    private static final long serialVersionUID = -6747363265640233704L;
-
     protected static final Logger logger = LoggerFactory.getLogger(MethodDescriptor.class);
-
+    private static final long serialVersionUID = -6747363265640233704L;
     private final String methodName;
     private final String inputParameterMatchers;
     private final String className;
@@ -78,6 +76,15 @@ public class MethodDescriptor implements Comparable<MethodDescriptor>, Serializa
         this.methodName = methodName;
         this.className = className;
         this.inputParameterMatchers = inputParameterMatchers;
+    }
+
+    @Deprecated // better (more precise results) to use the other constructor
+    public MethodDescriptor(String className, String methodName, String inputParameterMatchers) throws IllegalArgumentException {
+        Inputs.checkNull(methodName, inputParameterMatchers);
+        this.className = className;
+        this.methodName = methodName;
+        this.inputParameterMatchers = inputParameterMatchers;
+        counter = 0;
     }
 
     private String initMatchers(GenericMethod method, GenericClass<?> retvalType) {
@@ -142,7 +149,6 @@ public class MethodDescriptor implements Comparable<MethodDescriptor>, Serializa
 
         return matchers;
     }
-
 
     public void changeClassLoader(ClassLoader loader) {
         method.changeClassLoader(loader);
@@ -248,15 +254,6 @@ public class MethodDescriptor implements Comparable<MethodDescriptor>, Serializa
             logger.error("Failed to executed Mockito matcher n{} of type {} in {}.{}: {}", i, type, className, methodName, e.getMessage());
             throw new EvosuiteError(e);
         }
-    }
-
-    @Deprecated // better (more precise results) to use the other constructor
-    public MethodDescriptor(String className, String methodName, String inputParameterMatchers) throws IllegalArgumentException {
-        Inputs.checkNull(methodName, inputParameterMatchers);
-        this.className = className;
-        this.methodName = methodName;
-        this.inputParameterMatchers = inputParameterMatchers;
-        counter = 0;
     }
 
     public GenericMethod getGenericMethodFor(GenericClass<?> clazz) throws ConstructionFailedException {

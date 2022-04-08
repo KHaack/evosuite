@@ -50,13 +50,11 @@ import java.util.*;
 public class ConstructorStatement extends EntityWithParametersStatement {
 
     private static final long serialVersionUID = -3035570485633271957L;
-
-    private GenericConstructor constructor;
-
     private static final List<String> primitiveClasses = Arrays.asList("char", "int", "short",
             "long", "boolean",
             "float", "double",
             "byte");
+    private GenericConstructor constructor;
 
     /**
      * <p>
@@ -114,6 +112,22 @@ public class ConstructorStatement extends EntityWithParametersStatement {
 
     /**
      * <p>
+     * getReturnType
+     * </p>
+     *
+     * @param clazz a {@link java.lang.Class} object.
+     * @return a {@link java.lang.String} object.
+     */
+    public static String getReturnType(Class<?> clazz) {
+        String retVal = ClassUtils.getShortClassName(clazz);
+        if (primitiveClasses.contains(retVal))
+            return clazz.getSimpleName();
+
+        return retVal;
+    }
+
+    /**
+     * <p>
      * Getter for the field <code>constructor</code>.
      * </p>
      *
@@ -133,22 +147,6 @@ public class ConstructorStatement extends EntityWithParametersStatement {
     public void setConstructor(GenericConstructor constructor) {
         this.constructor = constructor;
         retval.setType(constructor.getReturnType());
-    }
-
-    /**
-     * <p>
-     * getReturnType
-     * </p>
-     *
-     * @param clazz a {@link java.lang.Class} object.
-     * @return a {@link java.lang.String} object.
-     */
-    public static String getReturnType(Class<?> clazz) {
-        String retVal = ClassUtils.getShortClassName(clazz);
-        if (primitiveClasses.contains(retVal))
-            return clazz.getSimpleName();
-
-        return retVal;
     }
 
     // TODO: Handle inner classes (need instance parameter for newInstance)

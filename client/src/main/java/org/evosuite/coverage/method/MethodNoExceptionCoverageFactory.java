@@ -56,6 +56,40 @@ public class MethodNoExceptionCoverageFactory extends
      */
 
     /**
+     * Create a fitness function for branch coverage aimed at covering the root
+     * branch of the given method in the given class. Covering a root branch
+     * means entering the method.
+     *
+     * @param className a {@link String} object.
+     * @param method    a {@link String} object.
+     * @return a {@link org.evosuite.coverage.branch.BranchCoverageTestFitness}
+     * object.
+     */
+    public static MethodNoExceptionCoverageTestFitness createMethodTestFitness(
+            String className, String method) {
+
+        return new MethodNoExceptionCoverageTestFitness(className,
+                method.substring(method.lastIndexOf(".") + 1));
+    }
+
+    /**
+     * Convenience method calling createMethodTestFitness(class,method) with
+     * the respective class and method of the given BytecodeInstruction.
+     *
+     * @param instruction a {@link org.evosuite.graphs.cfg.BytecodeInstruction} object.
+     * @return a {@link org.evosuite.coverage.branch.BranchCoverageTestFitness}
+     * object.
+     */
+    public static MethodNoExceptionCoverageTestFitness createMethodTestFitness(
+            BytecodeInstruction instruction) {
+        if (instruction == null)
+            throw new IllegalArgumentException("null given");
+
+        return createMethodTestFitness(instruction.getClassName(),
+                instruction.getMethodName());
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -77,7 +111,6 @@ public class MethodNoExceptionCoverageFactory extends
         goalComputationTime = System.currentTimeMillis() - start;
         return goals;
     }
-
 
     private List<MethodNoExceptionCoverageTestFitness> getCoverageGoals(Class<?> clazz, String className) {
         List<MethodNoExceptionCoverageTestFitness> goals = new ArrayList<>();
@@ -113,39 +146,5 @@ public class MethodNoExceptionCoverageFactory extends
             }
         }
         return goals;
-    }
-
-    /**
-     * Create a fitness function for branch coverage aimed at covering the root
-     * branch of the given method in the given class. Covering a root branch
-     * means entering the method.
-     *
-     * @param className a {@link String} object.
-     * @param method    a {@link String} object.
-     * @return a {@link org.evosuite.coverage.branch.BranchCoverageTestFitness}
-     * object.
-     */
-    public static MethodNoExceptionCoverageTestFitness createMethodTestFitness(
-            String className, String method) {
-
-        return new MethodNoExceptionCoverageTestFitness(className,
-                method.substring(method.lastIndexOf(".") + 1));
-    }
-
-    /**
-     * Convenience method calling createMethodTestFitness(class,method) with
-     * the respective class and method of the given BytecodeInstruction.
-     *
-     * @param instruction a {@link org.evosuite.graphs.cfg.BytecodeInstruction} object.
-     * @return a {@link org.evosuite.coverage.branch.BranchCoverageTestFitness}
-     * object.
-     */
-    public static MethodNoExceptionCoverageTestFitness createMethodTestFitness(
-            BytecodeInstruction instruction) {
-        if (instruction == null)
-            throw new IllegalArgumentException("null given");
-
-        return createMethodTestFitness(instruction.getClassName(),
-                instruction.getMethodName());
     }
 }

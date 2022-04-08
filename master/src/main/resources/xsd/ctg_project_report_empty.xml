@@ -25,5 +25,5 @@
 -->
 
 <Project>
-	<totalNumberOfTestableClasses> 0 </totalNumberOfTestableClasses>
+    <totalNumberOfTestableClasses>0</totalNumberOfTestableClasses>
 </Project>

@@ -75,6 +75,31 @@ public class Date extends java.util.Date {
         Capturer.enable(Instrumenter.CAPTURE_ID_JAVA_UTIL_DATE, this, CaptureLog.RETURN_TYPE_VOID);
     }
 
+    @SuppressWarnings("deprecation")
+    public static long UTC(int year, int month, int date,
+                           int hrs, int min, int sec) {
+        Capturer.capture(Instrumenter.CAPTURE_ID_JAVA_UTIL_DATE, CaptureUtil.loadClass("java/util/Date"), "UTC", "(IIIIII)J", new Object[]{year, month, date, hrs, min, sec});
+        long ret = java.util.Date.UTC(year, month, date, hrs, min, sec);
+        Capturer.enable(Instrumenter.CAPTURE_ID_JAVA_UTIL_DATE, CaptureUtil.loadClass("java/util/Date"), ret);
+        return ret;
+    }
+
+    @SuppressWarnings("deprecation")
+    public static long parse(String s) {
+        Capturer.capture(Instrumenter.CAPTURE_ID_JAVA_UTIL_DATE, CaptureUtil.loadClass("java/util/Date"), "parse", "(Ljava/lang/String;)J", new Object[]{s});
+        long ret = java.util.Date.parse(s);
+        Capturer.enable(Instrumenter.CAPTURE_ID_JAVA_UTIL_DATE, CaptureUtil.loadClass("java/util/Date"), ret);
+        return ret;
+
+    }
+
+    static long getMillisOf(java.util.Date date) {
+
+        Capturer.capture(Instrumenter.CAPTURE_ID_JAVA_UTIL_DATE, CaptureUtil.loadClass("java/util/Date"), "getMillisOf", "(Ljava/util/Date;)J", new Object[]{date});
+        long ret = date.getTime();
+        Capturer.enable(Instrumenter.CAPTURE_ID_JAVA_UTIL_DATE, CaptureUtil.loadClass("java/util/Date"), ret);
+        return ret;
+    }
 
     @Override
     public boolean after(java.util.Date when) {
@@ -125,6 +150,12 @@ public class Date extends java.util.Date {
         return ret;
     }
 
+    public void setTime(long time) {
+        Capturer.capture(Instrumenter.CAPTURE_ID_JAVA_UTIL_DATE, this, "setTime", "(J)V", new Object[]{time});
+        super.setTime(time);
+        Capturer.enable(Instrumenter.CAPTURE_ID_JAVA_UTIL_DATE, this, CaptureLog.RETURN_TYPE_VOID);
+    }
+
     @Override
     public String toString() {
         Capturer.capture(Instrumenter.CAPTURE_ID_JAVA_UTIL_DATE, this, "toString", "()Ljava/lang/String;", new Object[]{});
@@ -132,25 +163,6 @@ public class Date extends java.util.Date {
         Capturer.enable(Instrumenter.CAPTURE_ID_JAVA_UTIL_DATE, this, ret);
 
         return ret;
-    }
-
-
-    @SuppressWarnings("deprecation")
-    public static long UTC(int year, int month, int date,
-                           int hrs, int min, int sec) {
-        Capturer.capture(Instrumenter.CAPTURE_ID_JAVA_UTIL_DATE, CaptureUtil.loadClass("java/util/Date"), "UTC", "(IIIIII)J", new Object[]{year, month, date, hrs, min, sec});
-        long ret = java.util.Date.UTC(year, month, date, hrs, min, sec);
-        Capturer.enable(Instrumenter.CAPTURE_ID_JAVA_UTIL_DATE, CaptureUtil.loadClass("java/util/Date"), ret);
-        return ret;
-    }
-
-    @SuppressWarnings("deprecation")
-    public static long parse(String s) {
-        Capturer.capture(Instrumenter.CAPTURE_ID_JAVA_UTIL_DATE, CaptureUtil.loadClass("java/util/Date"), "parse", "(Ljava/lang/String;)J", new Object[]{s});
-        long ret = java.util.Date.parse(s);
-        Capturer.enable(Instrumenter.CAPTURE_ID_JAVA_UTIL_DATE, CaptureUtil.loadClass("java/util/Date"), ret);
-        return ret;
-
     }
 
     @SuppressWarnings("deprecation")
@@ -244,26 +256,11 @@ public class Date extends java.util.Date {
         return ret;
     }
 
-
     @SuppressWarnings("deprecation")
     public void setSeconds(int seconds) {
         Capturer.capture(Instrumenter.CAPTURE_ID_JAVA_UTIL_DATE, this, "setSeconds", "(I)V", new Object[]{seconds});
         super.setSeconds(seconds);
         Capturer.enable(Instrumenter.CAPTURE_ID_JAVA_UTIL_DATE, this, CaptureLog.RETURN_TYPE_VOID);
-    }
-
-    public void setTime(long time) {
-        Capturer.capture(Instrumenter.CAPTURE_ID_JAVA_UTIL_DATE, this, "setTime", "(J)V", new Object[]{time});
-        super.setTime(time);
-        Capturer.enable(Instrumenter.CAPTURE_ID_JAVA_UTIL_DATE, this, CaptureLog.RETURN_TYPE_VOID);
-    }
-
-    static long getMillisOf(java.util.Date date) {
-
-        Capturer.capture(Instrumenter.CAPTURE_ID_JAVA_UTIL_DATE, CaptureUtil.loadClass("java/util/Date"), "getMillisOf", "(Ljava/util/Date;)J", new Object[]{date});
-        long ret = date.getTime();
-        Capturer.enable(Instrumenter.CAPTURE_ID_JAVA_UTIL_DATE, CaptureUtil.loadClass("java/util/Date"), ret);
-        return ret;
     }
 
     public int hashCode() {

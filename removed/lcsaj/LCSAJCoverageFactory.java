@@ -32,23 +32,26 @@ import org.evosuite.testsuite.AbstractFitnessFactory;
 public class LCSAJCoverageFactory extends
         AbstractFitnessFactory<LCSAJCoverageTestFitness> {
 
-	/* (non-Javadoc)
-	 * @see org.evosuite.coverage.TestFitnessFactory#getCoverageGoals()
-	 */
-	/** {@inheritDoc} */
-	@Override
-	public List<LCSAJCoverageTestFitness> getCoverageGoals() {
-		List<LCSAJCoverageTestFitness> goals = new ArrayList<LCSAJCoverageTestFitness>();
+    /* (non-Javadoc)
+     * @see org.evosuite.coverage.TestFitnessFactory#getCoverageGoals()
+     */
 
-		// Branches
-		for (String className : LCSAJPool.lcsaj_map.keySet()) {
-			for (String methodName : LCSAJPool.lcsaj_map.get(className).keySet()) {
-				for (LCSAJ lcsaj : LCSAJPool.getLCSAJs(className, methodName))
-					goals.add(new LCSAJCoverageTestFitness(className, methodName, lcsaj));
-			}
-		}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<LCSAJCoverageTestFitness> getCoverageGoals() {
+        List<LCSAJCoverageTestFitness> goals = new ArrayList<LCSAJCoverageTestFitness>();
 
-		return goals;
-	}
+        // Branches
+        for (String className : LCSAJPool.lcsaj_map.keySet()) {
+            for (String methodName : LCSAJPool.lcsaj_map.get(className).keySet()) {
+                for (LCSAJ lcsaj : LCSAJPool.getLCSAJs(className, methodName))
+                    goals.add(new LCSAJCoverageTestFitness(className, methodName, lcsaj));
+            }
+        }
+
+        return goals;
+    }
 
 }

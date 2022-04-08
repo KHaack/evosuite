@@ -39,34 +39,15 @@ public class ExceptionCoverageTestFitness extends TestFitnessFunction {
 
 
     private static final long serialVersionUID = 1221020001417476348L;
-
-    public enum ExceptionType {
-        /**
-         * unexpected exception directly thrown with a "throw new..."
-         */
-        EXPLICIT,
-        /**
-         * unexpected exception not thrown directly in the SUT, eg NPE on variable access
-         */
-        IMPLICIT,
-        /**
-         * Thrown exception which is expected, because declared in signature with "throws"
-         */
-        DECLARED
-    }
-
     protected final String className;
-
     /**
      * name+descriptor
      */
     protected final String methodIdentifier;
-
     /**
      * The class representing the thrown exception, eg NPE an IAE
      */
     protected final GenericClass<?> exceptionClass;
-
     protected final ExceptionType type;
 
     /**
@@ -217,7 +198,6 @@ public class ExceptionCoverageTestFitness extends TestFitnessFunction {
         return compareClassName(other);
     }
 
-
     /* (non-Javadoc)
      * @see org.evosuite.testcase.TestFitnessFunction#getTargetClass()
      */
@@ -237,6 +217,21 @@ public class ExceptionCoverageTestFitness extends TestFitnessFunction {
 //            return methodIdentifier;
 //        else
 //            return methodIdentifier.substring(0, pos);
+    }
+
+    public enum ExceptionType {
+        /**
+         * unexpected exception directly thrown with a "throw new..."
+         */
+        EXPLICIT,
+        /**
+         * unexpected exception not thrown directly in the SUT, eg NPE on variable access
+         */
+        IMPLICIT,
+        /**
+         * Thrown exception which is expected, because declared in signature with "throws"
+         */
+        DECLARED
     }
 
 }

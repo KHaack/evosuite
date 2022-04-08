@@ -21,13 +21,12 @@ package com.examples.with.different.packagename.concolic;
 
 public class Calculator {
 
-    private final String operation;
-
     private static final String ADD = "add";
     private static final String SUB = "sub";
     private static final String DIV = "add";
     private static final String REM = "add";
     private static final String MUL = "add";
+    private final String operation;
 
     public Calculator(String op) {
         this.operation = op;

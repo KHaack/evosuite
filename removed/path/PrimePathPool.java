@@ -32,37 +32,41 @@ import java.util.Map;
  */
 public class PrimePathPool {
 
-	// maps: className -> methodName  -> DUVarName -> branchID -> List of Definitions in that branch 
-	/** Constant <code>primePathMap</code> */
-	public static Map<String, Map<String, List<PrimePath>>> primePathMap = new HashMap<String, Map<String, List<PrimePath>>>();
+    // maps: className -> methodName  -> DUVarName -> branchID -> List of Definitions in that branch
+    /**
+     * Constant <code>primePathMap</code>
+     */
+    public static Map<String, Map<String, List<PrimePath>>> primePathMap = new HashMap<String, Map<String, List<PrimePath>>>();
 
-	/** Constant <code>primePathCounter=0</code> */
-	public static int primePathCounter = 0;
+    /**
+     * Constant <code>primePathCounter=0</code>
+     */
+    public static int primePathCounter = 0;
 
-	/**
-	 * <p>getSize</p>
-	 *
-	 * @return a int.
-	 */
-	public static int getSize() {
-		return primePathCounter;
-	}
+    /**
+     * <p>getSize</p>
+     *
+     * @return a int.
+     */
+    public static int getSize() {
+        return primePathCounter;
+    }
 
-	/**
-	 * <p>add</p>
-	 *
-	 * @param path a {@link org.evosuite.coverage.path.PrimePath} object.
-	 */
-	public static void add(PrimePath path) {
-		String className = path.className;
-		String methodName = path.methodName;
+    /**
+     * <p>add</p>
+     *
+     * @param path a {@link org.evosuite.coverage.path.PrimePath} object.
+     */
+    public static void add(PrimePath path) {
+        String className = path.className;
+        String methodName = path.methodName;
 
-		if (!primePathMap.containsKey(className))
-			primePathMap.put(className, new HashMap<String, List<PrimePath>>());
-		if (!primePathMap.get(className).containsKey(methodName))
-			primePathMap.get(className).put(methodName, new ArrayList<PrimePath>());
-		path.condensate();
-		primePathMap.get(className).get(methodName).add(path);
-		primePathCounter++;
-	}
+        if (!primePathMap.containsKey(className))
+            primePathMap.put(className, new HashMap<String, List<PrimePath>>());
+        if (!primePathMap.get(className).containsKey(methodName))
+            primePathMap.get(className).put(methodName, new ArrayList<PrimePath>());
+        path.condensate();
+        primePathMap.get(className).get(methodName).add(path);
+        primePathCounter++;
+    }
 }

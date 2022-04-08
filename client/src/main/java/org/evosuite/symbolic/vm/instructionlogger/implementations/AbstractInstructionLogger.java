@@ -46,12 +46,11 @@ import java.util.List;
  */
 public abstract class AbstractInstructionLogger implements IInstructionLogger {
 
+    public final static String NL = System.getProperty("line.separator");
+    public final static String FS = System.getProperty("file.separator");
     private static final transient Logger logger = LoggerFactory.getLogger(AbstractInstructionLogger.class);
     static List<String> instructionsExecuted = new ArrayList<>();
     static StringBuilder buffer = new StringBuilder();
-
-    public final static String NL = System.getProperty("line.separator");
-    public final static String FS = System.getProperty("file.separator");
 
     /**
      * Log parameter as p.

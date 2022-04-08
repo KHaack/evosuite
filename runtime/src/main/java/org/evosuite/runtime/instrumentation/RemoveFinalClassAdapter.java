@@ -34,6 +34,10 @@ public class RemoveFinalClassAdapter extends ClassVisitor {
         super(Opcodes.ASM9, cv);
     }
 
+    public static void reset() {
+        finalClasses.clear();
+    }
+
     /**
      * Remove "final" accessor from class definition
      */
@@ -69,9 +73,5 @@ public class RemoveFinalClassAdapter extends ClassVisitor {
     @Override
     public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
         return super.visitMethod(access & ~Opcodes.ACC_FINAL, name, desc, signature, exceptions);
-    }
-
-    public static void reset() {
-        finalClasses.clear();
     }
 }

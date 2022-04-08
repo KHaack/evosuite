@@ -29,6 +29,7 @@ public class StructuredTestCodeVisitor extends TestCodeVisitor {
     private int exercisePosition = 0;
 
     private int checkingPosition = 0;
+    private boolean checkAdded = false;
 
     @Override
     public void visitTestCase(TestCase test) {
@@ -41,8 +42,6 @@ public class StructuredTestCodeVisitor extends TestCodeVisitor {
         super.visitTestCase(test);
         checkAdded = !exceptions.isEmpty();
     }
-
-    private boolean checkAdded = false;
 
     /* (non-Javadoc)
      * @see org.evosuite.testcase.TestCodeVisitor#visitAssertion(org.evosuite.assertion.Assertion)

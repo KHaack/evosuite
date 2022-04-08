@@ -33,48 +33,27 @@ import java.util.Set;
 class TestGenerationResultImpl<T extends Chromosome<T>> implements TestGenerationResult<T> {
 
     private static final long serialVersionUID = 1306033906557741929L;
-
-    private Status status = Status.ERROR;
-
-    private String errorMessage = "";
-
     private final Map<String, Set<Failure>> contractViolations = new LinkedHashMap<>();
-
     private final Map<String, TestCase> testCases = new LinkedHashMap<>();
-
     private final Map<String, String> testCode = new LinkedHashMap<>();
-
     private final Map<String, Set<Integer>> testLineCoverage = new LinkedHashMap<>();
-
     private final Map<String, Set<BranchInfo>> testBranchCoverage = new LinkedHashMap<>();
-
     private final Map<String, Set<MutationInfo>> testMutantCoverage = new LinkedHashMap<>();
-
     private final Set<Integer> coveredLines = new LinkedHashSet<>();
-
     private final Set<Integer> uncoveredLines = new LinkedHashSet<>();
-
     private final Set<BranchInfo> coveredBranches = new LinkedHashSet<>();
-
     private final Set<BranchInfo> uncoveredBranches = new LinkedHashSet<>();
-
     private final Set<MutationInfo> coveredMutants = new LinkedHashSet<>();
-
     private final Set<MutationInfo> uncoveredMutants = new LinkedHashSet<>();
-
     private final Set<MutationInfo> exceptionMutants = new LinkedHashSet<>();
-
     private final Map<String, String> testComments = new LinkedHashMap<>();
-
+    private final LinkedHashMap<FitnessFunction<?>, Double> targetCoverages = new LinkedHashMap<>();
+    private Status status = Status.ERROR;
+    private String errorMessage = "";
     private String testSuiteCode = "";
-
     private String targetClass = "";
-
     //private String targetCriterion = "";
     private String[] targetCriterion;
-
-    private final LinkedHashMap<FitnessFunction<?>, Double> targetCoverages = new LinkedHashMap<>();
-
     private GeneticAlgorithm<T> ga = null;
 
     private ExplorationAlgorithmBase dse = null;
@@ -135,13 +114,13 @@ class TestGenerationResultImpl<T extends Chromosome<T>> implements TestGeneratio
         contractViolations.put(name, violations);
     }
 
-    public void setClassUnderTest(String targetClass) {
-        this.targetClass = targetClass;
-    }
-
     @Override
     public String getClassUnderTest() {
         return targetClass;
+    }
+
+    public void setClassUnderTest(String targetClass) {
+        this.targetClass = targetClass;
     }
 
     public void setTargetCoverage(FitnessFunction<?> function, double coverage) {
@@ -302,6 +281,10 @@ class TestGenerationResultImpl<T extends Chromosome<T>> implements TestGeneratio
         return uncoveredMutants;
     }
 
+    public void setUncoveredMutants(Set<MutationInfo> mutants) {
+        uncoveredMutants.addAll(mutants);
+    }
+
     @Override
     public Set<MutationInfo> getExceptionMutants() {
         return exceptionMutants;
@@ -309,10 +292,6 @@ class TestGenerationResultImpl<T extends Chromosome<T>> implements TestGeneratio
 
     public void setExceptionMutants(Set<MutationInfo> mutants) {
         exceptionMutants.addAll(mutants);
-    }
-
-    public void setUncoveredMutants(Set<MutationInfo> mutants) {
-        uncoveredMutants.addAll(mutants);
     }
 
 }

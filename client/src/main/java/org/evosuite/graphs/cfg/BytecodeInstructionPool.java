@@ -42,6 +42,10 @@ public class BytecodeInstructionPool {
     private static final Map<ClassLoader, BytecodeInstructionPool> instanceMap = new LinkedHashMap<>();
 
     private final ClassLoader classLoader;
+    // maps className -> method inside that class -> list of
+    // BytecodeInstructions
+    private final Map<String, Map<String, List<BytecodeInstruction>>> instructionMap = new LinkedHashMap<>();
+    private final List<MethodNode> knownMethodNodes = new ArrayList<>();
 
     private BytecodeInstructionPool(ClassLoader classLoader) {
         this.classLoader = classLoader;
@@ -55,13 +59,23 @@ public class BytecodeInstructionPool {
         return instanceMap.get(classLoader);
     }
 
-    // maps className -> method inside that class -> list of
-    // BytecodeInstructions
-    private final Map<String, Map<String, List<BytecodeInstruction>>> instructionMap = new LinkedHashMap<>();
-
-    private final List<MethodNode> knownMethodNodes = new ArrayList<>();
-
     // fill the pool
+
+    public static void clearAll() {
+        BytecodeInstructionPool.instanceMap.clear();
+    }
+
+    public static void clearAll(String className) {
+        for (BytecodeInstructionPool pool : instanceMap.values()) {
+            pool.clear(className);
+        }
+    }
+
+    public static void clearAll(String className, String methodName) {
+        for (BytecodeInstructionPool pool : instanceMap.values()) {
+            pool.clear(className, methodName);
+        }
+    }
 
     /**
      * Called by each CFGGenerator for it's corresponding method.
@@ -120,6 +134,8 @@ public class BytecodeInstructionPool {
 
         return r;
     }
+
+    // retrieve data from the pool
 
     /**
      * Determine how many bytes the current instruction occupies together with
@@ -258,8 +274,6 @@ public class BytecodeInstructionPool {
             BranchPool.getInstance(classLoader).registerAsBranch(instruction);
         }
     }
-
-    // retrieve data from the pool
 
     /**
      * <p>
@@ -491,10 +505,6 @@ public class BytecodeInstructionPool {
         knownMethodNodes.clear();
     }
 
-    public static void clearAll() {
-        BytecodeInstructionPool.instanceMap.clear();
-    }
-
     /**
      * <p>
      * clear
@@ -504,12 +514,6 @@ public class BytecodeInstructionPool {
      */
     public void clear(String className) {
         instructionMap.remove(className);
-    }
-
-    public static void clearAll(String className) {
-        for (BytecodeInstructionPool pool : instanceMap.values()) {
-            pool.clear(className);
-        }
     }
 
     /**
@@ -523,12 +527,6 @@ public class BytecodeInstructionPool {
     public void clear(String className, String methodName) {
         if (instructionMap.containsKey(className))
             instructionMap.get(className).remove(methodName);
-    }
-
-    public static void clearAll(String className, String methodName) {
-        for (BytecodeInstructionPool pool : instanceMap.values()) {
-            pool.clear(className, methodName);
-        }
     }
 
     /**

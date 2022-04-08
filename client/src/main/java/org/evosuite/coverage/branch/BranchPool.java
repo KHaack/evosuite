@@ -54,32 +54,23 @@ import java.util.*;
 public class BranchPool {
 
     private static final Logger logger = LoggerFactory.getLogger(BranchPool.class);
-
+    private static final Map<ClassLoader, BranchPool> instanceMap = new HashMap<>();
     // maps className -> method inside that class -> list of branches inside
     // that method
     private final Map<String, Map<String, List<Branch>>> branchMap = new HashMap<>();
-
     // set of all known methods without a Branch
     private final Map<String, Map<String, Integer>> branchlessMethods = new HashMap<>();
-
     // maps the branchIDs assigned by this pool to their respective Branches
     private final Map<Integer, Branch> branchIdMap = new HashMap<>();
-
     // maps all known branch instructions to their branchId
     private final Map<BytecodeInstruction, Integer> registeredNormalBranches = new HashMap<>();
-
     // maps all known switch instructions to a list containing all of their
     // associated Branch objects
     private final Map<BytecodeInstruction, List<Branch>> registeredSwitches = new HashMap<>();
-
     private final Map<BytecodeInstruction, Branch> registeredDefaultCases = new HashMap<>();
-
     private final Map<LabelNode, List<Branch>> switchLabels = new HashMap<>();
-
     // number of known Branches - used for actualBranchIds
     private int branchCounter = 0;
-
-    private static final Map<ClassLoader, BranchPool> instanceMap = new HashMap<>();
 
     public static BranchPool getInstance(ClassLoader classLoader) {
         if (!instanceMap.containsKey(classLoader)) {

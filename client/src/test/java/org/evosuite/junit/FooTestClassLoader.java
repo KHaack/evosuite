@@ -42,12 +42,6 @@ public class FooTestClassLoader {
 
     private static final String FOO_TEST_CLASS_NAME = "com.examples.with.different.packagename.junit.FooTest";
 
-    @Test
-    public void testFooTestClassCreation() throws IOException {
-        Class<?> clazz = loadFooTestClass();
-        assertNotNull(clazz);
-    }
-
     private static String createFooTestJavaText() {
         StringBuffer buff = new StringBuffer();
         buff.append("package com.examples.with.different.packagename.junit;\n");
@@ -98,6 +92,56 @@ public class FooTestClassLoader {
         }
 
         return dir;
+    }
+
+    private static Class<?> loadClass(File javaBinDir) {
+
+        URLClassLoader urlClassLoader = null;
+        try {
+            URI javaBinURI = javaBinDir.toURI();
+            URL javaBinURL = javaBinURI.toURL();
+            urlClassLoader = new URLClassLoader(new URL[]{javaBinURL},
+                    Foo.class.getClassLoader());
+            Class<?> clazz = urlClassLoader.loadClass(FOO_TEST_CLASS_NAME);
+            return clazz;
+        } catch (ClassNotFoundException e) {
+            return null;
+        } catch (MalformedURLException e) {
+            return null;
+        }
+    }
+
+    private static boolean compileJavaFile(String javaBinDirName, File javaFile) {
+        JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+        if (compiler == null) {
+            return false; //fail
+        }
+
+        DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
+        StandardJavaFileManager fileManager = compiler.getStandardFileManager(
+                diagnostics, Locale.getDefault(), Charset.forName("UTF-8"));
+        Iterable<? extends JavaFileObject> compilationUnits = fileManager
+                .getJavaFileObjectsFromFiles(Collections
+                        .singletonList(javaFile));
+
+        List<String> optionList;
+        optionList = new ArrayList<>();
+        optionList.addAll(Arrays.asList("-d", javaBinDirName));
+        CompilationTask task = compiler.getTask(null, fileManager, diagnostics,
+                optionList, null, compilationUnits);
+        boolean compiled = task.call();
+        try {
+            fileManager.close();
+        } catch (IOException e) {
+            return false;
+        }
+        return compiled;
+    }
+
+    @Test
+    public void testFooTestClassCreation() throws IOException {
+        Class<?> clazz = loadFooTestClass();
+        assertNotNull(clazz);
     }
 
     public Class<?> loadFooTestClass() {
@@ -162,50 +206,6 @@ public class FooTestClassLoader {
         //delete class file on exit
         classFile.delete();
         return clazz;
-    }
-
-    private static Class<?> loadClass(File javaBinDir) {
-
-        URLClassLoader urlClassLoader = null;
-        try {
-            URI javaBinURI = javaBinDir.toURI();
-            URL javaBinURL = javaBinURI.toURL();
-            urlClassLoader = new URLClassLoader(new URL[]{javaBinURL},
-                    Foo.class.getClassLoader());
-            Class<?> clazz = urlClassLoader.loadClass(FOO_TEST_CLASS_NAME);
-            return clazz;
-        } catch (ClassNotFoundException e) {
-            return null;
-        } catch (MalformedURLException e) {
-            return null;
-        }
-    }
-
-    private static boolean compileJavaFile(String javaBinDirName, File javaFile) {
-        JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-        if (compiler == null) {
-            return false; //fail
-        }
-
-        DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
-        StandardJavaFileManager fileManager = compiler.getStandardFileManager(
-                diagnostics, Locale.getDefault(), Charset.forName("UTF-8"));
-        Iterable<? extends JavaFileObject> compilationUnits = fileManager
-                .getJavaFileObjectsFromFiles(Collections
-                        .singletonList(javaFile));
-
-        List<String> optionList;
-        optionList = new ArrayList<>();
-        optionList.addAll(Arrays.asList("-d", javaBinDirName));
-        CompilationTask task = compiler.getTask(null, fileManager, diagnostics,
-                optionList, null, compilationUnits);
-        boolean compiled = task.call();
-        try {
-            fileManager.close();
-        } catch (IOException e) {
-            return false;
-        }
-        return compiled;
     }
 
     private File writeJavaSourceText(String javaSourceText, String javaFilename) {

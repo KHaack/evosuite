@@ -38,6 +38,82 @@ import static org.objectweb.asm.Opcodes.INVOKESTATIC;
  */
 public class EndOfClassInitializerVisitor extends ClassVisitor {
 
+    private static final Logger logger = LoggerFactory.getLogger(EndOfClassInitializerVisitor.class);
+    private static final String EXIT_CLASS_INIT = "exitClassInit";
+    private final String className;
+    private boolean isInterface = false;
+    private boolean clinitFound = false;
+    private boolean hasStaticFields = false;
+    public EndOfClassInitializerVisitor(ClassVisitor visitor, String className) {
+        super(Opcodes.ASM9, visitor);
+        this.className = className;
+    }
+
+    private static boolean isStatic(int access) {
+        return (access & Opcodes.ACC_STATIC) == Opcodes.ACC_STATIC;
+    }
+
+    @Override
+    public MethodVisitor visitMethod(int methodAccess, String methodName, String descriptor, String signature,
+                                     String[] exceptions) {
+
+        MethodVisitor mv = super.visitMethod(methodAccess, methodName, descriptor, signature, exceptions);
+
+        if (methodName.equals("<clinit>")) {
+
+            clinitFound = true;
+            EndOfClassInitializerMethodVisitor staticResetMethodAdapter = new EndOfClassInitializerMethodVisitor(
+                    className, methodName, mv);
+
+            return staticResetMethodAdapter;
+        } else {
+            return mv;
+        }
+    }
+
+    @Override
+    public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
+        super.visit(version, access, name, signature, superName, interfaces);
+        isInterface = ((access & Opcodes.ACC_INTERFACE) == Opcodes.ACC_INTERFACE);
+    }
+
+    @Override
+    public void visitEnd() {
+        if (!clinitFound && !isInterface && hasStaticFields) {
+            // create brand empty <clinit>()
+            createEmptyClassInit();
+        }
+        super.visitEnd();
+    }
+
+    @Override
+    public FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {
+
+        if (isStatic(access)) {
+            hasStaticFields = true;
+        }
+
+        return super.visitField(access, name, desc, signature, value);
+    }
+
+    private void createEmptyClassInit() {
+        logger.info("Creating <clinit> in class " + className);
+        MethodVisitor mv = cv.visitMethod(Opcodes.ACC_STATIC, "<clinit>", "()V", null, null);
+        mv.visitCode();
+
+        String executionTracerClassName = ExecutionTracer.class.getName().replace('.', '/');
+        String executionTracerDescriptor = Type.getMethodDescriptor(Type.VOID_TYPE, Type.getType(String.class));
+
+        String classNameWithDots = className.replace('/', '.');
+        mv.visitLdcInsn(classNameWithDots);
+        mv.visitMethodInsn(INVOKESTATIC, executionTracerClassName, EXIT_CLASS_INIT, executionTracerDescriptor, false);
+
+        mv.visitInsn(Opcodes.RETURN);
+        mv.visitMaxs(0, 0);
+        mv.visitEnd();
+
+    }
+
     /**
      * The method visitor for the containing class visitor. This method visitor
      * implements the functionality of the containing class at the method level.
@@ -48,6 +124,7 @@ public class EndOfClassInitializerVisitor extends ClassVisitor {
 
         private final String className;
         private final String methodName;
+        private final List<TryCatchBlock> tryCatchBlocks = new LinkedList<>();
         private Label startingTryLabel;
         private Label endingTryLabel;
 
@@ -117,22 +194,6 @@ public class EndOfClassInitializerVisitor extends ClassVisitor {
             super.visitEnd();
         }
 
-        private static class TryCatchBlock {
-            public TryCatchBlock(Label start, Label end, Label handler, String type) {
-                this.start = start;
-                this.end = end;
-                this.handler = handler;
-                this.type = type;
-            }
-
-            Label start;
-            Label end;
-            Label handler;
-            String type;
-        }
-
-        private final List<TryCatchBlock> tryCatchBlocks = new LinkedList<>();
-
         @Override
         public void visitTryCatchBlock(Label start, Label end, Label handler, String type) {
             if (methodName.equals("<clinit>")) {
@@ -142,85 +203,18 @@ public class EndOfClassInitializerVisitor extends ClassVisitor {
             super.visitTryCatchBlock(start, end, handler, type);
         }
 
-    }
-
-    private static final Logger logger = LoggerFactory.getLogger(EndOfClassInitializerVisitor.class);
-
-    private final String className;
-
-    public EndOfClassInitializerVisitor(ClassVisitor visitor, String className) {
-        super(Opcodes.ASM9, visitor);
-        this.className = className;
-    }
-
-    @Override
-    public MethodVisitor visitMethod(int methodAccess, String methodName, String descriptor, String signature,
-                                     String[] exceptions) {
-
-        MethodVisitor mv = super.visitMethod(methodAccess, methodName, descriptor, signature, exceptions);
-
-        if (methodName.equals("<clinit>")) {
-
-            clinitFound = true;
-            EndOfClassInitializerMethodVisitor staticResetMethodAdapter = new EndOfClassInitializerMethodVisitor(
-                    className, methodName, mv);
-
-            return staticResetMethodAdapter;
-        } else {
-            return mv;
+        private static class TryCatchBlock {
+            Label start;
+            Label end;
+            Label handler;
+            String type;
+            public TryCatchBlock(Label start, Label end, Label handler, String type) {
+                this.start = start;
+                this.end = end;
+                this.handler = handler;
+                this.type = type;
+            }
         }
-    }
-
-    private boolean isInterface = false;
-    private boolean clinitFound = false;
-    private boolean hasStaticFields = false;
-
-    private static final String EXIT_CLASS_INIT = "exitClassInit";
-
-    @Override
-    public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
-        super.visit(version, access, name, signature, superName, interfaces);
-        isInterface = ((access & Opcodes.ACC_INTERFACE) == Opcodes.ACC_INTERFACE);
-    }
-
-    @Override
-    public void visitEnd() {
-        if (!clinitFound && !isInterface && hasStaticFields) {
-            // create brand empty <clinit>()
-            createEmptyClassInit();
-        }
-        super.visitEnd();
-    }
-
-    private static boolean isStatic(int access) {
-        return (access & Opcodes.ACC_STATIC) == Opcodes.ACC_STATIC;
-    }
-
-    @Override
-    public FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {
-
-        if (isStatic(access)) {
-            hasStaticFields = true;
-        }
-
-        return super.visitField(access, name, desc, signature, value);
-    }
-
-    private void createEmptyClassInit() {
-        logger.info("Creating <clinit> in class " + className);
-        MethodVisitor mv = cv.visitMethod(Opcodes.ACC_STATIC, "<clinit>", "()V", null, null);
-        mv.visitCode();
-
-        String executionTracerClassName = ExecutionTracer.class.getName().replace('.', '/');
-        String executionTracerDescriptor = Type.getMethodDescriptor(Type.VOID_TYPE, Type.getType(String.class));
-
-        String classNameWithDots = className.replace('/', '.');
-        mv.visitLdcInsn(classNameWithDots);
-        mv.visitMethodInsn(INVOKESTATIC, executionTracerClassName, EXIT_CLASS_INIT, executionTracerDescriptor, false);
-
-        mv.visitInsn(Opcodes.RETURN);
-        mv.visitMaxs(0, 0);
-        mv.visitEnd();
 
     }
 }

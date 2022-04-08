@@ -40,12 +40,10 @@ import java.util.Set;
 public final class StringUnaryExpression extends AbstractExpression<String> implements
         StringValue, UnaryExpression<String> {
 
+    protected static final Logger log = LoggerFactory.getLogger(StringUnaryExpression.class);
     private static final long serialVersionUID = -384874147850376188L;
 
-    protected static final Logger log = LoggerFactory.getLogger(StringUnaryExpression.class);
-
     // protected int conretIntValue;
-
     private final Operator op;
 
     private final Expression<String> expr;

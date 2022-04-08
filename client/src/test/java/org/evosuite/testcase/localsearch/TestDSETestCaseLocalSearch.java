@@ -43,6 +43,10 @@ import static org.junit.Assert.*;
 
 public class TestDSETestCaseLocalSearch {
 
+    private static final long DEFAULT_LOCAL_SEARCH_BUDGET = Properties.LOCAL_SEARCH_BUDGET;
+    private static final Properties.LocalSearchBudgetType DEFAULT_LOCAL_SEARCH_BUDGET_TYPE = Properties.LOCAL_SEARCH_BUDGET_TYPE;
+    private static final Properties.SolverType DEFAULT_DSE_SOLVER = Properties.DSE_SOLVER;
+
     /**
      * Creates the test case:
      *
@@ -70,11 +74,6 @@ public class TestDSETestCaseLocalSearch {
         builder.appendMethod(null, barMethod, int0, int1, int2);
         return builder.getDefaultTestCase();
     }
-
-    private static final long DEFAULT_LOCAL_SEARCH_BUDGET = Properties.LOCAL_SEARCH_BUDGET;
-    private static final Properties.LocalSearchBudgetType DEFAULT_LOCAL_SEARCH_BUDGET_TYPE = Properties.LOCAL_SEARCH_BUDGET_TYPE;
-
-    private static final Properties.SolverType DEFAULT_DSE_SOLVER = Properties.DSE_SOLVER;
 
     @Before
     public void init() {

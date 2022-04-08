@@ -31,10 +31,6 @@ public class ConcolicReflection {
         value = 10;
     }
 
-    public int getValue() {
-        return value;
-    }
-
     public static Object classNewInstance(int x)
             throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException,
             IllegalAccessException, IllegalArgumentException, InvocationTargetException {
@@ -80,15 +76,6 @@ public class ConcolicReflection {
         }
     }
 
-    public boolean greaterThanZero(Integer x) {
-        int intValue = x;
-        if (intValue > 0) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     public static Object methodInvoke(int x) throws IllegalAccessException, IllegalArgumentException,
             InvocationTargetException, NoSuchMethodException, SecurityException {
         ConcolicReflection o = new ConcolicReflection();
@@ -111,6 +98,19 @@ public class ConcolicReflection {
             return null;
         } else {
             return newObject;
+        }
+    }
+
+    public int getValue() {
+        return value;
+    }
+
+    public boolean greaterThanZero(Integer x) {
+        int intValue = x;
+        if (intValue > 0) {
+            return true;
+        } else {
+            return false;
         }
     }
 }

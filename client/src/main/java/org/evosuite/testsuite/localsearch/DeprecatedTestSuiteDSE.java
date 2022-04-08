@@ -48,18 +48,14 @@ import java.util.*;
 public class DeprecatedTestSuiteDSE {
 
     private static final Logger logger = LoggerFactory.getLogger(DeprecatedTestSuiteDSE.class);
-
-    /**
-     * Constant <code>nrConstraints=0</code>
-     */
-    private static int nrConstraints = 0;
-
     /**
      * Constant <code>nrSolvedConstraints=0</code>
      */
     private static final int nrSolvedConstraints = 0;
-    private int nrCurrConstraints = 0;
-
+    /**
+     * Constant <code>nrConstraints=0</code>
+     */
+    private static int nrConstraints = 0;
     /**
      * Constant <code>success=0</code>
      */
@@ -68,109 +64,71 @@ public class DeprecatedTestSuiteDSE {
      * Constant <code>failed=0</code>
      */
     private static int failed = 0;
-
-    private LocalSearchObjective<TestSuiteChromosome> objective;
-
-    private static class Branch {
-
-        public Branch(int branchIndex, boolean isTrueBranch) {
-            super();
-            this.branchIndex = branchIndex;
-            this.isTrueBranch = isTrueBranch;
-        }
-
-        private final int branchIndex;
-
-        private final boolean isTrueBranch;
-
-        public Branch negate() {
-            return new Branch(branchIndex, !isTrueBranch);
-        }
-
-        @Override
-        public int hashCode() {
-            final int prime = 31;
-            int result = 1;
-            result = prime * result + branchIndex;
-            result = prime * result + (isTrueBranch ? 1231 : 1237);
-            return result;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj)
-                return true;
-            if (obj == null)
-                return false;
-            if (getClass() != obj.getClass())
-                return false;
-            Branch other = (Branch) obj;
-            if (branchIndex != other.branchIndex)
-                return false;
-            return isTrueBranch == other.isTrueBranch;
-        }
-
-        @Override
-        public String toString() {
-            return "Branch [branchIndex=" + branchIndex + ", isTrueBranch=" + isTrueBranch + "]";
-        }
-
-    }
-
-    // private final TestSuiteFitnessFunction fitness;
-
     /**
      * Stores the path condition from each test execution
      */
     private final Map<TestChromosome, List<BranchCondition>> pathConditions = new HashMap<>();
-
     private final Set<BranchCondition> unsolvableBranchConditions = new HashSet<>();
-
     private final Map<String, Integer> solutionAttempts = new HashMap<>();
 
+    // private final TestSuiteFitnessFunction fitness;
     private final Collection<TestBranchPair> unsolvedBranchConditions = null;
+    private int nrCurrConstraints = 0;
+    private LocalSearchObjective<TestSuiteChromosome> objective;
 
-    private static class TestBranchPair implements Comparable<TestBranchPair> {
-        TestChromosome test;
-        BranchCondition branch;
-        List<BranchCondition> pathCondition;
+    /**
+     * Recursively determine constraints in expression
+     *
+     * @param expr      a {@link org.evosuite.symbolic.expr.Expression} object.
+     * @param variables a {@link java.util.Set} object.
+     */
+    private static void getVariables(Expression<?> expr, Set<Variable<?>> variables) {
+        variables.addAll(expr.getVariables());
+    }
 
-        private final double ranking;
-
-        TestBranchPair(TestChromosome test, List<BranchCondition> pathCondition, BranchCondition branchCondition) {
-            this.test = test;
-            this.branch = branchCondition;
-            this.pathCondition = pathCondition;
-            this.ranking = computeRanking(pathCondition, branchCondition);
-        }
-
-        private double computeRanking(List<BranchCondition> pathCondition, BranchCondition targetBranch) {
-            List<Constraint<?>> reachingConstraints = new LinkedList<>();
-            for (BranchCondition b : pathCondition) {
-                reachingConstraints.addAll(b.getSupportingConstraints());
-                reachingConstraints.add(b.getConstraint());
-                if (b == targetBranch) {
-                    break;
-                }
+    /**
+     * Returns the set of all branches that are not covered both-wise
+     *
+     * @param coveredBranches
+     * @return
+     */
+    private static Set<Branch> getUncoveredBranches(Set<Branch> coveredBranches) {
+        Set<Branch> uncoveredBranches = new HashSet<>();
+        for (Branch b : coveredBranches) {
+            final Branch negate = b.negate();
+            if (!coveredBranches.contains(negate)) {
+                uncoveredBranches.add(negate);
             }
+        }
+        return uncoveredBranches;
+    }
 
-            int length = 1 + reachingConstraints.size();
+    /**
+     * Returns the set of covered branches by this test
+     *
+     * @param test
+     * @return
+     */
+    private static Set<Branch> getCoveredBranches(TestChromosome test) {
+        final Set<Branch> testCoveredBranches = new HashSet<>();
 
-            int totalSize = 0;
-            for (Constraint<?> constraint : reachingConstraints) {
-                totalSize += constraint.getSize();
+        ExecutionTrace trace = test.getLastExecutionResult().getTrace();
+        {
+            Set<Integer> coveredTrueBranchIndexesInTrace = trace.getCoveredTrueBranches();
+            for (Integer branchIndex : coveredTrueBranchIndexesInTrace) {
+                Branch b = new Branch(branchIndex, true);
+                testCoveredBranches.add(b);
             }
-            double avg_size = (double) totalSize / (double) reachingConstraints.size();
-
-            double ranking = length * avg_size;
-            return ranking;
         }
+        {
 
-        @Override
-        public int compareTo(TestBranchPair arg0) {
-            return Double.compare(this.ranking, arg0.ranking);
+            Set<Integer> coveredFalseBranchIndexesInTrace = trace.getCoveredFalseBranches();
+            for (Integer branchIndex : coveredFalseBranchIndexesInTrace) {
+                Branch b = new Branch(branchIndex, false);
+                testCoveredBranches.add(b);
+            }
         }
-
+        return testCoveredBranches;
     }
 
     /**
@@ -500,16 +458,6 @@ public class DeprecatedTestSuiteDSE {
         return variables;
     }
 
-    /**
-     * Recursively determine constraints in expression
-     *
-     * @param expr      a {@link org.evosuite.symbolic.expr.Expression} object.
-     * @param variables a {@link java.util.Set} object.
-     */
-    private static void getVariables(Expression<?> expr, Set<Variable<?>> variables) {
-        variables.addAll(expr.getVariables());
-    }
-
     private double getFitness(TestSuiteChromosome suite) {
         for (FitnessFunction<TestSuiteChromosome> ff : objective.getFitnessFunctions()) {
             ff.getFitness(suite);
@@ -526,51 +474,6 @@ public class DeprecatedTestSuiteDSE {
             }
         }
         return false;
-    }
-
-    /**
-     * Returns the set of all branches that are not covered both-wise
-     *
-     * @param coveredBranches
-     * @return
-     */
-    private static Set<Branch> getUncoveredBranches(Set<Branch> coveredBranches) {
-        Set<Branch> uncoveredBranches = new HashSet<>();
-        for (Branch b : coveredBranches) {
-            final Branch negate = b.negate();
-            if (!coveredBranches.contains(negate)) {
-                uncoveredBranches.add(negate);
-            }
-        }
-        return uncoveredBranches;
-    }
-
-    /**
-     * Returns the set of covered branches by this test
-     *
-     * @param test
-     * @return
-     */
-    private static Set<Branch> getCoveredBranches(TestChromosome test) {
-        final Set<Branch> testCoveredBranches = new HashSet<>();
-
-        ExecutionTrace trace = test.getLastExecutionResult().getTrace();
-        {
-            Set<Integer> coveredTrueBranchIndexesInTrace = trace.getCoveredTrueBranches();
-            for (Integer branchIndex : coveredTrueBranchIndexesInTrace) {
-                Branch b = new Branch(branchIndex, true);
-                testCoveredBranches.add(b);
-            }
-        }
-        {
-
-            Set<Integer> coveredFalseBranchIndexesInTrace = trace.getCoveredFalseBranches();
-            for (Integer branchIndex : coveredFalseBranchIndexesInTrace) {
-                Branch b = new Branch(branchIndex, false);
-                testCoveredBranches.add(b);
-            }
-        }
-        return testCoveredBranches;
     }
 
     /**
@@ -671,6 +574,93 @@ public class DeprecatedTestSuiteDSE {
         } else {
             calculateUncoveredBranches();
         }
+    }
+
+    private static class Branch {
+
+        private final int branchIndex;
+        private final boolean isTrueBranch;
+
+        public Branch(int branchIndex, boolean isTrueBranch) {
+            super();
+            this.branchIndex = branchIndex;
+            this.isTrueBranch = isTrueBranch;
+        }
+
+        public Branch negate() {
+            return new Branch(branchIndex, !isTrueBranch);
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + branchIndex;
+            result = prime * result + (isTrueBranch ? 1231 : 1237);
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            Branch other = (Branch) obj;
+            if (branchIndex != other.branchIndex)
+                return false;
+            return isTrueBranch == other.isTrueBranch;
+        }
+
+        @Override
+        public String toString() {
+            return "Branch [branchIndex=" + branchIndex + ", isTrueBranch=" + isTrueBranch + "]";
+        }
+
+    }
+
+    private static class TestBranchPair implements Comparable<TestBranchPair> {
+        private final double ranking;
+        TestChromosome test;
+        BranchCondition branch;
+        List<BranchCondition> pathCondition;
+
+        TestBranchPair(TestChromosome test, List<BranchCondition> pathCondition, BranchCondition branchCondition) {
+            this.test = test;
+            this.branch = branchCondition;
+            this.pathCondition = pathCondition;
+            this.ranking = computeRanking(pathCondition, branchCondition);
+        }
+
+        private double computeRanking(List<BranchCondition> pathCondition, BranchCondition targetBranch) {
+            List<Constraint<?>> reachingConstraints = new LinkedList<>();
+            for (BranchCondition b : pathCondition) {
+                reachingConstraints.addAll(b.getSupportingConstraints());
+                reachingConstraints.add(b.getConstraint());
+                if (b == targetBranch) {
+                    break;
+                }
+            }
+
+            int length = 1 + reachingConstraints.size();
+
+            int totalSize = 0;
+            for (Constraint<?> constraint : reachingConstraints) {
+                totalSize += constraint.getSize();
+            }
+            double avg_size = (double) totalSize / (double) reachingConstraints.size();
+
+            double ranking = length * avg_size;
+            return ranking;
+        }
+
+        @Override
+        public int compareTo(TestBranchPair arg0) {
+            return Double.compare(this.ranking, arg0.ranking);
+        }
+
     }
 
 }

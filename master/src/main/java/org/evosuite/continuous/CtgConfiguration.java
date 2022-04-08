@@ -30,6 +30,38 @@ import org.evosuite.Properties.AvailableSchedule;
 public class CtgConfiguration {
 
     /**
+     * how much max memory should be used at the same time
+     * among all the parallel CTG runs?
+     */
+    public final int totalMemoryInMB;
+    /**
+     * Number of cores CTG is allowed to use
+     */
+    public final int numberOfCores;
+    /**
+     * for how long CTG is allowed to run
+     */
+    public final int timeInMinutes;
+    /**
+     * The minimum amount of minutes a search/job should run.
+     * Less than that, and there would be no point to even run
+     * the search.
+     */
+    public final int minMinutesPerJob;
+    /**
+     * Should we call home to upload status/usage statistics?
+     */
+    public final boolean callHome;
+    /**
+     * The type of job scheduler CTG will use
+     */
+    public final AvailableSchedule schedule;
+    /**
+     * Extra parameters for the test data generation jobs.
+     * Should only be used for experiments/debugging
+     */
+    public final String extraArgs;
+    /**
      * To run a job, you need a minimum of RAM.
      * If not enough RAM, then no point in even trying to start
      * a search.
@@ -37,45 +69,6 @@ public class CtgConfiguration {
      * clients together
      */
     protected final int MINIMUM_MEMORY_PER_JOB_MB = 500;
-
-    /**
-     * how much max memory should be used at the same time
-     * among all the parallel CTG runs?
-     */
-    public final int totalMemoryInMB;
-
-    /**
-     * Number of cores CTG is allowed to use
-     */
-    public final int numberOfCores;
-
-    /**
-     * for how long CTG is allowed to run
-     */
-    public final int timeInMinutes;
-
-    /**
-     * The minimum amount of minutes a search/job should run.
-     * Less than that, and there would be no point to even run
-     * the search.
-     */
-    public final int minMinutesPerJob;
-
-    /**
-     * Should we call home to upload status/usage statistics?
-     */
-    public final boolean callHome;
-
-    /**
-     * The type of job scheduler CTG will use
-     */
-    public final AvailableSchedule schedule;
-
-    /**
-     * Extra parameters for the test data generation jobs.
-     * Should only be used for experiments/debugging
-     */
-    public final String extraArgs;
 
 
     public CtgConfiguration(int totalMemoryInMB, int numberOfCores,

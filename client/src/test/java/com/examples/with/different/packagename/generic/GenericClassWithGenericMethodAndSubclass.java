@@ -25,6 +25,17 @@ package com.examples.with.different.packagename.generic;
  */
 public class GenericClassWithGenericMethodAndSubclass<T> {
 
+    public final <S extends T> Foo<S> wrap(S object) {
+        return new Foo<>(object);
+    }
+
+    public boolean test(Foo<T> foo1, Foo<T> foo2) {
+        if (foo1.getObject() == foo2.getObject())
+            return true;
+        else
+            return false;
+    }
+
     public static class Foo<T> {
         private final T object;
 
@@ -35,16 +46,5 @@ public class GenericClassWithGenericMethodAndSubclass<T> {
         public T getObject() {
             return object;
         }
-    }
-
-    public final <S extends T> Foo<S> wrap(S object) {
-        return new Foo<>(object);
-    }
-
-    public boolean test(Foo<T> foo1, Foo<T> foo2) {
-        if (foo1.getObject() == foo2.getObject())
-            return true;
-        else
-            return false;
     }
 }

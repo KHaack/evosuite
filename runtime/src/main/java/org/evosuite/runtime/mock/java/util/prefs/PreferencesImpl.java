@@ -54,7 +54,7 @@ public class PreferencesImpl extends AbstractPreferences {
 
     @Override
     protected AbstractPreferences childSpi(String name) {
-        if(children.containsKey(name))
+        if (children.containsKey(name))
             return children.get(name);
         else {
             PreferencesImpl child = new PreferencesImpl(this, name);

@@ -34,6 +34,18 @@ import org.objectweb.asm.Type;
  */
 public abstract class SymbolicFunction {
 
+    /* non-assignable references */
+    protected final SymbolicEnvironment env;
+    private final String owner;
+    private final String name;
+    private final String desc;
+    private final Object[] symb_args;
+    private final Object[] conc_args;
+    /* assignable references */
+    private Object conc_receiver;
+    private ReferenceExpression symb_receiver;
+    private Object conc_ret_val;
+    private Object symb_ret_val;
     public SymbolicFunction(SymbolicEnvironment env, String owner,
                             String name, String desc) {
         super();
@@ -44,21 +56,6 @@ public abstract class SymbolicFunction {
         this.symb_args = new Object[Type.getArgumentTypes(desc).length];
         this.conc_args = new Object[Type.getArgumentTypes(desc).length];
     }
-
-    /* non-assignable references */
-    protected final SymbolicEnvironment env;
-    private final String owner;
-    private final String name;
-    private final String desc;
-    private final Object[] symb_args;
-    private final Object[] conc_args;
-
-    /* assignable references */
-    private Object conc_receiver;
-    private ReferenceExpression symb_receiver;
-
-    private Object conc_ret_val;
-    private Object symb_ret_val;
 
     final public String getOwner() {
         return owner;

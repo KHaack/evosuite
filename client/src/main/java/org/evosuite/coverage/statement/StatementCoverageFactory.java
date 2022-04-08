@@ -32,6 +32,11 @@ import java.util.List;
 public class StatementCoverageFactory extends
         AbstractFitnessFactory<StatementCoverageTestFitness> {
 
+    private static boolean isUsable(BytecodeInstruction ins) {
+
+        return !ins.isLabel() && !ins.isLineNumber();
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -64,10 +69,5 @@ public class StatementCoverageFactory extends
         goalComputationTime = end - start;
 
         return goals;
-    }
-
-    private static boolean isUsable(BytecodeInstruction ins) {
-
-        return !ins.isLabel() && !ins.isLineNumber();
     }
 }

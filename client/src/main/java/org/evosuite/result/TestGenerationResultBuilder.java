@@ -46,6 +46,26 @@ import java.util.Set;
 
 public class TestGenerationResultBuilder {
 
+    private static TestGenerationResultBuilder instance = null;
+    private final Map<String, String> testCode = new LinkedHashMap<>();
+    private final Map<String, TestCase> testCases = new LinkedHashMap<>();
+    private final Map<String, String> testComments = new LinkedHashMap<>();
+    private final Map<String, Set<Integer>> testLineCoverage = new LinkedHashMap<>();
+    private final Map<String, Set<BranchInfo>> testBranchCoverage = new LinkedHashMap<>();
+    private final Map<String, Set<MutationInfo>> testMutantCoverage = new LinkedHashMap<>();
+    private final Map<String, Set<Failure>> contractViolations = new LinkedHashMap<>();
+    private final Set<BranchInfo> uncoveredBranches = new LinkedHashSet<>();
+    private final Set<MutationInfo> uncoveredMutants = new LinkedHashSet<>();
+    private final LinkedHashMap<FitnessFunction<?>, Double> targetCoverages = new LinkedHashMap<>();
+    private String code = "";
+    private GeneticAlgorithm<?> ga = null;
+    private ExplorationAlgorithmBase dse = null;
+    private Set<Integer> uncoveredLines = LinePool.getAllLines();
+
+    private TestGenerationResultBuilder() {
+        resetTestData();
+    }
+
     public static <T extends Chromosome<T>> TestGenerationResult<T> buildErrorResult(String errorMessage) {
         TestGenerationResultImpl<T> result = new TestGenerationResultImpl<T>();
         result.setStatus(Status.ERROR);
@@ -72,12 +92,6 @@ public class TestGenerationResultBuilder {
         getInstance().fillInformationFromTestData(result);
         getInstance().resetTestData();
         return result;
-    }
-
-    private static TestGenerationResultBuilder instance = null;
-
-    private TestGenerationResultBuilder() {
-        resetTestData();
     }
 
     public static TestGenerationResultBuilder getInstance() {
@@ -145,34 +159,6 @@ public class TestGenerationResultBuilder {
         }
 
     }
-
-    private String code = "";
-
-    private GeneticAlgorithm<?> ga = null;
-
-    private ExplorationAlgorithmBase dse = null;
-
-    private final Map<String, String> testCode = new LinkedHashMap<>();
-
-    private final Map<String, TestCase> testCases = new LinkedHashMap<>();
-
-    private final Map<String, String> testComments = new LinkedHashMap<>();
-
-    private final Map<String, Set<Integer>> testLineCoverage = new LinkedHashMap<>();
-
-    private final Map<String, Set<BranchInfo>> testBranchCoverage = new LinkedHashMap<>();
-
-    private final Map<String, Set<MutationInfo>> testMutantCoverage = new LinkedHashMap<>();
-
-    private final Map<String, Set<Failure>> contractViolations = new LinkedHashMap<>();
-
-    private Set<Integer> uncoveredLines = LinePool.getAllLines();
-
-    private final Set<BranchInfo> uncoveredBranches = new LinkedHashSet<>();
-
-    private final Set<MutationInfo> uncoveredMutants = new LinkedHashSet<>();
-
-    private final LinkedHashMap<FitnessFunction<?>, Double> targetCoverages = new LinkedHashMap<>();
 
     public void setTestCase(String name, String code, TestCase testCase, String comment, ExecutionResult result) {
         testCode.put(name, code);

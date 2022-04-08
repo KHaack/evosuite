@@ -30,28 +30,20 @@ import java.util.LinkedList;
  */
 public class JOptionPaneInputs {
 
-    /**
-     * The type of GUI action that is fed to the JOptionPane mock
-     *
-     * @author galeotti
-     */
-    public enum GUIAction {
-        // This action represents entering a unconstrained String
-        STRING_INPUT,
-        // Represents a YES/NO/CLOSED answer to a dialog
-        YES_NO_SELECTION,
-        // Represents a YES/NO/CANCEL/CLOSED answer to a dialog
-        YES_NO_CANCEL_SELECTION,
-        // Represents a OK/CANCEL/CLOSED answer to a dialog
-        OK_CANCEL_SELECTION,
-        // Represents a {ANY OPTION}/CLOSED answer to a dialog
-        OPTION_SELECTION
-    }
+    private static JOptionPaneInputs instance = null;
+    private final LinkedList<String> stringInputs = new LinkedList<>();
+    private final LinkedList<Integer> yesNoCancelSelections = new LinkedList<>();
+    private final LinkedList<Integer> yesNoSelections = new LinkedList<>();
+    private final LinkedList<Integer> optionSelections = new LinkedList<>();
+    private final LinkedList<Integer> okCancelSelections = new LinkedList<>();
+    private boolean hasStringDialogs = false;
+    private boolean hasYesCancelDialogs = false;
+    private boolean hasYesNoCancelDialogs = false;
+    private boolean hasYesNoDialogs = false;
+    private boolean hasOptionDialogs = false;
 
     private JOptionPaneInputs() {
     }
-
-    private static JOptionPaneInputs instance = null;
 
     public synchronized static JOptionPaneInputs getInstance() {
         if (instance == null) {
@@ -65,17 +57,6 @@ public class JOptionPaneInputs {
      */
     public synchronized static void resetSingleton() {
         instance = null;
-    }
-
-    /**
-     * This method should clean all the input queues before test case execution
-     */
-    public void initForTestCase() {
-        this.stringInputs.clear();
-        this.yesNoCancelSelections.clear();
-        this.yesNoSelections.clear();
-        this.okCancelSelections.clear();
-        this.optionSelections.clear();
     }
 
     /**
@@ -100,12 +81,23 @@ public class JOptionPaneInputs {
         getInstance().enqueueOptionSelection0(selection);
     }
 
-    private void enqueueOptionSelection0(int selection) {
-        this.optionSelections.add(selection);
-    }
-
     public static void enqueueOkCancelSelection(int selection) {
         getInstance().enqueueOkCancelSelection0(selection);
+    }
+
+    /**
+     * This method should clean all the input queues before test case execution
+     */
+    public void initForTestCase() {
+        this.stringInputs.clear();
+        this.yesNoCancelSelections.clear();
+        this.yesNoSelections.clear();
+        this.okCancelSelections.clear();
+        this.optionSelections.clear();
+    }
+
+    private void enqueueOptionSelection0(int selection) {
+        this.optionSelections.add(selection);
     }
 
     private void enqueueOkCancelSelection0(int selection) {
@@ -133,17 +125,9 @@ public class JOptionPaneInputs {
         return stringInputs.poll();
     }
 
-    private final LinkedList<String> stringInputs = new LinkedList<>();
-
     private void enqueueInputString0(String str) {
         stringInputs.add(str);
     }
-
-    private boolean hasStringDialogs = false;
-    private boolean hasYesCancelDialogs = false;
-    private boolean hasYesNoCancelDialogs = false;
-    private boolean hasYesNoDialogs = false;
-    private boolean hasOptionDialogs = false;
 
     /**
      * Report that the SUT has issued a call to a JOptionPane dialog
@@ -224,8 +208,6 @@ public class JOptionPaneInputs {
         return !stringInputs.isEmpty();
     }
 
-    private final LinkedList<Integer> yesNoCancelSelections = new LinkedList<>();
-
     public boolean containsYesNoCancelSelection() {
         return !yesNoCancelSelections.isEmpty();
     }
@@ -237,10 +219,6 @@ public class JOptionPaneInputs {
         }
         return yesNoCancelSelections.poll();
     }
-
-    private final LinkedList<Integer> yesNoSelections = new LinkedList<>();
-
-    private final LinkedList<Integer> optionSelections = new LinkedList<>();
 
     public boolean containsYesNoSelection() {
         return !yesNoSelections.isEmpty();
@@ -254,8 +232,6 @@ public class JOptionPaneInputs {
         }
         return yesNoSelections.poll();
     }
-
-    private final LinkedList<Integer> okCancelSelections = new LinkedList<>();
 
     public boolean containsOkCancelSelection() {
         return !okCancelSelections.isEmpty();
@@ -280,5 +256,23 @@ public class JOptionPaneInputs {
 
     public boolean containsOptionSelection() {
         return !optionSelections.isEmpty();
+    }
+
+    /**
+     * The type of GUI action that is fed to the JOptionPane mock
+     *
+     * @author galeotti
+     */
+    public enum GUIAction {
+        // This action represents entering a unconstrained String
+        STRING_INPUT,
+        // Represents a YES/NO/CLOSED answer to a dialog
+        YES_NO_SELECTION,
+        // Represents a YES/NO/CANCEL/CLOSED answer to a dialog
+        YES_NO_CANCEL_SELECTION,
+        // Represents a OK/CANCEL/CLOSED answer to a dialog
+        OK_CANCEL_SELECTION,
+        // Represents a {ANY OPTION}/CLOSED answer to a dialog
+        OPTION_SELECTION
     }
 }

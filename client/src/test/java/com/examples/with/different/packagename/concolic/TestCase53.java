@@ -22,6 +22,57 @@ package com.examples.with.different.packagename.concolic;
 public class TestCase53 {
 
     /**
+     * @param args
+     */
+    public static void main(String[] args) {
+        Stemmer stemmer0 = new Stemmer();
+        char[] charArray0 = new char[8];
+        char char0 = 'n';
+        char char1 = 'n';
+        charArray0[0] = char0;
+        charArray0[1] = char0;
+        charArray0[2] = char0;
+        charArray0[3] = char0;
+        charArray0[4] = char0;
+        charArray0[5] = char0;
+        charArray0[6] = char0;
+        charArray0[7] = char0;
+        charArray0[0] = char0;
+        char char2 = 'S';
+        stemmer0.add(charArray0[3]);
+        char char3 = 'L';
+        charArray0[1] = char3;
+        stemmer0.add(charArray0[4]);
+        char char4 = 'g';
+        stemmer0.add(charArray0[3]);
+        char char5 = '\u0013';
+        stemmer0.stem();
+        charArray0[2] = char5;
+        Stemmer stemmer1 = new Stemmer();
+        char char6 = '\u0004';
+        stemmer0.add(charArray0[3]);
+        charArray0[3] = char6;
+        char char7 = '|';
+        stemmer1.stem();
+        charArray0[4] = char7;
+        stemmer0.add(char0);
+        char char8 = 'x';
+        stemmer0.add(char1);
+        String string0 = stemmer0.toString();
+        charArray0[5] = char8;
+        char[] charArray1 = stemmer0.getResultBuffer();
+        String string1 = stemmer0.toString();
+        char char9 = 'o';
+        charArray0[6] = char9;
+        int int0 = 1029;
+        stemmer1.stem();
+        stemmer0.add(charArray1, int0);
+        char char10 = '\u0006';
+        charArray0[7] = char10;
+        stemmer0.add(charArray0, charArray0[2]);
+    }
+
+    /**
      * Stemmer, implementing the Porter Stemming Algorithm
      * <p>
      * The Stemmer class transforms a word into its root form. The input word
@@ -30,11 +81,11 @@ public class TestCase53 {
      */
 
     public static class Stemmer {
+        private static final int INC = 50;
         private char[] b;
         private int i, /* offset into b */
                 i_end, /* offset to end of stemmed word */
                 j, k;
-        private static final int INC = 50;
 
         /* unit of size whereby b is increased */
         public Stemmer() {
@@ -561,57 +612,6 @@ public class TestCase53 {
          * forcing lower case must be done outside the Stemmer class. Usage:
          * Stemmer file-name file-name ...
          */
-    }
-
-    /**
-     * @param args
-     */
-    public static void main(String[] args) {
-        Stemmer stemmer0 = new Stemmer();
-        char[] charArray0 = new char[8];
-        char char0 = 'n';
-        char char1 = 'n';
-        charArray0[0] = char0;
-        charArray0[1] = char0;
-        charArray0[2] = char0;
-        charArray0[3] = char0;
-        charArray0[4] = char0;
-        charArray0[5] = char0;
-        charArray0[6] = char0;
-        charArray0[7] = char0;
-        charArray0[0] = char0;
-        char char2 = 'S';
-        stemmer0.add(charArray0[3]);
-        char char3 = 'L';
-        charArray0[1] = char3;
-        stemmer0.add(charArray0[4]);
-        char char4 = 'g';
-        stemmer0.add(charArray0[3]);
-        char char5 = '\u0013';
-        stemmer0.stem();
-        charArray0[2] = char5;
-        Stemmer stemmer1 = new Stemmer();
-        char char6 = '\u0004';
-        stemmer0.add(charArray0[3]);
-        charArray0[3] = char6;
-        char char7 = '|';
-        stemmer1.stem();
-        charArray0[4] = char7;
-        stemmer0.add(char0);
-        char char8 = 'x';
-        stemmer0.add(char1);
-        String string0 = stemmer0.toString();
-        charArray0[5] = char8;
-        char[] charArray1 = stemmer0.getResultBuffer();
-        String string1 = stemmer0.toString();
-        char char9 = 'o';
-        charArray0[6] = char9;
-        int int0 = 1029;
-        stemmer1.stem();
-        stemmer0.add(charArray1, int0);
-        char char10 = '\u0006';
-        charArray0[7] = char10;
-        stemmer0.add(charArray0, charArray0[2]);
     }
 
 }

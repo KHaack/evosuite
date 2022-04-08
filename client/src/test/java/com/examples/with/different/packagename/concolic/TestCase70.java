@@ -21,6 +21,17 @@ package com.examples.with.different.packagename.concolic;
 
 public class TestCase70 {
 
+    /**
+     * @param args
+     */
+    public static void main(String[] args) {
+        String string0 = "";
+        String string1 = "";
+        Pat pat0 = new Pat();
+        String string2 = Pat.Reverse(string0);
+        int int0 = pat0.Subject(string2, string1);
+    }
+
     public static class Pat {
         public static String Reverse(String s) {
             // RTN REVERSE OF s
@@ -103,17 +114,6 @@ public class TestCase70 {
             return result;
         }
 
-    }
-
-    /**
-     * @param args
-     */
-    public static void main(String[] args) {
-        String string0 = "";
-        String string1 = "";
-        Pat pat0 = new Pat();
-        String string2 = Pat.Reverse(string0);
-        int int0 = pat0.Subject(string2, string1);
     }
 
 }

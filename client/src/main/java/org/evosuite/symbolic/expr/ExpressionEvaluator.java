@@ -57,10 +57,10 @@ import java.util.StringTokenizer;
  */
 public class ExpressionEvaluator implements ExpressionVisitor<Object, Void> {
 
+    public static final String IMPLEMENT_ME = "Implement me.";
+    protected static final Logger log = LoggerFactory.getLogger(ExpressionEvaluator.class);
     private static final long TRUE_VALUE = 1L;
     private static final long FALSE_VALUE = 0L;
-    protected static final Logger log = LoggerFactory.getLogger(ExpressionEvaluator.class);
-    public static final String IMPLEMENT_ME = "Implement me.";
 
     @Override
     public Object visit(IntegerBinaryExpression n, Void arg) {

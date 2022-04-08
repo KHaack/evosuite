@@ -28,9 +28,9 @@ import java.util.List;
 public enum Java9InvisiblePackage {
 
     instance;
-    private static boolean classesLoaded = false;
     private static final List<String> excludedClasses = new ArrayList<>();
     private static final String FILENAME = "/java9_invisible_packages.txt";
+    private static boolean classesLoaded = false;
 
     private void loadExcludedClassNames() {
         if (classesLoaded)

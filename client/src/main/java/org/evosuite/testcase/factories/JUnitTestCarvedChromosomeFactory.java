@@ -44,15 +44,11 @@ public class JUnitTestCarvedChromosomeFactory implements
     private static final long serialVersionUID = -569338946355072318L;
 
     private static final Logger logger = LoggerFactory.getLogger(JUnitTestCarvedChromosomeFactory.class);
-
-    private final List<TestCase> junitTests = new ArrayList<>();
-
-    private final ChromosomeFactory<TestChromosome> defaultFactory;
-
     // These two variables will go once the new statistics frontend is finally finished
     private static int totalNumberOfTestsCarved = 0;
-
     private static double carvedCoverage = 0.0;
+    private final List<TestCase> junitTests = new ArrayList<>();
+    private final ChromosomeFactory<TestChromosome> defaultFactory;
 
     /**
      * The carved test cases are used only with a certain probability P. So,
@@ -68,6 +64,13 @@ public class JUnitTestCarvedChromosomeFactory implements
         readTestCases();
     }
 
+    public static int getTotalNumberOfTestsCarved() {
+        return totalNumberOfTestsCarved;
+    }
+
+    public static double getCoverageOfCarvedTests() {
+        return carvedCoverage;
+    }
 
     private void readTestCases() throws IllegalStateException {
         CarvingManager manager = CarvingManager.getInstance();
@@ -151,14 +154,6 @@ public class JUnitTestCarvedChromosomeFactory implements
         }
 
         return chromosome;
-    }
-
-    public static int getTotalNumberOfTestsCarved() {
-        return totalNumberOfTestsCarved;
-    }
-
-    public static double getCoverageOfCarvedTests() {
-        return carvedCoverage;
     }
 
 }

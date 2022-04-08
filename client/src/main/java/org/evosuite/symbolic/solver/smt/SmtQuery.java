@@ -76,10 +76,6 @@ public final class SmtQuery {
         return this.functionDeclarations;
     }
 
-    public void setLogic(String smtLogic) {
-        this.smtLogic = smtLogic;
-    }
-
     public void addOption(String optionName, String optionValue) {
         this.options.put(optionName, optionValue);
     }
@@ -90,6 +86,10 @@ public final class SmtQuery {
 
     public String getLogic() {
         return smtLogic;
+    }
+
+    public void setLogic(String smtLogic) {
+        this.smtLogic = smtLogic;
     }
 
     public Set<String> getOptions() {

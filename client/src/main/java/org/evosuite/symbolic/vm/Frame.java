@@ -31,16 +31,35 @@ import java.lang.reflect.Member;
 public abstract class Frame {
 
     /**
+     * Operand stack
+     */
+    public final OperandStack operandStack = new OperandStack();
+    /**
+     * List of local variables
+     */
+    final LocalsTable localsTable;
+    /**
+     * The last method invoked by this frame needs a "this" receiver reference,
+     * i.e., is an instance method or constructor.
+     */
+    boolean invokeNeedsThis;
+    /**
      * The last method we invoked is instrumented. This means we invoked some
      * code that is neither native nor defined by an uninstrumented JDK class.
      */
     private boolean weInvokedInstrumentedCode = true;
-
     /**
      * The last method we invoked was the code of a jvm-generated
      * magic lambda class.
      */
     private boolean weInvokedSynteticLambdaCodeThatInvokesNonInstrCode = false;
+
+    /**
+     * Constructor
+     */
+    protected Frame(int maxLocals) {
+        localsTable = new LocalsTable(maxLocals);
+    }
 
     /**
      * @return the last method invoked is instrumented, because it is neither
@@ -71,29 +90,6 @@ public abstract class Frame {
 
     public void invokeLambdaSyntheticCodeThatInvokesNonInstrCode(boolean b) {
         weInvokedSynteticLambdaCodeThatInvokesNonInstrCode = b;
-    }
-
-    /**
-     * The last method invoked by this frame needs a "this" receiver reference,
-     * i.e., is an instance method or constructor.
-     */
-    boolean invokeNeedsThis;
-
-    /**
-     * Operand stack
-     */
-    public final OperandStack operandStack = new OperandStack();
-
-    /**
-     * List of local variables
-     */
-    final LocalsTable localsTable;
-
-    /**
-     * Constructor
-     */
-    protected Frame(int maxLocals) {
-        localsTable = new LocalsTable(maxLocals);
     }
 
     public abstract Member getMember();

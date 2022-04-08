@@ -34,6 +34,9 @@ import java.util.*;
 
 public class Z3Solver extends SmtSolver {
 
+    private final static int ASCII_TABLE_LENGTH = 90;
+    static Logger logger = LoggerFactory.getLogger(Z3Solver.class);
+
     public Z3Solver() {
         super();
     }
@@ -41,84 +44,6 @@ public class Z3Solver extends SmtSolver {
     public Z3Solver(boolean addMissingVariables) {
         super(addMissingVariables);
     }
-
-    static Logger logger = LoggerFactory.getLogger(Z3Solver.class);
-
-    @Override
-    public SolverResult executeSolver(Collection<Constraint<?>> constraints) throws SolverTimeoutException, IOException,
-            SolverParseException, SolverEmptyQueryException, SolverErrorException {
-
-        long hard_timeout = Properties.DSE_CONSTRAINT_SOLVER_TIMEOUT_MILLIS;
-
-        Set<Variable<?>> variables = new HashSet<>();
-        for (Constraint<?> c : constraints) {
-            Set<Variable<?>> c_variables = c.getVariables();
-            variables.addAll(c_variables);
-        }
-
-        SmtQuery query = buildSmtQuery(constraints, hard_timeout);
-
-        if (query.getConstantDeclarations().isEmpty()) {
-            logger.debug("Z3 SMT query has no variables");
-            throw new SolverEmptyQueryException("Z3 SMT query has no variables");
-        }
-
-        if (query.getAssertions().isEmpty()) {
-            Map<String, Object> emptySolution = new HashMap<>();
-            SolverResult emptySAT = SolverResult.newSAT(emptySolution);
-            return emptySAT;
-        }
-
-        SmtQueryPrinter printer = new SmtQueryPrinter();
-        String queryStr = printer.print(query);
-
-        logger.debug("Z3 Query:");
-        logger.debug(queryStr);
-
-        if (Properties.Z3_PATH == null) {
-            String errMsg = "Property Z3_PATH should be setted in order to use the Z3 Solver!";
-            logger.error(errMsg);
-            throw new IllegalStateException(errMsg);
-        }
-
-        String z3Cmd = Properties.Z3_PATH + " -smt2 -in ";
-
-        ByteArrayOutputStream stdout = new ByteArrayOutputStream();
-        String output;
-        try {
-            launchNewSolvingProcess(z3Cmd, queryStr, (int) hard_timeout, stdout);
-            output = stdout.toString("UTF-8");
-        } catch (SolverErrorException ex) {
-            output = stdout.toString("UTF-8");
-            if (!output.startsWith("unsat")) {
-                throw ex;
-            }
-        }
-
-        Map<String, Object> initialValues = getConcreteValues(variables);
-        SmtModelParser parser;
-        if (this.addMissingVariables()) {
-            parser = new SmtModelParser(initialValues);
-        } else {
-            parser = new SmtModelParser();
-        }
-
-        SolverResult result = parser.parse(output);
-
-        if (result.isSAT()) {
-            // check if solution is correct, otherwise return UNSAT
-            boolean check = checkSAT(constraints, result);
-            if (!check) {
-                logger.debug("Z3 solution fails to solve the constraint system!");
-                SolverResult unsatResult = SolverResult.newUNSAT();
-                return unsatResult;
-            }
-        }
-
-        return result;
-    }
-
-    private final static int ASCII_TABLE_LENGTH = 90;
 
     private static String encodeString(String str) {
         char[] charArray = str.toCharArray();
@@ -255,6 +180,80 @@ public class Z3Solver extends SmtSolver {
 
         return query;
 
+    }
+
+    @Override
+    public SolverResult executeSolver(Collection<Constraint<?>> constraints) throws SolverTimeoutException, IOException,
+            SolverParseException, SolverEmptyQueryException, SolverErrorException {
+
+        long hard_timeout = Properties.DSE_CONSTRAINT_SOLVER_TIMEOUT_MILLIS;
+
+        Set<Variable<?>> variables = new HashSet<>();
+        for (Constraint<?> c : constraints) {
+            Set<Variable<?>> c_variables = c.getVariables();
+            variables.addAll(c_variables);
+        }
+
+        SmtQuery query = buildSmtQuery(constraints, hard_timeout);
+
+        if (query.getConstantDeclarations().isEmpty()) {
+            logger.debug("Z3 SMT query has no variables");
+            throw new SolverEmptyQueryException("Z3 SMT query has no variables");
+        }
+
+        if (query.getAssertions().isEmpty()) {
+            Map<String, Object> emptySolution = new HashMap<>();
+            SolverResult emptySAT = SolverResult.newSAT(emptySolution);
+            return emptySAT;
+        }
+
+        SmtQueryPrinter printer = new SmtQueryPrinter();
+        String queryStr = printer.print(query);
+
+        logger.debug("Z3 Query:");
+        logger.debug(queryStr);
+
+        if (Properties.Z3_PATH == null) {
+            String errMsg = "Property Z3_PATH should be setted in order to use the Z3 Solver!";
+            logger.error(errMsg);
+            throw new IllegalStateException(errMsg);
+        }
+
+        String z3Cmd = Properties.Z3_PATH + " -smt2 -in ";
+
+        ByteArrayOutputStream stdout = new ByteArrayOutputStream();
+        String output;
+        try {
+            launchNewSolvingProcess(z3Cmd, queryStr, (int) hard_timeout, stdout);
+            output = stdout.toString("UTF-8");
+        } catch (SolverErrorException ex) {
+            output = stdout.toString("UTF-8");
+            if (!output.startsWith("unsat")) {
+                throw ex;
+            }
+        }
+
+        Map<String, Object> initialValues = getConcreteValues(variables);
+        SmtModelParser parser;
+        if (this.addMissingVariables()) {
+            parser = new SmtModelParser(initialValues);
+        } else {
+            parser = new SmtModelParser();
+        }
+
+        SolverResult result = parser.parse(output);
+
+        if (result.isSAT()) {
+            // check if solution is correct, otherwise return UNSAT
+            boolean check = checkSAT(constraints, result);
+            if (!check) {
+                logger.debug("Z3 solution fails to solve the constraint system!");
+                SolverResult unsatResult = SolverResult.newUNSAT();
+                return unsatResult;
+            }
+        }
+
+        return result;
     }
 
 }

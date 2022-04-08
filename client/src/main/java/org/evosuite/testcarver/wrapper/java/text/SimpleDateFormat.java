@@ -65,12 +65,6 @@ public class SimpleDateFormat extends java.text.SimpleDateFormat {
         Capturer.enable(Instrumenter.CAPTURE_ID_JAVA_TEXT_SIMPLEDATEFORMAT, this, CaptureLog.RETURN_TYPE_VOID);
     }
 
-    public void set2DigitYearStart(java.util.Date startDate) {
-        Capturer.capture(Instrumenter.CAPTURE_ID_JAVA_TEXT_SIMPLEDATEFORMAT, this, "set2DigitYearStart", "(Ljava/util/Date;)V", new Object[]{startDate});
-        super.set2DigitYearStart(startDate);
-        Capturer.enable(Instrumenter.CAPTURE_ID_JAVA_TEXT_SIMPLEDATEFORMAT, this, CaptureLog.RETURN_TYPE_VOID);
-    }
-
     public java.util.Date get2DigitYearStart() {
         Capturer.capture(Instrumenter.CAPTURE_ID_JAVA_TEXT_SIMPLEDATEFORMAT, this, "get2DigitYearStart", "()Ljava/util/Date;", new Object[]{});
         java.util.Date ret = new Date(super.get2DigitYearStart().getTime());
@@ -78,6 +72,11 @@ public class SimpleDateFormat extends java.text.SimpleDateFormat {
         return ret;
     }
 
+    public void set2DigitYearStart(java.util.Date startDate) {
+        Capturer.capture(Instrumenter.CAPTURE_ID_JAVA_TEXT_SIMPLEDATEFORMAT, this, "set2DigitYearStart", "(Ljava/util/Date;)V", new Object[]{startDate});
+        super.set2DigitYearStart(startDate);
+        Capturer.enable(Instrumenter.CAPTURE_ID_JAVA_TEXT_SIMPLEDATEFORMAT, this, CaptureLog.RETURN_TYPE_VOID);
+    }
 
     public AttributedCharacterIterator formatToCharacterIterator(Object obj) {
         Capturer.capture(Instrumenter.CAPTURE_ID_JAVA_TEXT_SIMPLEDATEFORMAT, this, "formatToCharacterIterator", "(Ljava/lang/Object;)Ljava/text/AttributedCharacterIterator;", new Object[]{obj});

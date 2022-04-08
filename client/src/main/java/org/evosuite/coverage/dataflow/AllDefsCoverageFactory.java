@@ -43,6 +43,12 @@ public class AllDefsCoverageFactory extends
      * org.evosuite.coverage.TestFitnessFactory#getCoverageGoals()
      */
 
+    private static AllDefsCoverageTestFitness createGoal(Definition def,
+                                                         Map<Use, DefUseCoverageTestFitness> uses) {
+
+        return new AllDefsCoverageTestFitness(def, uses);
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -60,12 +66,6 @@ public class AllDefsCoverageFactory extends
         }
 
         return goals;
-    }
-
-    private static AllDefsCoverageTestFitness createGoal(Definition def,
-                                                         Map<Use, DefUseCoverageTestFitness> uses) {
-
-        return new AllDefsCoverageTestFitness(def, uses);
     }
 
 }

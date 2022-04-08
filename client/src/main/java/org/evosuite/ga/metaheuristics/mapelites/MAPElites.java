@@ -62,18 +62,13 @@ public class MAPElites extends GeneticAlgorithm<TestChromosome> {
     private static final long serialVersionUID = 1L;
 
     private static final Logger logger = LoggerFactory.getLogger(MAPElites.class);
-
-    private final Map<FitnessFunctionWrapper, Map<FeatureVector, TestChromosome>> populationMap;
-    private final Set<FeatureVector> droppedFeatureVectors;
-
-    private final int featureVectorPossibilityCount;
-    private final int featureCount;
-
-    private final List<TestChromosome> bestIndividuals;
-
     private static final List<FeatureVector> IGNORE_VECTORS =
             Arrays.asList(new FeatureVector(new Inspector[0], null));
-
+    private final Map<FitnessFunctionWrapper, Map<FeatureVector, TestChromosome>> populationMap;
+    private final Set<FeatureVector> droppedFeatureVectors;
+    private final int featureVectorPossibilityCount;
+    private final int featureCount;
+    private final List<TestChromosome> bestIndividuals;
     private final CrossOverFunction<TestChromosome> crossoverFunction = new SinglePointCrossOver<>();
 
     public MAPElites(ChromosomeFactory<TestChromosome> factory) {

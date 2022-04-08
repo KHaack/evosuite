@@ -21,6 +21,8 @@ package com.examples.with.different.packagename.concolic;
 
 public class MathLong {
 
+    private Long f = 3215155154115L;
+
     public long divide(long a, long b) {
         return a / b;
     }
@@ -40,8 +42,6 @@ public class MathLong {
     public long substract(long a, long b) {
         return a - b;
     }
-
-    private Long f = 3215155154115L;
 
     public void unreach() {
         if (f == null) {

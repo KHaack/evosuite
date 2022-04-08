@@ -24,9 +24,8 @@ import static com.examples.with.different.packagename.concolic.Assertions.checkE
 public class TestCase22 {
 
     public static final float FLOAT_VALUE_1 = 0.0099100191F;
-    private static final float FLOAT_VALUE_2 = -0.3333F;
-
     public static final double DOUBLE_VALUE_1 = Math.PI;
+    private static final float FLOAT_VALUE_2 = -0.3333F;
     private static final double DOUBLE_VALUE_2 = -20220020D;
 
     public static void test(float float0, double double0) {

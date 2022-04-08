@@ -28,11 +28,11 @@ package org.evosuite.dse;
  */
 public class VMError extends Error {
 
+    private static final long serialVersionUID = 4986434593568038501L;
+
+
     public VMError(String arg0, Throwable arg1) {
         super(arg0, arg1);
     }
-
-
-    private static final long serialVersionUID = 4986434593568038501L;
 
 }

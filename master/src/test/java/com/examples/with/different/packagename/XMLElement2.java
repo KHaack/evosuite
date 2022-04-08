@@ -95,28 +95,6 @@ import java.util.Vector;
  */
 public class XMLElement2 {
 
-    public static void testCase(String string0) {
-        XMLElement2 xmlElement = new XMLElement2();
-        xmlElement.parseString(string0);
-    }
-
-    public static class XMLParseException extends RuntimeException {
-
-        private static final long serialVersionUID = -309385366770535305L;
-
-        public XMLParseException(String msg, int line, String ex) {
-        }
-
-        public XMLParseException(String msg, String ex) {
-        }
-
-    }
-
-    /**
-     * Serialization serial version ID.
-     */
-    static final long serialVersionUID = 6685035139346394777L;
-
     /**
      * Major version of NanoXML. Classes with the same major and minor version
      * are binary compatible. Classes with the same major version are source
@@ -126,7 +104,6 @@ public class XMLElement2 {
      * @see nanoxml.XMLElement2#NANOXML_MINOR_VERSION
      */
     public static final int NANOXML_MAJOR_VERSION = 2;
-
     /**
      * Minor version of NanoXML. Classes with the same major and minor version
      * are binary compatible. Classes with the same major version are source
@@ -136,7 +113,10 @@ public class XMLElement2 {
      * @see nanoxml.XMLElement2#NANOXML_MAJOR_VERSION
      */
     public static final int NANOXML_MINOR_VERSION = 2;
-
+    /**
+     * Serialization serial version ID.
+     */
+    static final long serialVersionUID = 6685035139346394777L;
     /**
      * The attributes given to the element.
      *
@@ -152,7 +132,6 @@ public class XMLElement2 {
      * </dl>
      */
     private Hashtable attributes;
-
     /**
      * Child elements of the element.
      *
@@ -169,7 +148,6 @@ public class XMLElement2 {
      * </dl>
      */
     private Vector children;
-
     /**
      * The name of the element.
      *
@@ -187,7 +165,6 @@ public class XMLElement2 {
      * </dl>
      */
     private String name;
-
     /**
      * The #PCDATA content of the object.
      *
@@ -203,7 +180,6 @@ public class XMLElement2 {
      * </dl>
      */
     private String contents;
-
     /**
      * Conversion table for &amp;...; entities. The keys are the entity names
      * without the &amp; and ; delimiters.
@@ -224,7 +200,6 @@ public class XMLElement2 {
      * </dl>
      */
     private Hashtable entities;
-
     /**
      * The line number where the element starts.
      *
@@ -238,26 +213,22 @@ public class XMLElement2 {
      * </dl>
      */
     private int lineNr;
-
     /**
      * <code>true</code> if the case of the element and attribute names are case
      * insensitive.
      */
     private boolean ignoreCase;
-
     /**
      * <code>true</code> if the leading and trailing whitespace of #PCDATA
      * sections have to be ignored.
      */
     private boolean ignoreWhitespace;
-
     /**
      * Character read too much. This character provides push-back functionality
      * to the input reader without having to use a PushbackReader. If there is
      * no such character, this field is '\0'.
      */
     private char charReadTooMuch;
-
     /**
      * The reader provided by the caller of the parse method.
      *
@@ -272,7 +243,6 @@ public class XMLElement2 {
      */
     private String reader;
     private int readerIndex;
-
     /**
      * The current line number in the source content.
      *
@@ -286,7 +256,6 @@ public class XMLElement2 {
      * </dl>
      */
     private int parserLineNr;
-
     /**
      * Creates and initializes a new XML element. Calling the construction is
      * equivalent to:
@@ -379,6 +348,11 @@ public class XMLElement2 {
         this.entities.put("gt", new char[]{'>'});
     }
 
+    public static void testCase(String string0) {
+        XMLElement2 xmlElement = new XMLElement2();
+        xmlElement.parseString(string0);
+    }
+
     /**
      * Returns the name of the element.
      *
@@ -386,6 +360,27 @@ public class XMLElement2 {
      */
     public String getName() {
         return this.name;
+    }
+
+    /**
+     * Changes the name of the element.
+     *
+     * @param name The new name.
+     *
+     *             </dl>
+     *             <dl>
+     *             <dt><b>Preconditions:</b></dt>
+     *             <dd>
+     *             <ul>
+     *             <li><code>name != null</code>
+     *             <li><code>name</code> is a valid XML identifier
+     *             </ul>
+     *             </dd>
+     *             </dl>
+     * @see nanoxml.XMLElement#getName()
+     */
+    public void setName(String name) {
+        this.name = name;
     }
 
     /**
@@ -907,27 +902,6 @@ public class XMLElement2 {
     }
 
     /**
-     * Changes the name of the element.
-     *
-     * @param name The new name.
-     *
-     *             </dl>
-     *             <dl>
-     *             <dt><b>Preconditions:</b></dt>
-     *             <dd>
-     *             <ul>
-     *             <li><code>name != null</code>
-     *             <li><code>name</code> is a valid XML identifier
-     *             </ul>
-     *             </dd>
-     *             </dl>
-     * @see nanoxml.XMLElement#getName()
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /**
      * This method scans a delimited string from the current reader. The scanned
      * string without delimiters is appended to <code>string</code>.
      *
@@ -1266,6 +1240,18 @@ public class XMLElement2 {
      */
     public void addChild(XMLElement2 child) {
         this.children.addElement(child);
+    }
+
+    public static class XMLParseException extends RuntimeException {
+
+        private static final long serialVersionUID = -309385366770535305L;
+
+        public XMLParseException(String msg, int line, String ex) {
+        }
+
+        public XMLParseException(String msg, String ex) {
+        }
+
     }
 
 }

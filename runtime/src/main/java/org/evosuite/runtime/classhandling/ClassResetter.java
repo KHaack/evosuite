@@ -42,21 +42,17 @@ import java.util.Map;
  */
 public class ClassResetter {
 
-    private static final Logger logger = LoggerFactory.getLogger(ClassResetter.class);
-
     /**
      * The name of the instrumented duplication of the class initializer <clinit>
      */
     public static final String STATIC_RESET = "__STATIC_RESET";
-
+    private static final Logger logger = LoggerFactory.getLogger(ClassResetter.class);
     /**
      * Singleton instance of this class
      */
     private static final ClassResetter instance = new ClassResetter();
-
-    private ClassLoader loader;
-
     private final Map<ClassLoader, Map<String, Method>> resetMethodCache;
+    private ClassLoader loader;
 
     private ClassResetter() {
         resetMethodCache = new HashMap<>();

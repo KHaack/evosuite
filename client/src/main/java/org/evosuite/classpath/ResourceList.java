@@ -43,93 +43,15 @@ import java.util.jar.JarFile;
 public class ResourceList {
 
     private static final Logger logger = LoggerFactory.getLogger(ResourceList.class);
-
-    private static class Cache {
-        /**
-         * Key -> a classpath entry (eg folder or jar file)
-         * <p>
-         * Value -> set of all classes in that CP entry
-         */
-        public Map<String, Set<String>> mapCPtoClasses = new LinkedHashMap<>();
-
-        /**
-         * Key -> full qualifying name of a class, eg org.some.Foo
-         * <p>
-         * Value -> the classpath entry in which it can be found
-         */
-        public Map<String, String> mapClassToCP = new LinkedHashMap<>();
-
-        /**
-         * Key -> package prefix
-         * <p>
-         * Value -> set of classpath entries having such prefix
-         */
-        public Map<String, Set<String>> mapPrefixToCPs = new LinkedHashMap<>();
-
-        /**
-         * Keep track of the classes that should be on the classpath but they are not
-         */
-        public Set<String> missingClasses = new LinkedHashSet<>();
-
-
-        public void addPrefix(String prefix, String cpEntry) {
-            Set<String> classPathEntries = mapPrefixToCPs.get(prefix);
-            if (classPathEntries == null) {
-                classPathEntries = new LinkedHashSet<>();
-                mapPrefixToCPs.put(prefix, classPathEntries);
-            }
-            classPathEntries.add(cpEntry);
-
-            if (!prefix.isEmpty()) {
-                String parent = getParentPackageName(prefix);
-                addPrefix(parent, cpEntry);
-            }
-        }
-
-        /**
-         * Keep track of all jars we opened.
-         * Key -> the path of the jar file
-         */
-        public Map<String, JarFile> openedJars = new LinkedHashMap<>();
-
-        public JarFile getJar(String entry) {
-            if (openedJars.containsKey(entry)) {
-                return openedJars.get(entry);
-            }
-            try {
-                JarFile jar = new JarFile(entry);
-                openedJars.put(entry, jar);
-                return jar;
-            } catch (IOException e) {
-                logger.error("Error while reading jar file " + entry + ": " + e.getMessage(), e);
-                return null;
-            }
-        }
-
-        public void close() {
-            for (JarFile jar : openedJars.values()) {
-                try {
-                    jar.close();
-                } catch (IOException e) {
-                    logger.error("Cannot close jar file " + jar.getName() + ". " + e);
-                }
-            }
-        }
-    }
-
-
-    /**
-     * Current cache. Do not access directly, but rather use getCache(), as it can be null
-     */
-    private Cache cache = null;
-
-
     /*
      * ResourceList for each ClassLoader
      */
     private static final Map<ClassLoader, ResourceList> instanceMap = new HashMap<>();
-
     private final ClassLoader classLoader;
+    /**
+     * Current cache. Do not access directly, but rather use getCache(), as it can be null
+     */
+    private Cache cache = null;
 
     /**
      * Private constructor
@@ -145,204 +67,18 @@ public class ResourceList {
         return instanceMap.get(classLoader);
     }
 
-
-    // -------------------------------------------
-    // --------- public methods  -----------------
-    // -------------------------------------------
-
-    public void resetCache() {
-        if (cache != null) {
-            cache.close();
-        }
-        cache = null;
-    }
-
     public static void resetAllCaches() {
         instanceMap.clear();
     }
 
 
-    /**
-     * is the target class among the ones in the SUT classpath?
-     *
-     * @param className a fully qualified class name
-     * @return
-     */
-    public boolean hasClass(String className) {
-        return getCache().mapClassToCP.containsKey(className);
-    }
-
-    /**
-     * @param name a fully qualifying name, e.g. org.some.Foo
-     * @return
-     */
-    public InputStream getClassAsStream(String name) {
-
-        String path = name.replace('.', '/') + ".class";
-        String windowsPath = name.replace(".", "\\") + ".class";
-
-        String cpEntry = getCache().mapClassToCP.get(name);
-        if (cpEntry == null) {
-			
-			/*
-				the cache is initialized based on what is on the project classpath.
-				but that does not include the Java API, although it is accessed by
-				the SUT.
-			 */
-
-            InputStream ins = getClassAsStreamFromClassLoader(name);
-            if (ins != null) {
-                return ins;
-            }
-
-            if (!getCache().missingClasses.contains(name)) {
-                getCache().missingClasses.add(name);
-                /*
-                 * Note: can't really have "warn" here, as the SUT can use the classloader,
-                 * and try to load garbage (eg random string generated as test data) that
-                 * would fill the logs
-                 */
-                logger.debug("The class " + name + " is not on the classpath"); //only log once
-            }
-            return null;
-        }
-
-        if (cpEntry.endsWith(".jar")) {
-            JarFile jar = getCache().getJar(cpEntry);
-            if (jar == null) {
-                return null;
-            }
-            JarEntry entry = jar.getJarEntry(path);
-            if (entry == null) {
-                logger.error("Error: could not find " + path + " inside of jar file " + cpEntry);
-                return null;
-            }
-            InputStream is = null;
-            try {
-                is = jar.getInputStream(entry);
-            } catch (IOException e) {
-                logger.error("Error while reading jar file " + cpEntry + ": " + e.getMessage(), e);
-                return null;
-            }
-            return is;
-        } else {
-            //if not a jar, it is a folder
-            File classFile = null;
-            if (File.separatorChar != '/') {
-                classFile = new File(cpEntry + File.separator + windowsPath);
-            } else {
-                classFile = new File(cpEntry + File.separator + path);
-            }
-            if (!classFile.exists()) {
-                logger.error("Could not find " + classFile);
-            }
-
-            try {
-                return new FileInputStream(classFile);
-            } catch (FileNotFoundException e) {
-                logger.error("Error while trying to open stream on: " + classFile.getAbsolutePath());
-                return null;
-            }
-        }
-
-    }
-
-
-    /**
-     * Given the target classpath entry (eg folder or jar file), return the names (eg foo.Foo) of all the classes (.class files)
-     * inside
-     *
-     * @param classPathEntry
-     * @param includeInternalClasses should internal classes (ie static and anonymous having $ in their name) be included?
-     * @return
-     */
-    public Set<String> getAllClasses(String classPathEntry, boolean includeInternalClasses) {
-        return getAllClasses(classPathEntry, "", includeInternalClasses);
-    }
-
-
-    /**
-     * Given the target classpath entry (eg folder or jar file), return the names (eg foo.Foo) of all the classes (.class files)
-     * inside
-     *
-     * @param classPathEntry
-     * @param prefix
-     * @param includeInternalClasses should internal classes (ie static and anonymous having $ in their name) be included?
-     * @return
-     */
-    public Set<String> getAllClasses(String classPathEntry, String prefix, boolean includeInternalClasses) {
-        return getAllClasses(classPathEntry, prefix, includeInternalClasses, true);
-    }
-
-
-    /**
-     * Given the target classpath entry (eg folder or jar file), return the names (eg foo.Foo) of all the classes (.class files)
-     * inside
-     *
-     * @param classPathEntry
-     * @param prefix
-     * @param includeInternalClasses should internal classes (ie static and anonymous having $ in their name) be included?
-     * @param excludeAnonymous       if including internal classes, should though still exclude the anonymous? (ie keep only the static ones)
-     * @return
-     */
-    public Set<String> getAllClasses(String classPathEntry, String prefix, boolean includeInternalClasses, boolean excludeAnonymous) {
-
-        if (classPathEntry.contains(File.pathSeparator)) {
-            Set<String> retval = new LinkedHashSet<>();
-            for (String element : classPathEntry.split(File.pathSeparator)) {
-                retval.addAll(getAllClasses(element, prefix, includeInternalClasses, excludeAnonymous));
-            }
-            return retval;
-        } else {
-
-            classPathEntry = (new File(classPathEntry)).getAbsolutePath();
-
-            addEntry(classPathEntry);
-
-            //no need to scan the classpath entry cache if it does not have the given prefix
-            Set<String> cps = getCache().mapPrefixToCPs.get(prefix);
-            if (cps == null || !cps.contains(classPathEntry)) {
-                return Collections.emptySet();
-            }
-
-            Set<String> classes = new LinkedHashSet<>();
-
-            for (String className : getCache().mapCPtoClasses.get(classPathEntry)) {
-                if (!className.startsWith(prefix)) {
-                    continue;
-                }
-                if (!includeInternalClasses && className.contains("$")) {
-                    continue;
-                }
-                if (includeInternalClasses && excludeAnonymous && className.matches(".*\\$\\d+$")) {
-                    continue;
-                }
-
-                classes.add(className);
-            }
-
-            return classes;
-        }
-    }
+    // -------------------------------------------
+    // --------- public methods  -----------------
+    // -------------------------------------------
 
     public static boolean isInterface(String resource) throws IOException {
         InputStream input = ResourceList.class.getClassLoader().getResourceAsStream(resource);
         return isClassAnInterface(input);
-    }
-
-    public boolean isClassAnInterface(String className) throws IOException {
-        InputStream input = getClassAsStream(className);
-        return isClassAnInterface(input);
-    }
-
-    public boolean isClassDeprecated(String className) throws IOException {
-        InputStream input = getClassAsStream(className);
-        return isClassDeprecated(input);
-    }
-
-    public boolean isClassTestable(String className) throws IOException {
-        InputStream input = getClassAsStream(className);
-        return isClassTestable(input);
     }
 
     /**
@@ -357,11 +93,6 @@ public class ResourceList {
         //method had to be moved due to constraints on "runtime" module dependencies
         return InitializingListenerUtils.getClassNameFromResourcePath(resource);
     }
-
-
-    // -------------------------------------------
-    // --------- private/protected methods  ------
-    // -------------------------------------------
 
     private static InputStream getClassAsStreamFromClassLoader(String name) {
 
@@ -454,6 +185,193 @@ public class ResourceList {
         return className.substring(0, index);
     }
 
+    public void resetCache() {
+        if (cache != null) {
+            cache.close();
+        }
+        cache = null;
+    }
+
+    /**
+     * is the target class among the ones in the SUT classpath?
+     *
+     * @param className a fully qualified class name
+     * @return
+     */
+    public boolean hasClass(String className) {
+        return getCache().mapClassToCP.containsKey(className);
+    }
+
+    /**
+     * @param name a fully qualifying name, e.g. org.some.Foo
+     * @return
+     */
+    public InputStream getClassAsStream(String name) {
+
+        String path = name.replace('.', '/') + ".class";
+        String windowsPath = name.replace(".", "\\") + ".class";
+
+        String cpEntry = getCache().mapClassToCP.get(name);
+        if (cpEntry == null) {
+
+			/*
+				the cache is initialized based on what is on the project classpath.
+				but that does not include the Java API, although it is accessed by
+				the SUT.
+			 */
+
+            InputStream ins = getClassAsStreamFromClassLoader(name);
+            if (ins != null) {
+                return ins;
+            }
+
+            if (!getCache().missingClasses.contains(name)) {
+                getCache().missingClasses.add(name);
+                /*
+                 * Note: can't really have "warn" here, as the SUT can use the classloader,
+                 * and try to load garbage (eg random string generated as test data) that
+                 * would fill the logs
+                 */
+                logger.debug("The class " + name + " is not on the classpath"); //only log once
+            }
+            return null;
+        }
+
+        if (cpEntry.endsWith(".jar")) {
+            JarFile jar = getCache().getJar(cpEntry);
+            if (jar == null) {
+                return null;
+            }
+            JarEntry entry = jar.getJarEntry(path);
+            if (entry == null) {
+                logger.error("Error: could not find " + path + " inside of jar file " + cpEntry);
+                return null;
+            }
+            InputStream is = null;
+            try {
+                is = jar.getInputStream(entry);
+            } catch (IOException e) {
+                logger.error("Error while reading jar file " + cpEntry + ": " + e.getMessage(), e);
+                return null;
+            }
+            return is;
+        } else {
+            //if not a jar, it is a folder
+            File classFile = null;
+            if (File.separatorChar != '/') {
+                classFile = new File(cpEntry + File.separator + windowsPath);
+            } else {
+                classFile = new File(cpEntry + File.separator + path);
+            }
+            if (!classFile.exists()) {
+                logger.error("Could not find " + classFile);
+            }
+
+            try {
+                return new FileInputStream(classFile);
+            } catch (FileNotFoundException e) {
+                logger.error("Error while trying to open stream on: " + classFile.getAbsolutePath());
+                return null;
+            }
+        }
+
+    }
+
+    /**
+     * Given the target classpath entry (eg folder or jar file), return the names (eg foo.Foo) of all the classes (.class files)
+     * inside
+     *
+     * @param classPathEntry
+     * @param includeInternalClasses should internal classes (ie static and anonymous having $ in their name) be included?
+     * @return
+     */
+    public Set<String> getAllClasses(String classPathEntry, boolean includeInternalClasses) {
+        return getAllClasses(classPathEntry, "", includeInternalClasses);
+    }
+
+    /**
+     * Given the target classpath entry (eg folder or jar file), return the names (eg foo.Foo) of all the classes (.class files)
+     * inside
+     *
+     * @param classPathEntry
+     * @param prefix
+     * @param includeInternalClasses should internal classes (ie static and anonymous having $ in their name) be included?
+     * @return
+     */
+    public Set<String> getAllClasses(String classPathEntry, String prefix, boolean includeInternalClasses) {
+        return getAllClasses(classPathEntry, prefix, includeInternalClasses, true);
+    }
+
+
+    // -------------------------------------------
+    // --------- private/protected methods  ------
+    // -------------------------------------------
+
+    /**
+     * Given the target classpath entry (eg folder or jar file), return the names (eg foo.Foo) of all the classes (.class files)
+     * inside
+     *
+     * @param classPathEntry
+     * @param prefix
+     * @param includeInternalClasses should internal classes (ie static and anonymous having $ in their name) be included?
+     * @param excludeAnonymous       if including internal classes, should though still exclude the anonymous? (ie keep only the static ones)
+     * @return
+     */
+    public Set<String> getAllClasses(String classPathEntry, String prefix, boolean includeInternalClasses, boolean excludeAnonymous) {
+
+        if (classPathEntry.contains(File.pathSeparator)) {
+            Set<String> retval = new LinkedHashSet<>();
+            for (String element : classPathEntry.split(File.pathSeparator)) {
+                retval.addAll(getAllClasses(element, prefix, includeInternalClasses, excludeAnonymous));
+            }
+            return retval;
+        } else {
+
+            classPathEntry = (new File(classPathEntry)).getAbsolutePath();
+
+            addEntry(classPathEntry);
+
+            //no need to scan the classpath entry cache if it does not have the given prefix
+            Set<String> cps = getCache().mapPrefixToCPs.get(prefix);
+            if (cps == null || !cps.contains(classPathEntry)) {
+                return Collections.emptySet();
+            }
+
+            Set<String> classes = new LinkedHashSet<>();
+
+            for (String className : getCache().mapCPtoClasses.get(classPathEntry)) {
+                if (!className.startsWith(prefix)) {
+                    continue;
+                }
+                if (!includeInternalClasses && className.contains("$")) {
+                    continue;
+                }
+                if (includeInternalClasses && excludeAnonymous && className.matches(".*\\$\\d+$")) {
+                    continue;
+                }
+
+                classes.add(className);
+            }
+
+            return classes;
+        }
+    }
+
+    public boolean isClassAnInterface(String className) throws IOException {
+        InputStream input = getClassAsStream(className);
+        return isClassAnInterface(input);
+    }
+
+    public boolean isClassDeprecated(String className) throws IOException {
+        InputStream input = getClassAsStream(className);
+        return isClassDeprecated(input);
+    }
+
+    public boolean isClassTestable(String className) throws IOException {
+        InputStream input = getClassAsStream(className);
+        return isClassTestable(input);
+    }
+
     /**
      * Init the cache if null
      *
@@ -466,7 +384,6 @@ public class ResourceList {
 
         return cache;
     }
-
 
     private void initCache() {
         cache = new Cache();
@@ -591,6 +508,77 @@ public class ResourceList {
             getCache().mapClassToCP.put(className, jarEntry);//getPackageName
             getCache().mapCPtoClasses.get(jarEntry).add(className);
             getCache().addPrefix(getParentPackageName(className), jarEntry);
+        }
+    }
+
+    private static class Cache {
+        /**
+         * Key -> a classpath entry (eg folder or jar file)
+         * <p>
+         * Value -> set of all classes in that CP entry
+         */
+        public Map<String, Set<String>> mapCPtoClasses = new LinkedHashMap<>();
+
+        /**
+         * Key -> full qualifying name of a class, eg org.some.Foo
+         * <p>
+         * Value -> the classpath entry in which it can be found
+         */
+        public Map<String, String> mapClassToCP = new LinkedHashMap<>();
+
+        /**
+         * Key -> package prefix
+         * <p>
+         * Value -> set of classpath entries having such prefix
+         */
+        public Map<String, Set<String>> mapPrefixToCPs = new LinkedHashMap<>();
+
+        /**
+         * Keep track of the classes that should be on the classpath but they are not
+         */
+        public Set<String> missingClasses = new LinkedHashSet<>();
+        /**
+         * Keep track of all jars we opened.
+         * Key -> the path of the jar file
+         */
+        public Map<String, JarFile> openedJars = new LinkedHashMap<>();
+
+        public void addPrefix(String prefix, String cpEntry) {
+            Set<String> classPathEntries = mapPrefixToCPs.get(prefix);
+            if (classPathEntries == null) {
+                classPathEntries = new LinkedHashSet<>();
+                mapPrefixToCPs.put(prefix, classPathEntries);
+            }
+            classPathEntries.add(cpEntry);
+
+            if (!prefix.isEmpty()) {
+                String parent = getParentPackageName(prefix);
+                addPrefix(parent, cpEntry);
+            }
+        }
+
+        public JarFile getJar(String entry) {
+            if (openedJars.containsKey(entry)) {
+                return openedJars.get(entry);
+            }
+            try {
+                JarFile jar = new JarFile(entry);
+                openedJars.put(entry, jar);
+                return jar;
+            } catch (IOException e) {
+                logger.error("Error while reading jar file " + entry + ": " + e.getMessage(), e);
+                return null;
+            }
+        }
+
+        public void close() {
+            for (JarFile jar : openedJars.values()) {
+                try {
+                    jar.close();
+                } catch (IOException e) {
+                    logger.error("Cannot close jar file " + jar.getName() + ". " + e);
+                }
+            }
         }
     }
 

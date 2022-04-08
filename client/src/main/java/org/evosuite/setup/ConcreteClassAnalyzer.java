@@ -42,6 +42,11 @@ public class ConcreteClassAnalyzer {
     private static final Logger logger = LoggerFactory.getLogger(ConcreteClassAnalyzer.class);
 
     private static ConcreteClassAnalyzer instance;
+    /**
+     * Maps abstract classes and interfaces to concrete subclasses that extend or implement the
+     * abstract class or interface, respectively.
+     */
+    private final Map<Class<?>, Set<Class<?>>> cache = new LinkedHashMap<>();
 
     private ConcreteClassAnalyzer() {
         // singleton pattern
@@ -55,11 +60,57 @@ public class ConcreteClassAnalyzer {
         return instance;
     }
 
-    /**
-     * Maps abstract classes and interfaces to concrete subclasses that extend or implement the
-     * abstract class or interface, respectively.
-     */
-    private final Map<Class<?>, Set<Class<?>>> cache = new LinkedHashMap<>();
+    private static Class<?> tryReflection(final String className, final InheritanceTree tree) {
+        if (TestClusterUtils.isAnonymousClass(className)) {
+            return null; // can't handle anonymous subclasses
+        }
+
+        testGenerationContext().goingToExecuteSUTCode();
+        Class<?> clazz = null;
+        try {
+            clazz = Class.forName(className, false, loaderForSUT());
+        } catch (ClassNotFoundException
+                | IncompatibleClassChangeError
+                | NoClassDefFoundError e) {
+            logger.error("Problem for {}. Class not found: {}", Properties.TARGET_CLASS, className);
+            logger.error("Removing class from inheritance tree");
+            tree.removeClass(className);
+        } finally {
+            testGenerationContext().doneWithExecutingSUTCode();
+        }
+
+        if (clazz == null) {
+            return null;
+        }
+
+        final boolean uninstantiable = !TestUsageChecker.canUse(clazz)
+                || clazz.isInterface()
+                || (Modifier.isAbstract(clazz.getModifiers())
+                && !TestClusterUtils.hasStaticGenerator(clazz));
+        if (uninstantiable) {
+            return null;
+        }
+
+        final Class<?> mock = MockList.getMockClass(clazz.getCanonicalName());
+        if (mock != null) {
+            // If we are mocking this class, then such class should not be used
+            // in the generated JUnit test cases, but rather its mock.
+            logger.debug("Adding mock " + mock + " instead of " + clazz);
+            clazz = mock;
+        } else if (!TestClusterUtils.checkIfCanUse(clazz.getCanonicalName())) {
+            return null;
+        }
+
+        return clazz;
+    }
+
+    private static TestGenerationContext testGenerationContext() {
+        return TestGenerationContext.getInstance();
+    }
+
+    private static InstrumentingClassLoader loaderForSUT() {
+        return testGenerationContext().getClassLoaderForSUT();
+    }
 
     /**
      * Clears all mappings of abstract classes/interfaces to concrete classes recorded so far.
@@ -227,54 +278,6 @@ public class ConcreteClassAnalyzer {
         return actualClasses;
     }
 
-    private static Class<?> tryReflection(final String className, final InheritanceTree tree) {
-        if (TestClusterUtils.isAnonymousClass(className)) {
-            return null; // can't handle anonymous subclasses
-        }
-
-        testGenerationContext().goingToExecuteSUTCode();
-        Class<?> clazz = null;
-        try {
-            clazz = Class.forName(className, false, loaderForSUT());
-        } catch (ClassNotFoundException
-                | IncompatibleClassChangeError
-                | NoClassDefFoundError e) {
-            logger.error("Problem for {}. Class not found: {}", Properties.TARGET_CLASS, className);
-            logger.error("Removing class from inheritance tree");
-            tree.removeClass(className);
-        } finally {
-            testGenerationContext().doneWithExecutingSUTCode();
-        }
-
-        if (clazz == null) {
-            return null;
-        }
-
-        final boolean uninstantiable = !TestUsageChecker.canUse(clazz)
-                || clazz.isInterface()
-                || (Modifier.isAbstract(clazz.getModifiers())
-                && !TestClusterUtils.hasStaticGenerator(clazz));
-        if (uninstantiable) {
-            return null;
-        }
-
-        final Class<?> mock = MockList.getMockClass(clazz.getCanonicalName());
-        if (mock != null) {
-            // If we are mocking this class, then such class should not be used
-            // in the generated JUnit test cases, but rather its mock.
-            logger.debug("Adding mock " + mock + " instead of " + clazz);
-            clazz = mock;
-        } else if (!TestClusterUtils.checkIfCanUse(clazz.getCanonicalName())) {
-            return null;
-        }
-
-        return clazz;
-    }
-
-    private static TestGenerationContext testGenerationContext() {
-        return TestGenerationContext.getInstance();
-    }
-
     /**
      * Tries to load concrete (sub)classes for {@code java.util.Map} using the SUT class loader.
      * The returned set contains the classes it was able to successfully load and is otherwise
@@ -361,9 +364,5 @@ public class ConcreteClassAnalyzer {
         }
 
         return classes;
-    }
-
-    private static InstrumentingClassLoader loaderForSUT() {
-        return testGenerationContext().getClassLoaderForSUT();
     }
 }

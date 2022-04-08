@@ -33,6 +33,13 @@ import java.util.stream.DoubleStream;
  */
 public class FitnessProportionateSelection<T extends Chromosome<T>> extends SelectionFunction<T> {
 
+    private static final long serialVersionUID = 5206421079815585026L;
+    /**
+     * Sum of fitness values, depending on minimization/maximization of the
+     * fitness function
+     */
+    private double sumValue = 0.0;
+
     public FitnessProportionateSelection() {
     }
 
@@ -41,13 +48,12 @@ public class FitnessProportionateSelection<T extends Chromosome<T>> extends Sele
         this.sumValue = other.sumValue;
     }
 
-    private static final long serialVersionUID = 5206421079815585026L;
-
-    /**
-     * Sum of fitness values, depending on minimization/maximization of the
-     * fitness function
+    /*
+     * used to handle the case of minimizing the fitness
      */
-    private double sumValue = 0.0;
+    private static double invert(final double x) {
+        return 1d / (x + 1d);
+    }
 
     /**
      * {@inheritDoc}
@@ -91,13 +97,6 @@ public class FitnessProportionateSelection<T extends Chromosome<T>> extends Sele
         DoubleStream fitnessValues = population.stream().mapToDouble(Chromosome::getFitness);
         if (!maximize) fitnessValues = fitnessValues.map(FitnessProportionateSelection::invert);
         sumValue = fitnessValues.sum();
-    }
-
-    /*
-     * used to handle the case of minimizing the fitness
-     */
-    private static double invert(final double x) {
-        return 1d / (x + 1d);
     }
 
     /**

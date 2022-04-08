@@ -41,12 +41,10 @@ public class BranchesManager extends StructuralGoalManager {
 
     private static final Logger logger = LoggerFactory.getLogger(BranchesManager.class);
     private static final long serialVersionUID = 6453893627503159175L;
-
-    protected BranchFitnessGraph graph;
-
     protected final Map<Integer, TestFitnessFunction> branchCoverageTrueMap = new HashMap<>();
     protected final Map<Integer, TestFitnessFunction> branchCoverageFalseMap = new HashMap<>();
     private final Map<String, TestFitnessFunction> branchlessMethodCoverageMap = new HashMap<>();
+    protected BranchFitnessGraph graph;
 
     /**
      * Constructor used to initialize the set of uncovered goals, and the initial set

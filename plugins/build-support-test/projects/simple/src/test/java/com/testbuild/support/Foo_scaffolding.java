@@ -26,7 +26,7 @@ package com.testbuild.support;
 public class Foo_scaffolding {
 
     private static void initializeClasses() {
-        org.evosuite.runtime.classhandling.ClassStateSupport.initializeClasses(Foo_scaffolding.class.getClassLoader() ,
+        org.evosuite.runtime.classhandling.ClassStateSupport.initializeClasses(Foo_scaffolding.class.getClassLoader(),
                 "com.testbuild.support.Foo"
         );
     }

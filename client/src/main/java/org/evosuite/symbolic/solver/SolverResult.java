@@ -27,13 +27,7 @@ public class SolverResult implements Serializable {
 
 
     private static final long serialVersionUID = -930589471876011035L;
-
-    private enum SolverResultType {
-        SAT, UNSAT, UNKNOWN
-    }
-
     private final SolverResultType resultType;
-
     private final Map<String, Object> model;
 
     private SolverResult(SolverResultType t, Map<String, Object> model) {
@@ -96,6 +90,10 @@ public class SolverResult implements Serializable {
 
     public boolean isUnknown() {
         return resultType.equals(SolverResultType.UNKNOWN);
+    }
+
+    private enum SolverResultType {
+        SAT, UNSAT, UNKNOWN
     }
 
 }

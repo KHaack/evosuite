@@ -31,11 +31,9 @@ import java.util.Set;
 public final class IntegerBinaryExpression extends AbstractExpression<Long>
         implements IntegerValue, BinaryExpression<Long> {
 
-    private static final long serialVersionUID = -986689442489666986L;
-
     protected static final Logger log = LoggerFactory
             .getLogger(IntegerBinaryExpression.class);
-
+    private static final long serialVersionUID = -986689442489666986L;
     private final Expression<Long> left;
     private final Operator op;
     private final Expression<Long> right;

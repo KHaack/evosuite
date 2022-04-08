@@ -27,13 +27,10 @@ package org.evosuite.coverage.mutation;
  */
 public class MutationExecutionResult {
 
-    private int numAssertions = 0;
-
-    private double impact = 0.0;
-
     boolean hasTimeout = false;
-
     boolean hasException = false;
+    private int numAssertions = 0;
+    private double impact = 0.0;
 
     public MutationExecutionResult clone() {
         MutationExecutionResult result = new MutationExecutionResult();

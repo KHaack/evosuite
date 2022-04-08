@@ -38,9 +38,8 @@ import java.util.Set;
  */
 public class OutputObserver extends ExecutionObserver {
 
-    private Map<Integer, Set<OutputCoverageGoal>> outputCoverage = new LinkedHashMap<>();
-
     private static final Logger logger = LoggerFactory.getLogger(OutputObserver.class);
+    private Map<Integer, Set<OutputCoverageGoal>> outputCoverage = new LinkedHashMap<>();
 
     /* (non-Javadoc)
      * @see org.evosuite.testcase.ExecutionObserver#output(int, java.lang.String)

@@ -25,44 +25,44 @@ import org.evosuite.runtime.vfs.VirtualFileSystem;
 
 import java.io.*;
 
-public class MockFileReader extends FileReader  implements OverrideMock{
+public class MockFileReader extends FileReader implements OverrideMock {
 
-	/**
-	 * As all the constructors of FileReader instantiate
-	 * a FileInputStream, none of them can be used to create
-	 * a usable instance of MockFileReader.
-	 * So, we need to create an instance of MockFileInputStream,
-	 * a redirect all calls of MockFileReader to this stream 
-	 */
-	private InputStreamReader stream;
-		
-	/*
-	 * -- constructors ----------------------
-	 * 
-	 * FileReader defines only constructors, no methods
-	 */
-	
+    /**
+     * As all the constructors of FileReader instantiate
+     * a FileInputStream, none of them can be used to create
+     * a usable instance of MockFileReader.
+     * So, we need to create an instance of MockFileInputStream,
+     * a redirect all calls of MockFileReader to this stream
+     */
+    private InputStreamReader stream;
+
+    /*
+     * -- constructors ----------------------
+     *
+     * FileReader defines only constructors, no methods
+     */
+
     public MockFileReader(String fileName) throws FileNotFoundException {
-    		this(fileName != null ? 
-    				(!MockFramework.isEnabled() ? new File(fileName) : new MockFile(fileName) ): 
-    				null
-    			);
+        this(fileName != null ?
+                (!MockFramework.isEnabled() ? new File(fileName) : new MockFile(fileName)) :
+                null
+        );
     }
 
     public MockFileReader(File file) throws FileNotFoundException {
-		super(!MockFramework.isEnabled() ?
-				file : 
-				VirtualFileSystem.getInstance().getRealTmpFile()); // just to make compiler happy
-		
-		if(!MockFramework.isEnabled()){
-			return;
-		}
-		
-		MockFileInputStream mock = new MockFileInputStream(file);
-		
-		stream = new InputStreamReader(mock);
-		
-		VirtualFileSystem.getInstance().addLeakingResource(mock);
+        super(!MockFramework.isEnabled() ?
+                file :
+                VirtualFileSystem.getInstance().getRealTmpFile()); // just to make compiler happy
+
+        if (!MockFramework.isEnabled()) {
+            return;
+        }
+
+        MockFileInputStream mock = new MockFileInputStream(file);
+
+        stream = new InputStreamReader(mock);
+
+        VirtualFileSystem.getInstance().addLeakingResource(mock);
     }
 
     //we do not really handle this constructor
@@ -79,37 +79,37 @@ public class MockFileReader extends FileReader  implements OverrideMock{
 
     @Override
     public int read() throws IOException {
-		if(!MockFramework.isEnabled()){
-			return super.read();
-		}
-		
-    		return stream.read();
+        if (!MockFramework.isEnabled()) {
+            return super.read();
+        }
+
+        return stream.read();
     }
 
     @Override
     public int read(char[] cbuf, int offset, int length) throws IOException {
-		if(!MockFramework.isEnabled()){
-			return super.read(cbuf, offset, length);
-		}
+        if (!MockFramework.isEnabled()) {
+            return super.read(cbuf, offset, length);
+        }
         return stream.read(cbuf, offset, length);
     }
 
     @Override
     public boolean ready() throws IOException {
-		if(!MockFramework.isEnabled()){
-			return super.ready();
-		}
-		return stream.ready();
+        if (!MockFramework.isEnabled()) {
+            return super.ready();
+        }
+        return stream.ready();
     }
 
     @Override
     public void close() throws IOException {
-		if(!MockFramework.isEnabled()){
-			super.close();
-			return;
-		}
-    
-		stream.close();
+        if (!MockFramework.isEnabled()) {
+            super.close();
+            return;
+        }
+
+        stream.close();
     }
-        
+
 }

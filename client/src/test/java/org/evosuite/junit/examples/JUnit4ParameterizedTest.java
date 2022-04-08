@@ -37,11 +37,6 @@ public class JUnit4ParameterizedTest {
     private Boolean output;
     private FlagExample1 cut;
 
-    @Before
-    public void initialize() {
-        this.cut = new FlagExample1();
-    }
-
     public JUnit4ParameterizedTest(Integer a, Boolean b) {
         this.input = a;
         this.output = b;
@@ -50,6 +45,11 @@ public class JUnit4ParameterizedTest {
     @Parameterized.Parameters
     public static Collection<Object[]> primeNumbers() {
         return Arrays.asList(new Object[][]{{7, false}, {28241, true}});
+    }
+
+    @Before
+    public void initialize() {
+        this.cut = new FlagExample1();
     }
 
     @Test

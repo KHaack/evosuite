@@ -102,6 +102,32 @@ public class BytecodeInstrumentation {
     }
 
     /**
+     * Adds the instrumentation to deal with re-iniatilizing classes: adding
+     * __STATIC_RESET() methods, inserting callbacks for PUTSTATIC and GETSTATIC
+     * instructions
+     *
+     * @param className
+     * @param cv
+     * @return
+     */
+    private static ClassVisitor handleStaticReset(String className, ClassVisitor cv) {
+        // Create a __STATIC_RESET() cloning the original <clinit> method or
+        // create one by default
+        final CreateClassResetClassAdapter resetClassAdapter;
+        if (Properties.RESET_STATIC_FINAL_FIELDS) {
+            resetClassAdapter = new CreateClassResetClassAdapter(cv, className, true);
+        } else {
+            resetClassAdapter = new CreateClassResetClassAdapter(cv, className, false);
+        }
+        cv = resetClassAdapter;
+
+        // Adds a callback before leaving the <clinit> method
+        EndOfClassInitializerVisitor exitClassInitAdapter = new EndOfClassInitializerVisitor(cv, className);
+        cv = exitClassInitAdapter;
+        return cv;
+    }
+
+    /**
      * <p>
      * shouldTransform
      * </p>
@@ -308,32 +334,6 @@ public class BytecodeInstrumentation {
         }
 
         return cw.toByteArray();
-    }
-
-    /**
-     * Adds the instrumentation to deal with re-iniatilizing classes: adding
-     * __STATIC_RESET() methods, inserting callbacks for PUTSTATIC and GETSTATIC
-     * instructions
-     *
-     * @param className
-     * @param cv
-     * @return
-     */
-    private static ClassVisitor handleStaticReset(String className, ClassVisitor cv) {
-        // Create a __STATIC_RESET() cloning the original <clinit> method or
-        // create one by default
-        final CreateClassResetClassAdapter resetClassAdapter;
-        if (Properties.RESET_STATIC_FINAL_FIELDS) {
-            resetClassAdapter = new CreateClassResetClassAdapter(cv, className, true);
-        } else {
-            resetClassAdapter = new CreateClassResetClassAdapter(cv, className, false);
-        }
-        cv = resetClassAdapter;
-
-        // Adds a callback before leaving the <clinit> method
-        EndOfClassInitializerVisitor exitClassInitAdapter = new EndOfClassInitializerVisitor(cv, className);
-        cv = exitClassInitAdapter;
-        return cv;
     }
 
 }

@@ -17,15 +17,16 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with EvoSuite. If not, see <http://www.gnu.org/licenses/>.
  */
+
 import org.junit.Assert;
 import org.junit.Test;
 
 
-public class InFooFolderTest{
-	
-	@Test
-	public void foo(){
-		Assert.assertTrue(true);
-	}
-	
+public class InFooFolderTest {
+
+    @Test
+    public void foo() {
+        Assert.assertTrue(true);
+    }
+
 }

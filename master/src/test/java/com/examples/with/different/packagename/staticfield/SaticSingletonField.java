@@ -21,20 +21,11 @@ package com.examples.with.different.packagename.staticfield;
 
 public class SaticSingletonField {
 
-    private int value;
-
     private static SaticSingletonField instance = new SaticSingletonField();
+    private int value;
 
     public static SaticSingletonField getInstance() {
         return instance;
-    }
-
-    public int getValue() {
-        return value;
-    }
-
-    public void incValue() {
-        value++;
     }
 
     public static int checkMe() {
@@ -47,6 +38,14 @@ public class SaticSingletonField {
         } else {
             return Integer.MAX_VALUE;
         }
+    }
+
+    public int getValue() {
+        return value;
+    }
+
+    public void incValue() {
+        value++;
     }
 
 }

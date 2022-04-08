@@ -128,90 +128,6 @@ public class ProjectStaticData {
     }
 
     /**
-     * Immutable class representing all the info data for a class
-     *
-     * @author arcuri
-     */
-    public static class ClassInfo {
-        public final Class<?> theClass;
-        public final int numberOfBranches;
-        /**
-         * we cannot only consider the number of branches, as there might be
-         * CUTs with code but no branches
-         */
-        public final boolean hasCode;
-
-        /**
-         * has the last commit added/modified the CUT?
-         */
-        private boolean hasChanged = true;
-
-        /**
-         * a class should be tested if we still don't have
-         * 100% coverage or if the coverage has improved
-         * in the last N generations
-         */
-        private boolean isToTest = true;
-
-        /**
-         * time budget in seconds allocated to test this class
-         */
-        private int timeBudgetInSeconds = 0;
-
-        /**
-         * amount of memory in Megabytes used to test this class
-         */
-        private int memoryInMB = 0;
-
-        public ClassInfo(Class<?> theClass, int numberOfBranches, boolean hasCode) {
-            super();
-            this.theClass = theClass;
-            this.numberOfBranches = numberOfBranches;
-            this.hasCode = hasCode;
-        }
-
-        public String getClassName() {
-            return theClass.getName();
-        }
-
-        public boolean isTestable() {
-            return hasCode;
-        }
-
-        public void setChanged(boolean changed) {
-            this.hasChanged = changed;
-        }
-
-        public boolean hasChanged() {
-            return this.hasChanged;
-        }
-
-        public void isToTest(boolean isToTest) {
-            this.isToTest = isToTest;
-        }
-
-        public boolean isToTest() {
-            return this.isToTest;
-        }
-
-        public void setTimeBudgetInSeconds(int timeBudgetInSeconds) {
-            this.timeBudgetInSeconds = timeBudgetInSeconds;
-        }
-
-        public int getTimeBudgetInSeconds() {
-            return this.timeBudgetInSeconds;
-        }
-
-        public void setMemoryInMB(int memoryInMB) {
-            this.memoryInMB = memoryInMB;
-        }
-
-        public int getMemoryInMB() {
-            return memoryInMB;
-        }
-    }
-
-    /**
      * Add a new ClassInfo. Note: this is protected, as only classes in this
      * package should be allowed to modify the state of this class
      *
@@ -383,5 +299,89 @@ public class ProjectStaticData {
             graph = new ProjectGraph(this);
         }
         return graph; //FIXME should be a read-only view
+    }
+
+    /**
+     * Immutable class representing all the info data for a class
+     *
+     * @author arcuri
+     */
+    public static class ClassInfo {
+        public final Class<?> theClass;
+        public final int numberOfBranches;
+        /**
+         * we cannot only consider the number of branches, as there might be
+         * CUTs with code but no branches
+         */
+        public final boolean hasCode;
+
+        /**
+         * has the last commit added/modified the CUT?
+         */
+        private boolean hasChanged = true;
+
+        /**
+         * a class should be tested if we still don't have
+         * 100% coverage or if the coverage has improved
+         * in the last N generations
+         */
+        private boolean isToTest = true;
+
+        /**
+         * time budget in seconds allocated to test this class
+         */
+        private int timeBudgetInSeconds = 0;
+
+        /**
+         * amount of memory in Megabytes used to test this class
+         */
+        private int memoryInMB = 0;
+
+        public ClassInfo(Class<?> theClass, int numberOfBranches, boolean hasCode) {
+            super();
+            this.theClass = theClass;
+            this.numberOfBranches = numberOfBranches;
+            this.hasCode = hasCode;
+        }
+
+        public String getClassName() {
+            return theClass.getName();
+        }
+
+        public boolean isTestable() {
+            return hasCode;
+        }
+
+        public void setChanged(boolean changed) {
+            this.hasChanged = changed;
+        }
+
+        public boolean hasChanged() {
+            return this.hasChanged;
+        }
+
+        public void isToTest(boolean isToTest) {
+            this.isToTest = isToTest;
+        }
+
+        public boolean isToTest() {
+            return this.isToTest;
+        }
+
+        public int getTimeBudgetInSeconds() {
+            return this.timeBudgetInSeconds;
+        }
+
+        public void setTimeBudgetInSeconds(int timeBudgetInSeconds) {
+            this.timeBudgetInSeconds = timeBudgetInSeconds;
+        }
+
+        public int getMemoryInMB() {
+            return memoryInMB;
+        }
+
+        public void setMemoryInMB(int memoryInMB) {
+            this.memoryInMB = memoryInMB;
+        }
     }
 }

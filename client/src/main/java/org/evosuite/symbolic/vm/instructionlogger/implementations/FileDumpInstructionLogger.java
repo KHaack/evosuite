@@ -32,9 +32,8 @@ import java.io.*;
  */
 public final class FileDumpInstructionLogger extends AbstractInstructionLogger {
 
-    private static final Logger logger = LoggerFactory.getLogger(FileDumpInstructionLogger.class);
     public static final String EXECUTED_BYTECODE_FILE_NAME = "executedBytecode";
-
+    private static final Logger logger = LoggerFactory.getLogger(FileDumpInstructionLogger.class);
     /**
      * For each time the same method gets called, so we don't overwrite the same file.
      * NOTE(ilebrero): A better solution for this? this is not an optimal way of doing this.

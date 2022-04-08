@@ -34,6 +34,11 @@ public class ConversionException extends RuntimeException {
 
 
     // ----------------------------------------------------------- Constructors
+    /**
+     * The root cause of this <code>ConversionException</code>, compatible with
+     * JDK 1.4's extensions to <code>java.lang.Throwable</code>.
+     */
+    protected Throwable cause = null;
 
 
     /**
@@ -62,6 +67,9 @@ public class ConversionException extends RuntimeException {
     }
 
 
+    // ------------------------------------------------------------- Properties
+
+
     /**
      * Construct a new exception with the specified root cause.
      *
@@ -73,16 +81,6 @@ public class ConversionException extends RuntimeException {
         this.cause = cause;
 
     }
-
-
-    // ------------------------------------------------------------- Properties
-
-
-    /**
-     * The root cause of this <code>ConversionException</code>, compatible with
-     * JDK 1.4's extensions to <code>java.lang.Throwable</code>.
-     */
-    protected Throwable cause = null;
 
     /**
      * Return the root cause of this conversion exception.

@@ -33,6 +33,10 @@ public abstract class ArrayUtil {
 
     public static final char OPEN_SQUARE_BRACKET = '[';
     public static final String INPUT_OBJECT_MUST_BE_AN_ARRAY_EXCEPTION_MESSAGE = "Input object must be an array.";
+    /**
+     * Constant <code>DEFAULT_JOIN_SEPARATOR="IterUtil.DEFAULT_JOIN_SEPARATOR"</code>
+     */
+    public static final String DEFAULT_JOIN_SEPARATOR = IterUtil.DEFAULT_JOIN_SEPARATOR;
 
     /**
      * <p>asSet</p>
@@ -45,11 +49,6 @@ public abstract class ArrayUtil {
     public static <T> Set<T> asSet(T... values) {
         return new HashSet<>(Arrays.asList(values));
     }
-
-    /**
-     * Constant <code>DEFAULT_JOIN_SEPARATOR="IterUtil.DEFAULT_JOIN_SEPARATOR"</code>
-     */
-    public static final String DEFAULT_JOIN_SEPARATOR = IterUtil.DEFAULT_JOIN_SEPARATOR;
 
     /**
      * <p>box</p>

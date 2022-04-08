@@ -49,8 +49,6 @@ public class ReplaceBitwiseOperator implements MutationOperator {
 
     private static final Set<Integer> opcodesLongShift = new HashSet<>();
 
-    private int numVariable = 0;
-
     static {
         opcodesInt.addAll(Arrays.asList(Opcodes.IAND, Opcodes.IOR,
                 Opcodes.IXOR));
@@ -65,9 +63,133 @@ public class ReplaceBitwiseOperator implements MutationOperator {
                 Opcodes.LUSHR));
     }
 
+    private int numVariable = 0;
+
     /* (non-Javadoc)
      * @see org.evosuite.cfg.instrumentation.MutationOperator#apply(org.objectweb.asm.tree.MethodNode, java.lang.String, java.lang.String, org.evosuite.cfg.BytecodeInstruction)
      */
+
+    /**
+     * <p>getInfectionDistanceInt</p>
+     *
+     * @param x          a int.
+     * @param y          a int.
+     * @param opcodeOrig a int.
+     * @param opcodeNew  a int.
+     * @return a double.
+     */
+    public static double getInfectionDistanceInt(int x, int y, int opcodeOrig,
+                                                 int opcodeNew) {
+        if (opcodeOrig == Opcodes.ISHR && opcodeNew == Opcodes.IUSHR) {
+            if (x < 0 && y != 0) {
+                int origValue = calculate(x, y, opcodeOrig);
+                int newValue = calculate(x, y, opcodeNew);
+                assert (origValue != newValue);
+
+                return 0.0;
+            } else
+                // TODO x >= 0?
+                return y != 0 && x > 0 ? x + 1.0 : 1.0;
+        }
+        int origValue = calculate(x, y, opcodeOrig);
+        int newValue = calculate(x, y, opcodeNew);
+        return origValue == newValue ? 1.0 : 0.0;
+    }
+
+    /**
+     * <p>getInfectionDistanceLong</p>
+     *
+     * @param x          a long.
+     * @param y          a int.
+     * @param opcodeOrig a int.
+     * @param opcodeNew  a int.
+     * @return a double.
+     */
+    public static double getInfectionDistanceLong(long x, int y, int opcodeOrig,
+                                                  int opcodeNew) {
+        if (opcodeOrig == Opcodes.LSHR && opcodeNew == Opcodes.LUSHR) {
+            if (x < 0 && y != 0) {
+                long origValue = calculate(x, y, opcodeOrig);
+                long newValue = calculate(x, y, opcodeNew);
+                assert (origValue != newValue);
+
+                return 0.0;
+            } else
+                return y != 0 && x > 0 ? x + 1.0 : 1.0;
+        }
+        long origValue = calculate(x, y, opcodeOrig);
+        long newValue = calculate(x, y, opcodeNew);
+        return origValue == newValue ? 1.0 : 0.0;
+    }
+
+    /**
+     * <p>getInfectionDistanceLong</p>
+     *
+     * @param x          a long.
+     * @param y          a long.
+     * @param opcodeOrig a int.
+     * @param opcodeNew  a int.
+     * @return a double.
+     */
+    public static double getInfectionDistanceLong(long x, long y, int opcodeOrig,
+                                                  int opcodeNew) {
+
+        long origValue = calculate(x, y, opcodeOrig);
+        long newValue = calculate(x, y, opcodeNew);
+        return origValue == newValue ? 1.0 : 0.0;
+    }
+
+    /**
+     * <p>calculate</p>
+     *
+     * @param x      a int.
+     * @param y      a int.
+     * @param opcode a int.
+     * @return a int.
+     */
+    public static int calculate(int x, int y, int opcode) {
+        switch (opcode) {
+            case Opcodes.IAND:
+                return x & y;
+            case Opcodes.IOR:
+                return x | y;
+            case Opcodes.IXOR:
+                return x ^ y;
+            case Opcodes.ISHL:
+                return x << y;
+            case Opcodes.ISHR:
+                return x >> y;
+            case Opcodes.IUSHR:
+                return x >>> y;
+        }
+        throw new RuntimeException("Unknown integer opcode: " + opcode);
+    }
+
+    /**
+     * <p>calculate</p>
+     *
+     * @param x      a long.
+     * @param y      a long.
+     * @param opcode a int.
+     * @return a long.
+     */
+    public static long calculate(long x, long y, int opcode) {
+        switch (opcode) {
+            case Opcodes.LAND:
+                return x & y;
+            case Opcodes.LOR:
+                return x | y;
+            case Opcodes.LXOR:
+                return x ^ y;
+            case Opcodes.LSHL:
+                return x << y;
+            case Opcodes.LSHR:
+                return x >> y;
+            case Opcodes.LUSHR:
+                return x >>> y;
+        }
+        throw new RuntimeException("Unknown long opcode: " + opcode);
+    }
 
     /**
      * {@inheritDoc}
@@ -196,128 +318,6 @@ public class ReplaceBitwiseOperator implements MutationOperator {
         }
 
         return distance;
-    }
-
-    /**
-     * <p>getInfectionDistanceInt</p>
-     *
-     * @param x          a int.
-     * @param y          a int.
-     * @param opcodeOrig a int.
-     * @param opcodeNew  a int.
-     * @return a double.
-     */
-    public static double getInfectionDistanceInt(int x, int y, int opcodeOrig,
-                                                 int opcodeNew) {
-        if (opcodeOrig == Opcodes.ISHR && opcodeNew == Opcodes.IUSHR) {
-            if (x < 0 && y != 0) {
-                int origValue = calculate(x, y, opcodeOrig);
-                int newValue = calculate(x, y, opcodeNew);
-                assert (origValue != newValue);
-
-                return 0.0;
-            } else
-                // TODO x >= 0?
-                return y != 0 && x > 0 ? x + 1.0 : 1.0;
-        }
-        int origValue = calculate(x, y, opcodeOrig);
-        int newValue = calculate(x, y, opcodeNew);
-        return origValue == newValue ? 1.0 : 0.0;
-    }
-
-    /**
-     * <p>getInfectionDistanceLong</p>
-     *
-     * @param x          a long.
-     * @param y          a int.
-     * @param opcodeOrig a int.
-     * @param opcodeNew  a int.
-     * @return a double.
-     */
-    public static double getInfectionDistanceLong(long x, int y, int opcodeOrig,
-                                                  int opcodeNew) {
-        if (opcodeOrig == Opcodes.LSHR && opcodeNew == Opcodes.LUSHR) {
-            if (x < 0 && y != 0) {
-                long origValue = calculate(x, y, opcodeOrig);
-                long newValue = calculate(x, y, opcodeNew);
-                assert (origValue != newValue);
-
-                return 0.0;
-            } else
-                return y != 0 && x > 0 ? x + 1.0 : 1.0;
-        }
-        long origValue = calculate(x, y, opcodeOrig);
-        long newValue = calculate(x, y, opcodeNew);
-        return origValue == newValue ? 1.0 : 0.0;
-    }
-
-    /**
-     * <p>getInfectionDistanceLong</p>
-     *
-     * @param x          a long.
-     * @param y          a long.
-     * @param opcodeOrig a int.
-     * @param opcodeNew  a int.
-     * @return a double.
-     */
-    public static double getInfectionDistanceLong(long x, long y, int opcodeOrig,
-                                                  int opcodeNew) {
-
-        long origValue = calculate(x, y, opcodeOrig);
-        long newValue = calculate(x, y, opcodeNew);
-        return origValue == newValue ? 1.0 : 0.0;
-    }
-
-    /**
-     * <p>calculate</p>
-     *
-     * @param x      a int.
-     * @param y      a int.
-     * @param opcode a int.
-     * @return a int.
-     */
-    public static int calculate(int x, int y, int opcode) {
-        switch (opcode) {
-            case Opcodes.IAND:
-                return x & y;
-            case Opcodes.IOR:
-                return x | y;
-            case Opcodes.IXOR:
-                return x ^ y;
-            case Opcodes.ISHL:
-                return x << y;
-            case Opcodes.ISHR:
-                return x >> y;
-            case Opcodes.IUSHR:
-                return x >>> y;
-        }
-        throw new RuntimeException("Unknown integer opcode: " + opcode);
-    }
-
-    /**
-     * <p>calculate</p>
-     *
-     * @param x      a long.
-     * @param y      a long.
-     * @param opcode a int.
-     * @return a long.
-     */
-    public static long calculate(long x, long y, int opcode) {
-        switch (opcode) {
-            case Opcodes.LAND:
-                return x & y;
-            case Opcodes.LOR:
-                return x | y;
-            case Opcodes.LXOR:
-                return x ^ y;
-            case Opcodes.LSHL:
-                return x << y;
-            case Opcodes.LSHR:
-                return x >> y;
-            case Opcodes.LUSHR:
-                return x >>> y;
-        }
-        throw new RuntimeException("Unknown long opcode: " + opcode);
     }
 
     /* (non-Javadoc)

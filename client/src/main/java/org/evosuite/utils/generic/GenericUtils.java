@@ -36,6 +36,7 @@ public class GenericUtils {
      * Constant to represent @NotNull annotation
      */
     public final static String NONNULL = "Nonnull";
+    private static final Logger logger = LoggerFactory.getLogger(GenericUtils.class);
 
     public static boolean isAssignable(Type type, TypeVariable<?> typeVariable) {
         boolean isAssignable = true;
@@ -51,8 +52,6 @@ public class GenericUtils {
         }
         return isAssignable;
     }
-
-    private static final Logger logger = LoggerFactory.getLogger(GenericUtils.class);
 
     public static Type replaceTypeVariables(Type targetType,
                                             Map<TypeVariable<?>, Type> typeMap) {
@@ -166,18 +165,6 @@ public class GenericUtils {
             //logger.debug("Unknown type of class " + targetType.getClass() + ": "
             //        + targetType);
             return targetType;
-        }
-    }
-
-    public Map<TypeVariable<?>, Type> getMatchingTypeParameters(GenericArrayType p1,
-                                                                GenericArrayType p2) {
-        if (p1.getGenericComponentType() instanceof ParameterizedType
-                && p2.getGenericComponentType() instanceof ParameterizedType) {
-            return getMatchingTypeParameters((ParameterizedType) p1.getGenericComponentType(),
-                    (ParameterizedType) p2.getGenericComponentType());
-        } else {
-            Map<TypeVariable<?>, Type> map = new HashMap<>();
-            return map;
         }
     }
 
@@ -299,6 +286,18 @@ public class GenericUtils {
             }
         }
         return false;
+    }
+
+    public Map<TypeVariable<?>, Type> getMatchingTypeParameters(GenericArrayType p1,
+                                                                GenericArrayType p2) {
+        if (p1.getGenericComponentType() instanceof ParameterizedType
+                && p2.getGenericComponentType() instanceof ParameterizedType) {
+            return getMatchingTypeParameters((ParameterizedType) p1.getGenericComponentType(),
+                    (ParameterizedType) p2.getGenericComponentType());
+        } else {
+            Map<TypeVariable<?>, Type> map = new HashMap<>();
+            return map;
+        }
     }
 
 

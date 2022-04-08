@@ -46,7 +46,15 @@ public class BooleanHelper {
     public static final int TRUE = K;
 
     public static final int FALSE = -K;
-
+    private static final Stack<Object> parametersObject = new Stack<>();
+    private static final Stack<Boolean> parametersBoolean = new Stack<>();
+    private static final Stack<Character> parametersChar = new Stack<>();
+    private static final Stack<Byte> parametersByte = new Stack<>();
+    private static final Stack<Short> parametersShort = new Stack<>();
+    private static final Stack<Integer> parametersInteger = new Stack<>();
+    private static final Stack<Float> parametersFloat = new Stack<>();
+    private static final Stack<Long> parametersLong = new Stack<>();
+    private static final Stack<Double> parametersDouble = new Stack<>();
     static Map<Integer, Integer> lastDistance = new HashMap<>();
 
     /**
@@ -68,7 +76,6 @@ public class BooleanHelper {
     public static int objectEquals(Object obj1, Object obj2) {
         return obj1.equals(obj2) ? TRUE : FALSE;
     }
-
 
     /**
      * Keep track of the distance for this predicate
@@ -155,7 +162,6 @@ public class BooleanHelper {
         }
     }
 
-
     private static int doubleSubHelper(double d1, double d2) {
         if (Double.isInfinite(d1) || Double.isInfinite(d2)) {
             return Double.compare(d1, d2);
@@ -223,7 +229,6 @@ public class BooleanHelper {
         return d3;
     }
 
-
     /**
      * <p>
      * intSub
@@ -279,7 +284,7 @@ public class BooleanHelper {
 			return Integer.MAX_VALUE;
 		else if (d < Integer.MIN_VALUE)
 			return Integer.MIN_VALUE;
-		else 
+		else
 		*/
         if (d == 0.0)
             return 0;
@@ -482,7 +487,6 @@ public class BooleanHelper {
         return d[n][m];
     }
 
-
     /**
      * Replacement function for the Java instanceof instruction, which returns a
      * distance integer
@@ -594,16 +598,6 @@ public class BooleanHelper {
         else
             return o1 != o2 ? K : -K;
     }
-
-    private static final Stack<Object> parametersObject = new Stack<>();
-    private static final Stack<Boolean> parametersBoolean = new Stack<>();
-    private static final Stack<Character> parametersChar = new Stack<>();
-    private static final Stack<Byte> parametersByte = new Stack<>();
-    private static final Stack<Short> parametersShort = new Stack<>();
-    private static final Stack<Integer> parametersInteger = new Stack<>();
-    private static final Stack<Float> parametersFloat = new Stack<>();
-    private static final Stack<Long> parametersLong = new Stack<>();
-    private static final Stack<Double> parametersDouble = new Stack<>();
 
     /**
      * <p>

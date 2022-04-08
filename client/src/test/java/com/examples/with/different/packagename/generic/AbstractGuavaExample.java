@@ -25,12 +25,12 @@ package com.examples.with.different.packagename.generic;
  */
 public abstract class AbstractGuavaExample<T> {
 
-    public <S extends T> Wrapper<S> wrap(S reference) {
-        return new Wrapper<>(this, reference);
-    }
-
     public static AbstractGuavaExample<Object> identity() {
         return null;
+    }
+
+    public <S extends T> Wrapper<S> wrap(S reference) {
+        return new Wrapper<>(this, reference);
     }
 
     public static class Wrapper<T> {

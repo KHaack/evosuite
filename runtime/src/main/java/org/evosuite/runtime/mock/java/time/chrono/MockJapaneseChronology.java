@@ -30,17 +30,17 @@ import java.time.chrono.JapaneseDate;
  * Created by gordon on 24/01/2016.
  */
 public class MockJapaneseChronology implements StaticReplacementMock {
-    @Override
-    public String getMockedClassName() {
-        return JapaneseChronology.class.getName();
-    }
-
     public static JapaneseDate dateNow(JapaneseChronology instance) {
         return instance.dateNow(MockClock.systemDefaultZone());
     }
 
     public static JapaneseDate dateNow(JapaneseChronology instance, ZoneId zone) {
         return instance.dateNow(MockClock.system(zone));
+    }
+
+    @Override
+    public String getMockedClassName() {
+        return JapaneseChronology.class.getName();
     }
 
 }

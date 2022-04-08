@@ -35,11 +35,6 @@ import org.evosuite.utils.Randomness;
 public class TestSuiteChromosomeFactory implements ChromosomeFactory<TestSuiteChromosome> {
 
     private static final long serialVersionUID = -3769862881038106087L;
-
-    public ChromosomeFactory<TestChromosome> getTestChromosomeFactory() {
-        return testChromosomeFactory;
-    }
-
     /**
      * Factory to manipulate and generate method sequences
      */
@@ -63,6 +58,10 @@ public class TestSuiteChromosomeFactory implements ChromosomeFactory<TestSuiteCh
         // test_factory = new RandomLengthTestFactory();
         // test_factory = new AllMethodsChromosomeFactory();
         // test_factory = new OUMTestChromosomeFactory();
+    }
+
+    public ChromosomeFactory<TestChromosome> getTestChromosomeFactory() {
+        return testChromosomeFactory;
     }
 
     /**

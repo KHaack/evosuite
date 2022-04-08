@@ -35,6 +35,8 @@ import static org.junit.Assert.assertNotNull;
 
 public abstract class NotSupportedBySolver extends TestSolver {
 
+    private static final double DELTA = 1e-15;
+
     private static DefaultTestCase buildTestTokenizer() throws SecurityException, NoSuchMethodException {
         TestCaseBuilder tc = new TestCaseBuilder();
         VariableReference string0 = tc.appendStringPrimitive("Here is Ramon");
@@ -44,18 +46,6 @@ public abstract class NotSupportedBySolver extends TestSolver {
         return tc.getDefaultTestCase();
     }
 
-    @Test
-    public void testStringTokenizer() throws SecurityException, NoSuchMethodException, SolverTimeoutException {
-
-        Solver solver = getSolver();
-        DefaultTestCase tc = buildTestTokenizer();
-        Collection<Constraint<?>> constraints = DefaultTestCaseConcolicExecutor.execute(tc);
-        Map<String, Object> solution = solve(solver, constraints);
-        assertNotNull(solution);
-    }
-
-    private static final double DELTA = 1e-15;
-
     private static DefaultTestCase buildTestCaseCos() throws SecurityException, NoSuchMethodException {
         TestCaseBuilder tc = new TestCaseBuilder();
         VariableReference double0 = tc.appendDoublePrimitive(Math.cos(Math.PI));
@@ -64,19 +54,6 @@ public abstract class NotSupportedBySolver extends TestSolver {
         Method method = TestCaseCos.class.getMethod("test", double.class, double.class);
         tc.appendMethod(null, method, double0, double1);
         return tc.getDefaultTestCase();
-    }
-
-    @Test
-    public void testCos() throws SecurityException, NoSuchMethodException, SolverTimeoutException {
-
-        DefaultTestCase tc = buildTestCaseCos();
-        Collection<Constraint<?>> constraints = DefaultTestCaseConcolicExecutor.execute(tc);
-        Map<String, Object> solution = solve(getSolver(), constraints);
-        assertNotNull(solution);
-        Double var0 = (Double) solution.get("var0");
-        Double var1 = (Double) solution.get("var1");
-
-        assertEquals(var0, Math.cos(var1), DELTA);
     }
 
     private static DefaultTestCase buildTestCaseExp() throws SecurityException, NoSuchMethodException {
@@ -89,19 +66,6 @@ public abstract class NotSupportedBySolver extends TestSolver {
         return tc.getDefaultTestCase();
     }
 
-    @Test
-    public void testExp() throws SecurityException, NoSuchMethodException, SolverTimeoutException {
-
-        DefaultTestCase tc = buildTestCaseExp();
-        Collection<Constraint<?>> constraints = DefaultTestCaseConcolicExecutor.execute(tc);
-        Map<String, Object> solution = solve(getSolver(), constraints);
-        assertNotNull(solution);
-        Double var0 = (Double) solution.get("var0");
-        Double var1 = (Double) solution.get("var1");
-
-        assertEquals(var0, Math.exp(var1), DELTA);
-    }
-
     private static DefaultTestCase buildTestCaseLog() throws SecurityException, NoSuchMethodException {
         TestCaseBuilder tc = new TestCaseBuilder();
         VariableReference double0 = tc.appendDoublePrimitive(Math.log(Math.PI));
@@ -110,19 +74,6 @@ public abstract class NotSupportedBySolver extends TestSolver {
         Method method = TestCaseLog.class.getMethod("test", double.class, double.class);
         tc.appendMethod(null, method, double0, double1);
         return tc.getDefaultTestCase();
-    }
-
-    @Test
-    public void testLog() throws SecurityException, NoSuchMethodException, SolverTimeoutException {
-
-        DefaultTestCase tc = buildTestCaseLog();
-        Collection<Constraint<?>> constraints = DefaultTestCaseConcolicExecutor.execute(tc);
-        Map<String, Object> solution = solve(getSolver(), constraints);
-        assertNotNull(solution);
-        Double var0 = (Double) solution.get("var0");
-        Double var1 = (Double) solution.get("var1");
-
-        assertEquals(var0, Math.tan(var1), DELTA);
     }
 
     private static DefaultTestCase buildTestCaseSin() throws SecurityException, NoSuchMethodException {
@@ -135,19 +86,6 @@ public abstract class NotSupportedBySolver extends TestSolver {
         return tc.getDefaultTestCase();
     }
 
-    @Test
-    public void testSin() throws SecurityException, NoSuchMethodException, SolverTimeoutException {
-
-        DefaultTestCase tc = buildTestCaseSin();
-        Collection<Constraint<?>> constraints = DefaultTestCaseConcolicExecutor.execute(tc);
-        Map<String, Object> solution = solve(getSolver(), constraints);
-        assertNotNull(solution);
-        Double var0 = (Double) solution.get("var0");
-        Double var1 = (Double) solution.get("var1");
-
-        assertEquals(var0, Math.sin(var1), DELTA);
-    }
-
     private static DefaultTestCase buildTestCaseTan() throws SecurityException, NoSuchMethodException {
         TestCaseBuilder tc = new TestCaseBuilder();
         VariableReference double0 = tc.appendDoublePrimitive(Math.tan(Math.PI));
@@ -156,19 +94,6 @@ public abstract class NotSupportedBySolver extends TestSolver {
         Method method = TestCaseTan.class.getMethod("test", double.class, double.class);
         tc.appendMethod(null, method, double0, double1);
         return tc.getDefaultTestCase();
-    }
-
-    @Test
-    public void testTan() throws SecurityException, NoSuchMethodException, SolverTimeoutException {
-
-        DefaultTestCase tc = buildTestCaseTan();
-        Collection<Constraint<?>> constraints = DefaultTestCaseConcolicExecutor.execute(tc);
-        Map<String, Object> solution = solve(getSolver(), constraints);
-        assertNotNull(solution);
-        Double var0 = (Double) solution.get("var0");
-        Double var1 = (Double) solution.get("var1");
-
-        assertEquals(var0, Math.tan(var1), DELTA);
     }
 
     private static DefaultTestCase buildTestCaseAcos() throws SecurityException, NoSuchMethodException {
@@ -210,6 +135,101 @@ public abstract class NotSupportedBySolver extends TestSolver {
         Method method = TestCaseAtan2.class.getMethod("test", double.class, double.class, double.class);
         tc.appendMethod(null, method, double0, double1, double2);
         return tc.getDefaultTestCase();
+    }
+
+    private static DefaultTestCase buildTestCaseSqrt() throws SecurityException, NoSuchMethodException {
+        TestCaseBuilder tc = new TestCaseBuilder();
+        VariableReference double0 = tc.appendDoublePrimitive(Math.sqrt(Math.PI));
+        VariableReference double1 = tc.appendDoublePrimitive(Math.PI);
+
+        Method method = TestCaseSqrt.class.getMethod("test", double.class, double.class);
+        tc.appendMethod(null, method, double0, double1);
+        return tc.getDefaultTestCase();
+    }
+
+    private static DefaultTestCase buildTestCaseRound() throws SecurityException, NoSuchMethodException {
+        TestCaseBuilder tc = new TestCaseBuilder();
+        VariableReference int0 = tc.appendIntPrimitive((int) Math.round(Math.PI));
+        VariableReference double1 = tc.appendDoublePrimitive(Math.PI);
+
+        Method method = TestCaseRound.class.getMethod("test", int.class, double.class);
+        tc.appendMethod(null, method, int0, double1);
+        return tc.getDefaultTestCase();
+    }
+
+    @Test
+    public void testStringTokenizer() throws SecurityException, NoSuchMethodException, SolverTimeoutException {
+
+        Solver solver = getSolver();
+        DefaultTestCase tc = buildTestTokenizer();
+        Collection<Constraint<?>> constraints = DefaultTestCaseConcolicExecutor.execute(tc);
+        Map<String, Object> solution = solve(solver, constraints);
+        assertNotNull(solution);
+    }
+
+    @Test
+    public void testCos() throws SecurityException, NoSuchMethodException, SolverTimeoutException {
+
+        DefaultTestCase tc = buildTestCaseCos();
+        Collection<Constraint<?>> constraints = DefaultTestCaseConcolicExecutor.execute(tc);
+        Map<String, Object> solution = solve(getSolver(), constraints);
+        assertNotNull(solution);
+        Double var0 = (Double) solution.get("var0");
+        Double var1 = (Double) solution.get("var1");
+
+        assertEquals(var0, Math.cos(var1), DELTA);
+    }
+
+    @Test
+    public void testExp() throws SecurityException, NoSuchMethodException, SolverTimeoutException {
+
+        DefaultTestCase tc = buildTestCaseExp();
+        Collection<Constraint<?>> constraints = DefaultTestCaseConcolicExecutor.execute(tc);
+        Map<String, Object> solution = solve(getSolver(), constraints);
+        assertNotNull(solution);
+        Double var0 = (Double) solution.get("var0");
+        Double var1 = (Double) solution.get("var1");
+
+        assertEquals(var0, Math.exp(var1), DELTA);
+    }
+
+    @Test
+    public void testLog() throws SecurityException, NoSuchMethodException, SolverTimeoutException {
+
+        DefaultTestCase tc = buildTestCaseLog();
+        Collection<Constraint<?>> constraints = DefaultTestCaseConcolicExecutor.execute(tc);
+        Map<String, Object> solution = solve(getSolver(), constraints);
+        assertNotNull(solution);
+        Double var0 = (Double) solution.get("var0");
+        Double var1 = (Double) solution.get("var1");
+
+        assertEquals(var0, Math.tan(var1), DELTA);
+    }
+
+    @Test
+    public void testSin() throws SecurityException, NoSuchMethodException, SolverTimeoutException {
+
+        DefaultTestCase tc = buildTestCaseSin();
+        Collection<Constraint<?>> constraints = DefaultTestCaseConcolicExecutor.execute(tc);
+        Map<String, Object> solution = solve(getSolver(), constraints);
+        assertNotNull(solution);
+        Double var0 = (Double) solution.get("var0");
+        Double var1 = (Double) solution.get("var1");
+
+        assertEquals(var0, Math.sin(var1), DELTA);
+    }
+
+    @Test
+    public void testTan() throws SecurityException, NoSuchMethodException, SolverTimeoutException {
+
+        DefaultTestCase tc = buildTestCaseTan();
+        Collection<Constraint<?>> constraints = DefaultTestCaseConcolicExecutor.execute(tc);
+        Map<String, Object> solution = solve(getSolver(), constraints);
+        assertNotNull(solution);
+        Double var0 = (Double) solution.get("var0");
+        Double var1 = (Double) solution.get("var1");
+
+        assertEquals(var0, Math.tan(var1), DELTA);
     }
 
     @Test
@@ -265,16 +285,6 @@ public abstract class NotSupportedBySolver extends TestSolver {
         assertEquals(var0, Math.atan2(var1, var2), DELTA);
     }
 
-    private static DefaultTestCase buildTestCaseSqrt() throws SecurityException, NoSuchMethodException {
-        TestCaseBuilder tc = new TestCaseBuilder();
-        VariableReference double0 = tc.appendDoublePrimitive(Math.sqrt(Math.PI));
-        VariableReference double1 = tc.appendDoublePrimitive(Math.PI);
-
-        Method method = TestCaseSqrt.class.getMethod("test", double.class, double.class);
-        tc.appendMethod(null, method, double0, double1);
-        return tc.getDefaultTestCase();
-    }
-
     @Test
     public void testSqrt() throws SecurityException, NoSuchMethodException, SolverTimeoutException {
         DefaultTestCase tc = buildTestCaseSqrt();
@@ -285,16 +295,6 @@ public abstract class NotSupportedBySolver extends TestSolver {
         Double var1 = (Double) solution.get("var1");
 
         assertEquals(var0, Math.sqrt(var1), DELTA);
-    }
-
-    private static DefaultTestCase buildTestCaseRound() throws SecurityException, NoSuchMethodException {
-        TestCaseBuilder tc = new TestCaseBuilder();
-        VariableReference int0 = tc.appendIntPrimitive((int) Math.round(Math.PI));
-        VariableReference double1 = tc.appendDoublePrimitive(Math.PI);
-
-        Method method = TestCaseRound.class.getMethod("test", int.class, double.class);
-        tc.appendMethod(null, method, int0, double1);
-        return tc.getDefaultTestCase();
     }
 
     @Test

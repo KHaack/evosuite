@@ -29,13 +29,21 @@ import org.evosuite.testsuite.TestSuiteChromosome;
  */
 public class DirectSequenceOutputVariableFactory<T extends Number> extends SequenceOutputVariableFactory<T> {
 
-    protected T value;
     private final Class<T> type;
+    protected T value;
 
     public DirectSequenceOutputVariableFactory(RuntimeVariable variable, Class<T> type, T startValue) {
         super(variable);
         this.type = type;
         this.value = startValue;
+    }
+
+    public static DirectSequenceOutputVariableFactory<Double> getDouble(RuntimeVariable variable) {
+        return new DirectSequenceOutputVariableFactory<>(variable, Double.class, 0.0);
+    }
+
+    public static DirectSequenceOutputVariableFactory<Integer> getInteger(RuntimeVariable variable) {
+        return new DirectSequenceOutputVariableFactory<>(variable, Integer.class, 0);
     }
 
     @Override
@@ -60,13 +68,5 @@ public class DirectSequenceOutputVariableFactory<T extends Number> extends Seque
             throw new IllegalArgumentException("value of type " + value.getClass().getName()
                     + " is incompatible with expected type " + this.type.getName());
         }
-    }
-
-    public static DirectSequenceOutputVariableFactory<Double> getDouble(RuntimeVariable variable) {
-        return new DirectSequenceOutputVariableFactory<>(variable, Double.class, 0.0);
-    }
-
-    public static DirectSequenceOutputVariableFactory<Integer> getInteger(RuntimeVariable variable) {
-        return new DirectSequenceOutputVariableFactory<>(variable, Integer.class, 0);
     }
 }

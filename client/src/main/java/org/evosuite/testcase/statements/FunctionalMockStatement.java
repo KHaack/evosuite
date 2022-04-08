@@ -152,39 +152,6 @@ public class FunctionalMockStatement extends EntityWithParametersStatement {
         //setUpMockCreator();
     }
 
-    private void setUpMockCreator() {
-        ClassLoader loader = targetClass.getRawClass().getClassLoader();
-        try {
-            Class<?> mockito = loader.loadClass(Mockito.class.getName());
-            mockCreator = mockito.getDeclaredMethod("mock",
-                    loader.loadClass(Class.class.getName()), loader.loadClass(MockSettings.class.getName()));
-
-        } catch (Exception e) {
-            logger.error("Failed to setup mock creator: " + e.getMessage());
-        }
-    }
-
-    @Override
-    public void changeClassLoader(ClassLoader loader) {
-
-        targetClass.changeClassLoader(loader);
-        for (MethodDescriptor descriptor : mockedMethods) {
-            if (descriptor != null) {
-                descriptor.changeClassLoader(loader);
-            }
-        }
-        if (listener != null) {
-            listener.changeClassLoader(loader);
-        }
-        super.changeClassLoader(loader);
-    }
-
-    protected void checkTarget() {
-        if (!canBeFunctionalMocked(targetClass.getRawClass())) {
-            throw new IllegalArgumentException("Cannot create a basic functional mock for class " + targetClass);
-        }
-    }
-
     public static boolean canBeFunctionalMockedIncludingSUT(Type type) {
 
         Class<?> rawClass = GenericClassFactory.get(type).getRawClass();
@@ -260,6 +227,38 @@ public class FunctionalMockStatement extends EntityWithParametersStatement {
         return canBeFunctionalMockedIncludingSUT(type);
     }
 
+    private void setUpMockCreator() {
+        ClassLoader loader = targetClass.getRawClass().getClassLoader();
+        try {
+            Class<?> mockito = loader.loadClass(Mockito.class.getName());
+            mockCreator = mockito.getDeclaredMethod("mock",
+                    loader.loadClass(Class.class.getName()), loader.loadClass(MockSettings.class.getName()));
+
+        } catch (Exception e) {
+            logger.error("Failed to setup mock creator: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void changeClassLoader(ClassLoader loader) {
+
+        targetClass.changeClassLoader(loader);
+        for (MethodDescriptor descriptor : mockedMethods) {
+            if (descriptor != null) {
+                descriptor.changeClassLoader(loader);
+            }
+        }
+        if (listener != null) {
+            listener.changeClassLoader(loader);
+        }
+        super.changeClassLoader(loader);
+    }
+
+    protected void checkTarget() {
+        if (!canBeFunctionalMocked(targetClass.getRawClass())) {
+            throw new IllegalArgumentException("Cannot create a basic functional mock for class " + targetClass);
+        }
+    }
 
     public Class<?> getTargetClass() {
         return targetClass.getRawClass();

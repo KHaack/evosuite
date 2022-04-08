@@ -53,6 +53,20 @@ public class ContainerTransformation {
         this.cn = cn;
     }
 
+    private static InsnList createNewIfThenElse(MethodInsnNode n) {
+        LabelNode labelIsNotEmpty = new LabelNode();
+        LabelNode labelEndif = new LabelNode();
+        InsnList il = new InsnList();
+        il.add(n);
+        il.add(new JumpInsnNode(Opcodes.IFLE, labelIsNotEmpty));
+        il.add(new InsnNode(Opcodes.ICONST_1));
+        il.add(new JumpInsnNode(Opcodes.GOTO, labelEndif));
+        il.add(labelIsNotEmpty);
+        il.add(new InsnNode(Opcodes.ICONST_0));
+        il.add(labelEndif);
+        return il;
+    }
+
     /**
      * <p>transform</p>
      *
@@ -200,20 +214,6 @@ public class ContainerTransformation {
             }
         }
         return changed;
-    }
-
-    private static InsnList createNewIfThenElse(MethodInsnNode n) {
-        LabelNode labelIsNotEmpty = new LabelNode();
-        LabelNode labelEndif = new LabelNode();
-        InsnList il = new InsnList();
-        il.add(n);
-        il.add(new JumpInsnNode(Opcodes.IFLE, labelIsNotEmpty));
-        il.add(new InsnNode(Opcodes.ICONST_1));
-        il.add(new JumpInsnNode(Opcodes.GOTO, labelEndif));
-        il.add(labelIsNotEmpty);
-        il.add(new InsnNode(Opcodes.ICONST_0));
-        il.add(labelEndif);
-        return il;
     }
 
 }

@@ -39,18 +39,27 @@ public class WildcardTypeImpl implements WildcardType {
         this.lowerBounds = lowerBounds;
     }
 
+    private static String stringifyTypeVariable(Type upperBound) {
+        if (upperBound instanceof TypeVariable<?>) {
+            return "(" + upperBound.getTypeName() + " extends " + Arrays.toString(((TypeVariable<?>) upperBound).getBounds()) + ")";
+        }
+
+        return GenericTypeReflector.getTypeName(upperBound);
+
+    }
+
     @Override
     public Type[] getUpperBounds() {
         return upperBounds.clone();
     }
 
+    public void setUpperBounds(Type[] bounds) {
+        this.upperBounds = bounds;
+    }
+
     @Override
     public Type[] getLowerBounds() {
         return lowerBounds.clone();
-    }
-
-    public void setUpperBounds(Type[] bounds) {
-        this.upperBounds = bounds;
     }
 
     public void setLowerBounds(Type[] bounds) {
@@ -80,15 +89,5 @@ public class WildcardTypeImpl implements WildcardType {
         } else {
             return "? extends " + stringifyTypeVariable(upperBounds[0]);
         }
-    }
-
-
-    private static String stringifyTypeVariable(Type upperBound) {
-        if (upperBound instanceof TypeVariable<?>) {
-            return "(" + upperBound.getTypeName() + " extends " + Arrays.toString(((TypeVariable<?>) upperBound).getBounds()) + ")";
-        }
-
-        return GenericTypeReflector.getTypeName(upperBound);
-
     }
 }

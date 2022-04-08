@@ -40,10 +40,8 @@ import org.slf4j.LoggerFactory;
  */
 public class ArrayLocalSearch extends StatementLocalSearch {
 
-    private int oldLength = 0;
-
     private static final Logger logger = LoggerFactory.getLogger(TestCaseLocalSearch.class);
-
+    private int oldLength = 0;
     private int positionDelta = 0;
 
     @Override

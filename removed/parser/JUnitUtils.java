@@ -35,84 +35,80 @@ import org.slf4j.Logger;
 @SuppressWarnings("synthetic-access")
 public class JUnitUtils {
 
-	private static final Logger logger = org.slf4j.LoggerFactory.getLogger(JUnitUtils.class);
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(JUnitUtils.class);
 
-	/**
-	 * <p>
-	 * readTestCase
-	 * </p>
-	 * 
-	 * @param failingTest
-	 *            a {@link java.lang.String} object.
-	 * @return a {@link org.evosuite.testcase.TestCase} object.
-	 */
-	public static TestCase readTestCase(String failingTest) {
-		String[] classpath = Properties.CLASSPATH;
-		String[] sources = Properties.SOURCEPATH;
-		TestCase testCase = new JUnitTestReader(classpath, sources).readJUnitTestCase(failingTest);
-		return testCase;
-	}
+    private JUnitUtils() {
+        // cannot instantiate class
+    }
 
-	/**
-	 * <p>
-	 * readTestCases
-	 * </p>
-	 * 
-	 * @param failingTest
-	 *            a {@link java.lang.String} object.
-	 * @return a {@link java.util.Set} object.
-	 */
-	public static Set<TestCase> readTestCases(String failingTest) {
-		JUnitTestReader parser = new JUnitTestReader();
-		Set<TestCase> tests = new HashSet<TestCase>();
-		tests.addAll(parser.readTests(failingTest).values());
-		return tests;
-	}
+    /**
+     * <p>
+     * readTestCase
+     * </p>
+     *
+     * @param failingTest a {@link java.lang.String} object.
+     * @return a {@link org.evosuite.testcase.TestCase} object.
+     */
+    public static TestCase readTestCase(String failingTest) {
+        String[] classpath = Properties.CLASSPATH;
+        String[] sources = Properties.SOURCEPATH;
+        TestCase testCase = new JUnitTestReader(classpath, sources).readJUnitTestCase(failingTest);
+        return testCase;
+    }
 
-	/**
-	 * <p>
-	 * runTest
-	 * </p>
-	 * 
-	 * @param originalTest
-	 *            a {@link java.lang.String} object.
-	 * @return a {@link org.evosuite.junit.TestRun} object.
-	 */
-	public static TestRun runTest(String originalTest) {
-		if (originalTest.contains("#")) {
-			originalTest = originalTest.substring(0, originalTest.indexOf("#"));
-		}
-		try {
-			ExecutionTracer.enable();
-			Class<?> forName = null;
-			forName = Class.forName(originalTest);
-			logger.debug("Running against JUnit test suite " + originalTest);
-			Result result = JUnitCore.runClasses(forName);
-			assert result.getFailureCount() == 1 : "Cannot handle more or less than exactly one failure at a time.";
-			Throwable failure = result.getFailures().get(0).getException();
-			ExecutionTrace trace = ExecutionTracer.getExecutionTracer().getTrace();
-			return new TestRun(trace, failure);
-		} catch (ClassNotFoundException exc) {
-			throw new RuntimeException(exc);
-		}
-	}
+    /**
+     * <p>
+     * readTestCases
+     * </p>
+     *
+     * @param failingTest a {@link java.lang.String} object.
+     * @return a {@link java.util.Set} object.
+     */
+    public static Set<TestCase> readTestCases(String failingTest) {
+        JUnitTestReader parser = new JUnitTestReader();
+        Set<TestCase> tests = new HashSet<TestCase>();
+        tests.addAll(parser.readTests(failingTest).values());
+        return tests;
+    }
 
-	/**
-	 * <p>
-	 * runTest
-	 * </p>
-	 * 
-	 * @param testCase
-	 *            a {@link org.evosuite.testcase.TestCase} object.
-	 * @return a {@link org.evosuite.testcase.ExecutionResult} object.
-	 */
-	public static ExecutionResult runTest(TestCase testCase) {
-		logger.debug("Execution testCase with timeout {}: \n{}", Properties.TIMEOUT,
-		             testCase.toCode());
-		return TestCaseExecutor.getInstance().execute(testCase);
-	}
+    /**
+     * <p>
+     * runTest
+     * </p>
+     *
+     * @param originalTest a {@link java.lang.String} object.
+     * @return a {@link org.evosuite.junit.TestRun} object.
+     */
+    public static TestRun runTest(String originalTest) {
+        if (originalTest.contains("#")) {
+            originalTest = originalTest.substring(0, originalTest.indexOf("#"));
+        }
+        try {
+            ExecutionTracer.enable();
+            Class<?> forName = null;
+            forName = Class.forName(originalTest);
+            logger.debug("Running against JUnit test suite " + originalTest);
+            Result result = JUnitCore.runClasses(forName);
+            assert result.getFailureCount() == 1 : "Cannot handle more or less than exactly one failure at a time.";
+            Throwable failure = result.getFailures().get(0).getException();
+            ExecutionTrace trace = ExecutionTracer.getExecutionTracer().getTrace();
+            return new TestRun(trace, failure);
+        } catch (ClassNotFoundException exc) {
+            throw new RuntimeException(exc);
+        }
+    }
 
-	private JUnitUtils() {
-		// cannot instantiate class
-	}
+    /**
+     * <p>
+     * runTest
+     * </p>
+     *
+     * @param testCase a {@link org.evosuite.testcase.TestCase} object.
+     * @return a {@link org.evosuite.testcase.ExecutionResult} object.
+     */
+    public static ExecutionResult runTest(TestCase testCase) {
+        logger.debug("Execution testCase with timeout {}: \n{}", Properties.TIMEOUT,
+                testCase.toCode());
+        return TestCaseExecutor.getInstance().execute(testCase);
+    }
 }

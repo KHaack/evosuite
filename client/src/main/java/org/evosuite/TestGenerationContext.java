@@ -70,18 +70,15 @@ public class TestGenerationContext {
     private static final Logger logger = LoggerFactory.getLogger(TestGenerationContext.class);
 
     private static final TestGenerationContext singleton = new TestGenerationContext();
-
+    /**
+     * The classloader used to load this class
+     */
+    private final ClassLoader originalClassLoader;
     /**
      * This is the classloader that does the instrumentation - it needs to be
      * used by all test code
      */
     private InstrumentingClassLoader classLoader;
-
-    /**
-     * The classloader used to load this class
-     */
-    private final ClassLoader originalClassLoader;
-
     /**
      * To avoid duplicate analyses we cache the cluster generator
      */
@@ -97,6 +94,14 @@ public class TestGenerationContext {
 
     public static TestGenerationContext getInstance() {
         return singleton;
+    }
+
+    /**
+     * @return
+     * @deprecated use {@code getInstance().getClassLoaderForSUT()}
+     */
+    public static ClassLoader getClassLoader() {
+        return getInstance().classLoader;
     }
 
     /**
@@ -131,14 +136,6 @@ public class TestGenerationContext {
 
     public void setTestClusterGenerator(TestClusterGenerator generator) {
         testClusterGenerator = generator;
-    }
-
-    /**
-     * @return
-     * @deprecated use {@code getInstance().getClassLoaderForSUT()}
-     */
-    public static ClassLoader getClassLoader() {
-        return getInstance().classLoader;
     }
 
     public void resetContext() {

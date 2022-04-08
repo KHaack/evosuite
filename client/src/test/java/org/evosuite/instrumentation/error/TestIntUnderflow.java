@@ -38,6 +38,11 @@ public class TestIntUnderflow {
     private int x;
     private int y;
 
+    public TestIntUnderflow(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+
     // Creates the test data
     @Parameters
     public static Collection<Object[]> data() {
@@ -49,11 +54,6 @@ public class TestIntUnderflow {
             }
         }
         return valuePairs;
-    }
-
-    public TestIntUnderflow(int x, int y) {
-        this.x = x;
-        this.y = y;
     }
 
     private void assertUnderflow(long longResult, int intResult) {

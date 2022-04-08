@@ -32,16 +32,6 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD})
 public @interface EvoSuiteTest {
     /**
-     * Default empty exception
-     */
-    class None extends Throwable {
-        private static final long serialVersionUID = 2L;
-
-        private None() {
-        }
-    }
-
-    /**
      * Optionally specify <code>expected</code>, a Throwable, to cause a test method to succeed iff
      * an exception of the specified class is thrown by the method.
      */
@@ -57,5 +47,15 @@ public @interface EvoSuiteTest {
      * Specify whether a test has been checked.
      */
     boolean checked() default false;
+
+    /**
+     * Default empty exception
+     */
+    class None extends Throwable {
+        private static final long serialVersionUID = 2L;
+
+        private None() {
+        }
+    }
 
 }

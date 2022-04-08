@@ -43,6 +43,26 @@ public class MSecurityManagerTest {
         executor.shutdownNow();
     }
 
+    /*
+     * Note: this comes from Guava library's Files.createTempDir().
+     * Java 6 does not have such method, but should be in Java 7
+     */
+    public static File createTempDir() {
+        final int TEMP_DIR_ATTEMPTS = 10000;
+        File baseDir = new File(System.getProperty("java.io.tmpdir"));
+        String baseName = System.currentTimeMillis() + "-";
+
+        for (int counter = 0; counter < TEMP_DIR_ATTEMPTS; counter++) {
+            File tempDir = new File(baseDir, baseName + counter);
+            if (tempDir.mkdir()) {
+                return tempDir;
+            }
+        }
+        throw new IllegalStateException("Failed to create directory within "
+                + TEMP_DIR_ATTEMPTS + " attempts (tried "
+                + baseName + "0 to " + baseName + (TEMP_DIR_ATTEMPTS - 1) + ')');
+    }
+
     @Before
     public void initTest() {
         securityManager.apply();
@@ -54,7 +74,6 @@ public class MSecurityManagerTest {
         securityManager.goingToEndTestCase();
         securityManager.restoreDefaultManager();
     }
-
 
     @Test
     public void testSpecifyStreamHandler() throws Exception {
@@ -133,7 +152,6 @@ public class MSecurityManagerTest {
         }
     }
 
-
     @Test
     public void testReadButNotWriteOfFiles() throws IOException, InterruptedException, ExecutionException, TimeoutException {
 
@@ -204,27 +222,6 @@ public class MSecurityManagerTest {
             }
         }
     }
-
-    /*
-     * Note: this comes from Guava library's Files.createTempDir().
-     * Java 6 does not have such method, but should be in Java 7
-     */
-    public static File createTempDir() {
-        final int TEMP_DIR_ATTEMPTS = 10000;
-        File baseDir = new File(System.getProperty("java.io.tmpdir"));
-        String baseName = System.currentTimeMillis() + "-";
-
-        for (int counter = 0; counter < TEMP_DIR_ATTEMPTS; counter++) {
-            File tempDir = new File(baseDir, baseName + counter);
-            if (tempDir.mkdir()) {
-                return tempDir;
-            }
-        }
-        throw new IllegalStateException("Failed to create directory within "
-                + TEMP_DIR_ATTEMPTS + " attempts (tried "
-                + baseName + "0 to " + baseName + (TEMP_DIR_ATTEMPTS - 1) + ')');
-    }
-
 
     @Test
     public void cannotCreateDeleteDirectory() throws InterruptedException, ExecutionException, TimeoutException {

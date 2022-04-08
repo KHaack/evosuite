@@ -33,30 +33,14 @@ import java.util.List;
 public class JUnitResult {
 
 
-    private String name;
-
-
-    private boolean successful;
-
-
-    private long runtime;
-
-
-    private String trace;
-
-
-    private ExecutionTrace executionTrace;
-
-
-    private int failureCount;
-
-
-    private int runCount;
-
-
     private final ArrayList<JUnitFailure> junitFailures = new ArrayList<>();
-
-
+    private String name;
+    private boolean successful;
+    private long runtime;
+    private String trace;
+    private ExecutionTrace executionTrace;
+    private int failureCount;
+    private int runCount;
     private Class<?> junitClass;
 
 

@@ -28,12 +28,12 @@ import java.util.List;
  */
 public class GenericMethodAlternativeBounds {
 
-    public static enum Foo {
-
-    }
-
     public static <K extends Enum<K>> List<K> create(Class<K> keyType) {
         List<K> list = new ArrayList<>();
         return list;
+    }
+
+    public static enum Foo {
+
     }
 }

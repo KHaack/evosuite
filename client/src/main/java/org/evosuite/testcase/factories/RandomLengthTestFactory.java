@@ -37,12 +37,11 @@ import org.slf4j.LoggerFactory;
  */
 public class RandomLengthTestFactory implements ChromosomeFactory<TestChromosome> {
 
-    private static final long serialVersionUID = -5202578461625984100L;
-
     /**
      * Constant <code>logger</code>
      */
     protected static final Logger logger = LoggerFactory.getLogger(FixedLengthTestChromosomeFactory.class);
+    private static final long serialVersionUID = -5202578461625984100L;
 
     /**
      * Creates a random test case (i.e., a test case consisting of random statements) with the given

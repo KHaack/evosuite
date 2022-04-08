@@ -33,21 +33,18 @@ public class DoubleVariable implements Variable {
 
     private static final String VALUE_OUT_OF_BOUNDS =
             "value out of bounds (value: {0}, min: {1}, max: {2})";
-
-    /**
-     * The current value of this variable
-     */
-    private double value;
-
     /**
      * The lower bound of this variable
      */
     private final double lowerBound;
-
     /**
      * The upper bound of this variable
      */
     private final double upperBound;
+    /**
+     * The current value of this variable
+     */
+    private double value;
 
     /**
      * Constructs a real variable in the range {@code lowerBound <= x <=

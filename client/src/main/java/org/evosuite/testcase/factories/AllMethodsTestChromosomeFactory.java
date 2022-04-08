@@ -50,13 +50,11 @@ import java.util.Set;
  */
 public class AllMethodsTestChromosomeFactory implements ChromosomeFactory<TestChromosome> {
 
-    private static final long serialVersionUID = -420224349882780856L;
-
     /**
      * Constant <code>logger</code>
      */
     protected static final Logger logger = LoggerFactory.getLogger(AllMethodsTestChromosomeFactory.class);
-
+    private static final long serialVersionUID = -420224349882780856L;
     /**
      * Methods we have already seen
      */

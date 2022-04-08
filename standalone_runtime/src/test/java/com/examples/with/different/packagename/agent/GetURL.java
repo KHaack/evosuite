@@ -32,7 +32,7 @@ public class GetURL {
         return new URL(url);
     }
 
-    public static URL getFromUri(String uri) throws Exception{
+    public static URL getFromUri(String uri) throws Exception {
         URI foo = new URI(uri);
         return foo.toURL();
     }

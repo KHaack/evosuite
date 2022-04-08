@@ -56,10 +56,6 @@ import java.util.*;
  */
 public abstract class MutationAssertionGenerator extends AssertionGenerator {
 
-    private final static Logger logger = LoggerFactory.getLogger(MutationAssertionGenerator.class);
-
-    protected final Map<Integer, Mutation> mutants = new HashMap<>();
-
     protected final static PrimitiveTraceObserver primitiveObserver = new PrimitiveTraceObserver();
     protected final static ComparisonTraceObserver comparisonObserver = new ComparisonTraceObserver();
     protected final static SameTraceObserver sameObserver = new SameTraceObserver();
@@ -69,17 +65,17 @@ public abstract class MutationAssertionGenerator extends AssertionGenerator {
     protected final static ArrayTraceObserver arrayObserver = new ArrayTraceObserver();
     protected final static ArrayLengthObserver arrayLengthObserver = new ArrayLengthObserver();
     protected final static ContainsTraceObserver containsTraceObserver = new ContainsTraceObserver();
-
     protected final static Map<Mutation, Integer> timedOutMutations = new HashMap<>();
-
     protected final static Map<Mutation, Integer> exceptionMutations = new HashMap<>();
-
+    private final static Logger logger = LoggerFactory.getLogger(MutationAssertionGenerator.class);
     /**
      * Constant <code>observerClasses</code>
      */
     protected static Class<?>[] observerClasses = {PrimitiveTraceEntry.class, ComparisonTraceEntry.class,
             SameTraceEntry.class, InspectorTraceEntry.class, PrimitiveFieldTraceEntry.class, NullTraceEntry.class,
             ArrayTraceEntry.class, ArrayLengthTraceEntry.class, ContainsTraceEntry.class};
+    protected final Map<Integer, Mutation> mutants = new HashMap<>();
+    protected Criterion[] oldCriterion = Properties.CRITERION;
 
     /**
      * Default constructor
@@ -157,8 +153,6 @@ public abstract class MutationAssertionGenerator extends AssertionGenerator {
 
         return result;
     }
-
-    protected Criterion[] oldCriterion = Properties.CRITERION;
 
     /**
      * If we are not doing mutation testing anyway, then we need to reinstrument

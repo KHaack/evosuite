@@ -32,6 +32,12 @@ public class ParentTestExample {
         value = 5;
     }
 
+    protected String needed = null;
+
+    public ParentTestExample() {
+        needed = "break free!";
+    }
+
     @BeforeClass
     public static void initializeOtherValue() {
         value = Integer.MAX_VALUE;
@@ -40,12 +46,6 @@ public class ParentTestExample {
     @BeforeClass
     public static void someInitialization() {
         value = 7;
-    }
-
-    protected String needed = null;
-
-    public ParentTestExample() {
-        needed = "break free!";
     }
 
     @Before

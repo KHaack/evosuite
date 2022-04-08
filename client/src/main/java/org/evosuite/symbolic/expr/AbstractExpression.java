@@ -25,12 +25,10 @@ import java.util.Set;
 public abstract class AbstractExpression<T> implements Expression<T> {
 
     private static final long serialVersionUID = 2896502683190522448L;
-
-    private Expression<?> parent = null;
-
-    protected T concreteValue;
-
     private final int size;
+    private final boolean containsSymbolicVariable;
+    protected T concreteValue;
+    private Expression<?> parent = null;
 
     public AbstractExpression(T concreteValue, int size, boolean containsSymbolicVariable) {
         this.concreteValue = concreteValue;
@@ -62,8 +60,6 @@ public abstract class AbstractExpression<T> implements Expression<T> {
     public final void setParent(Expression<?> expr) {
         this.parent = expr;
     }
-
-    private final boolean containsSymbolicVariable;
 
     @Override
     public final boolean containsSymbolicVariable() {

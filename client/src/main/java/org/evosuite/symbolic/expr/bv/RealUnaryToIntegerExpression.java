@@ -32,10 +32,8 @@ import java.util.Set;
 public final class RealUnaryToIntegerExpression extends AbstractExpression<Long>
         implements IntegerValue, UnaryExpression<Double> {
 
-    private static final long serialVersionUID = 9086637495150131445L;
-
     protected static final Logger log = LoggerFactory.getLogger(RealUnaryToIntegerExpression.class);
-
+    private static final long serialVersionUID = 9086637495150131445L;
     private final Operator op;
 
     private final Expression<Double> expr;

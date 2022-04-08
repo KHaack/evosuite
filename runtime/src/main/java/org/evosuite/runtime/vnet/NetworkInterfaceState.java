@@ -61,11 +61,11 @@ public class NetworkInterfaceState {
         }
     }
 
-    private NetworkInterface ni;
     private final List<InetAddress> localAddresses;
     private final byte[] mac;
     private final int mtu;
     private final boolean loopback;
+    private NetworkInterface ni;
 
     public NetworkInterfaceState(
             String name,

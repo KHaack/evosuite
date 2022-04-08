@@ -39,10 +39,8 @@ import java.util.Set;
 public class ExceptionTransformationClassAdapter extends ClassVisitor {
 
     private final static Logger logger = LoggerFactory.getLogger(ExceptionTransformationClassAdapter.class);
-
-    private final String className;
-
     public static Map<String, Map<String, Set<Type>>> methodExceptionMap = new LinkedHashMap<>();
+    private final String className;
 
     public ExceptionTransformationClassAdapter(ClassVisitor cv, String className) {
         super(Opcodes.ASM9, cv);

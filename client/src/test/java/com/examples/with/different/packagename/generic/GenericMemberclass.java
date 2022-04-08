@@ -25,6 +25,13 @@ package com.examples.with.different.packagename.generic;
  */
 public class GenericMemberclass<T> {
 
+    public boolean testMe(MemberClass x, T t) {
+        if (x.getObject() == t)
+            return true;
+        else
+            return false;
+    }
+
     public class MemberClass {
         private final T t;
 
@@ -35,12 +42,5 @@ public class GenericMemberclass<T> {
         public T getObject() {
             return t;
         }
-    }
-
-    public boolean testMe(MemberClass x, T t) {
-        if (x.getObject() == t)
-            return true;
-        else
-            return false;
     }
 }

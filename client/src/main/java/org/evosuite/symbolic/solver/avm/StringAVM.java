@@ -37,18 +37,35 @@ import java.util.Set;
 
 final class StringAVM extends VariableAVM {
 
+    static Logger log = LoggerFactory.getLogger(StringAVM.class);
+    private final StringVariable strVar;
+    private double checkpointDistance = Double.MAX_VALUE;
+
+    private String checkpointStringValue;
+
     public StringAVM(StringVariable strVar, Collection<Constraint<?>> cnstr, long start_time, long timeout) {
         super(cnstr, start_time, timeout);
         this.strVar = strVar;
     }
 
-    static Logger log = LoggerFactory.getLogger(StringAVM.class);
+    private static Set<StringValue> getTokenDelimiters(Collection<Constraint<?>> constraints) {
 
-    private double checkpointDistance = Double.MAX_VALUE;
+        Set<StringValue> delimiters = new HashSet<>();
+        for (Constraint<?> constraint : constraints) {
 
-    private String checkpointStringValue;
+            if (constraint instanceof StringConstraint) {
+                StringConstraint stringConstraint = (StringConstraint) constraint;
 
-    private final StringVariable strVar;
+                if (stringConstraint.getLeftOperand() instanceof HasMoreTokensExpr) {
+                    HasMoreTokensExpr hasMoreTokensExpr = (HasMoreTokensExpr) stringConstraint.getLeftOperand();
+                    StringValue delimiter = hasMoreTokensExpr.getTokenizerExpr().getDelimiter();
+                    delimiters.add(delimiter);
+                }
+
+            }
+        }
+        return delimiters;
+    }
 
     /**
      * <p>
@@ -396,25 +413,6 @@ final class StringAVM extends VariableAVM {
             }
         }
         return nextChar;
-    }
-
-    private static Set<StringValue> getTokenDelimiters(Collection<Constraint<?>> constraints) {
-
-        Set<StringValue> delimiters = new HashSet<>();
-        for (Constraint<?> constraint : constraints) {
-
-            if (constraint instanceof StringConstraint) {
-                StringConstraint stringConstraint = (StringConstraint) constraint;
-
-                if (stringConstraint.getLeftOperand() instanceof HasMoreTokensExpr) {
-                    HasMoreTokensExpr hasMoreTokensExpr = (HasMoreTokensExpr) stringConstraint.getLeftOperand();
-                    StringValue delimiter = hasMoreTokensExpr.getTokenizerExpr().getDelimiter();
-                    delimiters.add(delimiter);
-                }
-
-            }
-        }
-        return delimiters;
     }
 
 }

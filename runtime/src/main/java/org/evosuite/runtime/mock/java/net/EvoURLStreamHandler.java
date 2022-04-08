@@ -25,59 +25,59 @@ import java.net.URLConnection;
 import java.util.Arrays;
 import java.util.List;
 
-public class EvoURLStreamHandler extends MockURLStreamHandler{
+public class EvoURLStreamHandler extends MockURLStreamHandler {
 
-	private final String protocol;
+    private final String protocol;
 
-	public EvoURLStreamHandler(String protocol) throws IllegalArgumentException{
-		super();
-		
-		if(protocol==null || protocol.trim().isEmpty()) {
-			throw new IllegalArgumentException("Null protocol");
-		}
-		
-		this.protocol = protocol.trim().toLowerCase();
-	}
+    public EvoURLStreamHandler(String protocol) throws IllegalArgumentException {
+        super();
 
-	public static boolean isValidProtocol(String protocol) {
-		if(protocol==null) {
-			return false;
-		}
-		
-		protocol = protocol.trim().toLowerCase();
-		
-		//these depend on what in the "sun.net.www.protocol" package
-		List<String> list = Arrays.asList("file","ftp","gopher","http","https","jar","mailto","netdoc");
-		
-		return list.contains(protocol); 
-	}
-	
-	@Override
-	protected URLConnection openConnection(URL u) throws IOException {
+        if (protocol == null || protocol.trim().isEmpty()) {
+            throw new IllegalArgumentException("Null protocol");
+        }
 
-		if(!u.getProtocol().trim().equalsIgnoreCase(this.protocol)) {
-			//should never happen
-			throw new IOException("Error, protocol mismatch: "+u.getProtocol()+" != "+this.protocol);
-		}
+        this.protocol = protocol.trim().toLowerCase();
+    }
 
-        if(protocol.equals("http") || protocol.equals("https")) {
+    public static boolean isValidProtocol(String protocol) {
+        if (protocol == null) {
+            return false;
+        }
+
+        protocol = protocol.trim().toLowerCase();
+
+        //these depend on what in the "sun.net.www.protocol" package
+        List<String> list = Arrays.asList("file", "ftp", "gopher", "http", "https", "jar", "mailto", "netdoc");
+
+        return list.contains(protocol);
+    }
+
+    @Override
+    protected URLConnection openConnection(URL u) throws IOException {
+
+        if (!u.getProtocol().trim().equalsIgnoreCase(this.protocol)) {
+            //should never happen
+            throw new IOException("Error, protocol mismatch: " + u.getProtocol() + " != " + this.protocol);
+        }
+
+        if (protocol.equals("http") || protocol.equals("https")) {
             return new EvoHttpURLConnection(u);
         }
 
-		//TODO
-		
-		/*
-		 * "http/https" need to be treated specially, look at
-		 * source code of:
-		 * http://grepcode.com/file/repository.grepcode.com/java/root/jdk/openjdk/7-b147/sun/net/www/protocol/http/HttpURLConnection.java
-		 * 
-		 * also "jar", but it is very, very rare (so skip it?)
-		 * 
-		 * "file" protocol needs to use VFS (if it is active)
-		 */
-		
-		return null;
-	}
-	
-	
+        //TODO
+
+        /*
+         * "http/https" need to be treated specially, look at
+         * source code of:
+         * http://grepcode.com/file/repository.grepcode.com/java/root/jdk/openjdk/7-b147/sun/net/www/protocol/http/HttpURLConnection.java
+         *
+         * also "jar", but it is very, very rare (so skip it?)
+         *
+         * "file" protocol needs to use VFS (if it is active)
+         */
+
+        return null;
+    }
+
+
 }

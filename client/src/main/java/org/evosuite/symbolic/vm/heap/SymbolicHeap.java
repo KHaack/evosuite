@@ -66,42 +66,36 @@ public final class SymbolicHeap {
     public static final String $STRING_BUILDER_CONTENTS = "$stringBuilder_contents";
 
     protected static final Logger logger = LoggerFactory.getLogger(SymbolicHeap.class);
-
-    /**
-     * Counter for instances
-     */
-    private int newInstanceCount = 0;
-
     /**
      * Array's memory model
      */
     private final ArraysSection symbolicArrays;
-
     /**
      * Stores a mapping between identityHashCodes and NonNullReferences. Every
      * time the NonNullReference for a given Object (non String) is needed, this
      * mapping is used.
      */
     private final Map<Integer, ReferenceExpression> nonNullRefs = new HashMap<>();
-
     /**
      * Stores a mapping between Classes and ReferenceTypes. Every
      * time the ReferenceType for a given Object (non String) is needed, this
      * mapping is used.
      */
     private final Map<Class, ReferenceTypeExpression> symbolicReferenceTypes = new HashMap<>();
-
     /**
      * Stores a mapping between NonNullReferences and their symbolic values. The
      * Expression<?> contains at least one symbolic variable.
      */
     private final Map<FieldKey, Map<ReferenceExpression, Expression<?>>> symb_fields = new HashMap<>();
-
     /**
      * Mapping between for symbolic values stored in static fields. The
      * Expression<?> contains at least one symbolic variable.
      */
     private final Map<FieldKey, Expression<?>> symb_static_fields = new HashMap<>();
+    /**
+     * Counter for instances
+     */
+    private int newInstanceCount = 0;
 
     /**
      * Constructor

@@ -35,59 +35,80 @@ import java.util.stream.IntStream;
 public class ExecutionResult implements Cloneable {
 
     private static final Logger logger = LoggerFactory.getLogger(ExecutionResult.class);
-
+    /**
+     * Output traces produced by observers
+     */
+    protected final Map<Class<?>, OutputTrace<?>> traces = new HashMap<>();
     /**
      * Test case that produced this execution result
      */
     public TestCase test;
-
     /**
      * Mutation that was active during execution
      */
     public Mutation mutation;
-
-    /**
-     * Map statement number to raised exception
-     */
-    protected Map<Integer, Throwable> exceptions = new HashMap<>();
-
     /**
      * Record for each exception if it was explicitly thrown
      */
     // FIXME: internal data structures should never be null...
     public Map<Integer, Boolean> explicitExceptions = new HashMap<>();
-
+    /**
+     * Map statement number to raised exception
+     */
+    protected Map<Integer, Throwable> exceptions = new HashMap<>();
     /**
      * Trace recorded during execution
      */
     protected ExecutionTrace trace;
-
     /**
      * Duration of execution
      */
     protected long executionTime = 0L;
-
     /**
      * Number of statements executed
      */
     protected int executedStatements = 0;
-
     /**
      * Was there a permission denied during execution?
      */
     protected boolean hasSecurityException = false;
-
     /**
      * Set of System properties that were read during test execution
      */
     protected Set<String> readProperties;
-
     /**
      * Keep track of whether any System property was written
      */
     protected boolean wasAnyPropertyWritten;
-
     private List<FeatureVector> featureVectors = new ArrayList<>(1);
+    private Map<Integer, Set<InputCoverageGoal>> inputGoals = new LinkedHashMap<>();
+    private Map<Integer, Set<OutputCoverageGoal>> outputGoals = new LinkedHashMap<>();
+
+    /**
+     * Default constructor when executing without mutation
+     *
+     * @param t a {@link org.evosuite.testcase.TestCase} object.
+     */
+    public ExecutionResult(TestCase t) {
+        trace = null;
+        mutation = null;
+        test = t;
+    }
+
+    /**
+     * Constructor when executing with mutation
+     *
+     * @param t a {@link org.evosuite.testcase.TestCase} object.
+     * @param m a {@link org.evosuite.coverage.mutation.Mutation} object.
+     */
+    public ExecutionResult(TestCase t, Mutation m) {
+        trace = null;
+        mutation = m;
+        test = t;
+    }
+
+    // experiment .. tried to remember intermediately calculated ControlFlowDistances .. no real speed up
+    //	public Map<Branch, ControlFlowDistance> intermediateDistances;
 
     /**
      * @return the executedStatements
@@ -104,29 +125,6 @@ public class ExecutionResult implements Cloneable {
     }
 
     /**
-     * Output traces produced by observers
-     */
-    protected final Map<Class<?>, OutputTrace<?>> traces = new HashMap<>();
-
-    private Map<Integer, Set<InputCoverageGoal>> inputGoals = new LinkedHashMap<>();
-
-    private Map<Integer, Set<OutputCoverageGoal>> outputGoals = new LinkedHashMap<>();
-
-    // experiment .. tried to remember intermediately calculated ControlFlowDistances .. no real speed up
-    //	public Map<Branch, ControlFlowDistance> intermediateDistances;
-
-    /**
-     * Default constructor when executing without mutation
-     *
-     * @param t a {@link org.evosuite.testcase.TestCase} object.
-     */
-    public ExecutionResult(TestCase t) {
-        trace = null;
-        mutation = null;
-        test = t;
-    }
-
-    /**
      * <p>
      * Copy the input map data into internal structures
      * </p>
@@ -138,7 +136,6 @@ public class ExecutionResult implements Cloneable {
         exceptions.clear();
         data.forEach(this::reportNewThrownException);
     }
-
 
     /**
      * <p>
@@ -248,18 +245,6 @@ public class ExecutionResult implements Cloneable {
      */
     public Map<Integer, Throwable> getCopyOfExceptionMapping() {
         return new HashMap<>(exceptions);
-    }
-
-    /**
-     * Constructor when executing with mutation
-     *
-     * @param t a {@link org.evosuite.testcase.TestCase} object.
-     * @param m a {@link org.evosuite.coverage.mutation.Mutation} object.
-     */
-    public ExecutionResult(TestCase t, Mutation m) {
-        trace = null;
-        mutation = m;
-        test = t;
     }
 
     /**
@@ -455,20 +440,20 @@ public class ExecutionResult implements Cloneable {
         this.test = tc;
     }
 
-    public void setInputGoals(Map<Integer, Set<InputCoverageGoal>> coveredGoals) {
-        inputGoals.putAll(coveredGoals);
-    }
-
-    public void setOutputGoals(Map<Integer, Set<OutputCoverageGoal>> coveredGoals) {
-        outputGoals.putAll(coveredGoals);
-    }
-
     public Map<Integer, Set<InputCoverageGoal>> getInputGoals() {
         return inputGoals;
     }
 
+    public void setInputGoals(Map<Integer, Set<InputCoverageGoal>> coveredGoals) {
+        inputGoals.putAll(coveredGoals);
+    }
+
     public Map<Integer, Set<OutputCoverageGoal>> getOutputGoals() {
         return outputGoals;
+    }
+
+    public void setOutputGoals(Map<Integer, Set<OutputCoverageGoal>> coveredGoals) {
+        outputGoals.putAll(coveredGoals);
     }
 
     /**

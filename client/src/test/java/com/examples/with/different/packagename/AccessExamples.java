@@ -22,11 +22,8 @@ package com.examples.with.different.packagename;
 public class AccessExamples extends com.examples.with.different.packagename.test.AccessExamples {
 
     public String publicField = "";
-
-    String defaultField = "";
-
     protected String protectedField = "";
-
+    String defaultField = "";
     @SuppressWarnings("unused")
     private String privateField = "";
 

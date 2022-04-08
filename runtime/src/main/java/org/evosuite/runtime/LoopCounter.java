@@ -36,13 +36,11 @@ import java.util.List;
 public class LoopCounter {
 
     private static final LoopCounter singleton = new LoopCounter();
-
-    private boolean activated = true;
-
     /**
      * Number of iterations so far
      */
     private final List<Long> counters;
+    private boolean activated = true;
 
 
     private LoopCounter() {

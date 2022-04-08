@@ -52,8 +52,6 @@ import java.util.*;
  */
 public class CFGMethodAdapter extends MethodVisitor {
 
-    private static final Logger logger = LoggerFactory.getLogger(CFGMethodAdapter.class);
-
     /**
      * A list of Strings representing method signatures. Methods matching those
      * signatures are not instrumented and no CFG is generated for them. Except
@@ -62,6 +60,7 @@ public class CFGMethodAdapter extends MethodVisitor {
     public static final List<String> EXCLUDE = Arrays.asList("<clinit>()V",
             ClassResetter.STATIC_RESET + "()V",
             ClassResetter.STATIC_RESET);
+    private static final Logger logger = LoggerFactory.getLogger(CFGMethodAdapter.class);
     /**
      * The set of all methods which can be used during test case generation This
      * excludes e.g. synthetic, initializers, private and deprecated methods
@@ -121,6 +120,126 @@ public class CFGMethodAdapter extends MethodVisitor {
 
         if (!methods.containsKey(classLoader))
             methods.put(classLoader, new HashMap<>());
+    }
+
+    /**
+     * Returns a set with all unique methodNames of methods.
+     *
+     * @param className a {@link java.lang.String} object.
+     * @return A set with all unique methodNames of methods.
+     */
+    public static Set<String> getMethods(ClassLoader classLoader, String className) {
+        Set<String> targetMethods = new HashSet<>();
+        if (!methods.containsKey(classLoader))
+            return targetMethods;
+
+        for (String currentClass : methods.get(classLoader).keySet()) {
+            if (currentClass.equals(className)
+                    || currentClass.startsWith(className + "$"))
+                targetMethods.addAll(methods.get(classLoader).get(currentClass));
+        }
+
+        return targetMethods;
+    }
+
+    /**
+     * Returns a set with all unique methodNames of methods.
+     *
+     * @return A set with all unique methodNames of methods.
+     */
+    public static Set<String> getMethods(ClassLoader classLoader) {
+        Set<String> targetMethods = new HashSet<>();
+        if (!methods.containsKey(classLoader))
+            return targetMethods;
+
+        for (String currentClass : methods.get(classLoader).keySet()) {
+            targetMethods.addAll(methods.get(classLoader).get(currentClass));
+        }
+
+        return targetMethods;
+    }
+
+    /**
+     * Returns a set with all unique methodNames of methods.
+     *
+     * @param className a {@link java.lang.String} object.
+     * @return A set with all unique methodNames of methods.
+     */
+    public static Set<String> getMethodsPrefix(ClassLoader classLoader, String className) {
+        Set<String> matchingMethods = new HashSet<>();
+        if (!methods.containsKey(classLoader))
+            return matchingMethods;
+
+        for (String name : methods.get(classLoader).keySet()) {
+            if (name.startsWith(className)) {
+                matchingMethods.addAll(methods.get(classLoader).get(name));
+            }
+        }
+
+        return matchingMethods;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.objectweb.asm.commons.LocalVariablesSorter#visitMaxs(int, int)
+     */
+
+    /**
+     * Returns a set with all unique methodNames of methods.
+     *
+     * @param className a {@link java.lang.String} object.
+     * @return A set with all unique methodNames of methods.
+     */
+    public static int getNumMethodsPrefix(ClassLoader classLoader, String className) {
+        int num = 0;
+        if (!methods.containsKey(classLoader))
+            return num;
+
+        for (String name : methods.get(classLoader).keySet()) {
+            if (name.startsWith(className)) {
+                num += methods.get(classLoader).get(name).size();
+            }
+        }
+
+        return num;
+    }
+
+    /**
+     * Returns a set with all unique methodNames of methods.
+     *
+     * @return A set with all unique methodNames of methods.
+     */
+    public static int getNumMethods(ClassLoader classLoader) {
+        int num = 0;
+        if (!methods.containsKey(classLoader))
+            return num;
+
+        for (String name : methods.get(classLoader).keySet()) {
+            num += methods.get(classLoader).get(name).size();
+        }
+
+        return num;
+    }
+
+    /**
+     * Returns a set with all unique methodNames of methods.
+     *
+     * @param className a {@link java.lang.String} object.
+     * @return A set with all unique methodNames of methods.
+     */
+    public static int getNumMethodsMemberClasses(ClassLoader classLoader, String className) {
+        int num = 0;
+        if (!methods.containsKey(classLoader))
+            return num;
+
+        for (String name : methods.get(classLoader).keySet()) {
+            if (name.equals(className) || name.startsWith(className + "$")) {
+                num += methods.get(classLoader).get(name).size();
+            }
+        }
+
+        return num;
     }
 
     /* (non-Javadoc)
@@ -249,12 +368,6 @@ public class CFGMethodAdapter extends MethodVisitor {
         mn.accept(next);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.objectweb.asm.commons.LocalVariablesSorter#visitMaxs(int, int)
-     */
-
     /**
      * {@inheritDoc}
      */
@@ -304,139 +417,23 @@ public class CFGMethodAdapter extends MethodVisitor {
         return getMethods(classLoader, className);
     }
 
-    /**
-     * Returns a set with all unique methodNames of methods.
-     *
-     * @param className a {@link java.lang.String} object.
-     * @return A set with all unique methodNames of methods.
-     */
-    public static Set<String> getMethods(ClassLoader classLoader, String className) {
-        Set<String> targetMethods = new HashSet<>();
-        if (!methods.containsKey(classLoader))
-            return targetMethods;
-
-        for (String currentClass : methods.get(classLoader).keySet()) {
-            if (currentClass.equals(className)
-                    || currentClass.startsWith(className + "$"))
-                targetMethods.addAll(methods.get(classLoader).get(currentClass));
-        }
-
-        return targetMethods;
-    }
-
     public Set<String> getMethods() {
         return getMethods(classLoader);
     }
 
-    /**
-     * Returns a set with all unique methodNames of methods.
-     *
-     * @return A set with all unique methodNames of methods.
-     */
-    public static Set<String> getMethods(ClassLoader classLoader) {
-        Set<String> targetMethods = new HashSet<>();
-        if (!methods.containsKey(classLoader))
-            return targetMethods;
-
-        for (String currentClass : methods.get(classLoader).keySet()) {
-            targetMethods.addAll(methods.get(classLoader).get(currentClass));
-        }
-
-        return targetMethods;
-    }
-
-
     public Set<String> getMethodsPrefix(String className) {
         return getMethodsPrefix(classLoader, className);
-    }
-
-    /**
-     * Returns a set with all unique methodNames of methods.
-     *
-     * @param className a {@link java.lang.String} object.
-     * @return A set with all unique methodNames of methods.
-     */
-    public static Set<String> getMethodsPrefix(ClassLoader classLoader, String className) {
-        Set<String> matchingMethods = new HashSet<>();
-        if (!methods.containsKey(classLoader))
-            return matchingMethods;
-
-        for (String name : methods.get(classLoader).keySet()) {
-            if (name.startsWith(className)) {
-                matchingMethods.addAll(methods.get(classLoader).get(name));
-            }
-        }
-
-        return matchingMethods;
     }
 
     public int getNumMethodsPrefix(String className) {
         return getNumMethodsPrefix(classLoader, className);
     }
 
-    /**
-     * Returns a set with all unique methodNames of methods.
-     *
-     * @param className a {@link java.lang.String} object.
-     * @return A set with all unique methodNames of methods.
-     */
-    public static int getNumMethodsPrefix(ClassLoader classLoader, String className) {
-        int num = 0;
-        if (!methods.containsKey(classLoader))
-            return num;
-
-        for (String name : methods.get(classLoader).keySet()) {
-            if (name.startsWith(className)) {
-                num += methods.get(classLoader).get(name).size();
-            }
-        }
-
-        return num;
-    }
-
     public int getNumMethods() {
         return getNumMethods(classLoader);
     }
 
-    /**
-     * Returns a set with all unique methodNames of methods.
-     *
-     * @return A set with all unique methodNames of methods.
-     */
-    public static int getNumMethods(ClassLoader classLoader) {
-        int num = 0;
-        if (!methods.containsKey(classLoader))
-            return num;
-
-        for (String name : methods.get(classLoader).keySet()) {
-            num += methods.get(classLoader).get(name).size();
-        }
-
-        return num;
-    }
-
-
     public int getNumMethodsMemberClasses(String className) {
         return getNumMethodsMemberClasses(classLoader, className);
-    }
-
-    /**
-     * Returns a set with all unique methodNames of methods.
-     *
-     * @param className a {@link java.lang.String} object.
-     * @return A set with all unique methodNames of methods.
-     */
-    public static int getNumMethodsMemberClasses(ClassLoader classLoader, String className) {
-        int num = 0;
-        if (!methods.containsKey(classLoader))
-            return num;
-
-        for (String name : methods.get(classLoader).keySet()) {
-            if (name.equals(className) || name.startsWith(className + "$")) {
-                num += methods.get(classLoader).get(name).size();
-            }
-        }
-
-        return num;
     }
 }

@@ -70,11 +70,227 @@ public class SymbolicObserver extends ExecutionObserver {
     private static final String INIT = "<init>";
     private static final String TEST_CLASS = "SymbolicObserver";
     private static final String TEST_METHOD = "TestCreation";
-
+    private static final int COMPONENT_TYPE_BOOLEAN = 4;
+    private static final int COMPONENT_TYPE_CHAR = 5;
+    private static final int COMPONENT_TYPE_FLOAT = 6;
+    private static final int COMPONENT_TYPE_DOUBLE = 7;
+    private static final int COMPONENT_TYPE_BYTE = 8;
+    private static final int COMPONENT_TYPE_SHORT = 9;
+    private static final int COMPONENT_TYPE_INT = 10;
+    private static final int COMPONENT_TYPE_LONG = 11;
     private final SymbolicEnvironment env;
-
+    private final Map<String, Expression<?>> symb_expressions = new HashMap<>();
+    private final Map<String, ReferenceExpression> symb_references = new HashMap<>();
+    private final Map<String, IntegerVariable> integerVariables = new HashMap<>();
+    private final Map<String, RealVariable> realVariables = new HashMap<>();
+    private final Map<String, StringVariable> stringVariables = new HashMap<>();
     public SymbolicObserver(SymbolicEnvironment env) {
         this.env = env;
+    }
+
+    private static double getDoubleValue(Object o) {
+        if (o == null) {
+            return 0;
+        }
+        if (o instanceof Boolean) {
+            return (Boolean) o ? 1 : 0;
+        } else if (o instanceof Short) {
+            return (Short) o;
+        } else if (o instanceof Byte) {
+            return (Byte) o;
+        } else if (o instanceof Character) {
+            return (Character) o;
+        } else if (o instanceof Integer) {
+            return (Integer) o;
+        } else if (o instanceof Long) {
+            return (Long) o;
+        } else if (o instanceof Float) {
+            return (Float) o;
+        } else if (o instanceof Double) {
+            return (Double) o;
+        } else {
+            throw new EvosuiteError("Unreachable code!");
+        }
+    }
+
+    private static float getFloatValue(Object o) {
+        if (o == null) {
+            return 0;
+        }
+        if (o instanceof Boolean) {
+            return (Boolean) o ? 1 : 0;
+        } else if (o instanceof Short) {
+            return (Short) o;
+        } else if (o instanceof Byte) {
+            return (Byte) o;
+        } else if (o instanceof Character) {
+            return (Character) o;
+        } else if (o instanceof Integer) {
+            return (Integer) o;
+        } else if (o instanceof Long) {
+            return (Long) o;
+        } else if (o instanceof Float) {
+            return (Float) o;
+        } else if (o instanceof Double) {
+            return (float) ((Double) o).doubleValue();
+        } else {
+            throw new EvosuiteError("Unreachable code!");
+        }
+    }
+
+    private static long getLongValue(Object o) {
+        if (o == null) {
+            return 0;
+        }
+        if (o instanceof Boolean) {
+            return (Boolean) o ? 1 : 0;
+        } else if (o instanceof Short) {
+            return (Short) o;
+        } else if (o instanceof Byte) {
+            return (Byte) o;
+        } else if (o instanceof Character) {
+            return (Character) o;
+        } else if (o instanceof Integer) {
+            return (Integer) o;
+        } else if (o instanceof Long) {
+            return (Long) o;
+        } else if (o instanceof Float) {
+            return (long) ((Float) o).floatValue();
+        } else if (o instanceof Double) {
+            return (long) ((Double) o).doubleValue();
+        } else {
+            throw new EvosuiteError("Unreachable code!");
+        }
+    }
+
+    private static int getIntValue(Object o) {
+        if (o == null) {
+            return 0;
+        }
+        if (o instanceof Boolean) {
+            return (Boolean) o ? 1 : 0;
+        } else if (o instanceof Short) {
+            return (Short) o;
+        } else if (o instanceof Byte) {
+            return (Byte) o;
+        } else if (o instanceof Character) {
+            return (Character) o;
+        } else if (o instanceof Integer) {
+            return (Integer) o;
+        } else if (o instanceof Long) {
+            return (int) ((Long) o).longValue();
+        } else if (o instanceof Float) {
+            return (int) ((Float) o).floatValue();
+        } else if (o instanceof Double) {
+            return (int) ((Double) o).doubleValue();
+        } else {
+            throw new EvosuiteError("Unreachable code!");
+        }
+    }
+
+    private static short getShortValue(Object o) {
+        if (o == null) {
+            return 0;
+        }
+        if (o instanceof Boolean) {
+            return (short) ((Boolean) o ? 1 : 0);
+        } else if (o instanceof Short) {
+            return (Short) o;
+        } else if (o instanceof Byte) {
+            return (Byte) o;
+        } else if (o instanceof Character) {
+            return (short) ((Character) o).charValue();
+        } else if (o instanceof Integer) {
+            return (short) ((Integer) o).intValue();
+        } else if (o instanceof Long) {
+            return (short) ((Long) o).longValue();
+        } else if (o instanceof Float) {
+            return (short) ((Float) o).floatValue();
+        } else if (o instanceof Double) {
+            return (short) ((Double) o).doubleValue();
+        } else {
+            throw new EvosuiteError("Unreachable code!");
+        }
+    }
+
+    private static byte getByteValue(Object o) {
+        if (o == null) {
+            return 0;
+        }
+        if (o instanceof Boolean) {
+            return (byte) ((Boolean) o ? 1 : 0);
+        } else if (o instanceof Short) {
+            return (byte) ((Short) o).shortValue();
+        } else if (o instanceof Byte) {
+            return (Byte) o;
+        } else if (o instanceof Character) {
+            return (byte) ((Character) o).charValue();
+        } else if (o instanceof Integer) {
+            return (byte) ((Integer) o).intValue();
+        } else if (o instanceof Long) {
+            return (byte) ((Long) o).longValue();
+        } else if (o instanceof Float) {
+            return (byte) ((Float) o).floatValue();
+        } else if (o instanceof Double) {
+            return (byte) ((Double) o).doubleValue();
+        } else {
+            throw new EvosuiteError("Unreachable code!");
+        }
+    }
+
+    private static char getCharValue(Object o) {
+        if (o == null) {
+            return 0;
+        }
+        if (o instanceof Boolean) {
+            return (char) ((Boolean) o ? 1 : 0);
+        } else if (o instanceof Short) {
+            return (char) ((Short) o).shortValue();
+        } else if (o instanceof Byte) {
+            return (char) ((Byte) o).byteValue();
+        } else if (o instanceof Character) {
+            return (Character) o;
+        } else if (o instanceof Integer) {
+            return (char) ((Integer) o).intValue();
+        } else if (o instanceof Long) {
+            return (char) ((Long) o).longValue();
+        } else if (o instanceof Float) {
+            return (char) ((Float) o).floatValue();
+        } else if (o instanceof Double) {
+            return (char) ((Double) o).doubleValue();
+        } else {
+            throw new EvosuiteError("Unreachable code!");
+        }
+    }
+
+    private static boolean getBooleanValue(Object o) {
+        if (o == null) {
+            return false;
+        }
+        if (o instanceof Boolean) {
+            return (Boolean) o;
+        } else if (o instanceof Short) {
+            return (Short) o == 1;
+        } else if (o instanceof Byte) {
+            return (Byte) o == 1;
+        } else if (o instanceof Character) {
+            return (Character) o == 1;
+        } else if (o instanceof Integer) {
+            return (Integer) o == 1;
+        } else if (o instanceof Long) {
+            return (Long) o == 1;
+        } else if (o instanceof Float) {
+            return (Float) o == 1;
+        } else if (o instanceof Double) {
+            return (Double) o == 1;
+        } else {
+            throw new EvosuiteError("Unreachable code!");
+        }
+    }
+
+    private static boolean isWrapper(Object res) {
+        return res instanceof Boolean || res instanceof Short || res instanceof Byte || res instanceof Integer
+                || res instanceof Character || res instanceof Long || res instanceof Float || res instanceof Double;
     }
 
     @Override
@@ -211,15 +427,6 @@ public class SymbolicObserver extends ExecutionObserver {
         /* do nothing */
     }
 
-    private static final int COMPONENT_TYPE_BOOLEAN = 4;
-    private static final int COMPONENT_TYPE_CHAR = 5;
-    private static final int COMPONENT_TYPE_FLOAT = 6;
-    private static final int COMPONENT_TYPE_DOUBLE = 7;
-    private static final int COMPONENT_TYPE_BYTE = 8;
-    private static final int COMPONENT_TYPE_SHORT = 9;
-    private static final int COMPONENT_TYPE_INT = 10;
-    private static final int COMPONENT_TYPE_LONG = 11;
-
     private void after(ArrayStatement s, Scope scope) {
         try {
             ArrayReference arrayRef = (ArrayReference) s.getReturnValue();
@@ -298,25 +505,6 @@ public class SymbolicObserver extends ExecutionObserver {
 
     private void before(FieldStatement s, Scope scope) {
         /* do nothing */
-    }
-
-    private static class ReferenceExpressionPair {
-        private final ReferenceExpression ref;
-        private final Expression<?> expr;
-
-        public ReferenceExpressionPair(ReferenceExpression ref, Expression<?> expr) {
-            this.ref = ref;
-            this.expr = expr;
-        }
-
-        public ReferenceExpression getReference() {
-            return ref;
-        }
-
-        public Expression<?> getExpression() {
-            return expr;
-        }
-
     }
 
     private void after(AssignmentStatement s, Scope scope) {
@@ -829,206 +1017,6 @@ public class SymbolicObserver extends ExecutionObserver {
             } catch (CodeUnderTestException e) {
                 throw new RuntimeException(e);
             }
-        }
-    }
-
-    private static double getDoubleValue(Object o) {
-        if (o == null) {
-            return 0;
-        }
-        if (o instanceof Boolean) {
-            return (Boolean) o ? 1 : 0;
-        } else if (o instanceof Short) {
-            return (Short) o;
-        } else if (o instanceof Byte) {
-            return (Byte) o;
-        } else if (o instanceof Character) {
-            return (Character) o;
-        } else if (o instanceof Integer) {
-            return (Integer) o;
-        } else if (o instanceof Long) {
-            return (Long) o;
-        } else if (o instanceof Float) {
-            return (Float) o;
-        } else if (o instanceof Double) {
-            return (Double) o;
-        } else {
-            throw new EvosuiteError("Unreachable code!");
-        }
-    }
-
-    private static float getFloatValue(Object o) {
-        if (o == null) {
-            return 0;
-        }
-        if (o instanceof Boolean) {
-            return (Boolean) o ? 1 : 0;
-        } else if (o instanceof Short) {
-            return (Short) o;
-        } else if (o instanceof Byte) {
-            return (Byte) o;
-        } else if (o instanceof Character) {
-            return (Character) o;
-        } else if (o instanceof Integer) {
-            return (Integer) o;
-        } else if (o instanceof Long) {
-            return (Long) o;
-        } else if (o instanceof Float) {
-            return (Float) o;
-        } else if (o instanceof Double) {
-            return (float) ((Double) o).doubleValue();
-        } else {
-            throw new EvosuiteError("Unreachable code!");
-        }
-    }
-
-    private static long getLongValue(Object o) {
-        if (o == null) {
-            return 0;
-        }
-        if (o instanceof Boolean) {
-            return (Boolean) o ? 1 : 0;
-        } else if (o instanceof Short) {
-            return (Short) o;
-        } else if (o instanceof Byte) {
-            return (Byte) o;
-        } else if (o instanceof Character) {
-            return (Character) o;
-        } else if (o instanceof Integer) {
-            return (Integer) o;
-        } else if (o instanceof Long) {
-            return (Long) o;
-        } else if (o instanceof Float) {
-            return (long) ((Float) o).floatValue();
-        } else if (o instanceof Double) {
-            return (long) ((Double) o).doubleValue();
-        } else {
-            throw new EvosuiteError("Unreachable code!");
-        }
-    }
-
-    private static int getIntValue(Object o) {
-        if (o == null) {
-            return 0;
-        }
-        if (o instanceof Boolean) {
-            return (Boolean) o ? 1 : 0;
-        } else if (o instanceof Short) {
-            return (Short) o;
-        } else if (o instanceof Byte) {
-            return (Byte) o;
-        } else if (o instanceof Character) {
-            return (Character) o;
-        } else if (o instanceof Integer) {
-            return (Integer) o;
-        } else if (o instanceof Long) {
-            return (int) ((Long) o).longValue();
-        } else if (o instanceof Float) {
-            return (int) ((Float) o).floatValue();
-        } else if (o instanceof Double) {
-            return (int) ((Double) o).doubleValue();
-        } else {
-            throw new EvosuiteError("Unreachable code!");
-        }
-    }
-
-    private static short getShortValue(Object o) {
-        if (o == null) {
-            return 0;
-        }
-        if (o instanceof Boolean) {
-            return (short) ((Boolean) o ? 1 : 0);
-        } else if (o instanceof Short) {
-            return (Short) o;
-        } else if (o instanceof Byte) {
-            return (Byte) o;
-        } else if (o instanceof Character) {
-            return (short) ((Character) o).charValue();
-        } else if (o instanceof Integer) {
-            return (short) ((Integer) o).intValue();
-        } else if (o instanceof Long) {
-            return (short) ((Long) o).longValue();
-        } else if (o instanceof Float) {
-            return (short) ((Float) o).floatValue();
-        } else if (o instanceof Double) {
-            return (short) ((Double) o).doubleValue();
-        } else {
-            throw new EvosuiteError("Unreachable code!");
-        }
-    }
-
-    private static byte getByteValue(Object o) {
-        if (o == null) {
-            return 0;
-        }
-        if (o instanceof Boolean) {
-            return (byte) ((Boolean) o ? 1 : 0);
-        } else if (o instanceof Short) {
-            return (byte) ((Short) o).shortValue();
-        } else if (o instanceof Byte) {
-            return (Byte) o;
-        } else if (o instanceof Character) {
-            return (byte) ((Character) o).charValue();
-        } else if (o instanceof Integer) {
-            return (byte) ((Integer) o).intValue();
-        } else if (o instanceof Long) {
-            return (byte) ((Long) o).longValue();
-        } else if (o instanceof Float) {
-            return (byte) ((Float) o).floatValue();
-        } else if (o instanceof Double) {
-            return (byte) ((Double) o).doubleValue();
-        } else {
-            throw new EvosuiteError("Unreachable code!");
-        }
-    }
-
-    private static char getCharValue(Object o) {
-        if (o == null) {
-            return 0;
-        }
-        if (o instanceof Boolean) {
-            return (char) ((Boolean) o ? 1 : 0);
-        } else if (o instanceof Short) {
-            return (char) ((Short) o).shortValue();
-        } else if (o instanceof Byte) {
-            return (char) ((Byte) o).byteValue();
-        } else if (o instanceof Character) {
-            return (Character) o;
-        } else if (o instanceof Integer) {
-            return (char) ((Integer) o).intValue();
-        } else if (o instanceof Long) {
-            return (char) ((Long) o).longValue();
-        } else if (o instanceof Float) {
-            return (char) ((Float) o).floatValue();
-        } else if (o instanceof Double) {
-            return (char) ((Double) o).doubleValue();
-        } else {
-            throw new EvosuiteError("Unreachable code!");
-        }
-    }
-
-    private static boolean getBooleanValue(Object o) {
-        if (o == null) {
-            return false;
-        }
-        if (o instanceof Boolean) {
-            return (Boolean) o;
-        } else if (o instanceof Short) {
-            return (Short) o == 1;
-        } else if (o instanceof Byte) {
-            return (Byte) o == 1;
-        } else if (o instanceof Character) {
-            return (Character) o == 1;
-        } else if (o instanceof Integer) {
-            return (Integer) o == 1;
-        } else if (o instanceof Long) {
-            return (Long) o == 1;
-        } else if (o instanceof Float) {
-            return (Float) o == 1;
-        } else if (o instanceof Double) {
-            return (Double) o == 1;
-        } else {
-            throw new EvosuiteError("Unreachable code!");
         }
     }
 
@@ -1807,11 +1795,6 @@ public class SymbolicObserver extends ExecutionObserver {
         }
     }
 
-    private static boolean isWrapper(Object res) {
-        return res instanceof Boolean || res instanceof Short || res instanceof Byte || res instanceof Integer
-                || res instanceof Character || res instanceof Long || res instanceof Float || res instanceof Double;
-    }
-
     private void after(StringPrimitiveStatement statement, Scope scope) {
         String valueOf = statement.getValue();
         VariableReference varRef = statement.getReturnValue();
@@ -1857,12 +1840,6 @@ public class SymbolicObserver extends ExecutionObserver {
         env.heap.putField(Types.JAVA_LANG_STRING, SymbolicHeap.$STRING_VALUE, conc_string, stringRef, str_expr);
         return stringRef;
     }
-
-    private final Map<String, Expression<?>> symb_expressions = new HashMap<>();
-    private final Map<String, ReferenceExpression> symb_references = new HashMap<>();
-    private final Map<String, IntegerVariable> integerVariables = new HashMap<>();
-    private final Map<String, RealVariable> realVariables = new HashMap<>();
-    private final Map<String, StringVariable> stringVariables = new HashMap<>();
 
     private void after(IntPrimitiveStatement statement, Scope scope) {
         int valueOf = statement.getValue();
@@ -1937,7 +1914,6 @@ public class SymbolicObserver extends ExecutionObserver {
         return stringVariable;
     }
 
-
     /**
      * Upgrades a symbolic array from a literal to a variable in the symbolic heap.
      *
@@ -1964,6 +1940,25 @@ public class SymbolicObserver extends ExecutionObserver {
     @Override
     public void testExecutionFinished(ExecutionResult r, Scope s) {
         // do nothing
+    }
+
+    private static class ReferenceExpressionPair {
+        private final ReferenceExpression ref;
+        private final Expression<?> expr;
+
+        public ReferenceExpressionPair(ReferenceExpression ref, Expression<?> expr) {
+            this.ref = ref;
+            this.expr = expr;
+        }
+
+        public ReferenceExpression getReference() {
+            return ref;
+        }
+
+        public Expression<?> getExpression() {
+            return expr;
+        }
+
     }
 
 }

@@ -58,11 +58,6 @@ public class ReturnValueAdapter extends MethodVisitor {
         this.className = className;
     }
 
-    // primitive data types
-    private enum PDType {
-        LONG, INTEGER, FLOAT, DOUBLE
-    }
-
     /**
      * {@inheritDoc}
      */
@@ -148,6 +143,11 @@ public class ReturnValueAdapter extends MethodVisitor {
 
     private void callLogFReturn() {
         callLogPrototype("logFReturn", PDType.FLOAT);
+    }
+
+    // primitive data types
+    private enum PDType {
+        LONG, INTEGER, FLOAT, DOUBLE
     }
 
 }

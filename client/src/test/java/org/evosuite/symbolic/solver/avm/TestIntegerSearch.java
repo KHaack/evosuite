@@ -47,6 +47,30 @@ public class TestIntegerSearch extends RandomizedTC {
 
     private static final int DEFAULT_DSE_VARIABLE_RESETS = Properties.DSE_VARIABLE_RESETS;
 
+    private static IntegerValue mul(IntegerValue left, IntegerValue right) {
+        int left_val = left.getConcreteValue().intValue();
+        int right_val = right.getConcreteValue().intValue();
+        return new IntegerBinaryExpression(left, Operator.MUL, right, (long) left_val * right_val);
+    }
+
+    private static IntegerValue div(IntegerValue left, IntegerValue right) {
+        int left_val = left.getConcreteValue().intValue();
+        int right_val = right.getConcreteValue().intValue();
+        return new IntegerBinaryExpression(left, Operator.DIV, right, (long) left_val / right_val);
+    }
+
+    private static IntegerValue sub(IntegerValue left, IntegerValue right) {
+        int left_val = left.getConcreteValue().intValue();
+        int right_val = right.getConcreteValue().intValue();
+        return new IntegerBinaryExpression(left, Operator.MINUS, right, (long) left_val - right_val);
+    }
+
+    private static IntegerValue rem(IntegerValue left, IntegerValue right) {
+        int left_val = left.getConcreteValue().intValue();
+        int right_val = right.getConcreteValue().intValue();
+        return new IntegerBinaryExpression(left, Operator.REM, right, (long) left_val % right_val);
+    }
+
     @After
     public void restoreDSEVariableResets() {
         Properties.DSE_VARIABLE_RESETS = DEFAULT_DSE_VARIABLE_RESETS;
@@ -571,30 +595,6 @@ public class TestIntegerSearch extends RandomizedTC {
         } catch (SolverTimeoutException | SolverParseException | SolverErrorException | IOException e) {
             fail();
         }
-    }
-
-    private static IntegerValue mul(IntegerValue left, IntegerValue right) {
-        int left_val = left.getConcreteValue().intValue();
-        int right_val = right.getConcreteValue().intValue();
-        return new IntegerBinaryExpression(left, Operator.MUL, right, (long) left_val * right_val);
-    }
-
-    private static IntegerValue div(IntegerValue left, IntegerValue right) {
-        int left_val = left.getConcreteValue().intValue();
-        int right_val = right.getConcreteValue().intValue();
-        return new IntegerBinaryExpression(left, Operator.DIV, right, (long) left_val / right_val);
-    }
-
-    private static IntegerValue sub(IntegerValue left, IntegerValue right) {
-        int left_val = left.getConcreteValue().intValue();
-        int right_val = right.getConcreteValue().intValue();
-        return new IntegerBinaryExpression(left, Operator.MINUS, right, (long) left_val - right_val);
-    }
-
-    private static IntegerValue rem(IntegerValue left, IntegerValue right) {
-        int left_val = left.getConcreteValue().intValue();
-        int right_val = right.getConcreteValue().intValue();
-        return new IntegerBinaryExpression(left, Operator.REM, right, (long) left_val % right_val);
     }
 
     @Test

@@ -33,11 +33,6 @@ import java.time.temporal.TemporalAccessor;
  */
 public class MockJapaneseDate implements StaticReplacementMock {
 
-    @Override
-    public String getMockedClassName() {
-        return JapaneseDate.class.getName();
-    }
-
     public static JapaneseDate now() {
         return now(MockClock.systemDefaultZone());
     }
@@ -60,6 +55,11 @@ public class MockJapaneseDate implements StaticReplacementMock {
 
     public static JapaneseDate from(TemporalAccessor temporal) {
         return JapaneseDate.from(temporal);
+    }
+
+    @Override
+    public String getMockedClassName() {
+        return JapaneseDate.class.getName();
     }
 
 }

@@ -49,17 +49,14 @@ public class DefUseCoverageFactory extends
         AbstractFitnessFactory<DefUseCoverageTestFitness> {
 
     private static final Logger logger = LoggerFactory.getLogger(DefUseCoverageFactory.class);
-
+    // map of all NON-parameter-goals
+    private static final Map<Definition, Map<Use, DefUseCoverageTestFitness>> goalMap = new HashMap<>();
+    private static final Map<DefUseCoverageTestFitness.DefUsePairType, Integer> goalCounts = new HashMap<>();
     // TestSuiteMinimizer seems to call getCoverageGoals() a second time
     // and since analysis takes a little ...
     private static boolean called = false;
     private static List<DefUseCoverageTestFitness> duGoals; // TODO: What's the difference to goals?
     private static List<DefUseCoverageTestFitness> goals;
-
-    // map of all NON-parameter-goals
-    private static final Map<Definition, Map<Use, DefUseCoverageTestFitness>> goalMap = new HashMap<>();
-
-    private static final Map<DefUseCoverageTestFitness.DefUsePairType, Integer> goalCounts = new HashMap<>();
 
     /**
      * <p>
@@ -81,17 +78,6 @@ public class DefUseCoverageFactory extends
      * @see
      * org.evosuite.coverage.TestFitnessFactory#getCoverageGoals()
      */
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<DefUseCoverageTestFitness> getCoverageGoals() {
-        if (!called)
-            computeGoals();
-
-        return goals;
-    }
 
     /**
      * Determines all goals that need to get covered in order to fulfill
@@ -402,8 +388,6 @@ public class DefUseCoverageFactory extends
         return goalMap.get(def);
     }
 
-    // Getter
-
     /**
      * <p>
      * getParamGoalsCount
@@ -417,6 +401,8 @@ public class DefUseCoverageFactory extends
             return 0;
         return r;
     }
+
+    // Getter
 
     /**
      * <p>
@@ -569,6 +555,17 @@ public class DefUseCoverageFactory extends
         }
 
         return aliasingGoals;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<DefUseCoverageTestFitness> getCoverageGoals() {
+        if (!called)
+            computeGoals();
+
+        return goals;
     }
 
 }

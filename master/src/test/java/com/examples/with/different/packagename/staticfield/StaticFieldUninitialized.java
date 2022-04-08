@@ -32,6 +32,10 @@ public class StaticFieldUninitialized {
         setBar(7);
     }
 
+    public static Object getFoo() {
+        return foo;
+    }
+
     public static void setFoo(Integer x) {
         foo = x;
     }
@@ -40,16 +44,12 @@ public class StaticFieldUninitialized {
         foo = x;
     }
 
-    public static void setBar(int x) {
-        bar = x;
-    }
-
-    public static Object getFoo() {
-        return foo;
-    }
-
     public static int getBar() {
         foo = 127;
         return bar;
+    }
+
+    public static void setBar(int x) {
+        bar = x;
     }
 }

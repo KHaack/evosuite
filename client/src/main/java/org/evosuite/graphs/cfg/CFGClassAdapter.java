@@ -35,10 +35,8 @@ import org.slf4j.LoggerFactory;
  */
 public class CFGClassAdapter extends ClassVisitor {
 
-    private static final Logger logger = LoggerFactory.getLogger(CFGClassAdapter.class);
-
     public static final String LAMBDA_METHOD_NAME = "lambda$";
-
+    private static final Logger logger = LoggerFactory.getLogger(CFGClassAdapter.class);
     /**
      * Current class
      */
@@ -68,6 +66,24 @@ public class CFGClassAdapter extends ClassVisitor {
      */
 
     /**
+     * Just checks wheter the name of the method is of a synthetic lambda.
+     * TODO: we do the same on the concolic engine VMs, eventually move this to a commons space.
+     *
+     * @param methodName
+     * @return
+     */
+    private static boolean isLambdaMethodName(String methodName) {
+        return methodName.startsWith(LAMBDA_METHOD_NAME);
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.objectweb.asm.ClassAdapter#visitMethod(int, java.lang.String,
+     * java.lang.String, java.lang.String, java.lang.String[])
+     */
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -83,13 +99,6 @@ public class CFGClassAdapter extends ClassVisitor {
         if (superName.equals("java/lang/Enum"))
             isEnum = true;
     }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.objectweb.asm.ClassAdapter#visitMethod(int, java.lang.String,
-     * java.lang.String, java.lang.String, java.lang.String[])
-     */
 
     /**
      * {@inheritDoc}
@@ -133,16 +142,5 @@ public class CFGClassAdapter extends ClassVisitor {
         mv = new CFGMethodAdapter(classLoader, classNameWithDots, methodAccess, name,
                 descriptor, signature, exceptions, mv);
         return mv;
-    }
-
-    /**
-     * Just checks wheter the name of the method is of a synthetic lambda.
-     * TODO: we do the same on the concolic engine VMs, eventually move this to a commons space.
-     *
-     * @param methodName
-     * @return
-     */
-    private static boolean isLambdaMethodName(String methodName) {
-        return methodName.startsWith(LAMBDA_METHOD_NAME);
     }
 }

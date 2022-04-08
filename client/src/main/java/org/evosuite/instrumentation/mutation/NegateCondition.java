@@ -43,9 +43,8 @@ import java.util.Map;
  */
 public class NegateCondition implements MutationOperator {
 
-    private static final Map<Integer, Integer> opcodeMap = new HashMap<>();
-
     public static final String NAME = "NegateCondition";
+    private static final Map<Integer, Integer> opcodeMap = new HashMap<>();
 
     static {
         opcodeMap.put(Opcodes.IF_ACMPEQ, Opcodes.IF_ACMPNE);
@@ -69,6 +68,10 @@ public class NegateCondition implements MutationOperator {
     /* (non-Javadoc)
      * @see org.evosuite.cfg.instrumentation.MutationOperator#apply(org.objectweb.asm.tree.MethodNode, java.lang.String, java.lang.String, org.evosuite.cfg.BytecodeInstruction)
      */
+
+    private static int getOpposite(int opcode) {
+        return opcodeMap.get(opcode);
+    }
 
     /**
      * {@inheritDoc}
@@ -94,10 +97,6 @@ public class NegateCondition implements MutationOperator {
 
         mutations.add(mutationObject);
         return mutations;
-    }
-
-    private static int getOpposite(int opcode) {
-        return opcodeMap.get(opcode);
     }
 
     /* (non-Javadoc)

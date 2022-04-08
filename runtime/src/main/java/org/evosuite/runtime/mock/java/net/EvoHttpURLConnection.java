@@ -45,7 +45,9 @@ import java.util.Map;
  */
 public class EvoHttpURLConnection extends HttpURLConnection {
 
-    /** valid HTTP methods. Same as in superclass (in which the array is private) */
+    /**
+     * valid HTTP methods. Same as in superclass (in which the array is private)
+     */
     private static final String[] methods = {
             "GET", "POST", "HEAD", "OPTIONS", "PUT", "DELETE", "TRACE"
     };
@@ -73,12 +75,12 @@ public class EvoHttpURLConnection extends HttpURLConnection {
     @Override
     public void connect() throws IOException {
 
-        if(super.connected){
+        if (super.connected) {
             return;
         }
 
         String resolved = VirtualNetwork.getInstance().dnsResolve(url.getHost());
-        if(resolved == null){
+        if (resolved == null) {
             //TODO should rather mock java.net.UnknownHostException
             throw new MockIOException(url.getHost());
         }
@@ -91,7 +93,7 @@ public class EvoHttpURLConnection extends HttpURLConnection {
         super.connected = true;
 
         RemoteFile rf = VirtualNetwork.getInstance().getFile(url);
-        if(rf == null){
+        if (rf == null) {
             super.responseCode = HTTP_NOT_FOUND;
             super.responseMessage = "Not Found";
         } else {
@@ -105,9 +107,9 @@ public class EvoHttpURLConnection extends HttpURLConnection {
     public InputStream getInputStream() throws IOException {
         connect();
 
-        if(stream == null){
+        if (stream == null) {
             //TODO should rather mock FileNotFoundException
-            throw new MockIOException("Could not find: "+url.getHost());
+            throw new MockIOException("Could not find: " + url.getHost());
         }
 
         return stream;
@@ -124,6 +126,31 @@ public class EvoHttpURLConnection extends HttpURLConnection {
     }
 
     // -------  public methods from HttpURLConnection  ---------
+
+    @Override
+    public InputStream getErrorStream() {
+        return null;
+    }
+
+    @Override
+    public long getHeaderFieldDate(String name, long Default) {
+        return super.getHeaderFieldDate(name, Default);
+    }
+
+    @Override
+    public Permission getPermission() throws IOException {
+        return super.getPermission();
+    }
+
+    @Override
+    public int getResponseCode() throws IOException {
+        return super.getResponseCode();
+    }
+
+    @Override
+    public String getRequestMethod() {
+        return method;
+    }
 
     @Override
     public void setRequestMethod(String method) throws ProtocolException {
@@ -147,44 +174,13 @@ public class EvoHttpURLConnection extends HttpURLConnection {
     }
 
     @Override
-    public InputStream getErrorStream() {
-        return null;
-    }
-
-    @Override
-    public long getHeaderFieldDate(String name, long Default) {
-        return super.getHeaderFieldDate(name,Default);
-    }
-
-    @Override
-    public Permission getPermission() throws IOException {
-        return super.getPermission();
-    }
-
-    @Override
-    public int getResponseCode() throws IOException {
-        return super.getResponseCode();
-    }
-
-    @Override
-    public String getRequestMethod() {
-        return method;
-    }
-
-
-    @Override
     public String getHeaderField(int n) {
         return null;
     }
 
     @Override
-    public String getHeaderFieldKey (int n) {
+    public String getHeaderFieldKey(int n) {
         return null;
-    }
-
-    @Override
-    public void setInstanceFollowRedirects(boolean followRedirects) {
-        super.setInstanceFollowRedirects(followRedirects);
     }
 
     @Override
@@ -193,7 +189,12 @@ public class EvoHttpURLConnection extends HttpURLConnection {
     }
 
     @Override
-    public void setFixedLengthStreamingMode (int contentLength) {
+    public void setInstanceFollowRedirects(boolean followRedirects) {
+        super.setInstanceFollowRedirects(followRedirects);
+    }
+
+    @Override
+    public void setFixedLengthStreamingMode(int contentLength) {
         super.setFixedLengthStreamingMode(contentLength);
     }
 
@@ -203,18 +204,12 @@ public class EvoHttpURLConnection extends HttpURLConnection {
     }
 
     @Override
-    public void setChunkedStreamingMode (int chunklen) {
+    public void setChunkedStreamingMode(int chunklen) {
         super.setChunkedStreamingMode(chunklen);
     }
 
 
     // ------- public methods from URLConnection  ---------
-
-
-    @Override
-    public void setConnectTimeout(int timeout) {
-        super.setConnectTimeout(timeout);
-    }
 
     @Override
     public int getConnectTimeout() {
@@ -222,13 +217,18 @@ public class EvoHttpURLConnection extends HttpURLConnection {
     }
 
     @Override
-    public void setReadTimeout(int timeout) {
-        super.setReadTimeout(timeout);
+    public void setConnectTimeout(int timeout) {
+        super.setConnectTimeout(timeout);
     }
 
     @Override
     public int getReadTimeout() {
         return super.getReadTimeout();
+    }
+
+    @Override
+    public void setReadTimeout(int timeout) {
+        super.setReadTimeout(timeout);
     }
 
     @Override
@@ -278,18 +278,18 @@ public class EvoHttpURLConnection extends HttpURLConnection {
 
 
     @Override
-    public Map<String,List<String>> getHeaderFields() {
+    public Map<String, List<String>> getHeaderFields() {
         return Collections.EMPTY_MAP;
     }
 
     @Override
     public int getHeaderFieldInt(String name, int Default) {
-        return super.getHeaderFieldInt(name,Default);
+        return super.getHeaderFieldInt(name, Default);
     }
 
     @Override
     public long getHeaderFieldLong(String name, long Default) {
-        return super.getHeaderFieldLong(name,Default);
+        return super.getHeaderFieldLong(name, Default);
     }
 
     @Override
@@ -303,19 +303,13 @@ public class EvoHttpURLConnection extends HttpURLConnection {
     }
 
     @Override
-    public void setDoInput(boolean doinput) {
-        super.setDoInput(doinput);
-    }
-
-    @Override
     public boolean getDoInput() {
         return super.getDoInput();
     }
 
-
     @Override
-    public void setDoOutput(boolean dooutput) {
-        super.setDoOutput(dooutput);
+    public void setDoInput(boolean doinput) {
+        super.setDoInput(doinput);
     }
 
     @Override
@@ -324,13 +318,18 @@ public class EvoHttpURLConnection extends HttpURLConnection {
     }
 
     @Override
-    public void setAllowUserInteraction(boolean allowuserinteraction) {
-        super.setAllowUserInteraction(allowuserinteraction);
+    public void setDoOutput(boolean dooutput) {
+        super.setDoOutput(dooutput);
     }
 
     @Override
     public boolean getAllowUserInteraction() {
         return super.getAllowUserInteraction();
+    }
+
+    @Override
+    public void setAllowUserInteraction(boolean allowuserinteraction) {
+        super.setAllowUserInteraction(allowuserinteraction);
     }
 
 

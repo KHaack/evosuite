@@ -62,32 +62,26 @@ public abstract class ExplorationAlgorithmBase implements Serializable {
      * Path Divergence config
      */
     public static final int PATH_DIVERGED_BASED_TEST_CASE_PENALTY_SCORE = 0;
-
+    private static final transient Logger logger = LoggerFactory.getLogger(ExplorationAlgorithmBase.class);
+    private static final long serialVersionUID = -3426910907322781226L;
     /**
      * Test suite
      */
     protected final TestSuiteChromosome testSuite = new TestSuiteChromosome();
-
-    /**
-     * Fitness Functions for calculating coverage
-     */
-    protected List<TestSuiteFitnessFunction> fitnessFunctions = new ArrayList();
-
-    /**
-     * List of conditions on which to end the search
-     */
-    protected transient Set<StoppingCondition> stoppingConditions = new HashSet();
-
     /**
      * DSE statistics
      */
     protected transient final DSEStatistics statisticsLogger;
 
     protected final boolean showProgress;
-
-    private static final transient Logger logger = LoggerFactory.getLogger(ExplorationAlgorithmBase.class);
-
-    private static final long serialVersionUID = -3426910907322781226L;
+    /**
+     * Fitness Functions for calculating coverage
+     */
+    protected List<TestSuiteFitnessFunction> fitnessFunctions = new ArrayList();
+    /**
+     * List of conditions on which to end the search
+     */
+    protected transient Set<StoppingCondition> stoppingConditions = new HashSet();
 
     public ExplorationAlgorithmBase(DSEStatistics dseStatistics, boolean showProgress) {
         this.showProgress = showProgress;

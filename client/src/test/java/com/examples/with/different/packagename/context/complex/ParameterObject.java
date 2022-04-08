@@ -32,6 +32,10 @@ public class ParameterObject extends AParameterObject {
         return intero;
     }
 
+    public void setIntero(int intero) {
+        this.intero = intero;
+    }
+
     public boolean isEnabled() {
         if (intero > 146 && intero < 157) {
             return true;
@@ -41,10 +45,6 @@ public class ParameterObject extends AParameterObject {
 
     public String getStringa() {
         return stringa;
-    }
-
-    public void setIntero(int intero) {
-        this.intero = intero;
     }
 
     public void setStringa(String stringa) {

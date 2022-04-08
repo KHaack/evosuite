@@ -27,13 +27,6 @@ import static org.mockito.Mockito.mock;
 
 public class MockitoExtensionTest {
 
-    public static class OverrideToString {
-        @Override
-        public String toString() {
-            return "foo";
-        }
-    }
-
     @Test
     public void testConfirmDoReturnChain() {
         String a = "a";
@@ -74,6 +67,13 @@ public class MockitoExtensionTest {
         assertEquals(b, obj.toString());
         assertEquals(b, obj.toString());
         assertEquals(b, obj.toString());
+    }
+
+    public static class OverrideToString {
+        @Override
+        public String toString() {
+            return "foo";
+        }
     }
 
 }

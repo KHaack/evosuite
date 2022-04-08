@@ -48,9 +48,12 @@ import java.util.List;
  */
 public class ClassReInitializer {
 
-    private final List<String> initializedClasses = new LinkedList<>();
-
     private static ClassReInitializer instance = null;
+    private final List<String> initializedClasses = new LinkedList<>();
+    private boolean reset_all_observed_classes = false;
+
+    private ClassReInitializer() {
+    }
 
     public static void resetSingleton() {
         instance = null;
@@ -61,9 +64,6 @@ public class ClassReInitializer {
             instance = new ClassReInitializer();
         }
         return instance;
-    }
-
-    private ClassReInitializer() {
     }
 
     /*
@@ -182,8 +182,6 @@ public class ClassReInitializer {
             }
         }
     }
-
-    private boolean reset_all_observed_classes = false;
 
     /**
      * Indicates if we should re-initialize all observed classes of only those

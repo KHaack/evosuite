@@ -51,22 +51,16 @@ public class TestRunnable implements InterfaceTestRunnable {
     private static final Logger logger = LoggerFactory.getLogger(TestRunnable.class);
 
     private static final ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-
+    protected final ThreadStopper threadStopper;
     private final TestCase test;
-
     private final Scope scope;
-
     protected boolean runFinished;
-
     /**
      * Map a thrown exception ('value') with the the position ('key') in the
      * test sequence in which it was thrown from.
      */
     protected Map<Integer, Throwable> exceptionsThrown = new HashMap<>();
-
     protected Set<ExecutionObserver> observers;
-
-    protected final ThreadStopper threadStopper;
 
     /**
      * <p>

@@ -46,12 +46,9 @@ public class LineNumberMethodAdapter extends MethodVisitor {
     private final String methodName;
 
     private final String className;
-
-    private boolean hadInvokeSpecial = false;
-
     private final List<Integer> skippedLines = new ArrayList<>();
-
     int currentLine = 0;
+    private boolean hadInvokeSpecial = false;
 
     /**
      * <p>Constructor for LineNumberMethodAdapter.</p>

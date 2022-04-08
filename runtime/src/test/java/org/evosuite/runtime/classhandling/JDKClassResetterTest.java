@@ -31,18 +31,6 @@ import static org.junit.Assert.fail;
  */
 public class JDKClassResetterTest {
 
-    private static class FooKey extends RenderingHints.Key {
-
-        public FooKey(int privatekey) {
-            super(privatekey);
-        }
-
-        @Override
-        public boolean isCompatibleValue(Object val) {
-            return false;
-        }
-    }
-
     @Test
     public void testReset() throws Exception {
 
@@ -63,5 +51,17 @@ public class JDKClassResetterTest {
 
         //after reset, copy should be fine
         FooKey copy = new FooKey(keyValue);
+    }
+
+    private static class FooKey extends RenderingHints.Key {
+
+        public FooKey(int privatekey) {
+            super(privatekey);
+        }
+
+        @Override
+        public boolean isCompatibleValue(Object val) {
+            return false;
+        }
     }
 }

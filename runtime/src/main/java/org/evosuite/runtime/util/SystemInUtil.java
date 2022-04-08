@@ -46,29 +46,23 @@ public class SystemInUtil extends InputStream {
     private static final Logger logger = LoggerFactory.getLogger(SystemInUtil.class);
 
     private static final SystemInUtil singleton = new SystemInUtil();
-
-    /**
-     * Has System.in ever be used by the SUT?
-     */
-    private volatile boolean beingUsed;
-
-    /**
-     * The data that will be taken from System.in
-     */
-    private volatile List<Byte> data;
-
-    /**
-     * the position in the stream
-     */
-    private volatile AtomicInteger counter;
-
-
     /**
      * This is needed to simulate blocking calls when there is
      * no input
      */
     private static final Object monitor = new Object();
-
+    /**
+     * Has System.in ever be used by the SUT?
+     */
+    private volatile boolean beingUsed;
+    /**
+     * The data that will be taken from System.in
+     */
+    private volatile List<Byte> data;
+    /**
+     * the position in the stream
+     */
+    private volatile AtomicInteger counter;
     private volatile boolean endReached;
 
     //--------------------------------
@@ -96,18 +90,6 @@ public class SystemInUtil extends InputStream {
     }
 
     /**
-     * Setup mocked/stubbed System.in for the test case
-     */
-    public void initForTestCase() {
-        data = new ArrayList<>();
-        counter = new AtomicInteger(0);
-        endReached = false;
-        if (RuntimeSettings.mockSystemIn) {
-            System.setIn(this);
-        }
-    }
-
-    /**
      * Use given <code>input</code> string to represent the data
      * that will be provided by System.in.
      * The string will be appended to current buffer as a new line,
@@ -130,6 +112,18 @@ public class SystemInUtil extends InputStream {
                 singleton.data.add(b);
             }
             singleton.endReached = false;
+        }
+    }
+
+    /**
+     * Setup mocked/stubbed System.in for the test case
+     */
+    public void initForTestCase() {
+        data = new ArrayList<>();
+        counter = new AtomicInteger(0);
+        endReached = false;
+        if (RuntimeSettings.mockSystemIn) {
+            System.setIn(this);
         }
     }
 

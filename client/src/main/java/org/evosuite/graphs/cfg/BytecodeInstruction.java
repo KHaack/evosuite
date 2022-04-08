@@ -152,20 +152,6 @@ public class BytecodeInstruction extends ASMWrapper implements Serializable,
 
     // getter + setter
 
-    private void setMethodName(String methodName) {
-        if (methodName == null)
-            throw new IllegalArgumentException("null given");
-
-        this.methodName = methodName;
-    }
-
-    private void setClassName(String className) {
-        if (className == null)
-            throw new IllegalArgumentException("null given");
-
-        this.className = className;
-    }
-
     /**
      * <p>
      * setCFGFrame
@@ -176,8 +162,6 @@ public class BytecodeInstruction extends ASMWrapper implements Serializable,
     public void setCFGFrame(CFGFrame frame) {
         this.frame = frame;
     }
-
-    // --- Field Management ---
 
     /**
      * {@inheritDoc}
@@ -198,12 +182,21 @@ public class BytecodeInstruction extends ASMWrapper implements Serializable,
         return bytecodeOffset;
     }
 
+    // --- Field Management ---
+
     /**
      * {@inheritDoc}
      */
     @Override
     public String getMethodName() {
         return methodName;
+    }
+
+    private void setMethodName(String methodName) {
+        if (methodName == null)
+            throw new IllegalArgumentException("null given");
+
+        this.methodName = methodName;
     }
 
     /**
@@ -216,6 +209,13 @@ public class BytecodeInstruction extends ASMWrapper implements Serializable,
     @Override
     public String getClassName() {
         return className;
+    }
+
+    private void setClassName(String className) {
+        if (className == null)
+            throw new IllegalArgumentException("null given");
+
+        this.className = className;
     }
 
     /**
@@ -243,12 +243,6 @@ public class BytecodeInstruction extends ASMWrapper implements Serializable,
         return basicBlock;
     }
 
-    private void retrieveBasicBlock() {
-
-        if (basicBlock == null)
-            basicBlock = getActualCFG().getBlockOf(this);
-    }
-
     /**
      * Once the CFG has been asked for this instruction's BasicBlock it sets
      * this instance's internal basicBlock field.
@@ -268,6 +262,12 @@ public class BytecodeInstruction extends ASMWrapper implements Serializable,
                     "basicBlock already set! not allowed to overwrite");
 
         this.basicBlock = block;
+    }
+
+    private void retrieveBasicBlock() {
+
+        if (basicBlock == null)
+            basicBlock = getActualCFG().getBlockOf(this);
     }
 
     /**

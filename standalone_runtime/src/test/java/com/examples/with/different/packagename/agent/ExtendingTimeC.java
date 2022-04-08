@@ -19,6 +19,6 @@
  */
 package com.examples.with.different.packagename.agent;
 
-public class ExtendingTimeC extends TimeC{
+public class ExtendingTimeC extends TimeC {
 
 }

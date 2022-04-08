@@ -50,6 +50,20 @@ public class MockJOptionPaneShowInternalInputDialogTest {
         ClassPathHandler.getInstance().addElementToTargetProjectClassPath(cp);
     }
 
+    private static TestCase buildTestCase0(InstrumentingClassLoader cl)
+            throws ClassNotFoundException, NoSuchMethodException, SecurityException {
+        TestCaseBuilder builder = new TestCaseBuilder();
+
+        Class<?> clazz = cl.loadClass(TARGET_CLASS);
+        Constructor<?> constructor = clazz.getConstructor();
+        VariableReference showMessageDialogExample0 = builder.appendConstructor(constructor);
+
+        Method showInputDialogsMethod = clazz.getMethod("showInternalInputDialogs");
+        builder.appendMethod(showMessageDialogExample0, showInputDialogsMethod);
+
+        return builder.getDefaultTestCase();
+    }
+
     @Before
     public void setUp() {
         Properties.CRITERION = new Properties.Criterion[]{Criterion.BRANCH};
@@ -78,20 +92,6 @@ public class MockJOptionPaneShowInternalInputDialogTest {
 
         Set<TestFitnessFunction> coveredGoals = suite.getCoveredGoals();
         Assert.assertEquals(4, coveredGoals.size());
-    }
-
-    private static TestCase buildTestCase0(InstrumentingClassLoader cl)
-            throws ClassNotFoundException, NoSuchMethodException, SecurityException {
-        TestCaseBuilder builder = new TestCaseBuilder();
-
-        Class<?> clazz = cl.loadClass(TARGET_CLASS);
-        Constructor<?> constructor = clazz.getConstructor();
-        VariableReference showMessageDialogExample0 = builder.appendConstructor(constructor);
-
-        Method showInputDialogsMethod = clazz.getMethod("showInternalInputDialogs");
-        builder.appendMethod(showMessageDialogExample0, showInputDialogsMethod);
-
-        return builder.getDefaultTestCase();
     }
 
 }

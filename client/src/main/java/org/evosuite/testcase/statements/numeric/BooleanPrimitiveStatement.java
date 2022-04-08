@@ -31,6 +31,8 @@ import org.evosuite.utils.Randomness;
  */
 public class BooleanPrimitiveStatement extends NumericalPrimitiveStatement<Boolean> {
 
+    private static final long serialVersionUID = 2864789903354543815L;
+
     /**
      * <p>Constructor for BooleanPrimitiveStatement.</p>
      *
@@ -49,8 +51,6 @@ public class BooleanPrimitiveStatement extends NumericalPrimitiveStatement<Boole
     public BooleanPrimitiveStatement(TestCase tc) {
         super(tc, boolean.class, false);
     }
-
-    private static final long serialVersionUID = 2864789903354543815L;
 
     /* (non-Javadoc)
      * @see org.evosuite.testcase.PrimitiveStatement#zero()

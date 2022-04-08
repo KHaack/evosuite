@@ -37,6 +37,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class EvoStartDialog extends JDialog {
+    private final String JAVA_VERSION_WARN_MSG = "(JDK needs to be <= Java 8)";
     private JPanel contentPane;
     private JButton buttonOK;
     private JButton buttonCancel;
@@ -53,43 +54,9 @@ public class EvoStartDialog extends JDialog {
     private JButton evosuiteSelectionButton;
     private JRadioButton mavenRadioButton;
     private JRadioButton evosuiteRadioButton;
-
-
     private volatile boolean wasOK = false;
     private volatile EvoParameters params;
     private volatile Project project;
-
-    private final String JAVA_VERSION_WARN_MSG = "(JDK needs to be <= Java 8)";
-
-    public void initFields(Project project, EvoParameters params) {
-        this.project = project;
-        this.params = params;
-
-        coreField.setValue(params.getCores());
-        memoryField.setValue(params.getMemory());
-        timeField.setValue(params.getTime());
-
-        folderField.setText(params.getFolder());
-        mavenField.setText(params.getMvnLocation());
-        evosuiteLocationTesxField.setText(params.getEvosuiteJarLocation());
-        javaHomeField.setText(params.getJavaHome());
-        javaVersionWarningLabel.setText(JAVA_VERSION_WARN_MSG);
-
-        if (!Utils.isMavenProject(project)) {
-            //disable Maven options
-            selectMavenButton.setEnabled(false);
-            mavenRadioButton.setEnabled(false);
-            params.setExecutionMode(EvoParameters.EXECUTION_MODE_JAR);
-        }
-
-        if (params.usesMaven()) {
-            mavenRadioButton.setSelected(true);
-        } else {
-            evosuiteRadioButton.setSelected(true);
-        }
-        checkExecution();
-    }
-
 
     public EvoStartDialog() {
 
@@ -155,6 +122,42 @@ public class EvoStartDialog extends JDialog {
         });
 
         setPreferredSize(new Dimension(EvoParameters.getInstance().getGuiWidth(), EvoParameters.getInstance().getGuiHeight()));
+    }
+
+    public static void main(String[] args) {
+        EvoStartDialog dialog = new EvoStartDialog();
+        dialog.pack();
+        dialog.setVisible(true);
+        System.exit(0);
+    }
+
+    public void initFields(Project project, EvoParameters params) {
+        this.project = project;
+        this.params = params;
+
+        coreField.setValue(params.getCores());
+        memoryField.setValue(params.getMemory());
+        timeField.setValue(params.getTime());
+
+        folderField.setText(params.getFolder());
+        mavenField.setText(params.getMvnLocation());
+        evosuiteLocationTesxField.setText(params.getEvosuiteJarLocation());
+        javaHomeField.setText(params.getJavaHome());
+        javaVersionWarningLabel.setText(JAVA_VERSION_WARN_MSG);
+
+        if (!Utils.isMavenProject(project)) {
+            //disable Maven options
+            selectMavenButton.setEnabled(false);
+            mavenRadioButton.setEnabled(false);
+            params.setExecutionMode(EvoParameters.EXECUTION_MODE_JAR);
+        }
+
+        if (params.usesMaven()) {
+            mavenRadioButton.setSelected(true);
+        } else {
+            evosuiteRadioButton.setSelected(true);
+        }
+        checkExecution();
     }
 
     private void onSelectEvosuite() {
@@ -331,7 +334,6 @@ public class EvoStartDialog extends JDialog {
         return false;
     }
 
-
     private void onOK() {
 // add your code here
 
@@ -348,7 +350,6 @@ public class EvoStartDialog extends JDialog {
 
         saveParameters(false);
     }
-
 
     private boolean saveParameters(boolean validate) {
 
@@ -412,14 +413,6 @@ public class EvoStartDialog extends JDialog {
         }
 
         return true;
-    }
-
-
-    public static void main(String[] args) {
-        EvoStartDialog dialog = new EvoStartDialog();
-        dialog.pack();
-        dialog.setVisible(true);
-        System.exit(0);
     }
 
     private void createUIComponents() {

@@ -56,22 +56,18 @@ public abstract class AbstractMOSA extends GeneticAlgorithm<TestChromosome> {
     private static final long serialVersionUID = 146182080947267628L;
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractMOSA.class);
-
-    // Explicitly declared with a more special type than the one used in GeneticAlgorithm.
-    // This is required for the Archive, which currently only supports TestFitnessFunctions.
-    protected final List<TestFitnessFunction> fitnessFunctions = new ArrayList<>();
-
-    private MOSATestSuiteAdapter adapter = null;
-
     /**
      * Keep track of overall suite fitness functions and correspondent test fitness functions
      */
     public final Map<TestSuiteFitnessFunction, Class<?>> suiteFitnessFunctions;
-
+    // Explicitly declared with a more special type than the one used in GeneticAlgorithm.
+    // This is required for the Archive, which currently only supports TestFitnessFunctions.
+    protected final List<TestFitnessFunction> fitnessFunctions = new ArrayList<>();
     /**
      * Object used to keep track of the execution time needed to reach the maximum coverage
      */
     protected final BudgetConsumptionMonitor budgetMonitor;
+    private MOSATestSuiteAdapter adapter = null;
 
     /**
      * Constructor.

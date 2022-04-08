@@ -44,6 +44,9 @@ public abstract class MockClock extends java.time.Clock implements OverrideMock 
     static final long NANOS_PER_MINUTE = NANOS_PER_SECOND * SECONDS_PER_MINUTE;
 
 
+    protected MockClock() {
+    }
+
     public static Clock systemUTC() {
         return new MockSystemClock(ZoneOffset.UTC);
     }
@@ -61,30 +64,21 @@ public abstract class MockClock extends java.time.Clock implements OverrideMock 
         return new MockTickClock(system(zone), NANOS_PER_SECOND);
     }
 
-
     public static Clock tickMinutes(ZoneId zone) {
         return new MockTickClock(system(zone), NANOS_PER_MINUTE);
     }
-
 
     public static Clock tick(Clock baseClock, Duration tickDuration) {
         return Clock.tick(baseClock, tickDuration);
     }
 
-
     public static Clock fixed(Instant fixedInstant, ZoneId zone) {
         return Clock.fixed(fixedInstant, zone);
     }
 
-
     public static Clock offset(Clock baseClock, Duration offsetDuration) {
         return Clock.offset(baseClock, offsetDuration);
     }
-
-
-    protected MockClock() {
-    }
-
 
     public abstract ZoneId getZone();
 
@@ -107,11 +101,12 @@ public abstract class MockClock extends java.time.Clock implements OverrideMock 
 
 
     @Override
-    public  int hashCode() {
+    public int hashCode() {
         return super.hashCode();
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Implementation of a clock that always returns the latest time from
      * {@link System#currentTimeMillis()}.
@@ -123,10 +118,12 @@ public abstract class MockClock extends java.time.Clock implements OverrideMock 
         MockSystemClock(ZoneId zone) {
             this.zone = zone;
         }
+
         @Override
         public ZoneId getZone() {
             return zone;
         }
+
         @Override
         public Clock withZone(ZoneId zone) {
             if (zone.equals(this.zone)) {  // intentional NPE
@@ -134,14 +131,17 @@ public abstract class MockClock extends java.time.Clock implements OverrideMock 
             }
             return new MockClock.MockSystemClock(zone);
         }
+
         @Override
         public long millis() {
             return org.evosuite.runtime.System.currentTimeMillis();
         }
+
         @Override
         public Instant instant() {
             return Instant.ofEpochMilli(millis());
         }
+
         @Override
         public boolean equals(Object obj) {
             if (obj instanceof MockClock.MockSystemClock) {
@@ -149,10 +149,12 @@ public abstract class MockClock extends java.time.Clock implements OverrideMock 
             }
             return false;
         }
+
         @Override
         public int hashCode() {
             return zone.hashCode() + 1;
         }
+
         @Override
         public String toString() {
             return "SystemClock[" + zone + "]";
@@ -160,6 +162,7 @@ public abstract class MockClock extends java.time.Clock implements OverrideMock 
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Implementation of a clock that adds an offset to an underlying clock.
      */
@@ -172,10 +175,12 @@ public abstract class MockClock extends java.time.Clock implements OverrideMock 
             this.baseClock = baseClock;
             this.tickNanos = tickNanos;
         }
+
         @Override
         public ZoneId getZone() {
             return baseClock.getZone();
         }
+
         @Override
         public Clock withZone(ZoneId zone) {
             if (zone.equals(baseClock.getZone())) {  // intentional NPE
@@ -183,11 +188,13 @@ public abstract class MockClock extends java.time.Clock implements OverrideMock 
             }
             return new MockClock.MockTickClock(baseClock.withZone(zone), tickNanos);
         }
+
         @Override
         public long millis() {
             long millis = baseClock.millis();
             return millis - Math.floorMod(millis, tickNanos / 1000_000L);
         }
+
         @Override
         public Instant instant() {
             if ((tickNanos % 1000_000) == 0) {
@@ -199,6 +206,7 @@ public abstract class MockClock extends java.time.Clock implements OverrideMock 
             long adjust = Math.floorMod(nanos, tickNanos);
             return instant.minusNanos(adjust);
         }
+
         @Override
         public boolean equals(Object obj) {
             if (obj instanceof MockClock.MockTickClock) {
@@ -207,10 +215,12 @@ public abstract class MockClock extends java.time.Clock implements OverrideMock 
             }
             return false;
         }
+
         @Override
         public int hashCode() {
             return baseClock.hashCode() ^ ((int) (tickNanos ^ (tickNanos >>> 32)));
         }
+
         @Override
         public String toString() {
             return "TickClock[" + baseClock + "," + Duration.ofNanos(tickNanos) + "]";

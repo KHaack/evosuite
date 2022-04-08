@@ -28,6 +28,17 @@ import org.junit.Test;
  */
 public class GenericObjectWrapperSequenceTest {
 
+    @Test
+    public void test() {
+        int x = 42;
+        Foo foo = new Foo();
+        foo.setX(x);
+
+        GenericObjectWrapper<Foo> wrapper = new GenericObjectWrapper<>();
+        wrapper.set(foo);
+        Assert.assertEquals(42, wrapper.get().getX());
+    }
+
     public static class Foo {
         private int x = 0;
 
@@ -38,17 +49,6 @@ public class GenericObjectWrapperSequenceTest {
         public void setX(int x) {
             this.x = x;
         }
-    }
-
-    @Test
-    public void test() {
-        int x = 42;
-        Foo foo = new Foo();
-        foo.setX(x);
-
-        GenericObjectWrapper<Foo> wrapper = new GenericObjectWrapper<>();
-        wrapper.set(foo);
-        Assert.assertEquals(42, wrapper.get().getX());
     }
 
 }

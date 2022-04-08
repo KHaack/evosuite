@@ -511,7 +511,7 @@ public class DSEAlgorithmLegacySystemTest extends SystemTestBase {
 
     /**
      * Given that the concolic engine makes the un-instrumented functions results concrete, the hashing case gets covered.
-     *
+     * <p>
      * See examples on: Patrice Godefroid - Higher-Order Test Generation.
      */
     @Test

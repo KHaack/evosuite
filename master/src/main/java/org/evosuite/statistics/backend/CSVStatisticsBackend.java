@@ -43,43 +43,6 @@ public class CSVStatisticsBackend implements StatisticsBackend {
     private static final Logger logger = LoggerFactory.getLogger(CSVStatisticsBackend.class);
 
     /**
-     * Retrieve header with variable names
-     *
-     * @param data
-     * @return
-     */
-    private String getCSVHeader(Map<String, OutputVariable<?>> data) {
-        StringBuilder r = new StringBuilder();
-        Iterator<Entry<String, OutputVariable<?>>> it = data.entrySet().iterator();
-        while (it.hasNext()) {
-            Entry<String, OutputVariable<?>> e = it.next();
-            r.append(e.getKey());
-            if (it.hasNext())
-                r.append(",");
-        }
-        return r.toString();
-    }
-
-
-    /**
-     * Retrieve one line of data
-     *
-     * @param data
-     * @return
-     */
-    private String getCSVData(Map<String, OutputVariable<?>> data) {
-        StringBuilder r = new StringBuilder();
-        Iterator<Entry<String, OutputVariable<?>>> it = data.entrySet().iterator();
-        while (it.hasNext()) {
-            Entry<String, OutputVariable<?>> e = it.next();
-            r.append(e.getValue().getValue());
-            if (it.hasNext())
-                r.append(",");
-        }
-        return r.toString();
-    }
-
-    /**
      * Return the folder of where reports should be generated.
      * If the folder does not exist, try to create it
      *
@@ -99,6 +62,42 @@ public class CSVStatisticsBackend implements StatisticsBackend {
         }
 
         return dir;
+    }
+
+    /**
+     * Retrieve header with variable names
+     *
+     * @param data
+     * @return
+     */
+    private String getCSVHeader(Map<String, OutputVariable<?>> data) {
+        StringBuilder r = new StringBuilder();
+        Iterator<Entry<String, OutputVariable<?>>> it = data.entrySet().iterator();
+        while (it.hasNext()) {
+            Entry<String, OutputVariable<?>> e = it.next();
+            r.append(e.getKey());
+            if (it.hasNext())
+                r.append(",");
+        }
+        return r.toString();
+    }
+
+    /**
+     * Retrieve one line of data
+     *
+     * @param data
+     * @return
+     */
+    private String getCSVData(Map<String, OutputVariable<?>> data) {
+        StringBuilder r = new StringBuilder();
+        Iterator<Entry<String, OutputVariable<?>>> it = data.entrySet().iterator();
+        while (it.hasNext()) {
+            Entry<String, OutputVariable<?>> e = it.next();
+            r.append(e.getValue().getValue());
+            if (it.hasNext())
+                r.append(",");
+        }
+        return r.toString();
     }
 
     @Override

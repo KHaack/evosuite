@@ -50,6 +50,36 @@ public class MockJOptionPaneShowInternalConfirmDialogTest {
         ClassPathHandler.getInstance().addElementToTargetProjectClassPath(cp);
     }
 
+    private static TestCase buildTestCase1(InstrumentingClassLoader cl)
+            throws ClassNotFoundException, NoSuchMethodException, SecurityException {
+        TestCaseBuilder builder = new TestCaseBuilder();
+
+        Class<?> clazz = cl.loadClass(TARGET_CLASS);
+        Constructor<?> constructor = clazz.getConstructor();
+        VariableReference showMessageDialogExample0 = builder.appendConstructor(constructor);
+
+        VariableReference int0 = builder.appendIntPrimitive(0);
+        Method showMessageDialogMethod = clazz.getMethod("showInternalConfirmDialog", int.class);
+        builder.appendMethod(showMessageDialogExample0, showMessageDialogMethod, int0);
+
+        return builder.getDefaultTestCase();
+    }
+
+    private static TestCase buildTestCase0(InstrumentingClassLoader cl)
+            throws ClassNotFoundException, NoSuchMethodException, SecurityException {
+        TestCaseBuilder builder = new TestCaseBuilder();
+
+        Class<?> clazz = cl.loadClass(TARGET_CLASS);
+        Constructor<?> constructor = clazz.getConstructor();
+        VariableReference showMessageDialogExample0 = builder.appendConstructor(constructor);
+
+        VariableReference int0 = builder.appendIntPrimitive(1);
+        Method showMessageDialogMethod = clazz.getMethod("showInternalConfirmDialog", int.class);
+        builder.appendMethod(showMessageDialogExample0, showMessageDialogMethod, int0);
+
+        return builder.getDefaultTestCase();
+    }
+
     @Before
     public void setUp() {
         Properties.CRITERION = new Properties.Criterion[]{Criterion.BRANCH};
@@ -81,36 +111,6 @@ public class MockJOptionPaneShowInternalConfirmDialogTest {
 
         Set<TestFitnessFunction> coveredGoals = suite.getCoveredGoals();
         Assert.assertEquals(3, coveredGoals.size());
-    }
-
-    private static TestCase buildTestCase1(InstrumentingClassLoader cl)
-            throws ClassNotFoundException, NoSuchMethodException, SecurityException {
-        TestCaseBuilder builder = new TestCaseBuilder();
-
-        Class<?> clazz = cl.loadClass(TARGET_CLASS);
-        Constructor<?> constructor = clazz.getConstructor();
-        VariableReference showMessageDialogExample0 = builder.appendConstructor(constructor);
-
-        VariableReference int0 = builder.appendIntPrimitive(0);
-        Method showMessageDialogMethod = clazz.getMethod("showInternalConfirmDialog", int.class);
-        builder.appendMethod(showMessageDialogExample0, showMessageDialogMethod, int0);
-
-        return builder.getDefaultTestCase();
-    }
-
-    private static TestCase buildTestCase0(InstrumentingClassLoader cl)
-            throws ClassNotFoundException, NoSuchMethodException, SecurityException {
-        TestCaseBuilder builder = new TestCaseBuilder();
-
-        Class<?> clazz = cl.loadClass(TARGET_CLASS);
-        Constructor<?> constructor = clazz.getConstructor();
-        VariableReference showMessageDialogExample0 = builder.appendConstructor(constructor);
-
-        VariableReference int0 = builder.appendIntPrimitive(1);
-        Method showMessageDialogMethod = clazz.getMethod("showInternalConfirmDialog", int.class);
-        builder.appendMethod(showMessageDialogExample0, showMessageDialogMethod, int0);
-
-        return builder.getDefaultTestCase();
     }
 
 

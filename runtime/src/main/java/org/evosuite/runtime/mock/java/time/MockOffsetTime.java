@@ -29,11 +29,6 @@ import java.time.temporal.TemporalAccessor;
  * Created by gordon on 24/01/2016.
  */
 public class MockOffsetTime implements StaticReplacementMock {
-    @Override
-    public String getMockedClassName() {
-        return OffsetTime.class.getName();
-    }
-
     public static OffsetTime now() {
         return now(MockClock.systemDefaultZone());
     }
@@ -68,5 +63,10 @@ public class MockOffsetTime implements StaticReplacementMock {
 
     public static OffsetTime parse(CharSequence text, DateTimeFormatter formatter) {
         return OffsetTime.parse(text, formatter);
+    }
+
+    @Override
+    public String getMockedClassName() {
+        return OffsetTime.class.getName();
     }
 }

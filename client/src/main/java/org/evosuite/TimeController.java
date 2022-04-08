@@ -87,13 +87,6 @@ public class TimeController {
         init();
     }
 
-    private void init() {
-        state = ClientState.NOT_STARTED;
-        clientStartTime = 0;
-        timeLeftFromPreviousPhases = 0;
-        initializePhaseTimeouts();
-    }
-
     public static void resetSingleton() {
         getInstance().init();
     }
@@ -115,6 +108,30 @@ public class TimeController {
         if (delta > warn_time_ms) {
             logger.warn("Operation '{}' took too long: {}ms", name, delta);
         }
+    }
+
+    /**
+     * Get the singleton reference
+     *
+     * @return
+     */
+    public static TimeController getInstance() {
+        return singleton;
+    }
+
+    public static int getSearchBudgetInSeconds() {
+        if (Properties.STOPPING_CONDITION == StoppingCondition.MAXTIME) {
+            return (int) Properties.SEARCH_BUDGET;
+        } else {
+            return Properties.GLOBAL_TIMEOUT;
+        }
+    }
+
+    private void init() {
+        state = ClientState.NOT_STARTED;
+        clientStartTime = 0;
+        timeLeftFromPreviousPhases = 0;
+        initializePhaseTimeouts();
     }
 
     private void initializePhaseTimeouts() {
@@ -142,16 +159,6 @@ public class TimeController {
             timeSpentInEachPhase = new ConcurrentHashMap<>();
         }
     }
-
-    /**
-     * Get the singleton reference
-     *
-     * @return
-     */
-    public static TimeController getInstance() {
-        return singleton;
-    }
-
 
     public synchronized void updateState(ClientState newState) throws IllegalArgumentException {
         Inputs.checkNull(newState);
@@ -206,14 +213,6 @@ public class TimeController {
                 logger.warn("Current phase {} could run up to {}s, but only {}s are left",
                         state, (int) (timeout / 1000), (int) (left / 1000));
             }
-        }
-    }
-
-    public static int getSearchBudgetInSeconds() {
-        if (Properties.STOPPING_CONDITION == StoppingCondition.MAXTIME) {
-            return (int) Properties.SEARCH_BUDGET;
-        } else {
-            return Properties.GLOBAL_TIMEOUT;
         }
     }
 

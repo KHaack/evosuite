@@ -47,14 +47,25 @@ public class ShutdownTestWriter<T extends Chromosome<T>> extends StoppingConditi
         // empty copy constructor
     }
 
-    @Override
-    public ShutdownTestWriter<T> clone() {
-        return new ShutdownTestWriter<>(this);
+    /**
+     * <p>
+     * isInterrupted
+     * </p>
+     *
+     * @return a boolean.
+     */
+    public static boolean isInterrupted() {
+        return interrupted;
     }
 
     /* (non-Javadoc)
      * @see sun.misc.SignalHandler#handle(sun.misc.Signal)
      */
+
+    @Override
+    public ShutdownTestWriter<T> clone() {
+        return new ShutdownTestWriter<>(this);
+    }
 
     /**
      * {@inheritDoc}
@@ -67,17 +78,6 @@ public class ShutdownTestWriter<T extends Chromosome<T>> extends StoppingConditi
         if (interrupted)
             System.exit(0);
         interrupted = true;
-    }
-
-    /**
-     * <p>
-     * isInterrupted
-     * </p>
-     *
-     * @return a boolean.
-     */
-    public static boolean isInterrupted() {
-        return interrupted;
     }
 
     /* (non-Javadoc)
@@ -112,9 +112,9 @@ public class ShutdownTestWriter<T extends Chromosome<T>> extends StoppingConditi
      * {@inheritDoc}
      */
     @Override
-    public void setLimit(long limit) {
+    public long getLimit() {
         // TODO Auto-generated method stub
-
+        return 0;
     }
 
     /* (non-Javadoc)
@@ -125,9 +125,9 @@ public class ShutdownTestWriter<T extends Chromosome<T>> extends StoppingConditi
      * {@inheritDoc}
      */
     @Override
-    public long getLimit() {
+    public void setLimit(long limit) {
         // TODO Auto-generated method stub
-        return 0;
+
     }
 
     /* (non-Javadoc)

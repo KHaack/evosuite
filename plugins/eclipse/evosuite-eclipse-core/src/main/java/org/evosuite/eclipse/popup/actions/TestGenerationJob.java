@@ -97,29 +97,21 @@ import org.evosuite.shaded.org.apache.commons.lang3.StringUtils;
  */
 public class TestGenerationJob extends Job {
 
+    protected static final double SEED_CHANCE = 0.2;
     protected final String targetClass;
     protected final String suiteClass;
-
     protected final IResource target;
-
     protected final Shell shell;
-
+    protected final String ENCODING = "UTF-8";
+    protected final Map<String, Double> coverage = null;
     protected boolean running = false;
     protected boolean stopped = false;
     protected ClientStateInformation lastState = null;
-
     protected String lastTest = "";
-    protected static final double SEED_CHANCE = 0.2;
-    protected final String ENCODING = "UTF-8";
     protected String classPath;
-    protected final Map<String, Double> coverage = null;
 
     public TestGenerationJob(Shell shell, final IResource target, String targetClass) {
         this(shell, target, targetClass, null);
-    }
-
-    public IResource getTarget() {
-        return target;
     }
 
     public TestGenerationJob(Shell shell, final IResource target, String targetClassName, String suiteClassName) {
@@ -139,6 +131,34 @@ public class TestGenerationJob extends Job {
             e.printStackTrace();
             classPath = "";
         }
+    }
+
+    public static String readFileToString(String fileName) {
+        StringBuilder content = new StringBuilder();
+        try {
+            Reader reader = new InputStreamReader(
+                    new FileInputStream(fileName), "utf-8");
+            BufferedReader in = new BufferedReader(reader);
+            try {
+                String str;
+                while ((str = in.readLine()) != null) {
+                    content.append(str);
+                    content.append("\n");
+                }
+            } finally {
+                in.close();
+            }
+        } catch (FileNotFoundException fnfe) {
+            System.out.println("File not found " + fileName);
+            return "";
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return content.toString();
+    }
+
+    public IResource getTarget() {
+        return target;
     }
 
     @Override
@@ -518,7 +538,6 @@ public class TestGenerationJob extends Job {
         }
     }
 
-
     protected List<String> createCommand() throws CoreException {
         List<String> commands = new ArrayList<String>();
 
@@ -692,7 +711,6 @@ public class TestGenerationJob extends Job {
         return commands;
     }
 
-
     private void createIFolder(IFolder folder) throws CoreException {
         if (!folder.exists()) {
             createIFolder((IFolder) folder.getParent());
@@ -813,31 +831,6 @@ public class TestGenerationJob extends Job {
         String tmp = suiteClass.replace('.', File.separatorChar);
         String testClassFileName = new String(target.getProject().getLocation() + "/evosuite-tests/" + tmp + ".java");
         return testClassFileName;
-    }
-
-
-    public static String readFileToString(String fileName) {
-        StringBuilder content = new StringBuilder();
-        try {
-            Reader reader = new InputStreamReader(
-                    new FileInputStream(fileName), "utf-8");
-            BufferedReader in = new BufferedReader(reader);
-            try {
-                String str;
-                while ((str = in.readLine()) != null) {
-                    content.append(str);
-                    content.append("\n");
-                }
-            } finally {
-                in.close();
-            }
-        } catch (FileNotFoundException fnfe) {
-            System.out.println("File not found " + fileName);
-            return "";
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return content.toString();
     }
 
     public boolean isRunning() {

@@ -46,8 +46,6 @@ import java.util.concurrent.Executors;
  */
 public class LoggingUtils {
 
-    private static final Logger logger = LoggerFactory.getLogger(LoggingUtils.class);
-
     /**
      * Constant <code>DEFAULT_OUT</code>
      */
@@ -56,20 +54,7 @@ public class LoggingUtils {
      * Constant <code>DEFAULT_ERR</code>
      */
     public static final PrintStream DEFAULT_ERR = System.err;
-
     public static final String USE_DIFFERENT_LOGGING_XML_PARAMETER = "use_different_logback";
-
-    private static final String EVO_LOGGER = "evo_logger";
-
-    /**
-     * Constant <code>latestOut</code>
-     */
-    protected static PrintStream latestOut = null;
-    /**
-     * Constant <code>latestErr</code>
-     */
-    protected static PrintStream latestErr = null;
-
     /**
      * Constant <code>LOG_TARGET="log.target"</code>
      */
@@ -78,13 +63,20 @@ public class LoggingUtils {
      * Constant <code>LOG_LEVEL="log.level"</code>
      */
     public static final String LOG_LEVEL = "log.level";
-
+    private static final Logger logger = LoggerFactory.getLogger(LoggingUtils.class);
+    private static final String EVO_LOGGER = "evo_logger";
+    /**
+     * Constant <code>latestOut</code>
+     */
+    protected static PrintStream latestOut = null;
+    /**
+     * Constant <code>latestErr</code>
+     */
+    protected static PrintStream latestErr = null;
     private static volatile boolean alreadyMuted = false;
-
-    private ServerSocket serverSocket;
-
     private final ExecutorService logConnections = Executors.newSingleThreadExecutor();
     private final ExecutorService logHandler = Executors.newCachedThreadPool();
+    private ServerSocket serverSocket;
 
 
     /**
@@ -126,6 +118,129 @@ public class LoggingUtils {
      */
     public static Logger getEvoLogger() {
         return LoggerFactory.getLogger(EVO_LOGGER);
+    }
+
+    /**
+     * Redirect current System.out and System.err to a buffer
+     */
+    public static void muteCurrentOutAndErrStream() {
+        if (alreadyMuted) {
+            return;
+        }
+
+        ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+        PrintStream outStream = new PrintStream(byteStream);
+        latestOut = System.out;
+        latestErr = System.err;
+        System.setOut(outStream);
+        System.setErr(outStream);
+
+        alreadyMuted = true;
+    }
+
+    /**
+     * Allow again printing to previous streams that were muted
+     */
+    public static void restorePreviousOutAndErrStream() {
+        if (!alreadyMuted) {
+            return;
+        }
+        System.setOut(latestOut);
+        System.setErr(latestErr);
+        alreadyMuted = false;
+    }
+
+    /**
+     * Allow again printing to System.out and System.err
+     */
+    public static void restoreDefaultOutAndErrStream() {
+        System.setOut(DEFAULT_OUT);
+        System.setErr(DEFAULT_ERR);
+    }
+
+    /**
+     * If the application is using a SLF4 compliant logging framework, check
+     * if it has been configured. If so, keep the logging as it is.
+     * On the other hand, if no configuration/framework is used, then mute
+     * the default logging (Logback) of the EvoSuite modules.
+     */
+    public static void setLoggingForJUnit() {
+
+        if (Properties.ENABLE_ASSERTS_FOR_EVOSUITE) {
+            //if we are debugging, we don't want to switch off the logging
+            return;
+        }
+
+        LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+        if (isDefaultLoggingConfiguration(context)) {
+
+            Logger root = LoggerFactory.getLogger(PackageInfo.getEvoSuitePackage());
+            if (root != null && root instanceof ch.qos.logback.classic.Logger) {
+                ((ch.qos.logback.classic.Logger) root).setLevel(Level.OFF);
+            }
+        }
+    }
+
+    private static boolean isDefaultLoggingConfiguration(LoggerContext context) {
+        // TODO: Find better way to find out the default configuration
+        return context.getName().equals("default");
+    }
+
+    /**
+     * Load the EvoSuite xml configuration file for Logback, unless a
+     * non-default one is already in use. The file has to be on the classpath.
+     */
+    public static boolean loadLogbackForEvoSuite() {
+        LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+
+        boolean isOK = true;
+
+        // Only overrule default configurations
+        if (isDefaultLoggingConfiguration(context)) {
+            isOK = changeLogbackFile(getLogbackFileName());
+            StatusPrinter.printInCaseOfErrorsOrWarnings(context);
+        }
+        return isOK;
+    }
+
+    public static boolean changeLogbackFile(String resourceFilePath) {
+        Inputs.checkNull(resourceFilePath);
+        if (!resourceFilePath.endsWith(".xml")) {
+            throw new IllegalArgumentException("Logback file name does not terminate with '.xml'");
+        }
+
+        LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+        try {
+            JoranConfigurator configurator = new JoranConfigurator();
+            configurator.setContext(context);
+            final String xmlFileName = resourceFilePath;
+            InputStream f = null;
+            if (LoggingUtils.class.getClassLoader() != null) {
+                f = LoggingUtils.class.getClassLoader().getResourceAsStream(xmlFileName);
+            } else {
+                // If the classloader is null, then that means EvoSuite.class was loaded
+                // with the bootstrap classloader, so let's try that as well
+                f = ClassLoader.getSystemClassLoader().getResourceAsStream(xmlFileName);
+            }
+            if (f == null) {
+                String msg = xmlFileName + " not found on classpath";
+                System.err.println(msg);
+                logger.error(msg);
+                return false;
+            } else {
+                context.reset();
+                configurator.doConfigure(f);
+            }
+        } catch (JoranException je) {
+            // StatusPrinter will handle this
+            return false;
+        }
+
+        return true;
+    }
+
+    public static String getLogbackFileName() {
+        return System.getProperty(USE_DIFFERENT_LOGGING_XML_PARAMETER, "logback-evosuite.xml");
     }
 
     /**
@@ -238,130 +353,6 @@ public class LoggingUtils {
             }
             serverSocket = null;
         }
-    }
-
-    /**
-     * Redirect current System.out and System.err to a buffer
-     */
-    public static void muteCurrentOutAndErrStream() {
-        if (alreadyMuted) {
-            return;
-        }
-
-        ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-        PrintStream outStream = new PrintStream(byteStream);
-        latestOut = System.out;
-        latestErr = System.err;
-        System.setOut(outStream);
-        System.setErr(outStream);
-
-        alreadyMuted = true;
-    }
-
-    /**
-     * Allow again printing to previous streams that were muted
-     */
-    public static void restorePreviousOutAndErrStream() {
-        if (!alreadyMuted) {
-            return;
-        }
-        System.setOut(latestOut);
-        System.setErr(latestErr);
-        alreadyMuted = false;
-    }
-
-    /**
-     * Allow again printing to System.out and System.err
-     */
-    public static void restoreDefaultOutAndErrStream() {
-        System.setOut(DEFAULT_OUT);
-        System.setErr(DEFAULT_ERR);
-    }
-
-
-    /**
-     * If the application is using a SLF4 compliant logging framework, check
-     * if it has been configured. If so, keep the logging as it is.
-     * On the other hand, if no configuration/framework is used, then mute
-     * the default logging (Logback) of the EvoSuite modules.
-     */
-    public static void setLoggingForJUnit() {
-
-        if (Properties.ENABLE_ASSERTS_FOR_EVOSUITE) {
-            //if we are debugging, we don't want to switch off the logging
-            return;
-        }
-
-        LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
-        if (isDefaultLoggingConfiguration(context)) {
-
-            Logger root = LoggerFactory.getLogger(PackageInfo.getEvoSuitePackage());
-            if (root != null && root instanceof ch.qos.logback.classic.Logger) {
-                ((ch.qos.logback.classic.Logger) root).setLevel(Level.OFF);
-            }
-        }
-    }
-
-    private static boolean isDefaultLoggingConfiguration(LoggerContext context) {
-        // TODO: Find better way to find out the default configuration
-        return context.getName().equals("default");
-    }
-
-    /**
-     * Load the EvoSuite xml configuration file for Logback, unless a
-     * non-default one is already in use. The file has to be on the classpath.
-     */
-    public static boolean loadLogbackForEvoSuite() {
-        LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
-
-        boolean isOK = true;
-
-        // Only overrule default configurations
-        if (isDefaultLoggingConfiguration(context)) {
-            isOK = changeLogbackFile(getLogbackFileName());
-            StatusPrinter.printInCaseOfErrorsOrWarnings(context);
-        }
-        return isOK;
-    }
-
-    public static boolean changeLogbackFile(String resourceFilePath) {
-        Inputs.checkNull(resourceFilePath);
-        if (!resourceFilePath.endsWith(".xml")) {
-            throw new IllegalArgumentException("Logback file name does not terminate with '.xml'");
-        }
-
-        LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
-        try {
-            JoranConfigurator configurator = new JoranConfigurator();
-            configurator.setContext(context);
-            final String xmlFileName = resourceFilePath;
-            InputStream f = null;
-            if (LoggingUtils.class.getClassLoader() != null) {
-                f = LoggingUtils.class.getClassLoader().getResourceAsStream(xmlFileName);
-            } else {
-                // If the classloader is null, then that means EvoSuite.class was loaded
-                // with the bootstrap classloader, so let's try that as well
-                f = ClassLoader.getSystemClassLoader().getResourceAsStream(xmlFileName);
-            }
-            if (f == null) {
-                String msg = xmlFileName + " not found on classpath";
-                System.err.println(msg);
-                logger.error(msg);
-                return false;
-            } else {
-                context.reset();
-                configurator.doConfigure(f);
-            }
-        } catch (JoranException je) {
-            // StatusPrinter will handle this
-            return false;
-        }
-
-        return true;
-    }
-
-    public static String getLogbackFileName() {
-        return System.getProperty(USE_DIFFERENT_LOGGING_XML_PARAMETER, "logback-evosuite.xml");
     }
 
 }

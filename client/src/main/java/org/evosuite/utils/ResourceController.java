@@ -180,6 +180,15 @@ public class ResourceController<T extends Chromosome<T>> implements SearchListen
      * {@inheritDoc}
      */
     @Override
+    public void setLimit(long limit) {
+        // TODO Auto-generated method stub
+
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public boolean isFinished() {
         return stopComputation;
     }
@@ -190,15 +199,6 @@ public class ResourceController<T extends Chromosome<T>> implements SearchListen
     @Override
     public void reset() {
         stopComputation = false;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setLimit(long limit) {
-        // TODO Auto-generated method stub
-
     }
 
 }

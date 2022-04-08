@@ -58,9 +58,8 @@ public class MockSpinnerDateModel extends SpinnerDateModel implements OverrideMo
         cal.setTime((Date) getValue());
         cal.add(getCalendarField(), -1);
         Date prev = cal.getTime();
-        return ((getStart() == null) || (getStart() .compareTo(prev) <= 0)) ? prev : null;
+        return ((getStart() == null) || (getStart().compareTo(prev) <= 0)) ? prev : null;
     }
-
 
 
 }

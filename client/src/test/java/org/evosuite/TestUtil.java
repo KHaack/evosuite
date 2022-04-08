@@ -29,6 +29,10 @@ import java.lang.reflect.Method;
 public class TestUtil {
     private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(TestUtil.class);
 
+    private TestUtil() {
+        // private constructor
+    }
+
     public static void assertCorrectStart(Class<?> clazz) {
         String projectPrefix = clazz.getPackage().getName();
         Assert.assertEquals("Must start test with '-DDPROJECT_PREFIX=" + projectPrefix + "'.",
@@ -104,9 +108,5 @@ public class TestUtil {
             argClasses[idx] = args[idx].getClass();
         }
         return argClasses;
-    }
-
-    private TestUtil() {
-        // private constructor
     }
 }

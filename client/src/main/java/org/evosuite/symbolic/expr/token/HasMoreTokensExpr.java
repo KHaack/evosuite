@@ -46,6 +46,7 @@ public final class HasMoreTokensExpr extends AbstractExpression<Long> implements
 
     private static final long serialVersionUID = 2154812241163764621L;
     protected static Logger log = LoggerFactory.getLogger(HasMoreTokensExpr.class);
+    private final TokenizerExpr tokenizerExpr;
 
     public HasMoreTokensExpr(TokenizerExpr tokenizerExpr, Long con) {
         super(con, 1 + tokenizerExpr.getSize(), tokenizerExpr.containsSymbolicVariable());
@@ -56,8 +57,6 @@ public final class HasMoreTokensExpr extends AbstractExpression<Long> implements
             throw new ConstraintTooLongException(getSize());
         }
     }
-
-    private final TokenizerExpr tokenizerExpr;
 
     /**
      * {@inheritDoc}

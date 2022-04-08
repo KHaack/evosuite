@@ -70,39 +70,36 @@ public class TestCaseExecutor implements ThreadFactory {
 
     private static final PrintStream systemOut = System.out;
     private static final PrintStream systemErr = System.err;
-
-    private static TestCaseExecutor instance = null;
-
-    private ExecutorService executor;
-
-    private Thread currentThread = null;
-
-    private ThreadGroup threadGroup = null;
-
-    // private static ExecutorService executor =
-    // Executors.newCachedThreadPool();
-
-    private Set<ExecutionObserver> observers;
-
-    private final Set<Thread> stalledThreads = new HashSet<>();
-
     /**
      * Constant <code>timeExecuted=0</code>
      */
     public static long timeExecuted = 0;
-
     /**
      * Constant <code>testsExecuted=0</code>
      */
     public static int testsExecuted = 0;
+    private static TestCaseExecutor instance = null;
 
+    static {
+        PermissionStatistics.getInstance().setThreadGroupToMonitor(TEST_EXECUTION_THREAD_GROUP);
+    }
+
+    // private static ExecutorService executor =
+    // Executors.newCachedThreadPool();
+
+    private final Set<Thread> stalledThreads = new HashSet<>();
     /**
      * Used when we spawn a new thread to give a unique name
      */
     public volatile int threadCounter;
+    private ExecutorService executor;
+    private Thread currentThread = null;
+    private ThreadGroup threadGroup = null;
+    private Set<ExecutionObserver> observers;
 
-    static {
-        PermissionStatistics.getInstance().setThreadGroupToMonitor(TEST_EXECUTION_THREAD_GROUP);
+    private TestCaseExecutor() {
+        executor = Executors.newSingleThreadExecutor(this);
+        newObservers();
     }
 
     /**
@@ -145,24 +142,6 @@ public class TestCaseExecutor implements ThreadFactory {
         return result;
     }
 
-    private TestCaseExecutor() {
-        executor = Executors.newSingleThreadExecutor(this);
-        newObservers();
-    }
-
-    public static class TimeoutExceeded extends RuntimeException {
-        private static final long serialVersionUID = -5314228165430676893L;
-    }
-
-    /**
-     * <p>
-     * setup
-     * </p>
-     */
-    public void setup() {
-        // start own thread
-    }
-
     /**
      * <p>
      * pullDown
@@ -191,6 +170,15 @@ public class TestCaseExecutor implements ThreadFactory {
                 instance.executor = Executors.newSingleThreadExecutor(instance);
             }
         }
+    }
+
+    /**
+     * <p>
+     * setup
+     * </p>
+     */
+    public void setup() {
+        // start own thread
     }
 
     /**
@@ -239,6 +227,10 @@ public class TestCaseExecutor implements ThreadFactory {
 
     public Set<ExecutionObserver> getExecutionObservers() {
         return new LinkedHashSet<>(observers);
+    }
+
+    public void setExecutionObservers(Set<ExecutionObserver> observers) {
+        this.observers = observers;
     }
 
     private void resetObservers() {
@@ -539,8 +531,8 @@ public class TestCaseExecutor implements ThreadFactory {
         return currentThread;
     }
 
-    public void setExecutionObservers(Set<ExecutionObserver> observers) {
-        this.observers = observers;
+    public static class TimeoutExceeded extends RuntimeException {
+        private static final long serialVersionUID = -5314228165430676893L;
     }
 
 }

@@ -21,17 +21,10 @@ package org.evosuite.symbolic;
 
 public class ConstraintTypeCounter {
 
-    private final int[] countersByType = new int[8];
-
     private static final int INTEGER_CONSTRAINT_KEY = 0b001;
     private static final int REAL_CONSTRAINT_KEY = 0b010;
     private static final int STRING_CONSTRAINT_KEY = 0b100;
-
-    public void addNewConstraint(boolean isInteger, boolean isReal,
-                                 boolean isString) {
-        int key = getKey(isInteger, isReal, isString);
-        countersByType[key]++;
-    }
+    private final int[] countersByType = new int[8];
 
     private static int getKey(boolean isIntegerConstraint,
                               boolean isRealConstraint, boolean isStringConstraint) {
@@ -46,6 +39,12 @@ public class ConstraintTypeCounter {
             key = key | STRING_CONSTRAINT_KEY;
         }
         return key;
+    }
+
+    public void addNewConstraint(boolean isInteger, boolean isReal,
+                                 boolean isString) {
+        int key = getKey(isInteger, isReal, isString);
+        countersByType[key]++;
     }
 
     public void clear() {

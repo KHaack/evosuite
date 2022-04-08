@@ -281,6 +281,14 @@ public interface VariableReference extends Comparable<VariableReference>, Serial
     String getOriginalCode();
 
     /**
+     * Set the code fragment that defined this variable reference if imported
+     * from an existing test case.
+     *
+     * @param code The code fragment that defined this variable reference.
+     */
+    void setOriginalCode(String code);
+
+    /**
      * Set the actual object represented by this variable in a given scope
      *
      * @param scope The scope of the test case execution
@@ -289,14 +297,6 @@ public interface VariableReference extends Comparable<VariableReference>, Serial
      *                                                                the static init of a field)
      */
     void setObject(Scope scope, Object value) throws CodeUnderTestException;
-
-    /**
-     * Set the code fragment that defined this variable reference if imported
-     * from an existing test case.
-     *
-     * @param code The code fragment that defined this variable reference.
-     */
-    void setOriginalCode(String code);
 
     /**
      * {@inheritDoc}

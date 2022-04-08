@@ -37,14 +37,14 @@ public abstract class TestCVC4 {
         }
     }
 
-    @Before
-    public void checkCVC4() {
-        Assume.assumeTrue(Properties.CVC4_PATH != null);
-    }
-
     @AfterClass
     public static void restoreCVC4Path() {
         Properties.CVC4_PATH = DEFAULT_CVC4_PATH;
+    }
+
+    @Before
+    public void checkCVC4() {
+        Assume.assumeTrue(Properties.CVC4_PATH != null);
     }
 
 }

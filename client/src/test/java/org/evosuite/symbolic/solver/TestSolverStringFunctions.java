@@ -48,28 +48,6 @@ public abstract class TestSolverStringFunctions extends TestSolver {
         return tc.getDefaultTestCase();
     }
 
-    @Test
-    public void testStringLength() throws SecurityException, NoSuchMethodException, SolverTimeoutException {
-
-        DefaultTestCase tc = buildTestLength();
-        Collection<Constraint<?>> constraints = DefaultTestCaseConcolicExecutor.execute(tc);
-        Map<String, Object> solution = solve(getSolver(), constraints);
-
-    }
-
-    @Test
-    public void testNegativeLength() throws SecurityException, NoSuchMethodException, SolverTimeoutException {
-
-        IntegerConstraint newIntegerConstraint = new IntegerConstraint(
-                new StringUnaryToIntegerExpression(new StringVariable("var0", "01234"), Operator.LENGTH, (long) 5),
-                Comparator.LT, new IntegerConstant(0));
-
-        Collection<Constraint<?>> constraints = Collections.<Constraint<?>>singleton(newIntegerConstraint);
-
-        Map<String, Object> solution = solve(getSolver(), constraints);
-
-    }
-
     private static DefaultTestCase buildTestEquals() throws SecurityException, NoSuchMethodException {
         TestCaseBuilder tc = new TestCaseBuilder();
         VariableReference string0 = tc.appendStringPrimitive("Hello World");
@@ -178,6 +156,217 @@ public abstract class TestSolverStringFunctions extends TestSolver {
         return tc.getDefaultTestCase();
     }
 
+    private static DefaultTestCase buildTestCharAt() throws SecurityException, NoSuchMethodException {
+        TestCaseBuilder tc = new TestCaseBuilder();
+        VariableReference string0 = tc.appendStringPrimitive("XHello");
+
+        Method method = TestCaseStringCharAt.class.getMethod("test", String.class);
+        tc.appendMethod(null, method, string0);
+        return tc.getDefaultTestCase();
+    }
+
+    private static DefaultTestCase buildTestContains() throws SecurityException, NoSuchMethodException {
+        TestCaseBuilder tc = new TestCaseBuilder();
+        VariableReference string0 = tc.appendStringPrimitive("xxxHelloyyyyy");
+
+        Method method = TestCaseStringContains.class.getMethod("test", String.class);
+        tc.appendMethod(null, method, string0);
+        return tc.getDefaultTestCase();
+    }
+
+    private static DefaultTestCase buildTestTrim() throws SecurityException, NoSuchMethodException {
+        TestCaseBuilder tc = new TestCaseBuilder();
+        VariableReference string0 = tc.appendStringPrimitive("   Hello World   ");
+
+        Method method = TestCaseStringTrim.class.getMethod("test", String.class);
+        tc.appendMethod(null, method, string0);
+        return tc.getDefaultTestCase();
+    }
+
+    private static DefaultTestCase buildTestLowerCase() throws SecurityException, NoSuchMethodException {
+        TestCaseBuilder tc = new TestCaseBuilder();
+        VariableReference string0 = tc.appendStringPrimitive("Hello World");
+
+        Method method = TestCaseStringLowerCase.class.getMethod("test", String.class);
+        tc.appendMethod(null, method, string0);
+        return tc.getDefaultTestCase();
+    }
+
+    private static DefaultTestCase buildTestUpperCase() throws SecurityException, NoSuchMethodException {
+        TestCaseBuilder tc = new TestCaseBuilder();
+        VariableReference string0 = tc.appendStringPrimitive("Hello worlD");
+
+        Method method = TestCaseStringUpperCase.class.getMethod("test", String.class);
+        tc.appendMethod(null, method, string0);
+        return tc.getDefaultTestCase();
+    }
+
+    private static DefaultTestCase buildTestLastIndexOfChar() throws SecurityException, NoSuchMethodException {
+        TestCaseBuilder tc = new TestCaseBuilder();
+        VariableReference string0 = tc.appendStringPrimitive(".....Xello");
+
+        Method method = TestCaseStringLastIndexOfChar.class.getMethod("test", String.class);
+        tc.appendMethod(null, method, string0);
+        return tc.getDefaultTestCase();
+    }
+
+    private static DefaultTestCase buildTestLastIndexOfCharInt() throws SecurityException, NoSuchMethodException {
+        TestCaseBuilder tc = new TestCaseBuilder();
+        VariableReference string0 = tc.appendStringPrimitive("H....Xello");
+
+        Method method = TestCaseStringLastIndexOfCharInt.class.getMethod("test", String.class);
+        tc.appendMethod(null, method, string0);
+        return tc.getDefaultTestCase();
+    }
+
+    private static DefaultTestCase buildTestLastIndexOfStringInt() throws SecurityException, NoSuchMethodException {
+        TestCaseBuilder tc = new TestCaseBuilder();
+        VariableReference string0 = tc.appendStringPrimitive("H....Xello");
+
+        Method method = TestCaseStringLastIndexOfStringInt.class.getMethod("test", String.class);
+        tc.appendMethod(null, method, string0);
+        return tc.getDefaultTestCase();
+    }
+
+    private static DefaultTestCase buildTestLastIndexOfString() throws SecurityException, NoSuchMethodException {
+        TestCaseBuilder tc = new TestCaseBuilder();
+        VariableReference string0 = tc.appendStringPrimitive(".....Xello");
+
+        Method method = TestCaseStringLastIndexOfString.class.getMethod("test", String.class);
+        tc.appendMethod(null, method, string0);
+        return tc.getDefaultTestCase();
+    }
+
+    private static DefaultTestCase buildTestSubstring() throws SecurityException, NoSuchMethodException {
+        TestCaseBuilder tc = new TestCaseBuilder();
+        VariableReference string0 = tc.appendStringPrimitive("unhappy");
+
+        Method method = TestCaseStringSubstring.class.getMethod("test", String.class);
+        tc.appendMethod(null, method, string0);
+        return tc.getDefaultTestCase();
+    }
+
+    private static DefaultTestCase buildTestSubstringFromTo() throws SecurityException, NoSuchMethodException {
+        TestCaseBuilder tc = new TestCaseBuilder();
+        VariableReference string0 = tc.appendStringPrimitive("hamburger");
+
+        Method method = TestCaseStringSubstringFromTo.class.getMethod("test", String.class);
+        tc.appendMethod(null, method, string0);
+        return tc.getDefaultTestCase();
+    }
+
+    private static DefaultTestCase buildTestReplaceChar() throws SecurityException, NoSuchMethodException {
+        TestCaseBuilder tc = new TestCaseBuilder();
+        VariableReference string0 = tc.appendStringPrimitive("happx");
+
+        Method method = TestCaseStringReplaceChar.class.getMethod("test", String.class);
+        tc.appendMethod(null, method, string0);
+        return tc.getDefaultTestCase();
+    }
+
+    private static DefaultTestCase buildTestReplaceFirst() throws SecurityException, NoSuchMethodException {
+        TestCaseBuilder tc = new TestCaseBuilder();
+        VariableReference string0 = tc.appendStringPrimitive("happx");
+
+        Method method = TestCaseStringReplaceFirst.class.getMethod("test", String.class);
+        tc.appendMethod(null, method, string0);
+        return tc.getDefaultTestCase();
+    }
+
+    private static DefaultTestCase buildTestReplaceCharSequence() throws SecurityException, NoSuchMethodException {
+        TestCaseBuilder tc = new TestCaseBuilder();
+        VariableReference string0 = tc.appendStringPrimitive("happx");
+
+        Method method = TestCaseStringReplaceCharSequence.class.getMethod("test", String.class);
+        tc.appendMethod(null, method, string0);
+        return tc.getDefaultTestCase();
+    }
+
+    private static DefaultTestCase buildTestCompareTo() throws SecurityException, NoSuchMethodException {
+        TestCaseBuilder tc = new TestCaseBuilder();
+        VariableReference string0 = tc.appendStringPrimitive("Hello");
+
+        Method method = TestCaseStringCompareTo.class.getMethod("test", String.class);
+        tc.appendMethod(null, method, string0);
+        return tc.getDefaultTestCase();
+    }
+
+    private static DefaultTestCase buildTestStringToInteger() throws SecurityException, NoSuchMethodException {
+        TestCaseBuilder tc = new TestCaseBuilder();
+        VariableReference string0 = tc.appendStringPrimitive("1200");
+
+        Method method = TestCaseStringToInteger.class.getMethod("test", String.class);
+        tc.appendMethod(null, method, string0);
+        return tc.getDefaultTestCase();
+    }
+
+    private static DefaultTestCase buildTestIntegerToString() throws SecurityException, NoSuchMethodException {
+        TestCaseBuilder tc = new TestCaseBuilder();
+        VariableReference string0 = tc.appendIntPrimitive(1200);
+
+        Method method = TestCaseIntegerToString.class.getMethod("test", int.class);
+        tc.appendMethod(null, method, string0);
+        return tc.getDefaultTestCase();
+    }
+
+    private static DefaultTestCase buildTestAppendBoolean() throws SecurityException, NoSuchMethodException {
+        TestCaseBuilder tc = new TestCaseBuilder();
+        VariableReference string0 = tc.appendStringPrimitive("ha");
+
+        Method method = TestCaseStringAppendBoolean.class.getMethod("test", String.class);
+        tc.appendMethod(null, method, string0);
+        return tc.getDefaultTestCase();
+    }
+
+    private static DefaultTestCase buildTestAppendChar() throws SecurityException, NoSuchMethodException {
+        TestCaseBuilder tc = new TestCaseBuilder();
+        VariableReference string0 = tc.appendStringPrimitive("ha");
+
+        Method method = TestCaseStringAppendChar.class.getMethod("test", String.class);
+        tc.appendMethod(null, method, string0);
+        return tc.getDefaultTestCase();
+    }
+
+    private static DefaultTestCase buildTestAppendInteger() throws SecurityException, NoSuchMethodException {
+        TestCaseBuilder tc = new TestCaseBuilder();
+        VariableReference string0 = tc.appendStringPrimitive("ha");
+
+        Method method = TestCaseStringAppendInteger.class.getMethod("test", String.class);
+        tc.appendMethod(null, method, string0);
+        return tc.getDefaultTestCase();
+    }
+
+    private static DefaultTestCase buildTestAppendFloat() throws SecurityException, NoSuchMethodException {
+        TestCaseBuilder tc = new TestCaseBuilder();
+        VariableReference string0 = tc.appendStringPrimitive("ha");
+
+        Method method = TestCaseStringAppendFloat.class.getMethod("test", String.class);
+        tc.appendMethod(null, method, string0);
+        return tc.getDefaultTestCase();
+    }
+
+    @Test
+    public void testStringLength() throws SecurityException, NoSuchMethodException, SolverTimeoutException {
+
+        DefaultTestCase tc = buildTestLength();
+        Collection<Constraint<?>> constraints = DefaultTestCaseConcolicExecutor.execute(tc);
+        Map<String, Object> solution = solve(getSolver(), constraints);
+
+    }
+
+    @Test
+    public void testNegativeLength() throws SecurityException, NoSuchMethodException, SolverTimeoutException {
+
+        IntegerConstraint newIntegerConstraint = new IntegerConstraint(
+                new StringUnaryToIntegerExpression(new StringVariable("var0", "01234"), Operator.LENGTH, (long) 5),
+                Comparator.LT, new IntegerConstant(0));
+
+        Collection<Constraint<?>> constraints = Collections.<Constraint<?>>singleton(newIntegerConstraint);
+
+        Map<String, Object> solution = solve(getSolver(), constraints);
+
+    }
+
     @Test
     public void testStringEquals() throws SecurityException, NoSuchMethodException, SolverTimeoutException {
 
@@ -231,30 +420,12 @@ public abstract class TestSolverStringFunctions extends TestSolver {
 
     }
 
-    private static DefaultTestCase buildTestCharAt() throws SecurityException, NoSuchMethodException {
-        TestCaseBuilder tc = new TestCaseBuilder();
-        VariableReference string0 = tc.appendStringPrimitive("XHello");
-
-        Method method = TestCaseStringCharAt.class.getMethod("test", String.class);
-        tc.appendMethod(null, method, string0);
-        return tc.getDefaultTestCase();
-    }
-
     @Test
     public void testStringCharAt() throws SecurityException, NoSuchMethodException, SolverTimeoutException {
         DefaultTestCase tc = buildTestCharAt();
         Collection<Constraint<?>> constraints = DefaultTestCaseConcolicExecutor.execute(tc);
         Map<String, Object> solution = solve(getSolver(), constraints);
 
-    }
-
-    private static DefaultTestCase buildTestContains() throws SecurityException, NoSuchMethodException {
-        TestCaseBuilder tc = new TestCaseBuilder();
-        VariableReference string0 = tc.appendStringPrimitive("xxxHelloyyyyy");
-
-        Method method = TestCaseStringContains.class.getMethod("test", String.class);
-        tc.appendMethod(null, method, string0);
-        return tc.getDefaultTestCase();
     }
 
     @Test
@@ -303,33 +474,6 @@ public abstract class TestSolverStringFunctions extends TestSolver {
 
     }
 
-    private static DefaultTestCase buildTestTrim() throws SecurityException, NoSuchMethodException {
-        TestCaseBuilder tc = new TestCaseBuilder();
-        VariableReference string0 = tc.appendStringPrimitive("   Hello World   ");
-
-        Method method = TestCaseStringTrim.class.getMethod("test", String.class);
-        tc.appendMethod(null, method, string0);
-        return tc.getDefaultTestCase();
-    }
-
-    private static DefaultTestCase buildTestLowerCase() throws SecurityException, NoSuchMethodException {
-        TestCaseBuilder tc = new TestCaseBuilder();
-        VariableReference string0 = tc.appendStringPrimitive("Hello World");
-
-        Method method = TestCaseStringLowerCase.class.getMethod("test", String.class);
-        tc.appendMethod(null, method, string0);
-        return tc.getDefaultTestCase();
-    }
-
-    private static DefaultTestCase buildTestUpperCase() throws SecurityException, NoSuchMethodException {
-        TestCaseBuilder tc = new TestCaseBuilder();
-        VariableReference string0 = tc.appendStringPrimitive("Hello worlD");
-
-        Method method = TestCaseStringUpperCase.class.getMethod("test", String.class);
-        tc.appendMethod(null, method, string0);
-        return tc.getDefaultTestCase();
-    }
-
     @Test
     public void testStringTrim() throws SecurityException, NoSuchMethodException, SolverTimeoutException {
 
@@ -375,42 +519,6 @@ public abstract class TestSolverStringFunctions extends TestSolver {
 
     }
 
-    private static DefaultTestCase buildTestLastIndexOfChar() throws SecurityException, NoSuchMethodException {
-        TestCaseBuilder tc = new TestCaseBuilder();
-        VariableReference string0 = tc.appendStringPrimitive(".....Xello");
-
-        Method method = TestCaseStringLastIndexOfChar.class.getMethod("test", String.class);
-        tc.appendMethod(null, method, string0);
-        return tc.getDefaultTestCase();
-    }
-
-    private static DefaultTestCase buildTestLastIndexOfCharInt() throws SecurityException, NoSuchMethodException {
-        TestCaseBuilder tc = new TestCaseBuilder();
-        VariableReference string0 = tc.appendStringPrimitive("H....Xello");
-
-        Method method = TestCaseStringLastIndexOfCharInt.class.getMethod("test", String.class);
-        tc.appendMethod(null, method, string0);
-        return tc.getDefaultTestCase();
-    }
-
-    private static DefaultTestCase buildTestLastIndexOfStringInt() throws SecurityException, NoSuchMethodException {
-        TestCaseBuilder tc = new TestCaseBuilder();
-        VariableReference string0 = tc.appendStringPrimitive("H....Xello");
-
-        Method method = TestCaseStringLastIndexOfStringInt.class.getMethod("test", String.class);
-        tc.appendMethod(null, method, string0);
-        return tc.getDefaultTestCase();
-    }
-
-    private static DefaultTestCase buildTestLastIndexOfString() throws SecurityException, NoSuchMethodException {
-        TestCaseBuilder tc = new TestCaseBuilder();
-        VariableReference string0 = tc.appendStringPrimitive(".....Xello");
-
-        Method method = TestCaseStringLastIndexOfString.class.getMethod("test", String.class);
-        tc.appendMethod(null, method, string0);
-        return tc.getDefaultTestCase();
-    }
-
     @Test
     public void testStringLastIndexOfChar() throws SecurityException, NoSuchMethodException, SolverTimeoutException {
 
@@ -448,24 +556,6 @@ public abstract class TestSolverStringFunctions extends TestSolver {
 
     }
 
-    private static DefaultTestCase buildTestSubstring() throws SecurityException, NoSuchMethodException {
-        TestCaseBuilder tc = new TestCaseBuilder();
-        VariableReference string0 = tc.appendStringPrimitive("unhappy");
-
-        Method method = TestCaseStringSubstring.class.getMethod("test", String.class);
-        tc.appendMethod(null, method, string0);
-        return tc.getDefaultTestCase();
-    }
-
-    private static DefaultTestCase buildTestSubstringFromTo() throws SecurityException, NoSuchMethodException {
-        TestCaseBuilder tc = new TestCaseBuilder();
-        VariableReference string0 = tc.appendStringPrimitive("hamburger");
-
-        Method method = TestCaseStringSubstringFromTo.class.getMethod("test", String.class);
-        tc.appendMethod(null, method, string0);
-        return tc.getDefaultTestCase();
-    }
-
     @Test
     public void testStringSubstring() throws SecurityException, NoSuchMethodException, SolverTimeoutException {
 
@@ -482,33 +572,6 @@ public abstract class TestSolverStringFunctions extends TestSolver {
         Collection<Constraint<?>> constraints = DefaultTestCaseConcolicExecutor.execute(tc);
         Map<String, Object> solution = solve(getSolver(), constraints);
 
-    }
-
-    private static DefaultTestCase buildTestReplaceChar() throws SecurityException, NoSuchMethodException {
-        TestCaseBuilder tc = new TestCaseBuilder();
-        VariableReference string0 = tc.appendStringPrimitive("happx");
-
-        Method method = TestCaseStringReplaceChar.class.getMethod("test", String.class);
-        tc.appendMethod(null, method, string0);
-        return tc.getDefaultTestCase();
-    }
-
-    private static DefaultTestCase buildTestReplaceFirst() throws SecurityException, NoSuchMethodException {
-        TestCaseBuilder tc = new TestCaseBuilder();
-        VariableReference string0 = tc.appendStringPrimitive("happx");
-
-        Method method = TestCaseStringReplaceFirst.class.getMethod("test", String.class);
-        tc.appendMethod(null, method, string0);
-        return tc.getDefaultTestCase();
-    }
-
-    private static DefaultTestCase buildTestReplaceCharSequence() throws SecurityException, NoSuchMethodException {
-        TestCaseBuilder tc = new TestCaseBuilder();
-        VariableReference string0 = tc.appendStringPrimitive("happx");
-
-        Method method = TestCaseStringReplaceCharSequence.class.getMethod("test", String.class);
-        tc.appendMethod(null, method, string0);
-        return tc.getDefaultTestCase();
     }
 
     @Test
@@ -539,15 +602,6 @@ public abstract class TestSolverStringFunctions extends TestSolver {
 
     }
 
-    private static DefaultTestCase buildTestCompareTo() throws SecurityException, NoSuchMethodException {
-        TestCaseBuilder tc = new TestCaseBuilder();
-        VariableReference string0 = tc.appendStringPrimitive("Hello");
-
-        Method method = TestCaseStringCompareTo.class.getMethod("test", String.class);
-        tc.appendMethod(null, method, string0);
-        return tc.getDefaultTestCase();
-    }
-
     @Test
     public void testStringCompareTo() throws SecurityException, NoSuchMethodException, SolverTimeoutException {
 
@@ -555,15 +609,6 @@ public abstract class TestSolverStringFunctions extends TestSolver {
         Collection<Constraint<?>> constraints = DefaultTestCaseConcolicExecutor.execute(tc);
         Map<String, Object> solution = solve(getSolver(), constraints);
 
-    }
-
-    private static DefaultTestCase buildTestStringToInteger() throws SecurityException, NoSuchMethodException {
-        TestCaseBuilder tc = new TestCaseBuilder();
-        VariableReference string0 = tc.appendStringPrimitive("1200");
-
-        Method method = TestCaseStringToInteger.class.getMethod("test", String.class);
-        tc.appendMethod(null, method, string0);
-        return tc.getDefaultTestCase();
     }
 
     @Test
@@ -582,51 +627,6 @@ public abstract class TestSolverStringFunctions extends TestSolver {
         Collection<Constraint<?>> constraints = DefaultTestCaseConcolicExecutor.execute(tc);
         Map<String, Object> solution = solve(getSolver(), constraints);
 
-    }
-
-    private static DefaultTestCase buildTestIntegerToString() throws SecurityException, NoSuchMethodException {
-        TestCaseBuilder tc = new TestCaseBuilder();
-        VariableReference string0 = tc.appendIntPrimitive(1200);
-
-        Method method = TestCaseIntegerToString.class.getMethod("test", int.class);
-        tc.appendMethod(null, method, string0);
-        return tc.getDefaultTestCase();
-    }
-
-    private static DefaultTestCase buildTestAppendBoolean() throws SecurityException, NoSuchMethodException {
-        TestCaseBuilder tc = new TestCaseBuilder();
-        VariableReference string0 = tc.appendStringPrimitive("ha");
-
-        Method method = TestCaseStringAppendBoolean.class.getMethod("test", String.class);
-        tc.appendMethod(null, method, string0);
-        return tc.getDefaultTestCase();
-    }
-
-    private static DefaultTestCase buildTestAppendChar() throws SecurityException, NoSuchMethodException {
-        TestCaseBuilder tc = new TestCaseBuilder();
-        VariableReference string0 = tc.appendStringPrimitive("ha");
-
-        Method method = TestCaseStringAppendChar.class.getMethod("test", String.class);
-        tc.appendMethod(null, method, string0);
-        return tc.getDefaultTestCase();
-    }
-
-    private static DefaultTestCase buildTestAppendInteger() throws SecurityException, NoSuchMethodException {
-        TestCaseBuilder tc = new TestCaseBuilder();
-        VariableReference string0 = tc.appendStringPrimitive("ha");
-
-        Method method = TestCaseStringAppendInteger.class.getMethod("test", String.class);
-        tc.appendMethod(null, method, string0);
-        return tc.getDefaultTestCase();
-    }
-
-    private static DefaultTestCase buildTestAppendFloat() throws SecurityException, NoSuchMethodException {
-        TestCaseBuilder tc = new TestCaseBuilder();
-        VariableReference string0 = tc.appendStringPrimitive("ha");
-
-        Method method = TestCaseStringAppendFloat.class.getMethod("test", String.class);
-        tc.appendMethod(null, method, string0);
-        return tc.getDefaultTestCase();
     }
 
     @Test

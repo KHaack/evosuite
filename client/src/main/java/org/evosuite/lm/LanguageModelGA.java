@@ -37,12 +37,9 @@ public class LanguageModelGA extends LanguageModelSearch {
     private static final double CROSSOVER_RATE = 0.8;
     private static final double ELITIST_RATE = 0.3;
     private static final double REFILL_LEVEL = 1;
-
-    private HashSet<Chromosome> population;
-
     private static final int POPULATION_SIZE = 20;
-
     private static final Logger logger = LoggerFactory.getLogger(LanguageModelGA.class);
+    private HashSet<Chromosome> population;
 
 
     public LanguageModelGA(ConstantValue constantValue, ValueMinimizer.Minimization objective) {

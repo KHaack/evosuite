@@ -43,25 +43,20 @@ public class OnlyBranchCoverageSuiteFitness extends TestSuiteFitnessFunction {
     private static final long serialVersionUID = 2991632394620406243L;
 
     private final static Logger logger = LoggerFactory.getLogger(TestSuiteFitnessFunction.class);
-
-    // Coverage targets
-    public int totalBranches;
-    public int totalGoals;
     private final Set<Integer> branchesId;
-
-    // Some stuff for debug output
-    public int maxCoveredBranches = 0;
-    public double bestFitness = Double.MAX_VALUE;
-
     // Each test gets a set of distinct covered goals, these are mapped by branch id
     private final Map<Integer, TestFitnessFunction> branchCoverageTrueMap = new LinkedHashMap<>();
     private final Map<Integer, TestFitnessFunction> branchCoverageFalseMap = new LinkedHashMap<>();
-
     private final Set<Integer> toRemoveBranchesT = new LinkedHashSet<>();
     private final Set<Integer> toRemoveBranchesF = new LinkedHashSet<>();
-
     private final Set<Integer> removedBranchesT = new LinkedHashSet<>();
     private final Set<Integer> removedBranchesF = new LinkedHashSet<>();
+    // Coverage targets
+    public int totalBranches;
+    public int totalGoals;
+    // Some stuff for debug output
+    public int maxCoveredBranches = 0;
+    public double bestFitness = Double.MAX_VALUE;
 
 
     /**

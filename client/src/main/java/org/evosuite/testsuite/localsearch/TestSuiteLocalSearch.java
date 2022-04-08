@@ -62,20 +62,6 @@ public class TestSuiteLocalSearch implements LocalSearch<TestSuiteChromosome> {
     private static final Logger logger = LoggerFactory.getLogger(TestSuiteLocalSearch.class);
 
     /**
-     * Updates the given list of fitness functions using for the individual
-     * passed as a parameter
-     *
-     * @param individual       an individual
-     * @param fitnessFunctions the list of fitness functions to be updated
-     */
-    private void updateFitness(TestSuiteChromosome individual,
-                               List<FitnessFunction<TestSuiteChromosome>> fitnessFunctions) {
-        for (FitnessFunction<TestSuiteChromosome> ff : fitnessFunctions) {
-            ff.getFitness(individual);
-        }
-    }
-
-    /**
      * Decides the kind of local search that will be applied to the Test Suite.
      *
      * @return a <code>TestSuiteLocalSearch</code> instance to use for local
@@ -272,6 +258,45 @@ public class TestSuiteLocalSearch implements LocalSearch<TestSuiteChromosome> {
     }
 
     /**
+     * Selects the type of local search according to the
+     * <code>LOCAL_SEARCH_DSE</code> and the <code>DSE_PROBABILITY</code>
+     * properties.
+     *
+     * @return the type of Local Search to be applied
+     */
+    private static LocalSearchSuiteType chooseLocalSearchSuiteType() {
+
+        final LocalSearchSuiteType localSearchType;
+        if (Properties.DSE_PROBABILITY <= 0.0) {
+            localSearchType = LocalSearchSuiteType.ALWAYS_AVM;
+        } else if (Properties.LOCAL_SEARCH_DSE == Properties.DSEType.SUITE) {
+            if (Randomness.nextDouble() <= Properties.DSE_PROBABILITY) {
+                localSearchType = LocalSearchSuiteType.ALWAYS_DSE;
+            } else {
+                localSearchType = LocalSearchSuiteType.ALWAYS_AVM;
+            }
+        } else {
+            assert (Properties.LOCAL_SEARCH_DSE == Properties.DSEType.TEST);
+            localSearchType = LocalSearchSuiteType.DSE_AND_AVM;
+        }
+        return localSearchType;
+    }
+
+    /**
+     * Updates the given list of fitness functions using for the individual
+     * passed as a parameter
+     *
+     * @param individual       an individual
+     * @param fitnessFunctions the list of fitness functions to be updated
+     */
+    private void updateFitness(TestSuiteChromosome individual,
+                               List<FitnessFunction<TestSuiteChromosome>> fitnessFunctions) {
+        for (FitnessFunction<TestSuiteChromosome> ff : fitnessFunctions) {
+            ff.getFitness(individual);
+        }
+    }
+
+    /**
      * Ensure that all branches are executed twice
      */
     private void restoreBranchCoverage(TestSuiteChromosome individual) {
@@ -378,54 +403,6 @@ public class TestSuiteLocalSearch implements LocalSearch<TestSuiteChromosome> {
             suite.addTests(originalTests);
         }
         return hasImproved;
-    }
-
-
-    /**
-     * This enumerate represents which type of local search will be applied on
-     * the suite
-     *
-     * @author galeotti
-     */
-    enum LocalSearchSuiteType {
-        /**
-         * Always apply DSE on all test cases in the suite
-         */
-        ALWAYS_DSE,
-        /**
-         * Always apply AVM on all test cases in the suite
-         */
-        ALWAYS_AVM,
-        /**
-         * Apply AVM/DSE on a test case according to the
-         * <code>DSE_PROBABILITY</code>
-         */
-        DSE_AND_AVM
-    }
-
-    /**
-     * Selects the type of local search according to the
-     * <code>LOCAL_SEARCH_DSE</code> and the <code>DSE_PROBABILITY</code>
-     * properties.
-     *
-     * @return the type of Local Search to be applied
-     */
-    private static LocalSearchSuiteType chooseLocalSearchSuiteType() {
-
-        final LocalSearchSuiteType localSearchType;
-        if (Properties.DSE_PROBABILITY <= 0.0) {
-            localSearchType = LocalSearchSuiteType.ALWAYS_AVM;
-        } else if (Properties.LOCAL_SEARCH_DSE == Properties.DSEType.SUITE) {
-            if (Randomness.nextDouble() <= Properties.DSE_PROBABILITY) {
-                localSearchType = LocalSearchSuiteType.ALWAYS_DSE;
-            } else {
-                localSearchType = LocalSearchSuiteType.ALWAYS_AVM;
-            }
-        } else {
-            assert (Properties.LOCAL_SEARCH_DSE == Properties.DSEType.TEST);
-            localSearchType = LocalSearchSuiteType.DSE_AND_AVM;
-        }
-        return localSearchType;
     }
 
     /**
@@ -535,6 +512,28 @@ public class TestSuiteLocalSearch implements LocalSearch<TestSuiteChromosome> {
         boolean improved = dseTestCaseLocalSearch.doSearch(test, testSuiteObject);
 
         return improved;
+    }
+
+    /**
+     * This enumerate represents which type of local search will be applied on
+     * the suite
+     *
+     * @author galeotti
+     */
+    enum LocalSearchSuiteType {
+        /**
+         * Always apply DSE on all test cases in the suite
+         */
+        ALWAYS_DSE,
+        /**
+         * Always apply AVM on all test cases in the suite
+         */
+        ALWAYS_AVM,
+        /**
+         * Apply AVM/DSE on a test case according to the
+         * <code>DSE_PROBABILITY</code>
+         */
+        DSE_AND_AVM
     }
 
 }

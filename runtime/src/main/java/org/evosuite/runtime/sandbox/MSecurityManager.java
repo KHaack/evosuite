@@ -79,21 +79,32 @@ import java.util.logging.LoggingPermission;
  */
 public class MSecurityManager extends SecurityManager {
 
-    private static final Logger logger = LoggerFactory.getLogger(MSecurityManager.class);
+    /**
+     * Pattern name used by the mock of {@code java.uitl.logging.FileHandler}
+     */
+    public static final String FILE_HANDLER_NAME_PATTERN = ".tmp_file_needed_by_mock_of_FileHandler";
 
 
     /*
      *  these need to be "static final" as they should be determined
      *  only once before the security manager is actually on
      */
-
+    private static final Logger logger = LoggerFactory.getLogger(MSecurityManager.class);
     private static final String USER_DIR = System.getProperty("user.home");
-
     private static final String JAVA_VERSION = System.getProperty("java.version");
-
     private static final String AWT_HEADLESS = System.getProperty("java.awt.headless");
-
     private static final String LOCALHOST_NAME;
+    /**
+     * Needed for the VFS
+     */
+    private static final File tmpFile;
+    /**
+     * Name of all the methods in the MasterNodeRemote interface.
+     * This is used to allow RMI communications even on non-privileged threads,
+     * but only if coming from EvoSuite (and not from SUT)
+     */
+    private static Set<String> masterNodeRemoteMethodNames;
+    private static boolean runningClientOnThread = false;
 
     static {
         String tmp = null;
@@ -103,23 +114,6 @@ public class MSecurityManager extends SecurityManager {
         }
         LOCALHOST_NAME = tmp;
     }
-
-    /**
-     * Needed for the VFS
-     */
-    private static final File tmpFile;
-
-    /**
-     * Pattern name used by the mock of {@code java.uitl.logging.FileHandler}
-     */
-    public static final String FILE_HANDLER_NAME_PATTERN = ".tmp_file_needed_by_mock_of_FileHandler";
-
-    /**
-     * Set of files that will need to be deleted with a "deleteOnExit".
-     * Note: we need to mark for deletion _after_ test execution, otherwise
-     * we can end up in a infinite recursion.
-     */
-    private final Set<File> filesToDelete;
 
     static {
         File tmp = null;
@@ -139,36 +133,19 @@ public class MSecurityManager extends SecurityManager {
         boolean forceLoading = RuntimeSettings.mockJVMNonDeterminism;
     }
 
-    private final PermissionStatistics statistics = PermissionStatistics.getInstance();
-
-    private final SecurityManager defaultManager;
-
     /**
-     * Is EvoSuite executing a test case?
+     * Set of files that will need to be deleted with a "deleteOnExit".
+     * Note: we need to mark for deletion _after_ test execution, otherwise
+     * we can end up in a infinite recursion.
      */
-    private volatile boolean executingTestCase;
-
-
+    private final Set<File> filesToDelete;
+    private final PermissionStatistics statistics = PermissionStatistics.getInstance();
+    private final SecurityManager defaultManager;
     /**
      * Data structure containing all the (EvoSuite) threads that do not need to
      * go through the same sandbox as the SUT threads
      */
     private final Set<Thread> privilegedThreads;
-
-    /**
-     * Check whether a privileged thread should use the sandbox as for SUT code
-     */
-    private volatile Thread privilegedThreadToIgnore;
-
-    /**
-     * Name of all the methods in the MasterNodeRemote interface.
-     * This is used to allow RMI communications even on non-privileged threads,
-     * but only if coming from EvoSuite (and not from SUT)
-     */
-    private static Set<String> masterNodeRemoteMethodNames;
-
-    private static boolean runningClientOnThread = false;
-
     /**
      * It can happen that EvoSuite encounters permissions it does not recognize.
      * This could be due to a bug in EvoSuite, or a custom permission of the SUT.
@@ -176,6 +153,14 @@ public class MSecurityManager extends SecurityManager {
      * However, logging each single access might flood the logs
      */
     private final Set<Permission> unrecognizedPermissions;
+    /**
+     * Is EvoSuite executing a test case?
+     */
+    private volatile boolean executingTestCase;
+    /**
+     * Check whether a privileged thread should use the sandbox as for SUT code
+     */
+    private volatile Thread privilegedThreadToIgnore;
 
     /**
      * Create a custom security manager for the SUT. The thread that create this
@@ -207,11 +192,6 @@ public class MSecurityManager extends SecurityManager {
         masterNodeRemoteMethodNames = Collections.unmodifiableSet(names);
     }
 
-    public Set<Thread> getPrivilegedThreads() {
-        Set<Thread> set = new LinkedHashSet<>(privilegedThreads);
-        return set;
-    }
-
     public static void setRunningClientOnThread(boolean runningClientOnThread) {
         MSecurityManager.runningClientOnThread = runningClientOnThread;
     }
@@ -226,6 +206,11 @@ public class MSecurityManager extends SecurityManager {
      */
     public static File getRealTmpFile() {
         return tmpFile;
+    }
+
+    public Set<Thread> getPrivilegedThreads() {
+        Set<Thread> set = new LinkedHashSet<>(privilegedThreads);
+        return set;
     }
 
     /**

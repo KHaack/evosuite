@@ -40,10 +40,8 @@ import static org.evosuite.coverage.io.IOCoverageConstants.*;
  */
 public class OutputCoverageTestFitness extends TestFitnessFunction {
 
-    private static final long serialVersionUID = 1383064944691491355L;
-
     protected static final Logger logger = LoggerFactory.getLogger(OutputCoverageTestFitness.class);
-
+    private static final long serialVersionUID = 1383064944691491355L;
     /**
      * Target goal
      */
@@ -69,6 +67,57 @@ public class OutputCoverageTestFitness extends TestFitnessFunction {
             OutputObserver observer = new OutputObserver();
             executor.addObserver(observer);
             logger.info("Added observer for output coverage");
+        }
+    }
+
+    /*
+     * TODO: Move somewhere else into a utility class
+     */
+    private static Class<?> getClassForName(String type) {
+        try {
+            switch (type) {
+                case "boolean":
+                    return Boolean.TYPE;
+                case "byte":
+                    return Byte.TYPE;
+                case "char":
+                    return Character.TYPE;
+                case "double":
+                    return Double.TYPE;
+                case "float":
+                    return Float.TYPE;
+                case "int":
+                    return Integer.TYPE;
+                case "long":
+                    return Long.TYPE;
+                case "short":
+                    return Short.TYPE;
+                case "String":
+                case "Boolean":
+                case "Short":
+                case "Long":
+                case "Integer":
+                case "Float":
+                case "Double":
+                case "Byte":
+                case "Character":
+                    return Class.forName("java.lang." + type);
+            }
+
+            //			if(type.endsWith(";") && ! type.startsWith("["))
+            //			{
+            //				type = type.replaceFirst("L", "");
+            //				type = type.replace(";", "");
+            //			}
+
+            if (type.endsWith("[]")) {
+                type = type.replace("[]", "");
+                return Class.forName("[L" + type + ";");
+            } else {
+                return Class.forName(type);
+            }
+        } catch (final ClassNotFoundException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -269,56 +318,5 @@ public class OutputCoverageTestFitness extends TestFitnessFunction {
     @Override
     public String getTargetMethod() {
         return getMethod();
-    }
-
-    /*
-     * TODO: Move somewhere else into a utility class
-     */
-    private static Class<?> getClassForName(String type) {
-        try {
-            switch (type) {
-                case "boolean":
-                    return Boolean.TYPE;
-                case "byte":
-                    return Byte.TYPE;
-                case "char":
-                    return Character.TYPE;
-                case "double":
-                    return Double.TYPE;
-                case "float":
-                    return Float.TYPE;
-                case "int":
-                    return Integer.TYPE;
-                case "long":
-                    return Long.TYPE;
-                case "short":
-                    return Short.TYPE;
-                case "String":
-                case "Boolean":
-                case "Short":
-                case "Long":
-                case "Integer":
-                case "Float":
-                case "Double":
-                case "Byte":
-                case "Character":
-                    return Class.forName("java.lang." + type);
-            }
-
-            //			if(type.endsWith(";") && ! type.startsWith("["))
-            //			{
-            //				type = type.replaceFirst("L", "");
-            //				type = type.replace(";", "");
-            //			}
-
-            if (type.endsWith("[]")) {
-                type = type.replace("[]", "");
-                return Class.forName("[L" + type + ";");
-            } else {
-                return Class.forName(type);
-            }
-        } catch (final ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
     }
 }

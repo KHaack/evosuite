@@ -48,20 +48,17 @@ import java.util.Set;
 public class ContractChecker extends ExecutionObserver {
 
     private static final Logger logger = LoggerFactory.getLogger(ContractChecker.class);
-
-    private final Set<Contract> contracts = new HashSet<>();
+    private static final Set<Contract> invalid = new HashSet<>();
 
     /*
      * Maybe it was not a problem, but it all depends on when Properties.CHECK_CONTRACTS_END
      * is initialized. Maybe best to just call it directly
      */
     //private static final boolean checkAtEnd = Properties.CHECK_CONTRACTS_END;
-
-    private static final Set<Contract> invalid = new HashSet<>();
+    private static boolean active = true;
 
     //private static boolean valid = true;
-
-    private static boolean active = true;
+    private final Set<Contract> contracts = new HashSet<>();
 
     /**
      * <p>
@@ -87,6 +84,33 @@ public class ContractChecker extends ExecutionObserver {
 
         loadJUnitTheories();
     }
+
+    /**
+     * <p>
+     * Setter for the field <code>active</code>.
+     * </p>
+     *
+     * @param isActive a boolean.
+     */
+    public static void setActive(boolean isActive) {
+        active = isActive;
+    }
+
+    /**
+     * Set the current test case, on which we check oracles while it is executed
+     *
+     * @param test a {@link org.evosuite.testcase.TestCase} object.
+     */
+    public static void currentTest(TestCase test) {
+        currentTest = test;
+        //ContractChecker.valid = true;
+        ContractChecker.invalid.clear();
+        // TODO: Keep track of objects that raised an exception, and exclude them from contract checking
+    }
+
+    /* (non-Javadoc)
+     * @see org.evosuite.testcase.ExecutionObserver#output(int, java.lang.String)
+     */
 
     private void loadJUnitTheories() {
         if (Properties.JUNIT_THEORIES.isEmpty())
@@ -135,39 +159,12 @@ public class ContractChecker extends ExecutionObserver {
     }
 
     /**
-     * <p>
-     * Setter for the field <code>active</code>.
-     * </p>
-     *
-     * @param isActive a boolean.
-     */
-    public static void setActive(boolean isActive) {
-        active = isActive;
-    }
-
-    /* (non-Javadoc)
-     * @see org.evosuite.testcase.ExecutionObserver#output(int, java.lang.String)
-     */
-
-    /**
      * {@inheritDoc}
      */
     @Override
     public void output(int position, String output) {
         // TODO Auto-generated method stub
 
-    }
-
-    /**
-     * Set the current test case, on which we check oracles while it is executed
-     *
-     * @param test a {@link org.evosuite.testcase.TestCase} object.
-     */
-    public static void currentTest(TestCase test) {
-        currentTest = test;
-        //ContractChecker.valid = true;
-        ContractChecker.invalid.clear();
-        // TODO: Keep track of objects that raised an exception, and exclude them from contract checking
     }
 
     /* (non-Javadoc)

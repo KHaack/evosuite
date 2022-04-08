@@ -24,15 +24,15 @@ package com.examples.with.different.packagename.fm;
  */
 public class SimpleFM_GenericsAsInput {
 
-    public interface Foo<T> {
-        boolean isValid(T t);
-    }
-
     public void bar(Foo<String> bar) {
         if (bar.isValid("A")) {
             System.out.println("true");
         } else {
             System.out.println("false");
         }
+    }
+
+    public interface Foo<T> {
+        boolean isValid(T t);
     }
 }

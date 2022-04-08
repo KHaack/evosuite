@@ -59,19 +59,14 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class DefaultTestCase implements TestCase, Serializable {
 
-    private static final long serialVersionUID = -689512549778944250L;
-
-    private static final Logger logger = LoggerFactory.getLogger(DefaultTestCase.class);
-
     protected static final AtomicInteger idGenerator = new AtomicInteger(0);
-
-    private final AccessedEnvironment accessedEnvironment = new AccessedEnvironment();
-
+    private static final long serialVersionUID = -689512549778944250L;
+    private static final Logger logger = LoggerFactory.getLogger(DefaultTestCase.class);
     /**
      * The statements
      */
     protected final ListenableList<Statement> statements;
-
+    private final AccessedEnvironment accessedEnvironment = new AccessedEnvironment();
     /**
      * Coverage goals this test covers
      */
@@ -87,6 +82,7 @@ public class DefaultTestCase implements TestCase, Serializable {
     private boolean unstable = false;
 
     private int id;
+    private transient ClassLoader changedClassLoader = null;
 
     /**
      * Constructs an empty test case, i.e., initially containing no statements.
@@ -96,12 +92,16 @@ public class DefaultTestCase implements TestCase, Serializable {
         id = idGenerator.getAndIncrement();
     }
 
+    /* (non-Javadoc)
+     * @see org.evosuite.testcase.TestCase#accept(org.evosuite.testcase.TestVisitor)
+     */
+
     public int getID() {
         return id;
     }
 
     /* (non-Javadoc)
-     * @see org.evosuite.testcase.TestCase#accept(org.evosuite.testcase.TestVisitor)
+     * @see org.evosuite.testcase.TestCase#addAssertions(org.evosuite.testcase.DefaultTestCase)
      */
 
     /**
@@ -116,10 +116,6 @@ public class DefaultTestCase implements TestCase, Serializable {
             visitor.visitStatement(s);
         }
     }
-
-    /* (non-Javadoc)
-     * @see org.evosuite.testcase.TestCase#addAssertions(org.evosuite.testcase.DefaultTestCase)
-     */
 
     /**
      * {@inheritDoc}
@@ -139,14 +135,14 @@ public class DefaultTestCase implements TestCase, Serializable {
         contractViolations.add(violation);
     }
 
+    /* (non-Javadoc)
+     * @see org.evosuite.testcase.TestCase#addCoveredGoal(org.evosuite.testcase.TestFitnessFunction)
+     */
+
     @Override
     public Set<ContractViolation> getContractViolations() {
         return contractViolations;
     }
-
-    /* (non-Javadoc)
-     * @see org.evosuite.testcase.TestCase#addCoveredGoal(org.evosuite.testcase.TestFitnessFunction)
-     */
 
     /**
      * {@inheritDoc}
@@ -169,7 +165,6 @@ public class DefaultTestCase implements TestCase, Serializable {
     public boolean isGoalCovered(TestFitnessFunction goal) {
         return coveredGoals.contains(goal);
     }
-
 
     private void addFields(List<VariableReference> variables, VariableReference var,
                            Type type) {
@@ -199,6 +194,10 @@ public class DefaultTestCase implements TestCase, Serializable {
         }
     }
 
+    /* (non-Javadoc)
+     * @see org.evosuite.testcase.TestCase#addStatement(org.evosuite.testcase.Statement)
+     */
+
     /**
      * {@inheritDoc}
      */
@@ -208,7 +207,7 @@ public class DefaultTestCase implements TestCase, Serializable {
     }
 
     /* (non-Javadoc)
-     * @see org.evosuite.testcase.TestCase#addStatement(org.evosuite.testcase.Statement)
+     * @see org.evosuite.testcase.TestCase#addStatement(org.evosuite.testcase.Statement, int)
      */
 
     /**
@@ -247,10 +246,6 @@ public class DefaultTestCase implements TestCase, Serializable {
         return statement.getReturnValue();
     }
 
-    /* (non-Javadoc)
-     * @see org.evosuite.testcase.TestCase#addStatement(org.evosuite.testcase.Statement, int)
-     */
-
     /**
      * {@inheritDoc}
      */
@@ -282,8 +277,6 @@ public class DefaultTestCase implements TestCase, Serializable {
             s.changeClassLoader(loader);
         }
     }
-
-    private transient ClassLoader changedClassLoader = null;
 
     public ClassLoader getChangedClassLoader() {
         return changedClassLoader;
@@ -986,14 +979,18 @@ public class DefaultTestCase implements TestCase, Serializable {
         return isFailing;
     }
 
-    @Override
-    public void setFailing() {
-        isFailing = true;
+    public void setFailing(boolean failing) {
+        isFailing = failing;
     }
 
     /* (non-Javadoc)
      * @see org.evosuite.testcase.TestCase#isPrefix(org.evosuite.testcase.DefaultTestCase)
      */
+
+    @Override
+    public void setFailing() {
+        isFailing = true;
+    }
 
     /**
      * {@inheritDoc}
@@ -1012,13 +1009,26 @@ public class DefaultTestCase implements TestCase, Serializable {
         return true;
     }
 
+    /* (non-Javadoc)
+     * @see org.evosuite.testcase.TestCase#isValid()
+     */
+
     @Override
     public boolean isUnstable() {
         return unstable;
     }
 
     /* (non-Javadoc)
-     * @see org.evosuite.testcase.TestCase#isValid()
+     * @see java.lang.Iterable#iterator()
+     */
+
+    @Override
+    public void setUnstable(boolean unstable) {
+        this.unstable = unstable;
+    }
+
+    /* (non-Javadoc)
+     * @see org.evosuite.testcase.TestCase#remove(int)
      */
 
     /**
@@ -1032,10 +1042,6 @@ public class DefaultTestCase implements TestCase, Serializable {
         return true;
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Iterable#iterator()
-     */
-
     /**
      * {@inheritDoc}
      */
@@ -1045,7 +1051,7 @@ public class DefaultTestCase implements TestCase, Serializable {
     }
 
     /* (non-Javadoc)
-     * @see org.evosuite.testcase.TestCase#remove(int)
+     * @see org.evosuite.testcase.TestCase#removeAssertions()
      */
 
     /**
@@ -1068,10 +1074,6 @@ public class DefaultTestCase implements TestCase, Serializable {
     public void removeAssertion(Assertion assertion) {
         statements.forEach(s -> s.removeAssertion(assertion));
     }
-
-    /* (non-Javadoc)
-     * @see org.evosuite.testcase.TestCase#removeAssertions()
-     */
 
     /**
      * {@inheritDoc}
@@ -1137,6 +1139,10 @@ public class DefaultTestCase implements TestCase, Serializable {
         return false;
     }
 
+    /* (non-Javadoc)
+     * @see org.evosuite.testcase.TestCase#replace(org.evosuite.testcase.VariableReference, org.evosuite.testcase.VariableReference)
+     */
+
     private boolean assertionsNeedDownCast(Statement s, VariableReference var, Class<?> abstractClass) {
         for (Assertion assertion : s.getAssertions()) {
             if (assertion instanceof InspectorAssertion && assertion.getSource().equals(var)) {
@@ -1199,10 +1205,6 @@ public class DefaultTestCase implements TestCase, Serializable {
         }
     }
 
-    /* (non-Javadoc)
-     * @see org.evosuite.testcase.TestCase#replace(org.evosuite.testcase.VariableReference, org.evosuite.testcase.VariableReference)
-     */
-
     /**
      * {@inheritDoc}
      */
@@ -1211,6 +1213,9 @@ public class DefaultTestCase implements TestCase, Serializable {
         statements.forEach(s -> s.replace(var1, var2));
     }
 
+    /* (non-Javadoc)
+     * @see org.evosuite.testcase.TestCase#setStatement(org.evosuite.testcase.Statement, int)
+     */
 
     private void readObject(ObjectInputStream ois) throws ClassNotFoundException,
             IOException {
@@ -1219,14 +1224,6 @@ public class DefaultTestCase implements TestCase, Serializable {
         coveredGoals = new LinkedHashSet<>();
         contractViolations = new LinkedHashSet<>();
     }
-
-    public void setFailing(boolean failing) {
-        isFailing = failing;
-    }
-
-    /* (non-Javadoc)
-     * @see org.evosuite.testcase.TestCase#setStatement(org.evosuite.testcase.Statement, int)
-     */
 
     /**
      * {@inheritDoc}
@@ -1237,11 +1234,6 @@ public class DefaultTestCase implements TestCase, Serializable {
         assert (isValid());
         return statement.getReturnValue(); // TODO:
         // -1?
-    }
-
-    @Override
-    public void setUnstable(boolean unstable) {
-        this.unstable = unstable;
     }
 
     /* (non-Javadoc)

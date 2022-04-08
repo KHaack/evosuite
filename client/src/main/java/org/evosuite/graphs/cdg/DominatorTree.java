@@ -58,13 +58,11 @@ import java.util.Set;
 public class DominatorTree<V> extends EvoSuiteGraph<DominatorNode<V>, DefaultEdge> {
 
     private static final Logger logger = LoggerFactory.getLogger(DominatorTree.class);
-
-    private int nodeCount = 0;
     private final ControlFlowGraph<V> cfg;
-
     private final Map<V, DominatorNode<V>> dominatorNodesMap = new LinkedHashMap<>();
     private final Map<Integer, DominatorNode<V>> dominatorIDMap = new LinkedHashMap<>();
     private final Map<V, Set<V>> dominatingFrontiers = new LinkedHashMap<>();
+    private int nodeCount = 0;
 
     /**
      * Will start the computation of all immediateDominators for the given CFG

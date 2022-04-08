@@ -38,15 +38,13 @@ public class JavaExecCmdUtilWinSystemTest {
             "c:" + SEPARATOR + "sample" + SEPARATOR + "windows path" + SEPARATOR + "jdk_8";
     private static final String WIN_MOCK_OS = "Windows 10";
     private static final String ORIG_OS = System.getProperty("os.name");
-
-    @Rule
-    public EnvironmentVariables environmentVariables = new EnvironmentVariables();
-
     @Rule
     public final ProvideSystemProperty properties =
             new ProvideSystemProperty("os.name", WIN_MOCK_OS)
                     .and("file.separator", SEPARATOR)
                     .and("java.home", JAVA_HOME_MOCK_PATH);
+    @Rule
+    public EnvironmentVariables environmentVariables = new EnvironmentVariables();
 
     @Before
     public void initTestEnvironment() {

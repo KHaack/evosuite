@@ -45,6 +45,47 @@ public class LineCoverageFactory extends
     private static final Logger logger = LoggerFactory.getLogger(LineCoverageFactory.class);
     private final MethodNameMatcher matcher = new MethodNameMatcher();
 
+    /**
+     * Create a fitness function for branch coverage aimed at covering the root
+     * branch of the given method in the given class. Covering a root branch
+     * means entering the method.
+     *
+     * @param className a {@link java.lang.String} object.
+     * @param method    a {@link java.lang.String} object.
+     * @return a {@link org.evosuite.coverage.branch.BranchCoverageTestFitness}
+     * object.
+     */
+    public static LineCoverageTestFitness createLineTestFitness(
+            String className, String method, Integer line) {
+
+        return new LineCoverageTestFitness(className,
+                method.substring(method.lastIndexOf(".") + 1), line);
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * org.evosuite.coverage.TestCoverageFactory#getCoverageGoals()
+     */
+
+    /**
+     * Convenience method calling createMethodTestFitness(class,method) with
+     * the respective class and method of the given BytecodeInstruction.
+     *
+     * @param instruction a {@link org.evosuite.graphs.cfg.BytecodeInstruction} object.
+     * @return a {@link org.evosuite.coverage.branch.BranchCoverageTestFitness}
+     * object.
+     */
+    public static LineCoverageTestFitness createLineTestFitness(
+            BytecodeInstruction instruction) {
+        if (instruction == null)
+            throw new IllegalArgumentException("null given");
+
+        return createLineTestFitness(instruction.getClassName(),
+                instruction.getMethodName(), instruction.getLineNumber());
+    }
+
     private boolean isEnumDefaultConstructor(String className, String methodName) {
         if (!methodName.equals("<init>(Ljava/lang/String;I)V")) {
             return false;
@@ -61,13 +102,6 @@ public class LineCoverageFactory extends
             return false;
         }
     }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * org.evosuite.coverage.TestCoverageFactory#getCoverageGoals()
-     */
 
     /**
      * {@inheritDoc}
@@ -100,40 +134,5 @@ public class LineCoverageFactory extends
         }
         goalComputationTime = System.currentTimeMillis() - start;
         return goals;
-    }
-
-
-    /**
-     * Create a fitness function for branch coverage aimed at covering the root
-     * branch of the given method in the given class. Covering a root branch
-     * means entering the method.
-     *
-     * @param className a {@link java.lang.String} object.
-     * @param method    a {@link java.lang.String} object.
-     * @return a {@link org.evosuite.coverage.branch.BranchCoverageTestFitness}
-     * object.
-     */
-    public static LineCoverageTestFitness createLineTestFitness(
-            String className, String method, Integer line) {
-
-        return new LineCoverageTestFitness(className,
-                method.substring(method.lastIndexOf(".") + 1), line);
-    }
-
-    /**
-     * Convenience method calling createMethodTestFitness(class,method) with
-     * the respective class and method of the given BytecodeInstruction.
-     *
-     * @param instruction a {@link org.evosuite.graphs.cfg.BytecodeInstruction} object.
-     * @return a {@link org.evosuite.coverage.branch.BranchCoverageTestFitness}
-     * object.
-     */
-    public static LineCoverageTestFitness createLineTestFitness(
-            BytecodeInstruction instruction) {
-        if (instruction == null)
-            throw new IllegalArgumentException("null given");
-
-        return createLineTestFitness(instruction.getClassName(),
-                instruction.getMethodName(), instruction.getLineNumber());
     }
 }

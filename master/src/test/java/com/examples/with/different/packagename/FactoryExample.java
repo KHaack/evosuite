@@ -27,16 +27,16 @@ public class FactoryExample {
 
     public boolean setMe = false;
 
+    public static void testStatic() {
+        // no-op
+    }
+
     public byte testByte(byte x, byte y) {
         return (byte) (x + y);
     }
 
-    public void testInt(int x) {
-    }
-
     ;
 
-    public static void testStatic() {
-        // no-op
+    public void testInt(int x) {
     }
 }

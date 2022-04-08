@@ -48,11 +48,11 @@ import static org.junit.Assert.assertEquals;
  */
 public class LineCoverageFitnessFunctionSystemTest extends SystemTestBase {
 
+    private final int oldChromosomeLength = Properties.CHROMOSOME_LENGTH;
     private Properties.Criterion[] oldCriteria = Arrays.copyOf(Properties.CRITERION, Properties.CRITERION.length);
     private Properties.StoppingCondition oldStoppingCondition = Properties.STOPPING_CONDITION;
     private double oldPrimitivePool = Properties.PRIMITIVE_POOL;
     private boolean oldResetStaticFields = Properties.RESET_STATIC_FIELDS;
-    private final int oldChromosomeLength = Properties.CHROMOSOME_LENGTH;
 
     @Before
     public void beforeTest() {

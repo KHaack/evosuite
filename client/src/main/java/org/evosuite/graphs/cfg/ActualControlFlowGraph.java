@@ -138,49 +138,6 @@ public class ActualControlFlowGraph extends ControlFlowGraph<BasicBlock> {
         setJoinSources();
     }
 
-    private void setEntryPoint(BytecodeInstruction entryPoint) {
-        if (entryPoint == null)
-            throw new IllegalArgumentException("null given");
-        if (!belongsToMethod(entryPoint))
-            throw new IllegalArgumentException(
-                    "entry point does not belong to this CFGs method");
-        this.entryPoint = entryPoint;
-    }
-
-    private void setExitPoints(Set<BytecodeInstruction> exitPoints) {
-        if (exitPoints == null)
-            throw new IllegalArgumentException("null given");
-
-        this.exitPoints = new HashSet<>();
-
-        for (BytecodeInstruction exitPoint : exitPoints) {
-            if (!belongsToMethod(exitPoint))
-                throw new IllegalArgumentException(
-                        "exit point does not belong to this CFGs method");
-            if (!exitPoint.canBeExitPoint())
-                throw new IllegalArgumentException(
-                        "unexpected exitPoint byteCode instruction type: "
-                                + exitPoint.getInstructionType());
-
-            this.exitPoints.add(exitPoint);
-        }
-    }
-
-    private void setJoins(Set<BytecodeInstruction> joins) {
-        if (joins == null)
-            throw new IllegalArgumentException("null given");
-
-        this.joins = new HashSet<>();
-
-        for (BytecodeInstruction join : joins) {
-            if (!belongsToMethod(join))
-                throw new IllegalArgumentException(
-                        "join does not belong to this CFGs method");
-
-            this.joins.add(join);
-        }
-    }
-
     private void setJoinSources() {
         if (joins == null)
             throw new IllegalStateException(
@@ -193,40 +150,6 @@ public class ActualControlFlowGraph extends ControlFlowGraph<BasicBlock> {
         for (BytecodeInstruction join : joins)
             for (ControlFlowEdge joinEdge : rawGraph.incomingEdgesOf(join))
                 joinSources.add(rawGraph.getEdgeSource(joinEdge));
-    }
-
-    private void setBranches(Set<BytecodeInstruction> branches) {
-        if (branches == null)
-            throw new IllegalArgumentException("null given");
-
-        this.branches = new HashSet<>();
-
-        for (BytecodeInstruction branch : branches) {
-            if (!belongsToMethod(branch))
-                throw new IllegalArgumentException(
-                        "branch does not belong to this CFGs method");
-            // if (!branch.isActualBranch()) // TODO this happens if your in a
-            // try-catch ... handle!
-            // throw new IllegalArgumentException(
-            // "unexpected branch byteCode instruction type: "
-            // + branch.getInstructionType());
-
-            // TODO the following doesn't work at this point
-            // because the BranchPool is not yet filled yet
-            // BUT one could fill the pool right now and drop further analysis
-            // later
-            // way cooler, because then filling of the BranchPool is unrelated
-            // to
-            // BranchInstrumentation - then again that instrumentation is needed
-            // anyways i guess
-
-            // if (!BranchPool.isKnownAsBranch(instruction))
-            // throw new IllegalStateException(
-            // "expect BranchPool to know all branching instructions: "
-            // + instruction.toString());
-
-            this.branches.add(branch);
-        }
     }
 
     private void setBranchTargets() {
@@ -254,8 +177,6 @@ public class ActualControlFlowGraph extends ControlFlowGraph<BasicBlock> {
 
         return r;
     }
-
-    // compute actual CFG from RawControlFlowGraph
 
     private void computeGraph() {
 
@@ -310,6 +231,8 @@ public class ActualControlFlowGraph extends ControlFlowGraph<BasicBlock> {
         logger.debug(edgeCount() + " ControlFlowEdges");
     }
 
+    // compute actual CFG from RawControlFlowGraph
+
     private void computeIncomingEdgesFor(BasicBlock block) {
 
         if (isEntryPoint(block))
@@ -336,8 +259,6 @@ public class ActualControlFlowGraph extends ControlFlowGraph<BasicBlock> {
             addRawEdge(block, outgoingEnd, rawOutgoing);
         }
     }
-
-    // internal graph handling
 
     /**
      * <p>
@@ -474,7 +395,7 @@ public class ActualControlFlowGraph extends ControlFlowGraph<BasicBlock> {
         logger.debug(".. succeeded, edgeCount: " + edgeCount());
     }
 
-    // convenience methods to switch between BytecodeInstructons and BasicBlocks
+    // internal graph handling
 
     /**
      * If the given instruction is known to this graph, the BasicBlock holding
@@ -571,7 +492,7 @@ public class ActualControlFlowGraph extends ControlFlowGraph<BasicBlock> {
         return isDirectSuccessor(b1, b2);
     }
 
-    // retrieve information about the CFG
+    // convenience methods to switch between BytecodeInstructons and BasicBlocks
 
     /**
      * <p>
@@ -636,8 +557,6 @@ public class ActualControlFlowGraph extends ControlFlowGraph<BasicBlock> {
         return methodName.equals(instruction.getMethodName());
     }
 
-    // sanity checks
-
     /**
      * <p>
      * checkSanity
@@ -664,6 +583,8 @@ public class ActualControlFlowGraph extends ControlFlowGraph<BasicBlock> {
 
         logger.debug(".. CFG sanity ensured");
     }
+
+    // retrieve information about the CFG
 
     private void checkInstructionsContainedOnceConstraint() {
 
@@ -715,6 +636,8 @@ public class ActualControlFlowGraph extends ControlFlowGraph<BasicBlock> {
                             + node.toString());
     }
 
+    // sanity checks
+
     void checkSingleCFGNodeConstraint(BasicBlock node) {
         int in = inDegreeOf(node);
         int out = outDegreeOf(node);
@@ -743,8 +666,6 @@ public class ActualControlFlowGraph extends ControlFlowGraph<BasicBlock> {
                             "whenever a node has exactly one child and one parent, it is expected that the same is true for either of those");
         }
     }
-
-    // inherited from ControlFlowGraph
 
     /**
      * {@inheritDoc}
@@ -777,6 +698,58 @@ public class ActualControlFlowGraph extends ControlFlowGraph<BasicBlock> {
         return null;
     }
 
+    /**
+     * <p>
+     * Getter for the field <code>entryPoint</code>.
+     * </p>
+     *
+     * @return a {@link org.evosuite.graphs.cfg.BytecodeInstruction} object.
+     */
+    public BytecodeInstruction getEntryPoint() {
+        return entryPoint;
+    }
+
+    private void setEntryPoint(BytecodeInstruction entryPoint) {
+        if (entryPoint == null)
+            throw new IllegalArgumentException("null given");
+        if (!belongsToMethod(entryPoint))
+            throw new IllegalArgumentException(
+                    "entry point does not belong to this CFGs method");
+        this.entryPoint = entryPoint;
+    }
+
+    // inherited from ControlFlowGraph
+
+    /**
+     * <p>
+     * Getter for the field <code>exitPoints</code>.
+     * </p>
+     *
+     * @return a {@link java.util.Set} object.
+     */
+    public Set<BytecodeInstruction> getExitPoints() {
+        return new HashSet<>(exitPoints);
+    }
+
+    private void setExitPoints(Set<BytecodeInstruction> exitPoints) {
+        if (exitPoints == null)
+            throw new IllegalArgumentException("null given");
+
+        this.exitPoints = new HashSet<>();
+
+        for (BytecodeInstruction exitPoint : exitPoints) {
+            if (!belongsToMethod(exitPoint))
+                throw new IllegalArgumentException(
+                        "exit point does not belong to this CFGs method");
+            if (!exitPoint.canBeExitPoint())
+                throw new IllegalArgumentException(
+                        "unexpected exitPoint byteCode instruction type: "
+                                + exitPoint.getInstructionType());
+
+            this.exitPoints.add(exitPoint);
+        }
+    }
+
     // @Override
     // public BytecodeInstruction getBranch(int branchId) {
     //
@@ -794,28 +767,6 @@ public class ActualControlFlowGraph extends ControlFlowGraph<BasicBlock> {
 
     /**
      * <p>
-     * Getter for the field <code>entryPoint</code>.
-     * </p>
-     *
-     * @return a {@link org.evosuite.graphs.cfg.BytecodeInstruction} object.
-     */
-    public BytecodeInstruction getEntryPoint() {
-        return entryPoint;
-    }
-
-    /**
-     * <p>
-     * Getter for the field <code>exitPoints</code>.
-     * </p>
-     *
-     * @return a {@link java.util.Set} object.
-     */
-    public Set<BytecodeInstruction> getExitPoints() {
-        return new HashSet<>(exitPoints);
-    }
-
-    /**
-     * <p>
      * Getter for the field <code>branches</code>.
      * </p>
      *
@@ -823,6 +774,40 @@ public class ActualControlFlowGraph extends ControlFlowGraph<BasicBlock> {
      */
     public Set<BytecodeInstruction> getBranches() {
         return new HashSet<>(branches);
+    }
+
+    private void setBranches(Set<BytecodeInstruction> branches) {
+        if (branches == null)
+            throw new IllegalArgumentException("null given");
+
+        this.branches = new HashSet<>();
+
+        for (BytecodeInstruction branch : branches) {
+            if (!belongsToMethod(branch))
+                throw new IllegalArgumentException(
+                        "branch does not belong to this CFGs method");
+            // if (!branch.isActualBranch()) // TODO this happens if your in a
+            // try-catch ... handle!
+            // throw new IllegalArgumentException(
+            // "unexpected branch byteCode instruction type: "
+            // + branch.getInstructionType());
+
+            // TODO the following doesn't work at this point
+            // because the BranchPool is not yet filled yet
+            // BUT one could fill the pool right now and drop further analysis
+            // later
+            // way cooler, because then filling of the BranchPool is unrelated
+            // to
+            // BranchInstrumentation - then again that instrumentation is needed
+            // anyways i guess
+
+            // if (!BranchPool.isKnownAsBranch(instruction))
+            // throw new IllegalStateException(
+            // "expect BranchPool to know all branching instructions: "
+            // + instruction.toString());
+
+            this.branches.add(branch);
+        }
     }
 
     /**
@@ -834,6 +819,21 @@ public class ActualControlFlowGraph extends ControlFlowGraph<BasicBlock> {
      */
     public Set<BytecodeInstruction> getJoins() {
         return new HashSet<>(joins);
+    }
+
+    private void setJoins(Set<BytecodeInstruction> joins) {
+        if (joins == null)
+            throw new IllegalArgumentException("null given");
+
+        this.joins = new HashSet<>();
+
+        for (BytecodeInstruction join : joins) {
+            if (!belongsToMethod(join))
+                throw new IllegalArgumentException(
+                        "join does not belong to this CFGs method");
+
+            this.joins.add(join);
+        }
     }
 
     /**

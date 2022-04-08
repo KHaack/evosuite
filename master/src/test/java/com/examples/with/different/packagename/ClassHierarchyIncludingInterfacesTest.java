@@ -33,6 +33,16 @@ import static org.junit.Assert.assertFalse;
  */
 public class ClassHierarchyIncludingInterfacesTest {
 
+    @Test
+    public void testHierarchyIncludingInterfaces() {
+        final Iterator<Class<?>> iter = ClassHierarchyIncludingInterfaces.hierarchy(StringParameterizedChild.class, Interfaces.INCLUDE).iterator();
+        assertEquals(StringParameterizedChild.class, iter.next());
+        assertEquals(GenericParent.class, iter.next());
+        assertEquals(GenericConsumer.class, iter.next());
+        assertEquals(Object.class, iter.next());
+        assertFalse(iter.hasNext());
+    }
+
     public interface GenericConsumer<T> {
         void consume(T t);
     }
@@ -49,15 +59,5 @@ public class ClassHierarchyIncludingInterfacesTest {
         public void consume(final String t) {
             super.consume(t);
         }
-    }
-
-    @Test
-    public void testHierarchyIncludingInterfaces() {
-        final Iterator<Class<?>> iter = ClassHierarchyIncludingInterfaces.hierarchy(StringParameterizedChild.class, Interfaces.INCLUDE).iterator();
-        assertEquals(StringParameterizedChild.class, iter.next());
-        assertEquals(GenericParent.class, iter.next());
-        assertEquals(GenericConsumer.class, iter.next());
-        assertEquals(Object.class, iter.next());
-        assertFalse(iter.hasNext());
     }
 }

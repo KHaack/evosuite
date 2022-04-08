@@ -258,6 +258,13 @@ public interface ExecutionTrace {
     Throwable getExplicitException();
 
     /**
+     * Set the exception thrown in this trace
+     *
+     * @param explicitException a {@link java.lang.Throwable} object.
+     */
+    void setExplicitException(Throwable explicitException);
+
+    /**
      * Retrieve all traced method calls
      *
      * @return a {@link java.util.List} object.
@@ -473,13 +480,6 @@ public interface ExecutionTrace {
      * @param useID  a int.
      */
     void usePassed(Object object, Object caller, int useID);
-
-    /**
-     * Set the exception thrown in this trace
-     *
-     * @param explicitException a {@link java.lang.Throwable} object.
-     */
-    void setExplicitException(Throwable explicitException);
 
     /**
      * Create a lazy copy

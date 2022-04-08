@@ -232,6 +232,14 @@ public interface GenericClass<T extends GenericClass<T>> extends Serializable {
     Type getType();
 
     /**
+     * Sets the represented type of a copy of this generic class
+     *
+     * @param type the type to be set.
+     * @return the copy.
+     */
+    GenericClass<?> setType(Type type);
+
+    /**
      * Alias for {@link GenericTypeReflector#getTypeName} of the represented class.
      */
     String getTypeName();
@@ -348,7 +356,6 @@ public interface GenericClass<T extends GenericClass<T>> extends Serializable {
      * @return Whether type has a type variable.
      */
     boolean hasTypeVariables();
-
 
     /**
      * Checks if this generic class contains or is a wildcard types.
@@ -558,12 +565,4 @@ public interface GenericClass<T extends GenericClass<T>> extends Serializable {
      * @throws ConstructionFailedException If this instance can't be instantiated.
      */
     GenericClass<?> getGenericWildcardInstantiation(Map<TypeVariable<?>, Type> typeMap, int recursionLevel) throws ConstructionFailedException;
-
-    /**
-     * Sets the represented type of a copy of this generic class
-     *
-     * @param type the type to be set.
-     * @return the copy.
-     */
-    GenericClass<?> setType(Type type);
 }

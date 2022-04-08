@@ -99,12 +99,6 @@ public class AmbiguityCoverageFactory extends
         }
     }
 
-
-    @Override
-    public List<LineCoverageTestFitness> getCoverageGoals() {
-        return getGoals();
-    }
-
     /**
      * @return
      */
@@ -211,5 +205,10 @@ public class AmbiguityCoverageFactory extends
     protected static void reset() {
         goals.clear();
         transposedMatrix.clear();
+    }
+
+    @Override
+    public List<LineCoverageTestFitness> getCoverageGoals() {
+        return getGoals();
     }
 }

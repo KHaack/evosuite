@@ -114,16 +114,16 @@ public class MaxGenerationStoppingCondition<T extends Chromosome<T>> extends Sto
      * {@inheritDoc}
      */
     @Override
-    public void setLimit(long limit) {
-        maxIterations = limit;
+    public long getLimit() {
+        return maxIterations;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public long getLimit() {
-        return maxIterations;
+    public void setLimit(long limit) {
+        maxIterations = limit;
     }
 
     /* (non-Javadoc)

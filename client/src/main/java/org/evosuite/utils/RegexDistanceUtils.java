@@ -67,30 +67,6 @@ public class RegexDistanceUtils {
         return automaton.getShortestExample(false);
     }
 
-    private static class GraphTransition {
-
-        public enum TransitionType {
-            INSERTION, DELETION, REPLACEMENT,
-            /**
-             * A phantom transition is an artificial transition from the sink/final states to a single artificial sink/state.
-             * This is used to simplify the recursion calculation of the subpath costs.
-             */
-            PHANTOM
-        }
-
-        public final double cost;
-        public final int fromRow;
-        public final State fromState;
-        public final TransitionType type;
-
-        public GraphTransition(double cost, int fromRow, State fromState, TransitionType type) {
-            this.cost = cost;
-            this.fromRow = fromRow;
-            this.fromState = fromState;
-            this.type = type;
-        }
-    }
-
     /**
      * Normalize x in [0,1]
      *
@@ -307,6 +283,28 @@ public class RegexDistanceUtils {
         return automaton;
     }
 
+    private static class GraphTransition {
+
+        public final double cost;
+        public final int fromRow;
+        public final State fromState;
+        public final TransitionType type;
+        public GraphTransition(double cost, int fromRow, State fromState, TransitionType type) {
+            this.cost = cost;
+            this.fromRow = fromRow;
+            this.fromState = fromState;
+            this.type = type;
+        }
+
+        public enum TransitionType {
+            INSERTION, DELETION, REPLACEMENT,
+            /**
+             * A phantom transition is an artificial transition from the sink/final states to a single artificial sink/state.
+             * This is used to simplify the recursion calculation of the subpath costs.
+             */
+            PHANTOM
+        }
+    }
 
     /**
      * A graph created based on an "arg" that is matched against a "regex".

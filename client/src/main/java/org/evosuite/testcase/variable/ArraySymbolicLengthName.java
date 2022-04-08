@@ -60,18 +60,6 @@ public class ArraySymbolicLengthName {
         this.symbolicName = buildSymbolicLengthDimensionName(arrayReferenceName, dimension);
     }
 
-    public int getDimension() {
-        return dimension;
-    }
-
-    public String getSymbolicName() {
-        return symbolicName;
-    }
-
-    public String getArrayReferenceName() {
-        return arrayReferenceName;
-    }
-
     /**
      * Builds the name of an array length symbolic variable.
      *
@@ -100,5 +88,17 @@ public class ArraySymbolicLengthName {
 
         return nameSections.length == ARRAY_LENGTH_SYMBOLIC_NAME_SECTIONS_AMOUNT
                 && nameSections[ARRAY_LENGTH_SYMBOLIC_NAME_DIMENSION_TAG_POSITION].equals(ARRAY_LENGTH_SYMBOLIC_NAME_SUFFIX);
+    }
+
+    public int getDimension() {
+        return dimension;
+    }
+
+    public String getSymbolicName() {
+        return symbolicName;
+    }
+
+    public String getArrayReferenceName() {
+        return arrayReferenceName;
     }
 }

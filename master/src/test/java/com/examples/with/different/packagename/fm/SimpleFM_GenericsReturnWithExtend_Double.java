@@ -24,6 +24,18 @@ package com.examples.with.different.packagename.fm;
  */
 public class SimpleFM_GenericsReturnWithExtend_Double {
 
+    public static boolean foo(A a) {
+        W w = a.getB();
+        Z z = a.getB();
+
+        if (w.isW() && z.isZ()) {
+            System.out.println("W and Z");
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public interface B {
     }
 
@@ -35,22 +47,10 @@ public class SimpleFM_GenericsReturnWithExtend_Double {
         boolean isZ();
     }
 
+
     public interface A {
-        void setB(B b);
-
         <C extends B> C getB();
-    }
 
-
-    public static boolean foo(A a) {
-        W w = a.getB();
-        Z z = a.getB();
-
-        if (w.isW() && z.isZ()) {
-            System.out.println("W and Z");
-            return true;
-        } else {
-            return false;
-        }
+        void setB(B b);
     }
 }

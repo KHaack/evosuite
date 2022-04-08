@@ -61,10 +61,19 @@ import static org.junit.Assert.assertTrue;
 public class SystemTestBase {
 
     public static final String ALREADY_SETUP = "systemtest.alreadysetup";
-
-    private static java.util.Properties currentProperties;
-
+    /**
+     * Needed to keep track of how ofter a test was re-executed.
+     * Note: re-execution only works if in surefire/failsafe we use "rerunFailingTestsCount"
+     */
+    private static final Map<String, Integer> executionCounter = new ConcurrentHashMap<>();
     protected static Criterion[] standardCriteria = Properties.CRITERION;
+    private static java.util.Properties currentProperties;
+    /*
+     * this static variable is a safety net to be sure it is called only once.
+     * static variables are shared and not re-initialized
+     * during a sequence of test cases.
+     */
+    private static boolean hasBeenAlreadyRun = false;
 
     static {
         String s = System.getProperty(ALREADY_SETUP);
@@ -74,187 +83,8 @@ public class SystemTestBase {
         }
     }
 
-    /**
-     * Needed to keep track of how ofter a test was re-executed.
-     * Note: re-execution only works if in surefire/failsafe we use "rerunFailingTestsCount"
-     */
-    private static final Map<String, Integer> executionCounter = new ConcurrentHashMap<>();
-
-
     @Rule
     public TestName name = new TestName();
-
-
-    @Before
-    public void checkIfValidName() {
-        String name = this.getClass().getName();
-        assertTrue("Invalid name for system test: " + name, name.endsWith("SystemTest"));
-    }
-
-    @After
-    public void resetStaticVariables() {
-        RuntimeInstrumentation.setAvoidInstrumentingShadedClasses(false);
-        RuntimeSettings.applyUIDTransformation = false;
-        TestCaseExecutor.getInstance().newObservers();
-        TestGenerationContext.getInstance().resetContext();
-        ClassReInitializer.resetSingleton();
-        System.setProperties(currentProperties);
-        Properties.getInstance().resetToDefaults();
-        ExceptionCoverageFactory.getGoals().clear();
-        Archive.getArchiveInstance().reset();
-    }
-
-    @Before
-    public void setDefaultPropertiesForTestCases() {
-
-        Properties.getInstance().resetToDefaults();
-
-        Properties.IS_RUNNING_A_SYSTEM_TEST = true;
-        RuntimeInstrumentation.setAvoidInstrumentingShadedClasses(true);
-
-        Properties.SHOW_PROGRESS = false;
-        Properties.SERIALIZE_RESULT = false;
-        Properties.JUNIT_TESTS = false;
-        Properties.PLOT = false;
-        Properties.CLASS_PREFIX = "";
-
-        Properties.STOPPING_CONDITION = StoppingCondition.MAXSTATEMENTS;
-        Properties.SEARCH_BUDGET = 30000;
-
-        Properties.GLOBAL_TIMEOUT = 120;
-        Properties.MINIMIZATION_TIMEOUT = 8;
-        Properties.EXTRA_TIMEOUT = 2;
-
-        Properties.ENABLE_ASSERTS_FOR_EVOSUITE = true;
-        Properties.CLIENT_ON_THREAD = true;
-        Properties.SANDBOX = false;
-        Properties.ERROR_BRANCHES = false;
-        Properties.CRITERION = new Criterion[]{Criterion.BRANCH};
-
-        Properties.NEW_STATISTICS = true;
-        Properties.STATISTICS_BACKEND = StatisticsBackend.DEBUG;
-
-        TestGenerationContext.getInstance().resetContext();
-        ClassReInitializer.resetSingleton();
-
-        //change seed every month
-        long seed = new GregorianCalendar().get(Calendar.MONTH);
-//		long seed = getSeed();
-        Randomness.setSeed(seed);
-
-        currentProperties = (java.util.Properties) System.getProperties().clone();
-
-        MockFramework.enable();
-    }
-
-
-    /**
-     * Choose seed based on current month. If a test is re-run, then look at the
-     * next month, and so on in a %12 ring
-     *
-     * @return
-     */
-    private long getSeed() {
-
-        String id = this.getClass().getName() + "#" + name.getMethodName();
-        int counter = executionCounter.computeIfAbsent(id, c -> 0);
-
-        int month = (counter + new GregorianCalendar().get(Calendar.MONTH)) % 12;
-
-        executionCounter.put(id, counter + 1);
-
-        return month;
-    }
-
-
-    protected GeneticAlgorithm<?> do100percentLineTestOnStandardCriteria(Class<?> target) {
-        EvoSuite evosuite = new EvoSuite();
-
-        String targetClass = target.getCanonicalName();
-
-        Properties.TARGET_CLASS = targetClass;
-        Properties.CRITERION = standardCriteria;
-
-
-        String[] command = new String[]{"-generateSuite", "-class", targetClass};
-
-        Object result = evosuite.parseCommandLine(command);
-        GeneticAlgorithm<TestSuiteChromosome> ga = getGAFromResult(result);
-        TestSuiteChromosome best = ga.getBestIndividual();
-        System.out.println("EvolvedTestSuite:\n" + best);
-
-        double cov = best.getCoverageInstanceOf(LineCoverageSuiteFitness.class);
-
-        Assert.assertEquals("Non-optimal coverage: ", 1d, cov, 0.001);
-
-        return ga;
-    }
-
-
-    protected GeneticAlgorithm<?> do100percentLineTest(Class<?> target) {
-        EvoSuite evosuite = new EvoSuite();
-
-        String targetClass = target.getCanonicalName();
-
-        Properties.TARGET_CLASS = targetClass;
-        Properties.CRITERION = new Properties.Criterion[]{Properties.Criterion.LINE};
-
-        String[] command = new String[]{"-generateSuite", "-class", targetClass};
-
-        Object result = evosuite.parseCommandLine(command);
-        GeneticAlgorithm<TestSuiteChromosome> ga = getGAFromResult(result);
-        TestSuiteChromosome best = ga.getBestIndividual();
-        System.out.println("EvolvedTestSuite:\n" + best);
-
-        Assert.assertEquals("Non-optimal coverage: ", 1d, best.getCoverage(), 0.001);
-
-        return ga;
-    }
-
-    protected GeneticAlgorithm<?> doNonOptimalLineTest(Class<?> target) {
-        EvoSuite evosuite = new EvoSuite();
-
-        String targetClass = target.getCanonicalName();
-
-        Properties.TARGET_CLASS = targetClass;
-        Properties.CRITERION = new Properties.Criterion[]{Properties.Criterion.LINE};
-
-        String[] command = new String[]{"-generateSuite", "-class", targetClass};
-
-        Object result = evosuite.parseCommandLine(command);
-        GeneticAlgorithm<?> ga = getGAFromResult(result);
-        TestSuiteChromosome best = (TestSuiteChromosome) ga.getBestIndividual();
-        System.out.println("EvolvedTestSuite:\n" + best);
-
-        Assert.assertNotEquals("Unexpected optimal coverage: ", 1d, best.getCoverage(), 0.001);
-
-        return ga;
-    }
-
-
-    protected OutputVariable<?> getOutputVariable(RuntimeVariable rv) {
-        if (!Properties.OUTPUT_VARIABLES.contains(rv.toString())) {
-            throw new IllegalStateException("Properties.OUTPUT_VARIABLES needs to contain " + rv.toString());
-        }
-        Map<String, OutputVariable<?>> map = DebugStatisticsBackend.getLatestWritten();
-        Assert.assertNotNull(map);
-        OutputVariable<?> out = map.get(rv.toString());
-        return out;
-    }
-
-
-    protected void checkUnstable() throws IllegalStateException {
-        OutputVariable<?> unstable = getOutputVariable(RuntimeVariable.HadUnstableTests);
-        Assert.assertNotNull(unstable);
-        Assert.assertEquals(Boolean.FALSE, unstable.getValue());
-    }
-
-    /*
-     * this static variable is a safety net to be sure it is called only once.
-     * static variables are shared and not re-initialized
-     * during a sequence of test cases.
-     */
-    private static boolean hasBeenAlreadyRun = false;
 
     private static void runSetup() {
         if (hasBeenAlreadyRun) {
@@ -282,8 +112,6 @@ public class SystemTestBase {
 
         hasBeenAlreadyRun = true;
     }
-
-    //FIXME: these will change once com.examples goes to its own module
 
     private static String getExternalTarget() {
         String target = System.getProperty("user.dir") + File.separator + "external";
@@ -349,6 +177,166 @@ public class SystemTestBase {
         hasBeenAlreadyRun = false;
     }
 
+    @Before
+    public void checkIfValidName() {
+        String name = this.getClass().getName();
+        assertTrue("Invalid name for system test: " + name, name.endsWith("SystemTest"));
+    }
+
+    @After
+    public void resetStaticVariables() {
+        RuntimeInstrumentation.setAvoidInstrumentingShadedClasses(false);
+        RuntimeSettings.applyUIDTransformation = false;
+        TestCaseExecutor.getInstance().newObservers();
+        TestGenerationContext.getInstance().resetContext();
+        ClassReInitializer.resetSingleton();
+        System.setProperties(currentProperties);
+        Properties.getInstance().resetToDefaults();
+        ExceptionCoverageFactory.getGoals().clear();
+        Archive.getArchiveInstance().reset();
+    }
+
+    @Before
+    public void setDefaultPropertiesForTestCases() {
+
+        Properties.getInstance().resetToDefaults();
+
+        Properties.IS_RUNNING_A_SYSTEM_TEST = true;
+        RuntimeInstrumentation.setAvoidInstrumentingShadedClasses(true);
+
+        Properties.SHOW_PROGRESS = false;
+        Properties.SERIALIZE_RESULT = false;
+        Properties.JUNIT_TESTS = false;
+        Properties.PLOT = false;
+        Properties.CLASS_PREFIX = "";
+
+        Properties.STOPPING_CONDITION = StoppingCondition.MAXSTATEMENTS;
+        Properties.SEARCH_BUDGET = 30000;
+
+        Properties.GLOBAL_TIMEOUT = 120;
+        Properties.MINIMIZATION_TIMEOUT = 8;
+        Properties.EXTRA_TIMEOUT = 2;
+
+        Properties.ENABLE_ASSERTS_FOR_EVOSUITE = true;
+        Properties.CLIENT_ON_THREAD = true;
+        Properties.SANDBOX = false;
+        Properties.ERROR_BRANCHES = false;
+        Properties.CRITERION = new Criterion[]{Criterion.BRANCH};
+
+        Properties.NEW_STATISTICS = true;
+        Properties.STATISTICS_BACKEND = StatisticsBackend.DEBUG;
+
+        TestGenerationContext.getInstance().resetContext();
+        ClassReInitializer.resetSingleton();
+
+        //change seed every month
+        long seed = new GregorianCalendar().get(Calendar.MONTH);
+//		long seed = getSeed();
+        Randomness.setSeed(seed);
+
+        currentProperties = (java.util.Properties) System.getProperties().clone();
+
+        MockFramework.enable();
+    }
+
+    //FIXME: these will change once com.examples goes to its own module
+
+    /**
+     * Choose seed based on current month. If a test is re-run, then look at the
+     * next month, and so on in a %12 ring
+     *
+     * @return
+     */
+    private long getSeed() {
+
+        String id = this.getClass().getName() + "#" + name.getMethodName();
+        int counter = executionCounter.computeIfAbsent(id, c -> 0);
+
+        int month = (counter + new GregorianCalendar().get(Calendar.MONTH)) % 12;
+
+        executionCounter.put(id, counter + 1);
+
+        return month;
+    }
+
+    protected GeneticAlgorithm<?> do100percentLineTestOnStandardCriteria(Class<?> target) {
+        EvoSuite evosuite = new EvoSuite();
+
+        String targetClass = target.getCanonicalName();
+
+        Properties.TARGET_CLASS = targetClass;
+        Properties.CRITERION = standardCriteria;
+
+
+        String[] command = new String[]{"-generateSuite", "-class", targetClass};
+
+        Object result = evosuite.parseCommandLine(command);
+        GeneticAlgorithm<TestSuiteChromosome> ga = getGAFromResult(result);
+        TestSuiteChromosome best = ga.getBestIndividual();
+        System.out.println("EvolvedTestSuite:\n" + best);
+
+        double cov = best.getCoverageInstanceOf(LineCoverageSuiteFitness.class);
+
+        Assert.assertEquals("Non-optimal coverage: ", 1d, cov, 0.001);
+
+        return ga;
+    }
+
+    protected GeneticAlgorithm<?> do100percentLineTest(Class<?> target) {
+        EvoSuite evosuite = new EvoSuite();
+
+        String targetClass = target.getCanonicalName();
+
+        Properties.TARGET_CLASS = targetClass;
+        Properties.CRITERION = new Properties.Criterion[]{Properties.Criterion.LINE};
+
+        String[] command = new String[]{"-generateSuite", "-class", targetClass};
+
+        Object result = evosuite.parseCommandLine(command);
+        GeneticAlgorithm<TestSuiteChromosome> ga = getGAFromResult(result);
+        TestSuiteChromosome best = ga.getBestIndividual();
+        System.out.println("EvolvedTestSuite:\n" + best);
+
+        Assert.assertEquals("Non-optimal coverage: ", 1d, best.getCoverage(), 0.001);
+
+        return ga;
+    }
+
+    protected GeneticAlgorithm<?> doNonOptimalLineTest(Class<?> target) {
+        EvoSuite evosuite = new EvoSuite();
+
+        String targetClass = target.getCanonicalName();
+
+        Properties.TARGET_CLASS = targetClass;
+        Properties.CRITERION = new Properties.Criterion[]{Properties.Criterion.LINE};
+
+        String[] command = new String[]{"-generateSuite", "-class", targetClass};
+
+        Object result = evosuite.parseCommandLine(command);
+        GeneticAlgorithm<?> ga = getGAFromResult(result);
+        TestSuiteChromosome best = (TestSuiteChromosome) ga.getBestIndividual();
+        System.out.println("EvolvedTestSuite:\n" + best);
+
+        Assert.assertNotEquals("Unexpected optimal coverage: ", 1d, best.getCoverage(), 0.001);
+
+        return ga;
+    }
+
+    protected OutputVariable<?> getOutputVariable(RuntimeVariable rv) {
+        if (!Properties.OUTPUT_VARIABLES.contains(rv.toString())) {
+            throw new IllegalStateException("Properties.OUTPUT_VARIABLES needs to contain " + rv.toString());
+        }
+        Map<String, OutputVariable<?>> map = DebugStatisticsBackend.getLatestWritten();
+        Assert.assertNotNull(map);
+        OutputVariable<?> out = map.get(rv.toString());
+        return out;
+    }
+
+    protected void checkUnstable() throws IllegalStateException {
+        OutputVariable<?> unstable = getOutputVariable(RuntimeVariable.HadUnstableTests);
+        Assert.assertNotNull(unstable);
+        Assert.assertEquals(Boolean.FALSE, unstable.getValue());
+    }
 
     protected <T extends Chromosome<T>> GeneticAlgorithm<T> getGAFromResult(Object result) {
         assert (result instanceof List);

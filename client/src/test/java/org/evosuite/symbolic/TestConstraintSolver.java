@@ -42,6 +42,13 @@ import static org.junit.Assert.*;
 
 public class TestConstraintSolver {
 
+    private static void printConstraints(List<Constraint<?>> constraints) {
+        for (Constraint<?> constraint : constraints) {
+            System.out.println(constraint);
+        }
+
+    }
+
     private List<BranchCondition> executeTest(DefaultTestCase tc) {
         Properties.CLIENT_ON_THREAD = true;
         Properties.PRINT_TO_SYSTEM = true;
@@ -126,13 +133,6 @@ public class TestConstraintSolver {
         }
 
         return solverResult;
-    }
-
-    private static void printConstraints(List<Constraint<?>> constraints) {
-        for (Constraint<?> constraint : constraints) {
-            System.out.println(constraint);
-        }
-
     }
 
     /**

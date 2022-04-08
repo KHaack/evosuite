@@ -83,6 +83,73 @@ public class TestClusterGenerator {
         inheritanceTree = tree;
     }
 
+    /**
+     * This method returns is a given field is final or not.
+     * Since we might have removed the <code>final</code> modifier
+     * during our instrumentation, we also check the list of those
+     * static fields we have modified during the instrumentation.
+     *
+     * @param field field to check
+     * @return
+     */
+    public static boolean isFinalField(Field field) {
+        if (Properties.RESET_STATIC_FINAL_FIELDS) {
+            if (Modifier.isFinal(field.getModifiers())) {
+                return true;
+            } else {
+                String fieldName = field.getName();
+                final boolean isModifiedStaticField = ModifiedTargetStaticFields.getInstance().containsField(fieldName);
+                return isModifiedStaticField;
+            }
+        } else {
+            final boolean isFinalField = Modifier.isFinal(field.getModifiers());
+            return isFinalField;
+        }
+    }
+
+    private static Set<Class<?>> loadClasses(Collection<String> classNames) {
+        Set<Class<?>> loadedClasses = new LinkedHashSet<>();
+        for (String subClass : classNames) {
+            try {
+                Class<?> subClazz = Class.forName(subClass, false,
+                        TestGenerationContext.getInstance().getClassLoaderForSUT());
+                if (!TestUsageChecker.canUse(subClazz))
+                    continue;
+                if (subClazz.isInterface())
+                    continue;
+                if (Modifier.isAbstract(subClazz.getModifiers())) {
+                    if (!TestClusterUtils.hasStaticGenerator(subClazz))
+                        continue;
+                }
+                Class<?> mock = MockList.getMockClass(subClazz.getCanonicalName());
+                if (mock != null) {
+                    /*
+                     * If we are mocking this class, then such class should not
+                     * be used in the generated JUnit test cases, but rather its
+                     * mock.
+                     */
+                    // logger.debug("Adding mock " + mock + " instead of "
+                    // + clazz);
+                    subClazz = mock;
+                } else {
+
+                    if (!TestClusterUtils.checkIfCanUse(subClazz.getCanonicalName())) {
+                        continue;
+                    }
+                }
+
+                loadedClasses.add(subClazz);
+
+            } catch (ClassNotFoundException e) {
+                logger.error("Problem for " + Properties.TARGET_CLASS + ". Class not found: " + subClass, e);
+                logger.error("Removing class from inheritance tree");
+            }
+        }
+        return loadedClasses;
+    }
+
+    // -----------------------------------------------------------------------------
+
     public void generateCluster(CallGraph callGraph) throws RuntimeException, ClassNotFoundException {
 
         TestCluster.setInheritanceTree(inheritanceTree);
@@ -144,8 +211,6 @@ public class TestClusterGenerator {
 
         resolveDependencies(blackList);
     }
-
-    // -----------------------------------------------------------------------------
 
     private void handleSpecialCases() {
 
@@ -673,30 +738,6 @@ public class TestClusterGenerator {
         logger.info("Finished analyzing target class");
     }
 
-    /**
-     * This method returns is a given field is final or not.
-     * Since we might have removed the <code>final</code> modifier
-     * during our instrumentation, we also check the list of those
-     * static fields we have modified during the instrumentation.
-     *
-     * @param field field to check
-     * @return
-     */
-    public static boolean isFinalField(Field field) {
-        if (Properties.RESET_STATIC_FINAL_FIELDS) {
-            if (Modifier.isFinal(field.getModifiers())) {
-                return true;
-            } else {
-                String fieldName = field.getName();
-                final boolean isModifiedStaticField = ModifiedTargetStaticFields.getInstance().containsField(fieldName);
-                return isModifiedStaticField;
-            }
-        } else {
-            final boolean isFinalField = Modifier.isFinal(field.getModifiers());
-            return isFinalField;
-        }
-    }
-
     private void addDependencies(GenericConstructor constructor, int recursionLevel) {
         if (recursionLevel > Properties.CLUSTER_RECURSION) {
             logger.debug("Maximum recursion level reached, not adding dependencies of {}", constructor);
@@ -840,6 +881,10 @@ public class TestClusterGenerator {
             // break;
         }
     }
+
+    // ----------------------
+    // unused old methods
+    // ----------------------
 
     private boolean addDependencyClass(GenericClass<?> clazz, int recursionLevel) {
         if (recursionLevel > Properties.CLUSTER_RECURSION) {
@@ -997,51 +1042,6 @@ public class TestClusterGenerator {
             return false;
         }
         return true;
-    }
-
-    // ----------------------
-    // unused old methods
-    // ----------------------
-
-    private static Set<Class<?>> loadClasses(Collection<String> classNames) {
-        Set<Class<?>> loadedClasses = new LinkedHashSet<>();
-        for (String subClass : classNames) {
-            try {
-                Class<?> subClazz = Class.forName(subClass, false,
-                        TestGenerationContext.getInstance().getClassLoaderForSUT());
-                if (!TestUsageChecker.canUse(subClazz))
-                    continue;
-                if (subClazz.isInterface())
-                    continue;
-                if (Modifier.isAbstract(subClazz.getModifiers())) {
-                    if (!TestClusterUtils.hasStaticGenerator(subClazz))
-                        continue;
-                }
-                Class<?> mock = MockList.getMockClass(subClazz.getCanonicalName());
-                if (mock != null) {
-                    /*
-                     * If we are mocking this class, then such class should not
-                     * be used in the generated JUnit test cases, but rather its
-                     * mock.
-                     */
-                    // logger.debug("Adding mock " + mock + " instead of "
-                    // + clazz);
-                    subClazz = mock;
-                } else {
-
-                    if (!TestClusterUtils.checkIfCanUse(subClazz.getCanonicalName())) {
-                        continue;
-                    }
-                }
-
-                loadedClasses.add(subClazz);
-
-            } catch (ClassNotFoundException e) {
-                logger.error("Problem for " + Properties.TARGET_CLASS + ". Class not found: " + subClass, e);
-                logger.error("Removing class from inheritance tree");
-            }
-        }
-        return loadedClasses;
     }
 
     /**

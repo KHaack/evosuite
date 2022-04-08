@@ -26,6 +26,8 @@ import java.util.Set;
 
 public final class SmtOperatorCollector implements SmtExprVisitor<Void, Void> {
 
+    private final Set<Operator> operators = new HashSet<>();
+
     @Override
     public Void visit(SmtIntConstant n, Void arg) {
         return null;
@@ -55,8 +57,6 @@ public final class SmtOperatorCollector implements SmtExprVisitor<Void, Void> {
     public Void visit(SmtStringVariable n, Void arg) {
         return null;
     }
-
-    private final Set<Operator> operators = new HashSet<>();
 
     @Override
     public Void visit(SmtOperation n, Void arg) {

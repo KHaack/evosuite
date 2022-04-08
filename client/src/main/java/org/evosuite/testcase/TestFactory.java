@@ -70,21 +70,114 @@ import java.util.stream.Collectors;
 public class TestFactory {
 
     private static final Logger logger = LoggerFactory.getLogger(TestFactory.class);
-
-    /**
-     * Keep track of objects we are already trying to generate to avoid cycles
-     */
-    private final transient Set<GenericAccessibleObject<?>> currentRecursion = new LinkedHashSet<>();
-
     /**
      * Singleton instance
      */
     private static TestFactory instance = null;
-
+    /**
+     * Keep track of objects we are already trying to generate to avoid cycles
+     */
+    private final transient Set<GenericAccessibleObject<?>> currentRecursion = new LinkedHashSet<>();
     private ReflectionFactory reflectionFactory;
 
     private TestFactory() {
         reset();
+    }
+
+    public static TestFactory getInstance() {
+        if (instance == null)
+            instance = new TestFactory();
+        return instance;
+    }
+
+    private static void filterVariablesByCastClasses(Collection<VariableReference> variables) {
+        // Remove invalid classes if this is an Object.class reference
+        Set<GenericClass<?>> castClasses = CastClassManager.getInstance().getCastClasses();
+        Iterator<VariableReference> replacement = variables.iterator();
+        while (replacement.hasNext()) {
+            VariableReference r = replacement.next();
+            boolean isAssignable = false;
+            for (GenericClass<?> clazz : castClasses) {
+                if (r.isPrimitive())
+                    continue;
+                if (clazz.isAssignableFrom(r.getVariableClass())) {
+                    isAssignable = true;
+                    break;
+                }
+            }
+            if (!isAssignable && !r.getVariableClass().equals(Object.class))
+                replacement.remove();
+        }
+    }
+
+    private static void filterVariablesByClass(Collection<VariableReference> variables, Class<?> clazz) {
+        // Remove invalid classes if this is an Object.class reference
+        variables.removeIf(r -> !r.getVariableClass().equals(clazz));
+    }
+
+    /**
+     * Determine if the set of objects is sufficient to satisfy the set of
+     * dependencies
+     *
+     * @param dependencies
+     * @param objects
+     * @return
+     */
+    private static boolean dependenciesSatisfied(Set<Type> dependencies,
+                                                 List<VariableReference> objects) {
+        for (Type type : dependencies) {
+            boolean found = false;
+            for (VariableReference var : objects) {
+                if (var.getType().equals(type)) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found)
+                return false;
+        }
+        return true;
+    }
+
+    /**
+     * Retrieve the dependencies for a constructor
+     *
+     * @param constructor
+     * @return
+     */
+    private static Set<Type> getDependencies(GenericConstructor constructor) {
+        return new LinkedHashSet<>(Arrays.asList(constructor.getParameterTypes()));
+    }
+
+    /**
+     * Retrieve the dependencies for a field
+     *
+     * @param field
+     * @return
+     */
+    private static Set<Type> getDependencies(GenericField field) {
+        Set<Type> dependencies = new LinkedHashSet<>();
+        if (!field.isStatic()) {
+            dependencies.add(field.getOwnerType());
+        }
+
+        return dependencies;
+    }
+
+    /**
+     * Retrieve the dependencies for a method
+     *
+     * @param method
+     * @return
+     */
+    private static Set<Type> getDependencies(GenericMethod method) {
+        Set<Type> dependencies = new LinkedHashSet<>();
+        if (!method.isStatic()) {
+            dependencies.add(method.getOwnerType());
+        }
+        dependencies.addAll(Arrays.asList(method.getParameterTypes()));
+
+        return dependencies;
     }
 
     /**
@@ -93,12 +186,6 @@ public class TestFactory {
     public void reset() {
         currentRecursion.clear();
         reflectionFactory = null;
-    }
-
-    public static TestFactory getInstance() {
-        if (instance == null)
-            instance = new TestFactory();
-        return instance;
     }
 
     /**
@@ -166,7 +253,6 @@ public class TestFactory {
             return false;
         }
     }
-
 
     public VariableReference addFunctionalMock(TestCase test, Type type, int position, int recursionDepth)
             throws ConstructionFailedException, IllegalArgumentException {
@@ -700,7 +786,6 @@ public class TestFactory {
         return attemptGeneration(test, type, position, 0, false, null, true, true);
     }
 
-
     /**
      * Try to generate an object of a given type
      *
@@ -1165,7 +1250,6 @@ public class TestFactory {
         return ret;
     }
 
-
     /**
      * Creates a new object of the given complex (i.e. non-primitive) {@code type} and adds it to
      * the {@code test} case at the desired {@code position}. If the test case already contains an
@@ -1355,7 +1439,6 @@ public class TestFactory {
         logger.debug("Success in generation of type {} at position {}", type, position);
         return ret;
     }
-
 
     /**
      * In the given {@code test} case, tries to create a new variable of type {@code parameterType}
@@ -1707,33 +1790,6 @@ public class TestFactory {
         return positions;
     }
 
-    private static void filterVariablesByCastClasses(Collection<VariableReference> variables) {
-        // Remove invalid classes if this is an Object.class reference
-        Set<GenericClass<?>> castClasses = CastClassManager.getInstance().getCastClasses();
-        Iterator<VariableReference> replacement = variables.iterator();
-        while (replacement.hasNext()) {
-            VariableReference r = replacement.next();
-            boolean isAssignable = false;
-            for (GenericClass<?> clazz : castClasses) {
-                if (r.isPrimitive())
-                    continue;
-                if (clazz.isAssignableFrom(r.getVariableClass())) {
-                    isAssignable = true;
-                    break;
-                }
-            }
-            if (!isAssignable && !r.getVariableClass().equals(Object.class))
-                replacement.remove();
-        }
-    }
-
-
-    private static void filterVariablesByClass(Collection<VariableReference> variables, Class<?> clazz) {
-        // Remove invalid classes if this is an Object.class reference
-        variables.removeIf(r -> !r.getVariableClass().equals(clazz));
-    }
-
-
     /**
      * @param test
      * @param position
@@ -1861,71 +1917,6 @@ public class TestFactory {
         // Remove everything else
         boolean deleted = deleteStatement(test, position);
         return deleted || changed;
-    }
-
-    /**
-     * Determine if the set of objects is sufficient to satisfy the set of
-     * dependencies
-     *
-     * @param dependencies
-     * @param objects
-     * @return
-     */
-    private static boolean dependenciesSatisfied(Set<Type> dependencies,
-                                                 List<VariableReference> objects) {
-        for (Type type : dependencies) {
-            boolean found = false;
-            for (VariableReference var : objects) {
-                if (var.getType().equals(type)) {
-                    found = true;
-                    break;
-                }
-            }
-            if (!found)
-                return false;
-        }
-        return true;
-    }
-
-    /**
-     * Retrieve the dependencies for a constructor
-     *
-     * @param constructor
-     * @return
-     */
-    private static Set<Type> getDependencies(GenericConstructor constructor) {
-        return new LinkedHashSet<>(Arrays.asList(constructor.getParameterTypes()));
-    }
-
-    /**
-     * Retrieve the dependencies for a field
-     *
-     * @param field
-     * @return
-     */
-    private static Set<Type> getDependencies(GenericField field) {
-        Set<Type> dependencies = new LinkedHashSet<>();
-        if (!field.isStatic()) {
-            dependencies.add(field.getOwnerType());
-        }
-
-        return dependencies;
-    }
-
-    /**
-     * Retrieve the dependencies for a method
-     *
-     * @param method
-     * @return
-     */
-    private static Set<Type> getDependencies(GenericMethod method) {
-        Set<Type> dependencies = new LinkedHashSet<>();
-        if (!method.isStatic()) {
-            dependencies.add(method.getOwnerType());
-        }
-        dependencies.addAll(Arrays.asList(method.getParameterTypes()));
-
-        return dependencies;
     }
 
     /**

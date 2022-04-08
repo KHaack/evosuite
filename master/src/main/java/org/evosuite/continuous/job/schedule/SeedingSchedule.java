@@ -49,48 +49,6 @@ public class SeedingSchedule extends OneTimeSchedule {
         this.base = base;
     }
 
-
-    @Override
-    protected List<JobDefinition> createScheduleOnce() {
-        List<JobDefinition> jobs = base.createScheduleOnce();
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("Base schedule: " + jobs);
-        }
-
-        return addDepenciesAndSort(jobs);
-    }
-
-    @Override
-    protected List<JobDefinition> createScheduleForWhenNotEnoughBudget() {
-        /*
-         * even if we do not have enough budget to target all CUTs, we
-         * still want to use seeding.
-         */
-        List<JobDefinition> jobs = super.createScheduleForWhenNotEnoughBudget();
-        if (logger.isDebugEnabled()) {
-            logger.debug("Base, reduced schedule: " + jobs);
-        }
-        return addDepenciesAndSort(jobs);
-    }
-
-
-    protected List<JobDefinition> addDepenciesAndSort(List<JobDefinition> jobs) {
-        jobs = addDependenciesForSeeding(jobs);
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("Schedule after adding dependencies: " + jobs);
-        }
-
-        jobs = getSortedToSatisfyDependencies(jobs);
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("Final schedule after sorting: " + jobs);
-        }
-
-        return jobs;
-    }
-
     /**
      * Try (best effort) to sort the jobs in a way in which dependent jobs
      * are executed first. Try to maintain the relative order of the input list.
@@ -165,6 +123,45 @@ public class SeedingSchedule extends OneTimeSchedule {
         return out;
     }
 
+    @Override
+    protected List<JobDefinition> createScheduleOnce() {
+        List<JobDefinition> jobs = base.createScheduleOnce();
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("Base schedule: " + jobs);
+        }
+
+        return addDepenciesAndSort(jobs);
+    }
+
+    @Override
+    protected List<JobDefinition> createScheduleForWhenNotEnoughBudget() {
+        /*
+         * even if we do not have enough budget to target all CUTs, we
+         * still want to use seeding.
+         */
+        List<JobDefinition> jobs = super.createScheduleForWhenNotEnoughBudget();
+        if (logger.isDebugEnabled()) {
+            logger.debug("Base, reduced schedule: " + jobs);
+        }
+        return addDepenciesAndSort(jobs);
+    }
+
+    protected List<JobDefinition> addDepenciesAndSort(List<JobDefinition> jobs) {
+        jobs = addDependenciesForSeeding(jobs);
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("Schedule after adding dependencies: " + jobs);
+        }
+
+        jobs = getSortedToSatisfyDependencies(jobs);
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("Final schedule after sorting: " + jobs);
+        }
+
+        return jobs;
+    }
 
     /**
      * For each input job, identify all the others jobs we want to generate

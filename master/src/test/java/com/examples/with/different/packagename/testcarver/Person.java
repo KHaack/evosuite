@@ -25,6 +25,14 @@ package com.examples.with.different.packagename.testcarver;
  */
 public class Person extends Owner {
 
+    private final String firstName;
+    private final String lastName;
+
+    public Person(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
     /**
      * @return the firstName
      */
@@ -37,14 +45,5 @@ public class Person extends Owner {
      */
     public String getLastName() {
         return lastName;
-    }
-
-    private final String firstName;
-
-    private final String lastName;
-
-    public Person(String firstName, String lastName) {
-        this.firstName = firstName;
-        this.lastName = lastName;
     }
 }

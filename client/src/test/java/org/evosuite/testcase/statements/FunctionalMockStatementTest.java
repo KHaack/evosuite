@@ -63,27 +63,6 @@ public class FunctionalMockStatementTest {
 
     private static final int DEFAULT_LIMIT = Properties.FUNCTIONAL_MOCKING_INPUT_LIMIT;
 
-    @After
-    public void tearDown() {
-        Properties.FUNCTIONAL_MOCKING_INPUT_LIMIT = DEFAULT_LIMIT;
-    }
-
-    public interface Foo {
-        boolean getBoolean();
-
-        int getInt();
-
-        double getDouble();
-
-        String getString();
-
-        long getLong();
-
-        Object getObject();
-
-        String[] getStringArray(int[] input);
-    }
-
     public static int base(Foo foo) {
         return foo.getInt();
     }
@@ -118,6 +97,11 @@ public class FunctionalMockStatementTest {
         }
     }
 
+    @After
+    public void tearDown() {
+        Properties.FUNCTIONAL_MOCKING_INPUT_LIMIT = DEFAULT_LIMIT;
+    }
+
     private Scope execute(TestCase tc) throws Exception {
         Scope scope = new Scope();
         for (Statement st : tc) {
@@ -125,43 +109,6 @@ public class FunctionalMockStatementTest {
         }
         return scope;
     }
-
-    static class PackageLevel {
-        PackageLevel() {
-        }
-    }
-
-    public static class AClassWithPLMethod {
-
-        String foo() {
-            return "Value returned by package-level access method";
-        }
-    }
-
-    public static class OverrideToString {
-        @Override
-        public String toString() {
-            return "foo";
-        }
-    }
-
-    public static abstract class OverrideToStringAbstract implements java.io.Serializable {
-        @Override
-        public String toString() {
-            return "foo";
-        }
-
-        public abstract double foo();
-
-        public int bar() {
-            return 1;
-        }
-
-        private static final long serialVersionUID = -8742448824652078965L;
-    }
-
-    //----------------------------------------------------------------------------------
-
 
     @Ignore
     @Test
@@ -202,19 +149,19 @@ public class FunctionalMockStatementTest {
         assertEquals(foo, number.toString());
     }
 
-
     @Test
     public void testConfirmNumberExternalNoMockJVMNonDeterminism() throws Exception {
         RuntimeSettings.mockJVMNonDeterminism = false;
         testConfirmNumberExternal();
     }
 
+    //----------------------------------------------------------------------------------
+
     @Test
     public void testConfirmNumberExternalWithMockJVMNonDeterminism() throws Exception {
         RuntimeSettings.mockJVMNonDeterminism = true;
         testConfirmNumberExternal();
     }
-
 
     private void testConfirmNumberExternal() throws Exception {
         assertEquals(IssueWithNumber.RESULT, IssueWithNumber.getResult());
@@ -232,7 +179,6 @@ public class FunctionalMockStatementTest {
 
         assertEquals(IssueWithNumber.RESULT, res);
     }
-
 
     @Test
     public void testConfirmPackageLevel() throws Exception {
@@ -262,7 +208,6 @@ public class FunctionalMockStatementTest {
         assertNotNull(m.invoke(original));
         assertNull(m.invoke(mocked));
     }
-
 
     @Test
     public void testConfirmCast() {
@@ -341,7 +286,6 @@ public class FunctionalMockStatementTest {
         }
     }
 
-
     @Test
     public void testPackageLevel_local() throws Exception {
         TestCase tc = new DefaultTestCase();
@@ -358,7 +302,6 @@ public class FunctionalMockStatementTest {
         //tc.addStatement(mockStmt);
         //execute(tc);
     }
-
 
     @Test
     public void testPackageLevel_differentPackage() throws Exception {
@@ -442,7 +385,6 @@ public class FunctionalMockStatementTest {
         tc.addStatement(mockStmt);
         execute(tc);
     }
-
 
     @Test
     public void testLimit() throws Exception {
@@ -530,7 +472,6 @@ public class FunctionalMockStatementTest {
         Assert.assertEquals(LOOP_0, mockStmt.getNumParameters());
     }
 
-
     @Test
     public void testAll_once() throws Exception {
         TestCase tc = new DefaultTestCase();
@@ -574,7 +515,6 @@ public class FunctionalMockStatementTest {
         List<Type> types = mockStmt.updateMockedMethods();
         Assert.assertEquals(14, types.size());
     }
-
 
     @Test
     public void testArray() throws Exception {
@@ -675,6 +615,57 @@ public class FunctionalMockStatementTest {
 
         val = (Integer) scope.getObject(result);
         Assert.assertEquals(MOCKED_VALUE, val.intValue());
+    }
+
+
+    public interface Foo {
+        boolean getBoolean();
+
+        int getInt();
+
+        double getDouble();
+
+        String getString();
+
+        long getLong();
+
+        Object getObject();
+
+        String[] getStringArray(int[] input);
+    }
+
+    static class PackageLevel {
+        PackageLevel() {
+        }
+    }
+
+    public static class AClassWithPLMethod {
+
+        String foo() {
+            return "Value returned by package-level access method";
+        }
+    }
+
+    public static class OverrideToString {
+        @Override
+        public String toString() {
+            return "foo";
+        }
+    }
+
+    public static abstract class OverrideToStringAbstract implements java.io.Serializable {
+        private static final long serialVersionUID = -8742448824652078965L;
+
+        @Override
+        public String toString() {
+            return "foo";
+        }
+
+        public abstract double foo();
+
+        public int bar() {
+            return 1;
+        }
     }
 
 }

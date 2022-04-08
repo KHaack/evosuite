@@ -38,12 +38,9 @@ import java.util.Set;
 public class MutationTimeoutStoppingCondition<T extends Chromosome<T>>
         extends StoppingConditionImpl<T> {
 
-    private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(MutationTimeoutStoppingCondition.class);
-
-    public static Map<Mutation, Integer> timeouts = new HashMap<>();
-
     private static final long serialVersionUID = -7347443938884126325L;
-
+    private static final Set<Mutation> disabled = new HashSet<>();
+    public static Map<Mutation, Integer> timeouts = new HashMap<>();
     private static int timeout = 0;
 
     private static boolean hasException = false;
@@ -51,8 +48,7 @@ public class MutationTimeoutStoppingCondition<T extends Chromosome<T>>
     private static Set<Mutation> exceptions = new HashSet<>();
 
     private static int MAX_TIMEOUTS = Properties.MUTATION_TIMEOUTS;
-
-    private static final Set<Mutation> disabled = new HashSet<>();
+    private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(MutationTimeoutStoppingCondition.class);
 
     public MutationTimeoutStoppingCondition() {
         // empty constructor, only static fields
@@ -60,11 +56,6 @@ public class MutationTimeoutStoppingCondition<T extends Chromosome<T>>
 
     public MutationTimeoutStoppingCondition(MutationTimeoutStoppingCondition<?> that) {
         // empty copy constructor
-    }
-
-    @Override
-    public MutationTimeoutStoppingCondition<T> clone() {
-        return new MutationTimeoutStoppingCondition<>(this);
     }
 
     /**
@@ -75,82 +66,6 @@ public class MutationTimeoutStoppingCondition<T extends Chromosome<T>>
      */
     public static boolean isDisabled(Mutation mutation) {
         return disabled.contains(mutation);
-    }
-
-    /* (non-Javadoc)
-     * @see org.evosuite.ga.StoppingCondition#getCurrentValue()
-     */
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public long getCurrentValue() {
-        if (Properties.STRATEGY != Strategy.ONEBRANCH) {
-            return 0;
-        } else {
-            return timeout;
-        }
-    }
-
-    /* (non-Javadoc)
-     * @see org.evosuite.ga.StoppingCondition#isFinished()
-     */
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean isFinished() {
-        logger.debug("Number of timeouts registered for this mutant: " + timeouts + "/"
-                + MAX_TIMEOUTS);
-
-        if (Properties.STRATEGY != Strategy.ONEBRANCH) {
-            return false;
-        }
-
-        if (timeout >= MAX_TIMEOUTS) {
-            logger.debug("Mutation timed out, stopping search");
-        }
-        return timeout >= MAX_TIMEOUTS || hasException;
-    }
-
-    /* (non-Javadoc)
-     * @see org.evosuite.ga.StoppingCondition#reset()
-     */
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void reset() {
-        if (Properties.STRATEGY != Strategy.ONEBRANCH) {
-            timeouts = new HashMap<>();
-            exceptions = new HashSet<>();
-        } else {
-            timeout = 0;
-            hasException = false;
-        }
-    }
-
-    /* (non-Javadoc)
-     * @see org.evosuite.ga.StoppingCondition#setLimit(int)
-     */
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setLimit(long limit) {
-        MAX_TIMEOUTS = (int) limit;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public long getLimit() {
-        return MAX_TIMEOUTS;
     }
 
     /**
@@ -178,7 +93,9 @@ public class MutationTimeoutStoppingCondition<T extends Chromosome<T>>
         }
     }
 
-    // TODO: Still need a good way to call this
+    /* (non-Javadoc)
+     * @see org.evosuite.ga.StoppingCondition#getCurrentValue()
+     */
 
     /**
      * <p>raisedException</p>
@@ -194,6 +111,93 @@ public class MutationTimeoutStoppingCondition<T extends Chromosome<T>>
         disabled.add(mutation);
     }
 
+    /* (non-Javadoc)
+     * @see org.evosuite.ga.StoppingCondition#isFinished()
+     */
+
+    public static void resetStatic() {
+        timeouts.clear();
+        exceptions.clear();
+        disabled.clear();
+        timeout = 0;
+        hasException = false;
+    }
+
+    /* (non-Javadoc)
+     * @see org.evosuite.ga.StoppingCondition#reset()
+     */
+
+    @Override
+    public MutationTimeoutStoppingCondition<T> clone() {
+        return new MutationTimeoutStoppingCondition<>(this);
+    }
+
+    /* (non-Javadoc)
+     * @see org.evosuite.ga.StoppingCondition#setLimit(int)
+     */
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public long getCurrentValue() {
+        if (Properties.STRATEGY != Strategy.ONEBRANCH) {
+            return 0;
+        } else {
+            return timeout;
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isFinished() {
+        logger.debug("Number of timeouts registered for this mutant: " + timeouts + "/"
+                + MAX_TIMEOUTS);
+
+        if (Properties.STRATEGY != Strategy.ONEBRANCH) {
+            return false;
+        }
+
+        if (timeout >= MAX_TIMEOUTS) {
+            logger.debug("Mutation timed out, stopping search");
+        }
+        return timeout >= MAX_TIMEOUTS || hasException;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void reset() {
+        if (Properties.STRATEGY != Strategy.ONEBRANCH) {
+            timeouts = new HashMap<>();
+            exceptions = new HashSet<>();
+        } else {
+            timeout = 0;
+            hasException = false;
+        }
+    }
+
+    // TODO: Still need a good way to call this
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public long getLimit() {
+        return MAX_TIMEOUTS;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setLimit(long limit) {
+        MAX_TIMEOUTS = (int) limit;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -202,14 +206,6 @@ public class MutationTimeoutStoppingCondition<T extends Chromosome<T>>
         if (Properties.STRATEGY == Strategy.ONEBRANCH) {
             timeout = (int) value;
         }
-    }
-
-    public static void resetStatic() {
-        timeouts.clear();
-        exceptions.clear();
-        disabled.clear();
-        timeout = 0;
-        hasException = false;
     }
 
 }

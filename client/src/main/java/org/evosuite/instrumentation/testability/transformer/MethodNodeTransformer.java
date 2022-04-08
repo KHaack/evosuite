@@ -38,31 +38,28 @@ import java.util.Map;
 public class MethodNodeTransformer {
 
     /**
+     * Types of the local variables of the method visited by this adapter.
+     */
+    protected final List<Type> localTypes = new ArrayList<>();
+    /**
      * Mapping from old to new local variable indexes. A local variable at index
      * i of size 1 is remapped to 'mapping[2*i]', while a local variable at
      * index i of size 2 is remapped to 'mapping[2*i+1]'.
      */
     protected int[] mapping = new int[40];
-
     /**
      * Array used to store stack map local variable types after remapping.
      */
     protected Object[] newLocals = new Object[20];
-
     /**
      * Index of the first local variable, after formal parameters.
      */
     protected int firstLocal;
-
     /**
      * Index of the next local variable to be created by {@link #newLocal}.
      */
     protected int nextLocal;
-
-    /**
-     * Types of the local variables of the method visited by this adapter.
-     */
-    protected final List<Type> localTypes = new ArrayList<>();
+    protected Map<Integer, Integer> parameterToLocalMap = new HashMap<>();
 
     /**
      * <p>transform</p>
@@ -207,6 +204,9 @@ public class MethodNodeTransformer {
         return arrayInsnNode;
     }
 
+
+    // TODO: Everything from here on needs to be finished, it is just copy&amp;paste for now
+
     protected void setupLocals(MethodNode mn) {
         Type[] args = Type.getArgumentTypes(mn.desc);
         nextLocal = (Opcodes.ACC_STATIC & mn.access) == 0 ? 1 : 0;
@@ -215,9 +215,6 @@ public class MethodNodeTransformer {
         }
         firstLocal = nextLocal;
     }
-
-
-    // TODO: Everything from here on needs to be finished, it is just copy&amp;paste for now
 
     /**
      * Generates the instruction to store the top stack value in the given local
@@ -239,7 +236,6 @@ public class MethodNodeTransformer {
     public void loadLocal(final int local) {
         loadInsn(getLocalType(local), local);
     }
-
 
     /**
      * Returns the type of the given local variable.
@@ -340,8 +336,6 @@ public class MethodNodeTransformer {
         // TODO: Insert the following
         // new VarInsnNode(type.getOpcode(Opcodes.ILOAD), index);
     }
-
-    protected Map<Integer, Integer> parameterToLocalMap = new HashMap<>();
 
     protected void popParametersToLocals(MethodNode mn) {
         Type[] args = Type.getArgumentTypes(mn.desc);

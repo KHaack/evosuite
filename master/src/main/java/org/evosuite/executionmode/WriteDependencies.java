@@ -46,9 +46,8 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 public class WriteDependencies {
 
-    private static final Logger logger = LoggerFactory.getLogger(WriteDependencies.class);
-
     public static final String NAME = "writeDependencies";
+    private static final Logger logger = LoggerFactory.getLogger(WriteDependencies.class);
 
     public static Option getOption() {
         return new Option(NAME, true, "write the dependencies of a target class to file");

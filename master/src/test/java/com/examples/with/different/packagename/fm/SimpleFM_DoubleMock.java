@@ -24,19 +24,19 @@ package com.examples.with.different.packagename.fm;
  */
 public class SimpleFM_DoubleMock {
 
-    public interface Foo {
-        boolean foo();
-    }
-
-    public interface Bar {
-        boolean bar();
-    }
-
     public static boolean something(Foo foo, Bar bar) {
         if (foo.foo() && bar.bar()) {
             return true;
         } else {
             return false;
         }
+    }
+
+    public interface Foo {
+        boolean foo();
+    }
+
+    public interface Bar {
+        boolean bar();
     }
 }

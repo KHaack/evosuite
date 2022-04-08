@@ -35,6 +35,8 @@ import static org.junit.Assert.assertFalse;
 
 public class TestConcolicReflection {
 
+    private static final int DEFAULT_CONCOLIC_TIMEOUT = Properties.CONCOLIC_TIMEOUT;
+
     private DefaultTestCase buildClassNewInstanceTestCase() throws NoSuchMethodException, SecurityException {
         TestCaseBuilder tc = new TestCaseBuilder();
         VariableReference int0 = tc.appendIntPrimitive(10);
@@ -84,8 +86,6 @@ public class TestConcolicReflection {
         tc.appendMethod(null, method, int0);
         return tc.getDefaultTestCase();
     }
-
-    private static final int DEFAULT_CONCOLIC_TIMEOUT = Properties.CONCOLIC_TIMEOUT;
 
     @After
     public void restoreSettings() {

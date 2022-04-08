@@ -28,8 +28,8 @@ public class PathFinderDFSIterator<E> implements Iterator<E> {
     private final Set<E> visited = new HashSet<>();
     private final Deque<Iterator<E>> stack = new LinkedList<>();
     private final Graph<E> graph;
-    private E next;
     private final Set<List<E>> paths = new HashSet<>();
+    private E next;
     private List<E> currentPath = new ArrayList<>();
     private boolean reversed = false;
 

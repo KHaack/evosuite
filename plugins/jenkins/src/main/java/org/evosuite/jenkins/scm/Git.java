@@ -57,8 +57,8 @@ import jenkins.plugins.git.GitSCMSource;
  */
 public class Git implements SCM {
 
-    private GitClient gitClient;
     private final String remote;
+    private GitClient gitClient;
 
     public Git(GitSCM gitSCM, AbstractBuild<?, ?> build, BuildListener listener)
             throws IOException, InterruptedException {

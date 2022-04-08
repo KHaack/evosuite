@@ -42,17 +42,15 @@ import java.util.Map;
 public class ArrayIndex extends VariableReferenceImpl {
 
     private static final long serialVersionUID = -4492869536935582711L;
-
-    /**
-     * Index in the array
-     */
-    private List<Integer> indices;
-
     /**
      * If this variable is contained in an array, this is the reference to the
      * array
      */
     protected ArrayReference array = null;
+    /**
+     * Index in the array
+     */
+    private List<Integer> indices;
 
     /**
      * Constructor
@@ -531,6 +529,17 @@ public class ArrayIndex extends VariableReferenceImpl {
 
     /**
      * <p>
+     * getArrayIndices
+     * </p>
+     *
+     * @return a {@link java.util.List} object.
+     */
+    public List<Integer> getArrayIndices() {
+        return indices;
+    }
+
+    /**
+     * <p>
      * setArrayIndices
      * </p>
      *
@@ -540,16 +549,5 @@ public class ArrayIndex extends VariableReferenceImpl {
         this.indices = new ArrayList<>();
         for (Integer i : indices)
             this.indices.add(i);
-    }
-
-    /**
-     * <p>
-     * getArrayIndices
-     * </p>
-     *
-     * @return a {@link java.util.List} object.
-     */
-    public List<Integer> getArrayIndices() {
-        return indices;
     }
 }

@@ -158,21 +158,15 @@ import java.util.Set;
  */
 public class DefUseCoverageTestFitness extends TestFitnessFunction {
 
-    public enum DefUsePairType {
-        INTRA_METHOD, INTER_METHOD, INTRA_CLASS, PARAMETER
-    }
-
     private static final long serialVersionUID = 1L;
-
+    // debugging flags
+    private final static boolean DEBUG = Properties.DEFUSE_DEBUG_MODE;
+    private final static boolean PRINT_DEBUG = false;
     /**
      * Constant <code>singleFitnessTime=0l</code>
      */
     public static long singleFitnessTime = 0L;
-
-    // debugging flags
-    private final static boolean DEBUG = Properties.DEFUSE_DEBUG_MODE;
-    private final static boolean PRINT_DEBUG = false;
-
+    private final transient ExecutionTrace coveringTrace = null;
     // the Definition-Use pair
     private String goalVariable;
     private transient Use goalUse;
@@ -185,11 +179,7 @@ public class DefUseCoverageTestFitness extends TestFitnessFunction {
 
     // coverage information
     private Integer coveringObjectId = -1;
-    private final transient ExecutionTrace coveringTrace = null;
     private boolean covered = false;
-
-    // constructors
-
     /**
      * Creates a Definition-Use-Coverage goal for the given Definition and Use
      *
@@ -205,6 +195,8 @@ public class DefUseCoverageTestFitness extends TestFitnessFunction {
 
         initRegularDefUse(def, use, type);
     }
+
+    // constructors
 
     /**
      * Used for Parameter-Uses
@@ -394,8 +386,6 @@ public class DefUseCoverageTestFitness extends TestFitnessFunction {
         return r;
     }
 
-    // debugging methods
-
     /**
      * <p>
      * setCovered
@@ -418,6 +408,8 @@ public class DefUseCoverageTestFitness extends TestFitnessFunction {
             if (!DefUseFitnessCalculator.traceCoversGoal(this, individual, trace))
                 throw new IllegalStateException("calculation flawed. goal wasn't covered");
     }
+
+    // debugging methods
 
     private void preFitnessDebugInfo(ExecutionResult result, boolean respectPrintFlag) {
         if (PRINT_DEBUG || !respectPrintFlag) {
@@ -445,8 +437,6 @@ public class DefUseCoverageTestFitness extends TestFitnessFunction {
         }
     }
 
-    // 	---			Getter 		---
-
     /**
      * <p>
      * Getter for the field <code>coveringTrace</code>.
@@ -457,6 +447,8 @@ public class DefUseCoverageTestFitness extends TestFitnessFunction {
     public ExecutionTrace getCoveringTrace() {
         return coveringTrace;
     }
+
+    // 	---			Getter 		---
 
     /**
      * <p>
@@ -570,8 +562,6 @@ public class DefUseCoverageTestFitness extends TestFitnessFunction {
         return goalDefinition == null;
     }
 
-    // ---		Inherited from Object 			---
-
     /**
      * {@inheritDoc}
      */
@@ -590,6 +580,8 @@ public class DefUseCoverageTestFitness extends TestFitnessFunction {
         r.append(goalUse.toString());
         return r.toString();
     }
+
+    // ---		Inherited from Object 			---
 
     /**
      * {@inheritDoc}
@@ -716,5 +708,9 @@ public class DefUseCoverageTestFitness extends TestFitnessFunction {
             oos.writeObject(goalDefinition.defId);
         else
             oos.writeObject(0);
+    }
+
+    public enum DefUsePairType {
+        INTRA_METHOD, INTER_METHOD, INTRA_CLASS, PARAMETER
     }
 }

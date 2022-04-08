@@ -29,18 +29,20 @@ import org.evosuite.utils.Randomness;
 public class ConstantPoolManager {
 
     private static final ConstantPoolManager instance = new ConstantPoolManager();
-
-    private ConstantPool[] pools;
-    private double[] probabilities;
-
     /*
      * We treat it in a special way, for now, just for making experiments
      * easier to run
      */
     private static final int DYNAMIC_POOL_INDEX = 2;
+    private ConstantPool[] pools;
+    private double[] probabilities;
 
     private ConstantPoolManager() {
         init();
+    }
+
+    public static ConstantPoolManager getInstance() {
+        return instance;
     }
 
     private void init() {
@@ -75,10 +77,6 @@ public class ConstantPoolManager {
         for (int i = 0; i < probabilities.length; i++) {
             probabilities[i] = probabilities[i] * delta;
         }
-    }
-
-    public static ConstantPoolManager getInstance() {
-        return instance;
     }
 
     /*

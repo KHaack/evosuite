@@ -42,9 +42,8 @@ import java.util.List;
  */
 public class MutationFactory extends AbstractFitnessFactory<MutationTestFitness> {
 
-    private boolean strong = true;
-
     protected List<MutationTestFitness> goals = null;
+    private boolean strong = true;
 
     /**
      * <p>

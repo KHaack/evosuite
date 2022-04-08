@@ -40,17 +40,13 @@ import java.lang.reflect.Modifier;
 import java.util.*;
 
 public final class Instrumenter {
-    private int captureId;
-
     public static final int CAPTURE_ID_JAVA_UTIL_DATE = Integer.MIN_VALUE;
     public static final int CAPTURE_ID_JAVA_UTIL_CALENDAR = Integer.MIN_VALUE + 1;
     public static final int CAPTURE_ID_JAVA_TEXT_DATEFORMAT = Integer.MIN_VALUE + 2;
     public static final int CAPTURE_ID_JAVA_TEXT_SIMPLEDATEFORMAT = Integer.MIN_VALUE + 3;
-
-
     public static final String WRAP_NAME_PREFIX = "_sw_prototype_original_";
-
     private static final Logger logger = LoggerFactory.getLogger(Instrumenter.class);
+    private int captureId;
 
     public Instrumenter() {
         this.captureId = CAPTURE_ID_JAVA_UTIL_DATE + 4;

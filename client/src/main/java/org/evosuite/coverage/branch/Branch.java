@@ -53,20 +53,17 @@ public class Branch implements Serializable, Comparable<Branch> {
     private static final long serialVersionUID = -4732587925060748263L;
 
     private final int actualBranchId;
-
+    private final BytecodeInstruction instruction;
     private boolean isSwitch = false;
-
     // for switch branches this value indicates to which case of the switch this
     // branch belongs. if this value is null and this is in fact a switch this
     // means this branch is the default: case of that switch
     private Integer targetCaseValue = null;
-
-    private final BytecodeInstruction instruction;
-
     /**
      * Keep track of branches that were introduced as part of TT
      */
     private boolean isInstrumented = false;
+    private boolean ignoreFalse = false;
 
     /**
      * Constructor for usual jump instruction Branches, that are not SWITCH
@@ -297,8 +294,6 @@ public class Branch implements Serializable, Comparable<Branch> {
     public void setInstrumented(boolean isInstrumented) {
         this.isInstrumented = isInstrumented;
     }
-
-    private boolean ignoreFalse = false;
 
     public boolean ignoreFalseBranch() {
         return ignoreFalse;

@@ -62,21 +62,6 @@ public class JobHandler extends Thread {
         this.executor = executor;
     }
 
-    public void setUpShutdownHook() {
-        /*
-         * Just to be sure, in case this thread-class is
-         * not properly stopped in case of problems
-         */
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            @Override
-            public void run() {
-                if (latestProcess != null) {
-                    latestProcess.destroy();
-                }
-            }
-        });
-    }
-
     /**
      * Return a pool of handlers, all sharing same queue and latch
      *
@@ -90,6 +75,21 @@ public class JobHandler extends Thread {
             jobs[i].setUpShutdownHook();
         }
         return jobs;
+    }
+
+    public void setUpShutdownHook() {
+        /*
+         * Just to be sure, in case this thread-class is
+         * not properly stopped in case of problems
+         */
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                if (latestProcess != null) {
+                    latestProcess.destroy();
+                }
+            }
+        });
     }
 
     public void stopExecution() {

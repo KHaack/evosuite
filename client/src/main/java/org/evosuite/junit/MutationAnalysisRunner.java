@@ -62,18 +62,6 @@ public class MutationAnalysisRunner extends BlockJUnit4ClassRunner {
         return killedMutants;
     }
 
-    private static class SimpleRunListener extends RunListener {
-        public boolean hasFailure = false;
-        public Failure lastFailure = null;
-
-        @Override
-        public void testFailure(Failure failure) throws Exception {
-            hasFailure = true;
-            lastFailure = failure;
-            super.testFailure(failure);
-        }
-    }
-
     @Override
     protected void runChild(FrameworkMethod method, RunNotifier notifier) {
         logger.info("Running method " + method.getName());
@@ -128,5 +116,17 @@ public class MutationAnalysisRunner extends BlockJUnit4ClassRunner {
         }
         notifier.removeListener(resultListener);
         logger.info("Done with " + method.getName());
+    }
+
+    private static class SimpleRunListener extends RunListener {
+        public boolean hasFailure = false;
+        public Failure lastFailure = null;
+
+        @Override
+        public void testFailure(Failure failure) throws Exception {
+            hasFailure = true;
+            lastFailure = failure;
+            super.testFailure(failure);
+        }
     }
 }

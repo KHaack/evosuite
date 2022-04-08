@@ -42,6 +42,23 @@ final class ExprToCVC4Visitor extends ExprToSmtVisitor {
         this.approximateNonLinearExpressions = rewriteNonLinearExpressions;
     }
 
+    private static SmtExpr mkBV2Int(SmtExpr bv) {
+        SmtExpr bv2nat = SmtExprBuilder.mkBV2Nat(bv);
+        SmtIntConstant maxIntValue = SmtExprBuilder.mkIntConstant(Integer.MAX_VALUE);
+        SmtExpr condExpr = SmtExprBuilder.mkLe(bv2nat, maxIntValue);
+        SmtExpr bvMinusOne = SmtExprBuilder.mkInt2BV(32, SmtExprBuilder.mkIntConstant(-1));
+        SmtExpr xor = SmtExprBuilder.mkBVXOR(bv, bvMinusOne);
+        SmtExpr bvOne = SmtExprBuilder.mkInt2BV(32, SmtExprBuilder.ONE_INT);
+        SmtExpr bvAdd = SmtExprBuilder.mkBVADD(xor, bvOne);
+        SmtExpr bv2natAdd = SmtExprBuilder.mkBV2Nat(bvAdd);
+
+        SmtExpr thenExpr = bv2nat;
+        SmtExpr elseExpr = SmtExprBuilder.mkNeg(bv2natAdd);
+
+        SmtExpr ite = SmtExprBuilder.mkITE(condExpr, thenExpr, elseExpr);
+        return ite;
+    }
+
     @Override
     protected SmtExpr postVisit(IntegerBinaryExpression source, SmtExpr left, Operator operator, SmtExpr right) {
         switch (operator) {
@@ -114,23 +131,6 @@ final class ExprToCVC4Visitor extends ExprToSmtVisitor {
                 return super.postVisit(source, left, operator, right);
             }
         }
-    }
-
-    private static SmtExpr mkBV2Int(SmtExpr bv) {
-        SmtExpr bv2nat = SmtExprBuilder.mkBV2Nat(bv);
-        SmtIntConstant maxIntValue = SmtExprBuilder.mkIntConstant(Integer.MAX_VALUE);
-        SmtExpr condExpr = SmtExprBuilder.mkLe(bv2nat, maxIntValue);
-        SmtExpr bvMinusOne = SmtExprBuilder.mkInt2BV(32, SmtExprBuilder.mkIntConstant(-1));
-        SmtExpr xor = SmtExprBuilder.mkBVXOR(bv, bvMinusOne);
-        SmtExpr bvOne = SmtExprBuilder.mkInt2BV(32, SmtExprBuilder.ONE_INT);
-        SmtExpr bvAdd = SmtExprBuilder.mkBVADD(xor, bvOne);
-        SmtExpr bv2natAdd = SmtExprBuilder.mkBV2Nat(bvAdd);
-
-        SmtExpr thenExpr = bv2nat;
-        SmtExpr elseExpr = SmtExprBuilder.mkNeg(bv2natAdd);
-
-        SmtExpr ite = SmtExprBuilder.mkITE(condExpr, thenExpr, elseExpr);
-        return ite;
     }
 
     @Override

@@ -69,25 +69,17 @@ import static org.evosuite.junit.writer.TestSuiteWriterUtils.*;
  */
 public class TestSuiteWriter implements Opcodes {
 
+    public static final String NOT_GENERATED_TEST_NAME = "notGeneratedAnyTest";
     /**
      * Constant <code>logger</code>
      */
     private final static Logger logger = LoggerFactory.getLogger(TestSuiteWriter.class);
-
-    public static final String NOT_GENERATED_TEST_NAME = "notGeneratedAnyTest";
-
-    protected TestCaseExecutor executor = TestCaseExecutor.getInstance();
-
-    protected List<TestCase> testCases = new ArrayList<>();
-
-    protected Map<Integer, String> testComment = new HashMap<>();
-
-    private final UnitTestAdapter adapter = TestSuiteWriterUtils.getAdapter();
-
-    private final TestCodeVisitor visitor = new TestCodeVisitor();
-
     private final static String NEWLINE = java.lang.System.getProperty("line.separator");
-
+    private final UnitTestAdapter adapter = TestSuiteWriterUtils.getAdapter();
+    private final TestCodeVisitor visitor = new TestCodeVisitor();
+    protected TestCaseExecutor executor = TestCaseExecutor.getInstance();
+    protected List<TestCase> testCases = new ArrayList<>();
+    protected Map<Integer, String> testComment = new HashMap<>();
     private TestNameGenerationStrategy nameGenerator = null;
 
     /**

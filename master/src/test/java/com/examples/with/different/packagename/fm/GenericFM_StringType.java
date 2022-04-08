@@ -24,15 +24,15 @@ package com.examples.with.different.packagename.fm;
  */
 public class GenericFM_StringType {
 
-    public interface Foo<T> {
-        String foo(T parameter);
-    }
-
     public static boolean bar(Foo<String> foo) {
         if (foo.foo("Test").equals("Bar")) {
             return true;
         } else {
             return false;
         }
+    }
+
+    public interface Foo<T> {
+        String foo(T parameter);
     }
 }

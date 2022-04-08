@@ -24,8 +24,8 @@ package com.examples.with.different.packagename.test;
  */
 public abstract class AbstractSuperclass {
 
-    public abstract boolean getFoo();
-
     public boolean fieldInAbstractClass = true;
+
+    public abstract boolean getFoo();
 
 }

@@ -72,14 +72,6 @@ public class StringPrimitiveStatement extends PrimitiveStatement<String> {
      * @see org.evosuite.testcase.PrimitiveStatement#zero()
      */
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void zero() {
-        value = "";
-    }
-
     private static String removeCharAt(String s, int pos) {
         return s.substring(0, pos) + s.substring(pos + 1);
     }
@@ -90,6 +82,14 @@ public class StringPrimitiveStatement extends PrimitiveStatement<String> {
 
     private static String insertCharAt(String s, int pos, char c) {
         return s.substring(0, pos) + c + s.substring(pos);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void zero() {
+        value = "";
     }
 
     private String StringInsert(String s, int pos) {

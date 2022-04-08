@@ -26,12 +26,12 @@ public class SimpleClass {
     public SimpleClass() {
     }
 
-    public void setField(int value) {
-        this.myField = value;
-    }
-
     public int getField() {
         return myField;
+    }
+
+    public void setField(int value) {
+        this.myField = value;
     }
 
     public void clearValue() {

@@ -55,6 +55,11 @@ public class MaxTimeStoppingCondition extends StoppingConditionImpl {
     }
 
     @Override
+    public void setLimit(long limit) {
+        maxSeconds = limit;
+    }
+
+    @Override
     public boolean isFinished() {
         long currentTime = System.currentTimeMillis();
         return (currentTime - startTime) / 1000 > maxSeconds;
@@ -63,10 +68,5 @@ public class MaxTimeStoppingCondition extends StoppingConditionImpl {
     @Override
     public void reset() {
         startTime = System.currentTimeMillis();
-    }
-
-    @Override
-    public void setLimit(long limit) {
-        maxSeconds = limit;
     }
 }

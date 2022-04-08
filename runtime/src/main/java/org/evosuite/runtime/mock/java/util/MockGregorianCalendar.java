@@ -27,64 +27,64 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.TimeZone;
 
-public class MockGregorianCalendar extends GregorianCalendar  implements OverrideMock{
+public class MockGregorianCalendar extends GregorianCalendar implements OverrideMock {
 
-	private static final long serialVersionUID = 4768096296715665262L;
-	
-	public MockGregorianCalendar() {
-		this.setTimeInMillis(org.evosuite.runtime.System.currentTimeMillis());
-	}
-	
-	public MockGregorianCalendar(int year, int month, int dayOfMonth) {
-		super(year, month, dayOfMonth);
-	}
-	
-	public MockGregorianCalendar(int year, int month, int dayOfMonth, int hourOfDay, int minute) {
-		super(year, month, dayOfMonth, hourOfDay, minute);
-	}
+    private static final long serialVersionUID = 4768096296715665262L;
 
-	public MockGregorianCalendar(int year, int month, int dayOfMonth, int hourOfDay, int minute, int second) {
-		super(year, month, dayOfMonth, hourOfDay, minute, second);
-	}
-	
-	public MockGregorianCalendar(Locale aLocale) {
-		super(aLocale);
-		this.setTimeInMillis(org.evosuite.runtime.System.currentTimeMillis());
-	}
-	
-	public MockGregorianCalendar(TimeZone zone) {
-		super(zone);
-		this.setTimeInMillis(org.evosuite.runtime.System.currentTimeMillis());
-	}
-	
-	public MockGregorianCalendar(TimeZone zone, Locale aLocale) {
-		super(zone, aLocale);
-		this.setTimeInMillis(org.evosuite.runtime.System.currentTimeMillis());
-	}
-	
-	// TODO: This code in Calendar seems to cause access to time
-	//       but I don't understand how.
-	//    public long getTimeInMillis() {
-	//        if (!isTimeSet) {
-	//            updateTime();
-	//        }
-	//        return time;
-	//    }
+    public MockGregorianCalendar() {
+        this.setTimeInMillis(org.evosuite.runtime.System.currentTimeMillis());
+    }
+
+    public MockGregorianCalendar(int year, int month, int dayOfMonth) {
+        super(year, month, dayOfMonth);
+    }
+
+    public MockGregorianCalendar(int year, int month, int dayOfMonth, int hourOfDay, int minute) {
+        super(year, month, dayOfMonth, hourOfDay, minute);
+    }
+
+    public MockGregorianCalendar(int year, int month, int dayOfMonth, int hourOfDay, int minute, int second) {
+        super(year, month, dayOfMonth, hourOfDay, minute, second);
+    }
+
+    public MockGregorianCalendar(Locale aLocale) {
+        super(aLocale);
+        this.setTimeInMillis(org.evosuite.runtime.System.currentTimeMillis());
+    }
+
+    public MockGregorianCalendar(TimeZone zone) {
+        super(zone);
+        this.setTimeInMillis(org.evosuite.runtime.System.currentTimeMillis());
+    }
+
+    public MockGregorianCalendar(TimeZone zone, Locale aLocale) {
+        super(zone, aLocale);
+        this.setTimeInMillis(org.evosuite.runtime.System.currentTimeMillis());
+    }
+
+    public static GregorianCalendar from(ZonedDateTime zdt) {
+        GregorianCalendar cal = new MockGregorianCalendar(MockTimeZone.getTimeZone(zdt.getZone()));
+        cal.setGregorianChange(new MockDate(Long.MIN_VALUE));
+        cal.setFirstDayOfWeek(MONDAY);
+        cal.setMinimalDaysInFirstWeek(4);
+        try {
+            cal.setTimeInMillis(Math.addExact(Math.multiplyExact(zdt.toEpochSecond(), 1000),
+                    zdt.get(ChronoField.MILLI_OF_SECOND)));
+        } catch (ArithmeticException ex) {
+            throw new IllegalArgumentException(ex);
+        }
+        return cal;
+    }
+
+    // TODO: This code in Calendar seems to cause access to time
+    //       but I don't understand how.
+    //    public long getTimeInMillis() {
+    //        if (!isTimeSet) {
+    //            updateTime();
+    //        }
+    //        return time;
+    //    }
     public long getTimeInMillis() {
         return time;
     }
-
-	public static GregorianCalendar from(ZonedDateTime zdt) {
-		GregorianCalendar cal = new MockGregorianCalendar(MockTimeZone.getTimeZone(zdt.getZone()));
-		cal.setGregorianChange(new MockDate(Long.MIN_VALUE));
-		cal.setFirstDayOfWeek(MONDAY);
-		cal.setMinimalDaysInFirstWeek(4);
-		try {
-			cal.setTimeInMillis(Math.addExact(Math.multiplyExact(zdt.toEpochSecond(), 1000),
-					zdt.get(ChronoField.MILLI_OF_SECOND)));
-		} catch (ArithmeticException ex) {
-			throw new IllegalArgumentException(ex);
-		}
-		return cal;
-	}
 }

@@ -49,6 +49,96 @@ public class MockJOptionPaneShowMessageDialogTest {
         ClassPathHandler.getInstance().addElementToTargetProjectClassPath(cp);
     }
 
+    private static TestCase buildTestCase0TrueBranch(InstrumentingClassLoader cl)
+            throws ClassNotFoundException, NoSuchMethodException, SecurityException {
+        TestCaseBuilder builder = new TestCaseBuilder();
+
+        Class<?> clazz = cl.loadClass(ShowMessageDialogExample.class.getCanonicalName());
+        Constructor<?> constructor = clazz.getConstructor();
+        VariableReference showMessageDialogExample0 = builder.appendConstructor(constructor);
+
+        VariableReference int0 = builder.appendIntPrimitive(0);
+        Method showMessageDialogMethod = clazz.getMethod("showMessageDialog0", int.class);
+        builder.appendMethod(showMessageDialogExample0, showMessageDialogMethod, int0);
+
+        return builder.getDefaultTestCase();
+    }
+
+    private static TestCase buildTestCase0FalseBranch(InstrumentingClassLoader cl)
+            throws ClassNotFoundException, NoSuchMethodException, SecurityException {
+        TestCaseBuilder builder = new TestCaseBuilder();
+
+        Class<?> clazz = cl.loadClass(ShowMessageDialogExample.class.getCanonicalName());
+        Constructor<?> constructor = clazz.getConstructor();
+        VariableReference showMessageDialogExample0 = builder.appendConstructor(constructor);
+
+        VariableReference int0 = builder.appendIntPrimitive(1);
+        Method showMessageDialogMethod = clazz.getMethod("showMessageDialog0", int.class);
+        builder.appendMethod(showMessageDialogExample0, showMessageDialogMethod, int0);
+
+        return builder.getDefaultTestCase();
+    }
+
+    private static TestCase buildTestCase1TrueBranch(InstrumentingClassLoader cl)
+            throws ClassNotFoundException, NoSuchMethodException, SecurityException {
+        TestCaseBuilder builder = new TestCaseBuilder();
+
+        Class<?> clazz = cl.loadClass(ShowMessageDialogExample.class.getCanonicalName());
+        Constructor<?> constructor = clazz.getConstructor();
+        VariableReference showMessageDialogExample0 = builder.appendConstructor(constructor);
+
+        VariableReference int0 = builder.appendIntPrimitive(0);
+        Method showMessageDialogMethod = clazz.getMethod("showMessageDialog1", int.class);
+        builder.appendMethod(showMessageDialogExample0, showMessageDialogMethod, int0);
+
+        return builder.getDefaultTestCase();
+    }
+
+    private static TestCase buildTestCase1FalseBranch(InstrumentingClassLoader cl)
+            throws ClassNotFoundException, NoSuchMethodException, SecurityException {
+        TestCaseBuilder builder = new TestCaseBuilder();
+
+        Class<?> clazz = cl.loadClass(ShowMessageDialogExample.class.getCanonicalName());
+        Constructor<?> constructor = clazz.getConstructor();
+        VariableReference showMessageDialogExample0 = builder.appendConstructor(constructor);
+
+        VariableReference int0 = builder.appendIntPrimitive(1);
+        Method showMessageDialogMethod = clazz.getMethod("showMessageDialog1", int.class);
+        builder.appendMethod(showMessageDialogExample0, showMessageDialogMethod, int0);
+
+        return builder.getDefaultTestCase();
+    }
+
+    private static TestCase buildTestCase2TrueBranch(InstrumentingClassLoader cl)
+            throws ClassNotFoundException, NoSuchMethodException, SecurityException {
+        TestCaseBuilder builder = new TestCaseBuilder();
+
+        Class<?> clazz = cl.loadClass(ShowMessageDialogExample.class.getCanonicalName());
+        Constructor<?> constructor = clazz.getConstructor();
+        VariableReference showMessageDialogExample0 = builder.appendConstructor(constructor);
+
+        VariableReference int0 = builder.appendIntPrimitive(0);
+        Method showMessageDialogMethod = clazz.getMethod("showMessageDialog2", int.class);
+        builder.appendMethod(showMessageDialogExample0, showMessageDialogMethod, int0);
+
+        return builder.getDefaultTestCase();
+    }
+
+    private static TestCase buildTestCase2FalseBranch(InstrumentingClassLoader cl)
+            throws ClassNotFoundException, NoSuchMethodException, SecurityException {
+        TestCaseBuilder builder = new TestCaseBuilder();
+
+        Class<?> clazz = cl.loadClass(ShowMessageDialogExample.class.getCanonicalName());
+        Constructor<?> constructor = clazz.getConstructor();
+        VariableReference showMessageDialogExample0 = builder.appendConstructor(constructor);
+
+        VariableReference int0 = builder.appendIntPrimitive(1);
+        Method showMessageDialogMethod = clazz.getMethod("showMessageDialog2", int.class);
+        builder.appendMethod(showMessageDialogExample0, showMessageDialogMethod, int0);
+
+        return builder.getDefaultTestCase();
+    }
+
     @Before
     public void setUp() {
         Properties.CRITERION = new Properties.Criterion[]{Criterion.BRANCH};
@@ -114,97 +204,6 @@ public class MockJOptionPaneShowMessageDialogTest {
 
         Set<TestFitnessFunction> coveredGoals = suite.getCoveredGoals();
         Assert.assertEquals(3, coveredGoals.size());
-    }
-
-    private static TestCase buildTestCase0TrueBranch(InstrumentingClassLoader cl)
-            throws ClassNotFoundException, NoSuchMethodException, SecurityException {
-        TestCaseBuilder builder = new TestCaseBuilder();
-
-        Class<?> clazz = cl.loadClass(ShowMessageDialogExample.class.getCanonicalName());
-        Constructor<?> constructor = clazz.getConstructor();
-        VariableReference showMessageDialogExample0 = builder.appendConstructor(constructor);
-
-        VariableReference int0 = builder.appendIntPrimitive(0);
-        Method showMessageDialogMethod = clazz.getMethod("showMessageDialog0", int.class);
-        builder.appendMethod(showMessageDialogExample0, showMessageDialogMethod, int0);
-
-        return builder.getDefaultTestCase();
-    }
-
-    private static TestCase buildTestCase0FalseBranch(InstrumentingClassLoader cl)
-            throws ClassNotFoundException, NoSuchMethodException, SecurityException {
-        TestCaseBuilder builder = new TestCaseBuilder();
-
-        Class<?> clazz = cl.loadClass(ShowMessageDialogExample.class.getCanonicalName());
-        Constructor<?> constructor = clazz.getConstructor();
-        VariableReference showMessageDialogExample0 = builder.appendConstructor(constructor);
-
-        VariableReference int0 = builder.appendIntPrimitive(1);
-        Method showMessageDialogMethod = clazz.getMethod("showMessageDialog0", int.class);
-        builder.appendMethod(showMessageDialogExample0, showMessageDialogMethod, int0);
-
-        return builder.getDefaultTestCase();
-    }
-
-    private static TestCase buildTestCase1TrueBranch(InstrumentingClassLoader cl)
-            throws ClassNotFoundException, NoSuchMethodException, SecurityException {
-        TestCaseBuilder builder = new TestCaseBuilder();
-
-        Class<?> clazz = cl.loadClass(ShowMessageDialogExample.class.getCanonicalName());
-        Constructor<?> constructor = clazz.getConstructor();
-        VariableReference showMessageDialogExample0 = builder.appendConstructor(constructor);
-
-        VariableReference int0 = builder.appendIntPrimitive(0);
-        Method showMessageDialogMethod = clazz.getMethod("showMessageDialog1", int.class);
-        builder.appendMethod(showMessageDialogExample0, showMessageDialogMethod, int0);
-
-        return builder.getDefaultTestCase();
-    }
-
-    private static TestCase buildTestCase1FalseBranch(InstrumentingClassLoader cl)
-            throws ClassNotFoundException, NoSuchMethodException, SecurityException {
-        TestCaseBuilder builder = new TestCaseBuilder();
-
-        Class<?> clazz = cl.loadClass(ShowMessageDialogExample.class.getCanonicalName());
-        Constructor<?> constructor = clazz.getConstructor();
-        VariableReference showMessageDialogExample0 = builder.appendConstructor(constructor);
-
-        VariableReference int0 = builder.appendIntPrimitive(1);
-        Method showMessageDialogMethod = clazz.getMethod("showMessageDialog1", int.class);
-        builder.appendMethod(showMessageDialogExample0, showMessageDialogMethod, int0);
-
-        return builder.getDefaultTestCase();
-    }
-
-
-    private static TestCase buildTestCase2TrueBranch(InstrumentingClassLoader cl)
-            throws ClassNotFoundException, NoSuchMethodException, SecurityException {
-        TestCaseBuilder builder = new TestCaseBuilder();
-
-        Class<?> clazz = cl.loadClass(ShowMessageDialogExample.class.getCanonicalName());
-        Constructor<?> constructor = clazz.getConstructor();
-        VariableReference showMessageDialogExample0 = builder.appendConstructor(constructor);
-
-        VariableReference int0 = builder.appendIntPrimitive(0);
-        Method showMessageDialogMethod = clazz.getMethod("showMessageDialog2", int.class);
-        builder.appendMethod(showMessageDialogExample0, showMessageDialogMethod, int0);
-
-        return builder.getDefaultTestCase();
-    }
-
-    private static TestCase buildTestCase2FalseBranch(InstrumentingClassLoader cl)
-            throws ClassNotFoundException, NoSuchMethodException, SecurityException {
-        TestCaseBuilder builder = new TestCaseBuilder();
-
-        Class<?> clazz = cl.loadClass(ShowMessageDialogExample.class.getCanonicalName());
-        Constructor<?> constructor = clazz.getConstructor();
-        VariableReference showMessageDialogExample0 = builder.appendConstructor(constructor);
-
-        VariableReference int0 = builder.appendIntPrimitive(1);
-        Method showMessageDialogMethod = clazz.getMethod("showMessageDialog2", int.class);
-        builder.appendMethod(showMessageDialogExample0, showMessageDialogMethod, int0);
-
-        return builder.getDefaultTestCase();
     }
 
 

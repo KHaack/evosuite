@@ -43,11 +43,10 @@ import org.jfree.data.category.CategoryDataset;
 
 public abstract class Plot extends Graph {
 
+    private static final String JENKINS_URL = JenkinsLocationConfiguration.get().getUrl();
     protected ProjectAction project;
     private CategoryDataset dataset;
     private String yLabel;
-
-    private static final String JENKINS_URL = JenkinsLocationConfiguration.get().getUrl();
 
     public Plot(ProjectAction project, String yLabel) {
         super(Calendar.getInstance(), 350, 150);

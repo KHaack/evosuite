@@ -29,10 +29,6 @@ import java.util.*;
  */
 public class ClassHierarchyIncludingInterfaces {
 
-    public enum Interfaces {
-        INCLUDE, EXCLUDE
-    }
-
     public static Iterable<Class<?>> hierarchy(final Class<?> type) {
         return hierarchy(type, Interfaces.EXCLUDE);
     }
@@ -115,5 +111,9 @@ public class ClassHierarchyIncludingInterfaces {
                 };
             }
         };
+    }
+
+    public enum Interfaces {
+        INCLUDE, EXCLUDE
     }
 }

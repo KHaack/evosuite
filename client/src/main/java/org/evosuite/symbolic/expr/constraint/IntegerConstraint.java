@@ -30,10 +30,11 @@ import org.slf4j.LoggerFactory;
 
 public final class IntegerConstraint extends Constraint<Long> {
 
-    static Logger log = LoggerFactory.getLogger(IntegerConstraint.class);
-
     private static final long serialVersionUID = 5345957507046422507L;
-
+    static Logger log = LoggerFactory.getLogger(IntegerConstraint.class);
+    private final Expression<Long> left;
+    private final Comparator cmp;
+    private final Expression<Long> right;
     /**
      * <p>
      * Constructor for IntegerConstraint.
@@ -54,10 +55,6 @@ public final class IntegerConstraint extends Constraint<Long> {
             throw new ConstraintTooLongException(getSize());
         }
     }
-
-    private final Expression<Long> left;
-    private final Comparator cmp;
-    private final Expression<Long> right;
 
     /**
      * {@inheritDoc}

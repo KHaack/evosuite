@@ -27,14 +27,6 @@ public class StringHandler {
         this.str = str;
     }
 
-    public boolean equals(String otherString) {
-        return this.str.equals(otherString);
-    }
-
-    public void toUpperCase() {
-        str = str.toUpperCase();
-    }
-
     public static boolean stringMatches(String string, String regex) {
         return string.matches(regex);
     }
@@ -44,5 +36,13 @@ public class StringHandler {
             throw new RuntimeException();
         }
 
+    }
+
+    public boolean equals(String otherString) {
+        return this.str.equals(otherString);
+    }
+
+    public void toUpperCase() {
+        str = str.toUpperCase();
     }
 }

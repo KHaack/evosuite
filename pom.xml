@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.evosuite</groupId>
@@ -13,7 +14,7 @@
 
     <licenses>
         <license>
-            <name> GNU Lesser General Public License (LGPL), version 3</name>
+            <name>GNU Lesser General Public License (LGPL), version 3</name>
             <url>http://www.gnu.org/licenses/lgpl-3.0.en.html</url>
             <distribution>repo</distribution>
         </license>
@@ -118,8 +119,8 @@
                 <integrationTests>**/*IntTest.java</integrationTests>
             </properties -->
             <properties>
-                <systemTests />
-                <integrationTests />
+                <systemTests/>
+                <integrationTests/>
             </properties>
         </profile>
         <profile>
@@ -263,8 +264,8 @@
             <properties>
                 <compiler.target>1.8</compiler.target>
                 <compiler.source>1.8</compiler.source>
-                <exclude.tests.concolic />
-                <exclude.tests.mimeType />
+                <exclude.tests.concolic/>
+                <exclude.tests.mimeType/>
             </properties>
         </profile>
     </profiles>
@@ -460,7 +461,6 @@
             <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
     </distributionManagement>
-
 
 
     <build>
@@ -668,7 +668,7 @@
                         <exclude>${exclude.tests.concolic}</exclude>
                         <exclude>${exclude.tests.mimeType}</exclude>
                     </excludes>
-                    <argLine>-Djdk.attach.allowAttachSelf=true -Xms512m -Xmx4096m </argLine>
+                    <argLine>-Djdk.attach.allowAttachSelf=true -Xms512m -Xmx4096m</argLine>
                 </configuration>
             </plugin>
             <!-- pluging to run tests after 'package' phase in 'integration-test' -->
@@ -804,7 +804,8 @@
                                         <shadedPattern>org.evosuite.shaded.org.apache</shadedPattern>
                                         <excludes>
                                             <!-- Important, otherwise AntInitializingListener would not work in Ant -->
-                                            <exclude>org.apache.tools.ant.taskdefs.optional.junit.JUnitResultFormatter</exclude>
+                                            <exclude>org.apache.tools.ant.taskdefs.optional.junit.JUnitResultFormatter
+                                            </exclude>
                                             <exclude>org.apache.tools.ant.taskdefs.optional.junit.JUnitTest</exclude>
                                             <exclude>org.apache.tools.ant.BuildException</exclude>
                                         </excludes>
@@ -818,12 +819,12 @@
                                         <shadedPattern>org.evosuite.shaded.org.objenesis</shadedPattern>
                                     </relocation>
                                     <!--<relocation>-->
-                                        <!--<pattern>org.slf4j</pattern>-->
-                                        <!--<shadedPattern>org.evosuite.shaded.org.slf4j</shadedPattern>-->
+                                    <!--<pattern>org.slf4j</pattern>-->
+                                    <!--<shadedPattern>org.evosuite.shaded.org.slf4j</shadedPattern>-->
                                     <!--</relocation>-->
                                     <!--<relocation>-->
-                                        <!--<pattern>ch.qos.logback</pattern>-->
-                                        <!--<shadedPattern>org.evosuite.shaded.ch.qos.logback</shadedPattern>-->
+                                    <!--<pattern>ch.qos.logback</pattern>-->
+                                    <!--<shadedPattern>org.evosuite.shaded.ch.qos.logback</shadedPattern>-->
                                     <!--</relocation>-->
                                 </relocations>
                             </configuration>

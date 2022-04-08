@@ -53,7 +53,7 @@ public class ErrorConditionMethodAdapter extends GeneratorAdapter {
     private final MethodVisitor next;
 
     protected List<ErrorBranchInstrumenter> instrumentation;
-
+    protected boolean inInstrumentation = false;
 
     /**
      * <p>
@@ -108,9 +108,6 @@ public class ErrorConditionMethodAdapter extends GeneratorAdapter {
         if (ArrayUtil.contains(Properties.ERROR_INSTRUMENTATION, Properties.ErrorInstrumentation.VECTOR))
             instrumentation.add(new VectorInstrumentation(this));
     }
-
-
-    protected boolean inInstrumentation = false;
 
     @Override
     public void visitLabel(Label label) {

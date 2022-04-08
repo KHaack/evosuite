@@ -46,16 +46,6 @@ public abstract class Contract {
 
     protected static final Logger logger = LoggerFactory.getLogger(Contract.class);
 
-    protected static class Pair<T> {
-        T object1;
-        T object2;
-
-        public Pair(T o1, T o2) {
-            object1 = o1;
-            object2 = o2;
-        }
-    }
-
     /**
      * <p>
      * getAllObjects
@@ -180,5 +170,15 @@ public abstract class Contract {
 
     public void changeClassLoader(ClassLoader classLoader) {
         // No-op by default
+    }
+
+    protected static class Pair<T> {
+        T object1;
+        T object2;
+
+        public Pair(T o1, T o2) {
+            object1 = o1;
+            object2 = o2;
+        }
     }
 }

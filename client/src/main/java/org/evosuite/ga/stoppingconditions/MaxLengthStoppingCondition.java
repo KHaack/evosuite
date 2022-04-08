@@ -113,16 +113,16 @@ public class MaxLengthStoppingCondition<T extends Chromosome<T>> extends Stoppin
      * {@inheritDoc}
      */
     @Override
-    public void setLimit(long limit) {
-        maxLength = (int) limit;
+    public long getLimit() {
+        return (long) (maxLength + 0.5);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public long getLimit() {
-        return (long) (maxLength + 0.5);
+    public void setLimit(long limit) {
+        maxLength = (int) limit;
     }
 
     /**

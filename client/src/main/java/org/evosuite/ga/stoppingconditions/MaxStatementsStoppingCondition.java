@@ -69,11 +69,6 @@ public class MaxStatementsStoppingCondition<T extends Chromosome<T>> extends Sto
         // empty copy constructor
     }
 
-    @Override
-    public MaxStatementsStoppingCondition<T> clone() {
-        return new MaxStatementsStoppingCondition<>(this);
-    }
-
     /**
      * Add a given number of executed statements
      *
@@ -81,28 +76,6 @@ public class MaxStatementsStoppingCondition<T extends Chromosome<T>> extends Sto
      */
     public static void statementsExecuted(int num) {
         currentStatement += num;
-    }
-
-    /**
-     * {@inheritDoc}
-     * <p>
-     * Finished, if the maximum number of statements has been reached
-     */
-    @Override
-    public boolean isFinished() {
-        // logger.info("Current number of statements executed: " + current_statement + "/"
-        //        + max_statements);
-        return currentStatement >= Properties.SEARCH_BUDGET;
-    }
-
-    /**
-     * {@inheritDoc}
-     * <p>
-     * Reset counter
-     */
-    @Override
-    public void reset() {
-        currentStatement = 0;
     }
 
     /**
@@ -127,6 +100,33 @@ public class MaxStatementsStoppingCondition<T extends Chromosome<T>> extends Sto
         currentStatement = value;
     }
 
+    @Override
+    public MaxStatementsStoppingCondition<T> clone() {
+        return new MaxStatementsStoppingCondition<>(this);
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Finished, if the maximum number of statements has been reached
+     */
+    @Override
+    public boolean isFinished() {
+        // logger.info("Current number of statements executed: " + current_statement + "/"
+        //        + max_statements);
+        return currentStatement >= Properties.SEARCH_BUDGET;
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Reset counter
+     */
+    @Override
+    public void reset() {
+        currentStatement = 0;
+    }
+
     /* (non-Javadoc)
      * @see org.evosuite.ga.StoppingCondition#getCurrentValue()
      */
@@ -147,18 +147,18 @@ public class MaxStatementsStoppingCondition<T extends Chromosome<T>> extends Sto
         return Properties.SEARCH_BUDGET;
     }
 
+    @Override
+    public void setLimit(long limit) {
+        // No-op?
+        // The limit should be set by setting Properties.SEARCH_BUDGET
+    }
+
     /**
      * {@inheritDoc}
      */
     @Override
     public void forceCurrentValue(long value) {
         currentStatement = value;
-    }
-
-    @Override
-    public void setLimit(long limit) {
-        // No-op?
-        // The limit should be set by setting Properties.SEARCH_BUDGET
     }
 
 }

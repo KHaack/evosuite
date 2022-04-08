@@ -88,6 +88,15 @@ public class ProjectGraphTest {
         Assert.assertTrue(graph.isAbstract(G.class.getName()));
     }
 
+    interface C {
+    }
+
+    interface D extends Serializable {
+    }
+
+    interface F extends C, D {
+    }
+
     class A {
         void foo() {
         }
@@ -99,18 +108,9 @@ public class ProjectGraphTest {
         }
     }
 
-    interface C {
-    }
-
-    interface D extends Serializable {
-    }
-
     abstract class E implements Comparable {
         void foo() {
         }
-    }
-
-    interface F extends C, D {
     }
 
     abstract class G extends E implements F {

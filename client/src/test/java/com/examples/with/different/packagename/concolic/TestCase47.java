@@ -21,6 +21,35 @@ package com.examples.with.different.packagename.concolic;
 
 public class TestCase47 {
 
+    // char char0 = ConcolicMarker.mark('\u0007', "char0");
+    // char char1 = ConcolicMarker.mark('\t', "char1");
+    // char char2 = ConcolicMarker.mark('\u0015', "char2");
+    // char char3 = ConcolicMarker.mark('\u0015', "char3");
+    public static void test(char char0, char char1, char char2, char char3) {
+        Stemmer stemmer0 = new Stemmer();
+        char[] charArray0 = new char[6];
+        String string0 = stemmer0.toString();
+        charArray0[0] = char0;
+        Stemmer stemmer1 = new Stemmer();
+        Stemmer stemmer2 = new Stemmer();
+        String string1 = stemmer0.toString();
+        stemmer0.add(char0);
+        Stemmer stemmer3 = new Stemmer();
+        char[] charArray1 = stemmer0.getResultBuffer();
+        stemmer3.add(char1);
+        charArray0[1] = char1;
+        char[] charArray2 = stemmer0.getResultBuffer();
+        charArray0[2] = char2;
+        int int0 = stemmer0.getResultLength();
+        char[] charArray3 = stemmer0.getResultBuffer();
+        stemmer2.add(char2);
+        charArray0[4] = charArray2[33];
+        int int1 = -4;
+        stemmer0.add(charArray0, int1);
+        stemmer0.add(charArray2, charArray0[0]);
+
+    }
+
     /**
      * Stemmer, implementing the Porter Stemming Algorithm
      * <p>
@@ -30,11 +59,11 @@ public class TestCase47 {
      */
 
     public static class Stemmer {
+        private static final int INC = 50;
         private char[] b;
         private int i, /* offset into b */
                 i_end, /* offset to end of stemmed word */
                 j, k;
-        private static final int INC = 50;
 
         /* unit of size whereby b is increased */
         public Stemmer() {
@@ -561,35 +590,6 @@ public class TestCase47 {
          * forcing lower case must be done outside the Stemmer class. Usage:
          * Stemmer file-name file-name ...
          */
-    }
-
-    // char char0 = ConcolicMarker.mark('\u0007', "char0");
-    // char char1 = ConcolicMarker.mark('\t', "char1");
-    // char char2 = ConcolicMarker.mark('\u0015', "char2");
-    // char char3 = ConcolicMarker.mark('\u0015', "char3");
-    public static void test(char char0, char char1, char char2, char char3) {
-        Stemmer stemmer0 = new Stemmer();
-        char[] charArray0 = new char[6];
-        String string0 = stemmer0.toString();
-        charArray0[0] = char0;
-        Stemmer stemmer1 = new Stemmer();
-        Stemmer stemmer2 = new Stemmer();
-        String string1 = stemmer0.toString();
-        stemmer0.add(char0);
-        Stemmer stemmer3 = new Stemmer();
-        char[] charArray1 = stemmer0.getResultBuffer();
-        stemmer3.add(char1);
-        charArray0[1] = char1;
-        char[] charArray2 = stemmer0.getResultBuffer();
-        charArray0[2] = char2;
-        int int0 = stemmer0.getResultLength();
-        char[] charArray3 = stemmer0.getResultBuffer();
-        stemmer2.add(char2);
-        charArray0[4] = charArray2[33];
-        int int1 = -4;
-        stemmer0.add(charArray0, int1);
-        stemmer0.add(charArray2, charArray0[0]);
-
     }
 
 }

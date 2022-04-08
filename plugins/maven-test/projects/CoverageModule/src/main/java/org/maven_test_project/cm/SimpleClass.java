@@ -20,13 +20,13 @@
 package org.maven_test_project.cm;
 
 public class SimpleClass {
-	
-	public boolean isPositive(int x){
-		if(x>0){
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
+
+    public boolean isPositive(int x) {
+        if (x > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 }

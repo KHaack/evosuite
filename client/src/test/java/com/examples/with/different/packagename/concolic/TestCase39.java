@@ -23,9 +23,9 @@ import static com.examples.with.different.packagename.concolic.Assertions.checkE
 
 public class TestCase39 {
 
+    public static final String ROBA = "roba";
     private static final String TOGLIERE = "Togliere";
     private static final String STA = "sta";
-    public static final String ROBA = "roba";
 
     /**
      * @param args

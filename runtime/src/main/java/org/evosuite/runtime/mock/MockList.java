@@ -46,202 +46,201 @@ import java.util.List;
 /**
  * Class used to handle all the mock objects. When a new mock is defined, it has
  * to be statically added to the source code of this class.
- * 
+ *
  * <p>
  * Recall that a "override" mock M of class X has to extend X (ie 'class M
  * extends X'), and have the same constructors with same inputs, and same static
  * methods. Note: cannot use override for constructors and static methods.
- * 
- * @author arcuri
  *
+ * @author arcuri
  */
 public class MockList {
 
-	private static final Logger logger = LoggerFactory.getLogger(MockList.class);
+    private static final Logger logger = LoggerFactory.getLogger(MockList.class);
 
-	/**
-	 * Return a list of all mock object classes used in EvoSuite. What is
-	 * returned depend on which mock types are going to be used in the search
-	 * 
-	 * @return a list of Class objects
-	 */
-	public static List<Class<? extends EvoSuiteMock>> getList() {
+    /**
+     * Return a list of all mock object classes used in EvoSuite. What is
+     * returned depend on which mock types are going to be used in the search
+     *
+     * @return a list of Class objects
+     */
+    public static List<Class<? extends EvoSuiteMock>> getList() {
 
-		List<Class<? extends EvoSuiteMock>> list = new ArrayList<>();
+        List<Class<? extends EvoSuiteMock>> list = new ArrayList<>();
 
-		if (RuntimeSettings.useVFS) {
-			list.add(MockFile.class);
-			list.add(MockFileInputStream.class);
-			list.add(MockFileOutputStream.class);
-			list.add(MockRandomAccessFile.class);
-			list.add(MockFileReader.class);
-			list.add(MockFileWriter.class);
-			list.add(MockPrintStream.class);
-			list.add(MockPrintWriter.class);
-			list.add(MockFileHandler.class);
-			list.add(MockJFileChooser.class); // GUI Stuff?
-			list.add(MockFileSystemView.class);
-		}
+        if (RuntimeSettings.useVFS) {
+            list.add(MockFile.class);
+            list.add(MockFileInputStream.class);
+            list.add(MockFileOutputStream.class);
+            list.add(MockRandomAccessFile.class);
+            list.add(MockFileReader.class);
+            list.add(MockFileWriter.class);
+            list.add(MockPrintStream.class);
+            list.add(MockPrintWriter.class);
+            list.add(MockFileHandler.class);
+            list.add(MockJFileChooser.class); // GUI Stuff?
+            list.add(MockFileSystemView.class);
+        }
 
-		if (RuntimeSettings.mockJVMNonDeterminism) {
+        if (RuntimeSettings.mockJVMNonDeterminism) {
 
-			list.add(MockRuntime.class);
-			list.add(MockLogRecord.class);
+            list.add(MockRuntime.class);
+            list.add(MockLogRecord.class);
 
-			// Uses Object.hashCode
-			list.add(MockDefaultListSelectionModel.class);
+            // Uses Object.hashCode
+            list.add(MockDefaultListSelectionModel.class);
 
-			// CPU time related
-			list.add(MockDate.class);
-			list.add(MockRandom.class);
-			list.add(MockGregorianCalendar.class);
-			list.add(MockCalendar.class);
-			list.add(MockDateFormat.class);
-			list.add(MockSimpleDateFormat.class);
-			list.add(MockSpinnerDateModel.class);
-			list.add(MockSecureRandom.class);
-			list.add(MockUUID.class);
-			// MockTimeZone, MockLocale are not actual mocks
+            // CPU time related
+            list.add(MockDate.class);
+            list.add(MockRandom.class);
+            list.add(MockGregorianCalendar.class);
+            list.add(MockCalendar.class);
+            list.add(MockDateFormat.class);
+            list.add(MockSimpleDateFormat.class);
+            list.add(MockSpinnerDateModel.class);
+            list.add(MockSecureRandom.class);
+            list.add(MockUUID.class);
+            // MockTimeZone, MockLocale are not actual mocks
 
-			// java.time
-			list.add(MockClock.class);
-			list.add(MockInstant.class);
-			list.add(MockLocalDate.class);
-			list.add(MockLocalDateTime.class);
-			list.add(MockLocalTime.class);
-			list.add(MockMonthDay.class);
-			list.add(MockOffsetDateTime.class);
-			list.add(MockOffsetTime.class);
-			list.add(MockYear.class);
-			list.add(MockYearMonth.class);
-			list.add(MockZonedDateTime.class);
-			list.add(MockHijrahChronology.class);
-			list.add(MockHijrahDate.class);
-			list.add(MockIsoChronology.class);
-			list.add(MockJapaneseChronology.class);
-			list.add(MockJapaneseDate.class);
-			list.add(MockMinguoDate.class);
-			list.add(MockMinguoChronology.class);
-			list.add(MockThaiBuddhistChronology.class);
-			list.add(MockThaiBuddhistDate.class);
+            // java.time
+            list.add(MockClock.class);
+            list.add(MockInstant.class);
+            list.add(MockLocalDate.class);
+            list.add(MockLocalDateTime.class);
+            list.add(MockLocalTime.class);
+            list.add(MockMonthDay.class);
+            list.add(MockOffsetDateTime.class);
+            list.add(MockOffsetTime.class);
+            list.add(MockYear.class);
+            list.add(MockYearMonth.class);
+            list.add(MockZonedDateTime.class);
+            list.add(MockHijrahChronology.class);
+            list.add(MockHijrahDate.class);
+            list.add(MockIsoChronology.class);
+            list.add(MockJapaneseChronology.class);
+            list.add(MockJapaneseDate.class);
+            list.add(MockMinguoDate.class);
+            list.add(MockMinguoChronology.class);
+            list.add(MockThaiBuddhistChronology.class);
+            list.add(MockThaiBuddhistDate.class);
 
-			// preferences
-			list.add(MockPreferences.class);
+            // preferences
+            list.add(MockPreferences.class);
 
-			// thread related
-			list.add(MockTimer.class);
-			list.add(MockThread.class);
+            // thread related
+            list.add(MockTimer.class);
+            list.add(MockThread.class);
 
-			// exceptions
-			list.add(MockIOException.class);
-			list.add(MockArithmeticException.class);
-			list.add(MockArrayIndexOutOfBoundsException.class);
-			list.add(MockError.class);
-			list.add(MockException.class);
-			list.add(MockIllegalAccessException.class);
-			list.add(MockIllegalArgumentException.class);
-			list.add(MockIllegalStateException.class);
-			list.add(MockNullPointerException.class);
-			list.add(MockRuntimeException.class);
-			list.add(MockThrowable.class);
-		}
+            // exceptions
+            list.add(MockIOException.class);
+            list.add(MockArithmeticException.class);
+            list.add(MockArrayIndexOutOfBoundsException.class);
+            list.add(MockError.class);
+            list.add(MockException.class);
+            list.add(MockIllegalAccessException.class);
+            list.add(MockIllegalArgumentException.class);
+            list.add(MockIllegalStateException.class);
+            list.add(MockNullPointerException.class);
+            list.add(MockRuntimeException.class);
+            list.add(MockThrowable.class);
+        }
 
-		if (RuntimeSettings.useVNET) {
-			list.add(MockDatagramSocket.class);
-			list.add(MockInetAddress.class);
-			list.add(MockInetSocketAddress.class);
-			list.add(MockNetworkInterface.class);
-			list.add(MockServerSocket.class);
-			list.add(MockSocket.class);
-			list.add(MockSocketImpl.class);
-			list.add(MockURL.class);
-			list.add(MockURLStreamHandler.class);
-			list.add(MockURI.class);
-			// list.add(MockServerSocketChannel.class); //TODO
-			// list.add(MockSocketChannel.class); //TODO
-		}
+        if (RuntimeSettings.useVNET) {
+            list.add(MockDatagramSocket.class);
+            list.add(MockInetAddress.class);
+            list.add(MockInetSocketAddress.class);
+            list.add(MockNetworkInterface.class);
+            list.add(MockServerSocket.class);
+            list.add(MockSocket.class);
+            list.add(MockSocketImpl.class);
+            list.add(MockURL.class);
+            list.add(MockURLStreamHandler.class);
+            list.add(MockURI.class);
+            // list.add(MockServerSocketChannel.class); //TODO
+            // list.add(MockSocketChannel.class); //TODO
+        }
 
-		if (RuntimeSettings.mockGUI) {
-			// why not including JFileChooser?
-			list.add(MockJOptionPane.class);
-		}
+        if (RuntimeSettings.mockGUI) {
+            // why not including JFileChooser?
+            list.add(MockJOptionPane.class);
+        }
 
-		return list;
-	}
+        return list;
+    }
 
-	/**
-	 * Check if the given class has been mocked
-	 * 
-	 * @param originalClass
-	 * @return
-	 * @throws IllegalArgumentException
-	 */
-	public static boolean shouldBeMocked(String originalClass) throws IllegalArgumentException {
-		return getMockClass(originalClass) != null;
-	}
+    /**
+     * Check if the given class has been mocked
+     *
+     * @param originalClass
+     * @return
+     * @throws IllegalArgumentException
+     */
+    public static boolean shouldBeMocked(String originalClass) throws IllegalArgumentException {
+        return getMockClass(originalClass) != null;
+    }
 
-	/**
-	 * Check if the given class is among the mock classes
-	 * 
-	 * @param mockClass
-	 * @return
-	 */
-	public static boolean isAMockClass(String mockClass) {
-		if (mockClass == null) {
-			return false;
-		}
+    /**
+     * Check if the given class is among the mock classes
+     *
+     * @param mockClass
+     * @return
+     */
+    public static boolean isAMockClass(String mockClass) {
+        if (mockClass == null) {
+            return false;
+        }
 
-		for (Class<?> mock : getList()) {
-			if (mock.getCanonicalName().equals(mockClass)) {
-				return true;
-			}
-		}
+        for (Class<?> mock : getList()) {
+            if (mock.getCanonicalName().equals(mockClass)) {
+                return true;
+            }
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	/**
-	 * Return the mock class for the given target
-	 * 
-	 * @param originalClass
-	 * @return {@code null} if the target is not mocked
-	 */
-	public static Class<?> getMockClass(String originalClass) throws IllegalArgumentException {
-		if (originalClass == null || originalClass.isEmpty()) {
-			throw new IllegalArgumentException("Empty className");
-		}
+    /**
+     * Return the mock class for the given target
+     *
+     * @param originalClass
+     * @return {@code null} if the target is not mocked
+     */
+    public static Class<?> getMockClass(String originalClass) throws IllegalArgumentException {
+        if (originalClass == null || originalClass.isEmpty()) {
+            throw new IllegalArgumentException("Empty className");
+        }
 
-		for (Class<? extends EvoSuiteMock> mock : getList()) {
+        for (Class<? extends EvoSuiteMock> mock : getList()) {
 
-			String name = null;
+            String name = null;
 
-			if (OverrideMock.class.isAssignableFrom(mock)) {
-				Class<?> target = mock.getSuperclass();
-				if (target == null) {
-					logger.error("Override mock " + mock.getCanonicalName() + " does not have a superclass");
-					continue;
-				}
-				name = target.getCanonicalName();
+            if (OverrideMock.class.isAssignableFrom(mock)) {
+                Class<?> target = mock.getSuperclass();
+                if (target == null) {
+                    logger.error("Override mock " + mock.getCanonicalName() + " does not have a superclass");
+                    continue;
+                }
+                name = target.getCanonicalName();
 
-			} else if (StaticReplacementMock.class.isAssignableFrom(mock)) {
-				try {
-					StaticReplacementMock m = (StaticReplacementMock) mock.newInstance();
-					name = m.getMockedClassName();
-				} catch (Exception e) {
-					logger.error("Failed to create instance of mock " + mock.getCanonicalName());
-					continue;
-				}
-			} else {
-				// should never happen
-				logger.error("Cannot handle " + mock);
-				continue;
-			}
+            } else if (StaticReplacementMock.class.isAssignableFrom(mock)) {
+                try {
+                    StaticReplacementMock m = (StaticReplacementMock) mock.newInstance();
+                    name = m.getMockedClassName();
+                } catch (Exception e) {
+                    logger.error("Failed to create instance of mock " + mock.getCanonicalName());
+                    continue;
+                }
+            } else {
+                // should never happen
+                logger.error("Cannot handle " + mock);
+                continue;
+            }
 
-			if (originalClass.equals(name)) {
-				return mock;
-			}
-		}
+            if (originalClass.equals(name)) {
+                return mock;
+            }
+        }
 
-		return null;
-	}
+        return null;
+    }
 }

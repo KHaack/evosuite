@@ -99,6 +99,15 @@ public class TestCaseMinimizer {
         return false;
     }
 
+    private static void restoreTestCase(TestChromosome c, TestChromosome copy) {
+        c.test = copy.test;
+        c.copyCachedResults(copy);
+        //c.setFitness(copy.getFitness());
+        c.setFitnessValues(copy.getFitnessValues());
+        c.setPreviousFitnessValues(copy.getPreviousFitnessValues());
+        c.setChanged(false);
+    }
+
     private boolean isTimeoutReached() {
         return !TimeController.getInstance().isThereStillTimeInThisPhase();
     }
@@ -194,15 +203,6 @@ public class TestCaseMinimizer {
             logger.debug(c.test.toCode());
         }
 
-    }
-
-    private static void restoreTestCase(TestChromosome c, TestChromosome copy) {
-        c.test = copy.test;
-        c.copyCachedResults(copy);
-        //c.setFitness(copy.getFitness());
-        c.setFitnessValues(copy.getFitnessValues());
-        c.setPreviousFitnessValues(copy.getPreviousFitnessValues());
-        c.setChanged(false);
     }
 
 }

@@ -35,6 +35,10 @@ public class LangModel {
 
     // class variables
     // Hashes storing various Language Model probabilities
+    //Sentinel unigram values:
+    public static final String START_OF_STRING = "<s>";
+    public static final String END_OF_STRING = "</s>";
+    public static final String START_NEW_WORD = "<w>";
     /**
      * Probability of a unigram occurring.
      */
@@ -47,29 +51,22 @@ public class LangModel {
      * Probability that Unigram2 follows Unigram1, where each key is of the form "Unigram1 Unigram2".
      */
     private final Map<String, Double> bigram_probs = new HashMap<>();
-
-    //Sentinel unigram values:
-    public static final String START_OF_STRING = "<s>";
-    public static final String END_OF_STRING = "</s>";
-    public static final String START_NEW_WORD = "<w>";
-
-    private double unknown_char_prob = 0;
-
-
-    // Hashes to store most probable next characters in bigram
     /**
      * Mapping of the nth most likely unigrams to follow each unigram.
      * Encoded as: <code>(unigram)(n)> -> (unigram)</code>
      */
     private final HashMap<String, String> context_char = new HashMap<>();
+
+
+    // Hashes to store most probable next characters in bigram
     /**
      * Mapping of the probability of the nth most likely unigram to follow each unigram.
      * Encoded as: <code>(unigram)(n)> -> (log_probability)</code>
      */
     private final HashMap<String, Double> context_prob = new HashMap<>();
-
     // Maximum number of characters to predict for each bigram
     int predicted_chars = 10;
+    private double unknown_char_prob = 0;
 
     // Constructors
     // Read in data from language model to be manipulated later

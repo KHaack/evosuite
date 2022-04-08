@@ -56,6 +56,63 @@ public class GenericClassImpl implements Serializable, GenericClass<GenericClass
             Arrays.asList(Boolean.class, Character.class, Byte.class, Short.class,
                     Integer.class, Long.class, Float.class, Double.class,
                     Void.class));
+    transient Class<?> rawClass = null;
+    transient Type type = null;
+    private Map<TypeVariable<?>, Type> typeVariableMap = null;
+
+    /**
+     * Generate a generic class by setting all generic parameters to their
+     * parameter types
+     *
+     * @param clazz a {@link java.lang.Class} object.
+     */
+    public GenericClassImpl(Class<?> clazz) {
+        this.type = addTypeParameters(clazz); //GenericTypeReflector.addWildcardParameters(clazz);
+        this.rawClass = clazz;
+    }
+
+    public GenericClassImpl(GenericClassImpl copy) {
+        this.type = copy.type;
+        this.rawClass = copy.rawClass;
+        if (copy.getTypeVariableMap() != null) {
+            this.typeVariableMap = new LinkedHashMap<>(copy.getTypeVariableMap());
+        }
+    }
+
+    /**
+     * Generate a generic class by from a type
+     *
+     * @param type a {@link java.lang.reflect.Type} object.
+     */
+    public GenericClassImpl(Type type) {
+        if (type instanceof Class<?>) {
+            this.type = addTypeParameters((Class<?>) type); //GenericTypeReflector.addWildcardParameters((Class<?>) type);
+            this.rawClass = (Class<?>) type;
+        } else {
+            if (!handleGenericArraySpecialCase(type)) {
+                this.type = type;
+                try {
+                    this.rawClass = erase(type);
+                } catch (RuntimeException e) {
+                    // If there is an unresolved capture type in here
+                    // we delete it and replace with a wildcard
+                    this.rawClass = Object.class;
+                }
+            }
+        }
+    }
+
+    /**
+     * Generate a GenericClass with this exact generic type and raw class
+     *
+     * @param type
+     * @param clazz
+     */
+    public GenericClassImpl(Type type, Class<?> clazz) {
+        this.type = type;
+        this.rawClass = clazz;
+        handleGenericArraySpecialCase(type);
+    }
 
     protected static Type addTypeParameters(Class<?> clazz) {
         if (clazz.isArray()) {
@@ -150,64 +207,6 @@ public class GenericClassImpl implements Serializable, GenericClass<GenericClass
      */
     private static boolean isAssignable(Type lhsType, Type rhsType) {
         return GenericClassUtils.isAssignable(lhsType, rhsType);
-    }
-
-    transient Class<?> rawClass = null;
-
-    transient Type type = null;
-
-    /**
-     * Generate a generic class by setting all generic parameters to their
-     * parameter types
-     *
-     * @param clazz a {@link java.lang.Class} object.
-     */
-    public GenericClassImpl(Class<?> clazz) {
-        this.type = addTypeParameters(clazz); //GenericTypeReflector.addWildcardParameters(clazz);
-        this.rawClass = clazz;
-    }
-
-    public GenericClassImpl(GenericClassImpl copy) {
-        this.type = copy.type;
-        this.rawClass = copy.rawClass;
-        if (copy.getTypeVariableMap() != null) {
-            this.typeVariableMap = new LinkedHashMap<>(copy.getTypeVariableMap());
-        }
-    }
-
-    /**
-     * Generate a generic class by from a type
-     *
-     * @param type a {@link java.lang.reflect.Type} object.
-     */
-    public GenericClassImpl(Type type) {
-        if (type instanceof Class<?>) {
-            this.type = addTypeParameters((Class<?>) type); //GenericTypeReflector.addWildcardParameters((Class<?>) type);
-            this.rawClass = (Class<?>) type;
-        } else {
-            if (!handleGenericArraySpecialCase(type)) {
-                this.type = type;
-                try {
-                    this.rawClass = erase(type);
-                } catch (RuntimeException e) {
-                    // If there is an unresolved capture type in here
-                    // we delete it and replace with a wildcard
-                    this.rawClass = Object.class;
-                }
-            }
-        }
-    }
-
-    /**
-     * Generate a GenericClass with this exact generic type and raw class
-     *
-     * @param type
-     * @param clazz
-     */
-    public GenericClassImpl(Type type, Class<?> clazz) {
-        this.type = type;
-        this.rawClass = clazz;
-        handleGenericArraySpecialCase(type);
     }
 
     @Override
@@ -835,8 +834,6 @@ public class GenericClassImpl implements Serializable, GenericClass<GenericClass
     public String getTypeName() {
         return GenericTypeReflector.getTypeName(type);
     }
-
-    private Map<TypeVariable<?>, Type> typeVariableMap = null;
 
     public Map<TypeVariable<?>, Type> getTypeVariableMap() {
         if (typeVariableMap != null)

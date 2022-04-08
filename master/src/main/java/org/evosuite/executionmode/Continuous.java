@@ -37,8 +37,6 @@ import java.util.Scanner;
 
 public class Continuous {
 
-    public enum Command {EXECUTE, INFO, CLEAN}
-
     public static final String NAME = "continuous";
 
     public static Option getOption() {
@@ -142,5 +140,7 @@ public class Continuous {
 
         return null;
     }
+
+    public enum Command {EXECUTE, INFO, CLEAN}
 
 }

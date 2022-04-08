@@ -24,6 +24,10 @@ public class UnstableAssertion {
     private static boolean flag;
     private static int value;
 
+    public boolean getFlag() {
+        return flag;
+    }
+
     public void setFlag(int x) {
         if (flag == false) {
             flag = true;
@@ -31,8 +35,8 @@ public class UnstableAssertion {
         }
     }
 
-    public boolean getFlag() {
-        return flag;
+    public int getValue() {
+        return value;
     }
 
     public void setValue(int x) {
@@ -46,10 +50,6 @@ public class UnstableAssertion {
         } else {
             value = +1;
         }
-    }
-
-    public int getValue() {
-        return value;
     }
 
 

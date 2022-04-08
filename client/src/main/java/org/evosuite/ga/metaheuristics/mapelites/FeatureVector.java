@@ -31,6 +31,65 @@ import java.util.Arrays;
 public final class FeatureVector implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    private final Entry[] features;
+
+    public FeatureVector(final Inspector[] inspectors, final Object instance) {
+        this.features = new Entry[inspectors.length];
+
+        for (int i = 0; i < inspectors.length; ++i) {
+            this.features[i] = new Entry(inspectors[i], instance);
+        }
+    }
+
+    private static int getPossibilityCountForType(Class<?> type) {
+        final Class<?> wrappedType = ClassUtils.primitiveToWrapper(type);
+
+        int amount = 0;
+
+        if (Character.class.isAssignableFrom(wrappedType)) {
+            amount = 1;
+        } else if (Boolean.class.isAssignableFrom(wrappedType)) {
+            amount = 2;
+        } else if (String.class.isAssignableFrom(wrappedType)) {
+            amount = 2;
+        } else if (wrappedType.isEnum()) {
+            amount = wrappedType.getEnumConstants().length;
+        } else if (Number.class.isAssignableFrom(wrappedType)) {
+            amount = 3;
+        }
+
+        if (!type.isPrimitive()) {
+            amount += 1;
+        }
+
+        return amount;
+    }
+
+    public static int getPossibilityCount(final Inspector[] inspectors) {
+        return Arrays
+                .stream(inspectors)
+                .mapToInt(i -> getPossibilityCountForType(i.getReturnType()))
+                .reduce(1, Math::multiplyExact);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(this.features);
+    }
+
+    public boolean equals(FeatureVector other) {
+        return Arrays.equals(this.features, other.features);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof FeatureVector && equals((FeatureVector) obj);
+    }
+
+    @Override
+    public String toString() {
+        return Arrays.toString(features);
+    }
 
     private final static class Entry implements Serializable {
 
@@ -105,66 +164,6 @@ public final class FeatureVector implements Serializable {
         public boolean equals(Object obj) {
             return obj instanceof Entry && equals((Entry) obj);
         }
-    }
-
-    private final Entry[] features;
-
-    public FeatureVector(final Inspector[] inspectors, final Object instance) {
-        this.features = new Entry[inspectors.length];
-
-        for (int i = 0; i < inspectors.length; ++i) {
-            this.features[i] = new Entry(inspectors[i], instance);
-        }
-    }
-
-    @Override
-    public int hashCode() {
-        return Arrays.hashCode(this.features);
-    }
-
-    public boolean equals(FeatureVector other) {
-        return Arrays.equals(this.features, other.features);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return obj instanceof FeatureVector && equals((FeatureVector) obj);
-    }
-
-    @Override
-    public String toString() {
-        return Arrays.toString(features);
-    }
-
-    private static int getPossibilityCountForType(Class<?> type) {
-        final Class<?> wrappedType = ClassUtils.primitiveToWrapper(type);
-
-        int amount = 0;
-
-        if (Character.class.isAssignableFrom(wrappedType)) {
-            amount = 1;
-        } else if (Boolean.class.isAssignableFrom(wrappedType)) {
-            amount = 2;
-        } else if (String.class.isAssignableFrom(wrappedType)) {
-            amount = 2;
-        } else if (wrappedType.isEnum()) {
-            amount = wrappedType.getEnumConstants().length;
-        } else if (Number.class.isAssignableFrom(wrappedType)) {
-            amount = 3;
-        }
-
-        if (!type.isPrimitive()) {
-            amount += 1;
-        }
-
-        return amount;
-    }
-
-    public static int getPossibilityCount(final Inspector[] inspectors) {
-        return Arrays
-                .stream(inspectors)
-                .mapToInt(i -> getPossibilityCountForType(i.getReturnType()))
-                .reduce(1, Math::multiplyExact);
     }
 
 }

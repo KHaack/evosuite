@@ -42,21 +42,14 @@ public class RhoCoverageFactory extends
     private static final long serialVersionUID = -4124074445663735815L;
 
     private static final Logger logger = LoggerFactory.getLogger(RhoCoverageFactory.class);
-
-
+    private static final List<List<Integer>> matrix = new ArrayList<>();
     private static List<LineCoverageTestFitness> goals = new ArrayList<>();
-
     /**
      * Variables to calculate Rho value
      */
     private static int number_of_ones = 0;
     private static int number_of_test_cases = 0;
-
-
     private static double rho = 1.0;
-
-
-    private static final List<List<Integer>> matrix = new ArrayList<>();
 
     /**
      * Read the coverage of a test suite from a file
@@ -107,11 +100,6 @@ public class RhoCoverageFactory extends
                 ex.printStackTrace();
             }
         }
-    }
-
-    @Override
-    public List<LineCoverageTestFitness> getCoverageGoals() {
-        return getGoals();
     }
 
     /**
@@ -194,5 +182,10 @@ public class RhoCoverageFactory extends
         number_of_test_cases = 0;
         rho = 1.0;
         matrix.clear();
+    }
+
+    @Override
+    public List<LineCoverageTestFitness> getCoverageGoals() {
+        return getGoals();
     }
 }

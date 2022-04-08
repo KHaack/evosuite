@@ -31,11 +31,6 @@ import java.time.temporal.TemporalAccessor;
  * Created by gordon on 24/01/2016.
  */
 public class MockLocalTime implements StaticReplacementMock {
-    @Override
-    public String getMockedClassName() {
-        return LocalTime.class.getName();
-    }
-
     public static LocalTime now() {
         return now(MockClock.systemDefaultZone());
     }
@@ -78,6 +73,11 @@ public class MockLocalTime implements StaticReplacementMock {
 
     public static LocalTime parse(CharSequence text, DateTimeFormatter formatter) {
         return LocalTime.parse(text, formatter);
+    }
+
+    @Override
+    public String getMockedClassName() {
+        return LocalTime.class.getName();
     }
 
 }

@@ -23,10 +23,10 @@ import java.util.function.Function;
 
 /**
  * Simple example of closures as fields.
- *
+ * <p>
  * Here the method descriptor of the call made in test will differ from the one
  * used when begging executing the closure (intCompare).
- *
+ * <p>
  * See the resulting bytecode for more information.
  *
  * @author Ignacio Lebrero

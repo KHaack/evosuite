@@ -20,6 +20,49 @@
 package com.examples.with.different.packagename.concolic;
 
 public class TestCase69 {
+    public static void test() {
+        Pat pat0 = new Pat();
+        String string0 = "r1{";
+        String string1 = "r1{";
+        String string2 = "r1{";
+        String string3 = "r1{";
+        String string4 = "r1{";
+        String string5 = "r1{";
+        String string6 = "r1{";
+        String string7 = "r1{";
+        String string8 = "r1{";
+        String string9 = Pat.Reverse(string0);
+        int int0 = pat0.Subject(string8, string7);
+        String string10 = Pat.Reverse(string6);
+        int int1 = pat0.Subject(string5, string4);
+        String string11 = "h:\u0018n mH]a";
+        String string12 = "h:\u0018n mH]a";
+        String string13 = "h:\u0018n mH]a";
+        String string14 = "h:\u0018n mH]a";
+        String string15 = "h:\u0018n mH]a";
+        String string16 = Pat.Reverse(string11);
+        String string17 = Pat.Reverse(string3);
+        Pat pat1 = new Pat();
+        int int2 = pat1.Subject(string16, string15);
+        int int3 = pat1.Subject(string14, string16);
+        String string18 = Pat.Reverse(string2);
+        int int4 = pat1.Subject(string16, string16);
+        int int5 = pat0.Subject(string10, string9);
+        Pat pat2 = new Pat();
+        String string19 = Pat.Reverse(string16);
+        int int6 = pat1.Subject(string16, string10);
+        int int7 = pat1.Subject(string16, string16);
+        int int8 = pat1.Subject(string16, string16);
+        String string20 = Pat.Reverse(string16);
+        String string21 = Pat.Reverse(string19);
+        String string22 = Pat.Reverse(string13);
+        Pat pat3 = new Pat();
+        int int9 = pat0.Subject(string20, string1);
+        int int10 = pat2.Subject(string17, string12);
+        Pat pat4 = new Pat();
+        Pat pat5 = new Pat();
+    }
+
     public static class Pat {
         public static String Reverse(String s) {
             // RTN REVERSE OF s
@@ -102,48 +145,5 @@ public class TestCase69 {
             return result;
         }
 
-    }
-
-    public static void test() {
-        Pat pat0 = new Pat();
-        String string0 = "r1{";
-        String string1 = "r1{";
-        String string2 = "r1{";
-        String string3 = "r1{";
-        String string4 = "r1{";
-        String string5 = "r1{";
-        String string6 = "r1{";
-        String string7 = "r1{";
-        String string8 = "r1{";
-        String string9 = Pat.Reverse(string0);
-        int int0 = pat0.Subject(string8, string7);
-        String string10 = Pat.Reverse(string6);
-        int int1 = pat0.Subject(string5, string4);
-        String string11 = "h:\u0018n mH]a";
-        String string12 = "h:\u0018n mH]a";
-        String string13 = "h:\u0018n mH]a";
-        String string14 = "h:\u0018n mH]a";
-        String string15 = "h:\u0018n mH]a";
-        String string16 = Pat.Reverse(string11);
-        String string17 = Pat.Reverse(string3);
-        Pat pat1 = new Pat();
-        int int2 = pat1.Subject(string16, string15);
-        int int3 = pat1.Subject(string14, string16);
-        String string18 = Pat.Reverse(string2);
-        int int4 = pat1.Subject(string16, string16);
-        int int5 = pat0.Subject(string10, string9);
-        Pat pat2 = new Pat();
-        String string19 = Pat.Reverse(string16);
-        int int6 = pat1.Subject(string16, string10);
-        int int7 = pat1.Subject(string16, string16);
-        int int8 = pat1.Subject(string16, string16);
-        String string20 = Pat.Reverse(string16);
-        String string21 = Pat.Reverse(string19);
-        String string22 = Pat.Reverse(string13);
-        Pat pat3 = new Pat();
-        int int9 = pat0.Subject(string20, string1);
-        int int10 = pat2.Subject(string17, string12);
-        Pat pat4 = new Pat();
-        Pat pat5 = new Pat();
     }
 }

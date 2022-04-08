@@ -30,16 +30,16 @@ import java.time.chrono.HijrahDate;
  * Created by gordon on 24/01/2016.
  */
 public class MockHijrahChronology implements StaticReplacementMock {
-    @Override
-    public String getMockedClassName() {
-        return HijrahChronology.class.getName();
-    }
-
     public static HijrahDate dateNow(HijrahChronology instance) {
         return instance.dateNow(MockClock.systemDefaultZone());
     }
 
     public static HijrahDate dateNow(HijrahChronology instance, ZoneId zone) {
         return instance.dateNow(MockClock.system(zone));
+    }
+
+    @Override
+    public String getMockedClassName() {
+        return HijrahChronology.class.getName();
     }
 }

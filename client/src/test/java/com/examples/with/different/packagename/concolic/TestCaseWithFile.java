@@ -26,6 +26,14 @@ import java.util.Scanner;
 
 public class TestCaseWithFile {
 
+    public static boolean isZero(int value) {
+        if (value == 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public String test(File f) throws IOException {
         if (!f.exists()) {
             return "No File";
@@ -38,14 +46,6 @@ public class TestCaseWithFile {
             return str;
         else
             return null;
-    }
-
-    public static boolean isZero(int value) {
-        if (value == 0) {
-            return true;
-        } else {
-            return false;
-        }
     }
 
 }

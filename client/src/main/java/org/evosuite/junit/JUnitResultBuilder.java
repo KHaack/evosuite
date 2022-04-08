@@ -41,6 +41,22 @@ public class JUnitResultBuilder {
 
     private static final Logger logger = LoggerFactory.getLogger(JUnitResultBuilder.class);
 
+    private static JUnitFailure toFailure(TestIdentifier identifier, TestExecutionResult failure) {
+        String descriptionMethodName = identifier.getDisplayName();
+        Throwable throwable = failure.getThrowable().get();
+        String exceptionClassName = throwable.getClass().getName();
+        String message = throwable.getMessage();
+        String trace = Throwables.getStacktrace(throwable);
+        boolean isAssertionError = (throwable instanceof java.lang.AssertionError);
+
+        JUnitFailure jUnitFailure = new JUnitFailure(message, exceptionClassName, descriptionMethodName, isAssertionError, trace);
+        for (StackTraceElement elem : throwable.getStackTrace()) {
+            String elemToString = elem.toString();
+            jUnitFailure.addToExceptionStackTrace(elemToString);
+        }
+        return jUnitFailure;
+    }
+
     /**
      * Translates <i>part</i> of the org.junit.runner.Result object
      * into an evosuite independent object.
@@ -92,21 +108,5 @@ public class JUnitResultBuilder {
                 results.stream().filter(r -> r.getRight().getStatus() == TestExecutionResult.Status.FAILED).collect(Collectors.toList());
         failures.stream().map(f -> toFailure(f.getLeft(), f.getRight())).forEach(jUnitResult::addFailure);
         return jUnitResult;
-    }
-
-    private static JUnitFailure toFailure(TestIdentifier identifier, TestExecutionResult failure) {
-        String descriptionMethodName = identifier.getDisplayName();
-        Throwable throwable = failure.getThrowable().get();
-        String exceptionClassName = throwable.getClass().getName();
-        String message = throwable.getMessage();
-        String trace = Throwables.getStacktrace(throwable);
-        boolean isAssertionError = (throwable instanceof java.lang.AssertionError);
-
-        JUnitFailure jUnitFailure = new JUnitFailure(message, exceptionClassName, descriptionMethodName, isAssertionError, trace);
-        for (StackTraceElement elem : throwable.getStackTrace()) {
-            String elemToString = elem.toString();
-            jUnitFailure.addToExceptionStackTrace(elemToString);
-        }
-        return jUnitFailure;
     }
 }

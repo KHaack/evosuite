@@ -41,112 +41,6 @@ import org.slf4j.LoggerFactory;
 public class ValueMinimizer extends TestVisitor {
 
     private static final Logger logger = LoggerFactory.getLogger(ValueMinimizer.class);
-
-    public interface Minimization {
-        boolean isNotWorse();
-    }
-
-    private static class TestMinimization implements Minimization {
-
-        private final TestFitnessFunction fitness;
-
-        private final TestChromosome individual;
-
-        private double lastFitness;
-
-        public TestMinimization(TestFitnessFunction fitness, TestChromosome test) {
-            this.fitness = fitness;
-            this.individual = test;
-            this.lastFitness = test.getFitness(fitness);
-        }
-
-        /* (non-Javadoc)
-         * @see org.evosuite.ga.LocalSearchObjective#hasImproved(org.evosuite.ga.Chromosome)
-         */
-        @Override
-        public boolean isNotWorse() {
-            ExecutionResult lastResult = individual.getLastExecutionResult();
-            individual.setChanged(true);
-            individual.getTestCase().clearCoveredGoals();
-            double newFitness = fitness.getFitness(individual);
-            boolean worse = false;
-            if (fitness.isMaximizationFunction()) {
-                if (newFitness < lastFitness)
-                    worse = true;
-            } else {
-                if (newFitness > lastFitness)
-                    worse = true;
-            }
-
-            if (!worse) {
-                lastFitness = newFitness;
-                individual.setFitness(fitness, lastFitness);
-                return true;
-            } else {
-                individual.setFitness(fitness, lastFitness);
-                individual.setLastExecutionResult(lastResult);
-                return false;
-            }
-        }
-    }
-
-    private static class SuiteMinimization implements Minimization {
-
-        private final TestSuiteFitnessFunction fitness;
-
-        private final TestSuiteChromosome suite;
-
-        private final TestChromosome individual;
-
-        private final int testIndex;
-
-        private double lastFitness;
-
-        private double lastCoverage;
-
-        public SuiteMinimization(TestSuiteFitnessFunction fitness,
-                                 TestSuiteChromosome suite, int index) {
-            this.fitness = fitness;
-            this.suite = suite;
-            this.individual = suite.getTestChromosome(index);
-            this.testIndex = index;
-            this.lastFitness = suite.getFitness(fitness);
-            this.lastCoverage = suite.getCoverage();
-        }
-
-        /* (non-Javadoc)
-         * @see org.evosuite.ga.LocalSearchObjective#hasImproved(org.evosuite.ga.Chromosome)
-         */
-        @Override
-        public boolean isNotWorse() {
-            ExecutionResult lastResult = individual.getLastExecutionResult().clone();
-            individual.setChanged(true);
-            suite.setTestChromosome(testIndex, individual);
-            double newFitness = fitness.getFitness(suite);
-            // individual.setChanged(true);
-            boolean worse = false;
-            if (fitness.isMaximizationFunction()) {
-                if (newFitness < lastFitness)
-                    worse = true;
-            } else {
-                if (newFitness > lastFitness)
-                    worse = true;
-            }
-            if (!worse) {
-                logger.debug("Fitness changed from " + lastFitness + " to " + newFitness);
-                lastFitness = newFitness;
-                lastCoverage = suite.getCoverage();
-                suite.setFitness(fitness, lastFitness);
-                return true;
-            } else {
-                individual.setLastExecutionResult(lastResult);
-                suite.setFitness(fitness, lastFitness);
-                suite.setCoverage(fitness, lastCoverage);
-                return false;
-            }
-        }
-    }
-
     private Minimization objective;
 
     /**
@@ -397,10 +291,6 @@ public class ValueMinimizer extends TestVisitor {
         }
     }
 
-    /* (non-Javadoc)
-     * @see org.evosuite.testcase.TestVisitor#visitTestCase(org.evosuite.testcase.TestCase)
-     */
-
     /**
      * {@inheritDoc}
      */
@@ -436,11 +326,6 @@ public class ValueMinimizer extends TestVisitor {
         }
     }
 
-
-    /* (non-Javadoc)
-     * @see org.evosuite.testcase.TestVisitor#visitPrimitiveStatement(org.evosuite.testcase.PrimitiveStatement)
-     */
-
     /**
      * {@inheritDoc}
      */
@@ -449,7 +334,7 @@ public class ValueMinimizer extends TestVisitor {
     }
 
     /* (non-Javadoc)
-     * @see org.evosuite.testcase.TestVisitor#visitFieldStatement(org.evosuite.testcase.FieldStatement)
+     * @see org.evosuite.testcase.TestVisitor#visitTestCase(org.evosuite.testcase.TestCase)
      */
 
     /**
@@ -461,10 +346,6 @@ public class ValueMinimizer extends TestVisitor {
 
     }
 
-    /* (non-Javadoc)
-     * @see org.evosuite.testcase.TestVisitor#visitMethodStatement(org.evosuite.testcase.MethodStatement)
-     */
-
     /**
      * {@inheritDoc}
      */
@@ -473,8 +354,9 @@ public class ValueMinimizer extends TestVisitor {
 
     }
 
+
     /* (non-Javadoc)
-     * @see org.evosuite.testcase.TestVisitor#visitConstructorStatement(org.evosuite.testcase.ConstructorStatement)
+     * @see org.evosuite.testcase.TestVisitor#visitPrimitiveStatement(org.evosuite.testcase.PrimitiveStatement)
      */
 
     /**
@@ -487,7 +369,7 @@ public class ValueMinimizer extends TestVisitor {
     }
 
     /* (non-Javadoc)
-     * @see org.evosuite.testcase.TestVisitor#visitArrayStatement(org.evosuite.testcase.ArrayStatement)
+     * @see org.evosuite.testcase.TestVisitor#visitFieldStatement(org.evosuite.testcase.FieldStatement)
      */
 
     /**
@@ -500,7 +382,7 @@ public class ValueMinimizer extends TestVisitor {
     }
 
     /* (non-Javadoc)
-     * @see org.evosuite.testcase.TestVisitor#visitAssignmentStatement(org.evosuite.testcase.AssignmentStatement)
+     * @see org.evosuite.testcase.TestVisitor#visitMethodStatement(org.evosuite.testcase.MethodStatement)
      */
 
     /**
@@ -513,7 +395,7 @@ public class ValueMinimizer extends TestVisitor {
     }
 
     /* (non-Javadoc)
-     * @see org.evosuite.testcase.TestVisitor#visitNullStatement(org.evosuite.testcase.NullStatement)
+     * @see org.evosuite.testcase.TestVisitor#visitConstructorStatement(org.evosuite.testcase.ConstructorStatement)
      */
 
     /**
@@ -525,6 +407,10 @@ public class ValueMinimizer extends TestVisitor {
 
     }
 
+    /* (non-Javadoc)
+     * @see org.evosuite.testcase.TestVisitor#visitArrayStatement(org.evosuite.testcase.ArrayStatement)
+     */
+
     /**
      * {@inheritDoc}
      */
@@ -535,9 +421,122 @@ public class ValueMinimizer extends TestVisitor {
 
     }
 
+    /* (non-Javadoc)
+     * @see org.evosuite.testcase.TestVisitor#visitAssignmentStatement(org.evosuite.testcase.AssignmentStatement)
+     */
+
     @Override
     public void visitFunctionalMockStatement(FunctionalMockStatement functionalMockStatement) {
 
+    }
+
+    /* (non-Javadoc)
+     * @see org.evosuite.testcase.TestVisitor#visitNullStatement(org.evosuite.testcase.NullStatement)
+     */
+
+    public interface Minimization {
+        boolean isNotWorse();
+    }
+
+    private static class TestMinimization implements Minimization {
+
+        private final TestFitnessFunction fitness;
+
+        private final TestChromosome individual;
+
+        private double lastFitness;
+
+        public TestMinimization(TestFitnessFunction fitness, TestChromosome test) {
+            this.fitness = fitness;
+            this.individual = test;
+            this.lastFitness = test.getFitness(fitness);
+        }
+
+        /* (non-Javadoc)
+         * @see org.evosuite.ga.LocalSearchObjective#hasImproved(org.evosuite.ga.Chromosome)
+         */
+        @Override
+        public boolean isNotWorse() {
+            ExecutionResult lastResult = individual.getLastExecutionResult();
+            individual.setChanged(true);
+            individual.getTestCase().clearCoveredGoals();
+            double newFitness = fitness.getFitness(individual);
+            boolean worse = false;
+            if (fitness.isMaximizationFunction()) {
+                if (newFitness < lastFitness)
+                    worse = true;
+            } else {
+                if (newFitness > lastFitness)
+                    worse = true;
+            }
+
+            if (!worse) {
+                lastFitness = newFitness;
+                individual.setFitness(fitness, lastFitness);
+                return true;
+            } else {
+                individual.setFitness(fitness, lastFitness);
+                individual.setLastExecutionResult(lastResult);
+                return false;
+            }
+        }
+    }
+
+    private static class SuiteMinimization implements Minimization {
+
+        private final TestSuiteFitnessFunction fitness;
+
+        private final TestSuiteChromosome suite;
+
+        private final TestChromosome individual;
+
+        private final int testIndex;
+
+        private double lastFitness;
+
+        private double lastCoverage;
+
+        public SuiteMinimization(TestSuiteFitnessFunction fitness,
+                                 TestSuiteChromosome suite, int index) {
+            this.fitness = fitness;
+            this.suite = suite;
+            this.individual = suite.getTestChromosome(index);
+            this.testIndex = index;
+            this.lastFitness = suite.getFitness(fitness);
+            this.lastCoverage = suite.getCoverage();
+        }
+
+        /* (non-Javadoc)
+         * @see org.evosuite.ga.LocalSearchObjective#hasImproved(org.evosuite.ga.Chromosome)
+         */
+        @Override
+        public boolean isNotWorse() {
+            ExecutionResult lastResult = individual.getLastExecutionResult().clone();
+            individual.setChanged(true);
+            suite.setTestChromosome(testIndex, individual);
+            double newFitness = fitness.getFitness(suite);
+            // individual.setChanged(true);
+            boolean worse = false;
+            if (fitness.isMaximizationFunction()) {
+                if (newFitness < lastFitness)
+                    worse = true;
+            } else {
+                if (newFitness > lastFitness)
+                    worse = true;
+            }
+            if (!worse) {
+                logger.debug("Fitness changed from " + lastFitness + " to " + newFitness);
+                lastFitness = newFitness;
+                lastCoverage = suite.getCoverage();
+                suite.setFitness(fitness, lastFitness);
+                return true;
+            } else {
+                individual.setLastExecutionResult(lastResult);
+                suite.setFitness(fitness, lastFitness);
+                suite.setCoverage(fitness, lastCoverage);
+                return false;
+            }
+        }
     }
 
 }

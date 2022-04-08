@@ -40,6 +40,11 @@ public class TestDoubleUnderflow {
     private double x;
     private double y;
 
+    public TestDoubleUnderflow(double x, double y) {
+        this.x = x;
+        this.y = y;
+    }
+
     // Creates the test data
     @Parameters
     public static Collection<Object[]> data() {
@@ -52,12 +57,6 @@ public class TestDoubleUnderflow {
         }
         return valuePairs;
     }
-
-    public TestDoubleUnderflow(double x, double y) {
-        this.x = x;
-        this.y = y;
-    }
-
 
     private void assertUnderflow(BigDecimal preciseResult, int distance, double doubleResult) {
         BigDecimal maxResult = new BigDecimal(-Double.MAX_VALUE);

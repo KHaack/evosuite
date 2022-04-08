@@ -28,13 +28,7 @@ import java.util.prefs.Preferences;
  * Created by gordon on 26/12/2016.
  */
 public class MockPreferences implements StaticReplacementMock {
-    @Override
-    public String getMockedClassName() {
-        return Preferences.class.getName();
-    }
-
     private static PreferencesImpl userRoot = new PreferencesImpl(null, "");
-
     private static PreferencesImpl systemRoot = new PreferencesImpl(null, "");
 
     public static void resetPreferences() {
@@ -71,5 +65,10 @@ public class MockPreferences implements StaticReplacementMock {
             return "/<unnamed>";
         String packageName = className.substring(0, pkgEndIndex);
         return "/" + packageName.replace('.', '/');
+    }
+
+    @Override
+    public String getMockedClassName() {
+        return Preferences.class.getName();
     }
 }

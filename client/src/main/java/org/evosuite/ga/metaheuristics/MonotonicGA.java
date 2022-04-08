@@ -37,10 +37,9 @@ import java.util.List;
 public class MonotonicGA<T extends Chromosome<T>> extends GeneticAlgorithm<T> {
 
     private static final long serialVersionUID = 7846967347821123201L;
-
-    protected ReplacementFunction<T> replacementFunction;
-
+    private static final double DELTA = 0.000000001; // it seems there is some
     private final Logger logger = LoggerFactory.getLogger(MonotonicGA.class);
+    protected ReplacementFunction<T> replacementFunction;
 
     /**
      * Constructor
@@ -199,8 +198,6 @@ public class MonotonicGA<T extends Chromosome<T>> extends GeneticAlgorithm<T> {
 
         this.notifyIteration();
     }
-
-    private static final double DELTA = 0.000000001; // it seems there is some
     // rounding error in LS,
     // but hard to debug :(
 
@@ -321,17 +318,6 @@ public class MonotonicGA<T extends Chromosome<T>> extends GeneticAlgorithm<T> {
 
     /**
      * <p>
-     * setReplacementFunction
-     * </p>
-     *
-     * @param replacement_function a {@link org.evosuite.ga.ReplacementFunction} object.
-     */
-    public void setReplacementFunction(ReplacementFunction<T> replacement_function) {
-        this.replacementFunction = replacement_function;
-    }
-
-    /**
-     * <p>
      * getReplacementFunction
      * </p>
      *
@@ -339,6 +325,17 @@ public class MonotonicGA<T extends Chromosome<T>> extends GeneticAlgorithm<T> {
      */
     public ReplacementFunction<T> getReplacementFunction() {
         return replacementFunction;
+    }
+
+    /**
+     * <p>
+     * setReplacementFunction
+     * </p>
+     *
+     * @param replacement_function a {@link org.evosuite.ga.ReplacementFunction} object.
+     */
+    public void setReplacementFunction(ReplacementFunction<T> replacement_function) {
+        this.replacementFunction = replacement_function;
     }
 
 }

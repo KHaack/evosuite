@@ -44,9 +44,8 @@ import java.util.List;
  */
 public class ConstantInliner extends ExecutionObserver {
 
-    private TestCase test = null;
-
     private static final Logger logger = LoggerFactory.getLogger(ConstantInliner.class);
+    private TestCase test = null;
 
     /**
      * <p>

@@ -30,30 +30,24 @@ import java.io.File;
  */
 public abstract class FSObject {
 
-    private volatile boolean readPermission;
-
-    private volatile boolean writePermission;
-
-    private volatile boolean executePermission;
-
-    /**
-     * Normalized path uniquely identifying this file on the VFS
-     */
-    protected volatile String path;
-
     /**
      * The direct parent folder
      */
     protected final VFolder parent;
-
+    /**
+     * Normalized path uniquely identifying this file on the VFS
+     */
+    protected volatile String path;
     /**
      * Even if file is removed from file system, some threads could still have
      * references to it. So, long/expensive operations could be stopped here if
      * file is deleted
      */
     protected volatile boolean deleted;
-
     protected volatile long lastModified;
+    private volatile boolean readPermission;
+    private volatile boolean writePermission;
+    private volatile boolean executePermission;
 
     public FSObject(String path, VFolder parent) {
         readPermission = true;

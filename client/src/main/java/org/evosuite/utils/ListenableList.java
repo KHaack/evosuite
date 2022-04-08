@@ -29,68 +29,6 @@ public class ListenableList<E> extends SimpleListenable<Void> implements List<E>
         Serializable {
 
     private static final long serialVersionUID = 1L;
-
-    private static class ObservableListIterator<E> extends SimpleListenable<Void>
-            implements ListIterator<E> {
-
-        private static final long serialVersionUID = 1L;
-
-        private final ListIterator<E> delegate;
-
-        public ObservableListIterator(ListIterator<E> delegate) {
-            super();
-            this.delegate = delegate;
-        }
-
-        @Override
-        public void add(E e) {
-            delegate.add(e);
-            fireEvent(null);
-        }
-
-        @Override
-        public boolean hasNext() {
-            return delegate.hasNext();
-        }
-
-        @Override
-        public boolean hasPrevious() {
-            return delegate.hasPrevious();
-        }
-
-        @Override
-        public E next() {
-            return delegate.next();
-        }
-
-        @Override
-        public int nextIndex() {
-            return delegate.nextIndex();
-        }
-
-        @Override
-        public E previous() {
-            return delegate.previous();
-        }
-
-        @Override
-        public int previousIndex() {
-            return delegate.previousIndex();
-        }
-
-        @Override
-        public void remove() {
-            delegate.remove();
-            fireEvent(null);
-        }
-
-        @Override
-        public void set(E e) {
-            delegate.set(e);
-            fireEvent(null);
-        }
-    }
-
     private final Listener<Void> listener = new Listener<Void>() {
 
         private static final long serialVersionUID = 1L;
@@ -100,7 +38,6 @@ public class ListenableList<E> extends SimpleListenable<Void> implements List<E>
             fireEvent(null);
         }
     };
-
     private final List<E> delegate;
 
     /**
@@ -338,5 +275,66 @@ public class ListenableList<E> extends SimpleListenable<Void> implements List<E>
     @Override
     public <T> T[] toArray(T[] a) {
         return delegate.toArray(a);
+    }
+
+    private static class ObservableListIterator<E> extends SimpleListenable<Void>
+            implements ListIterator<E> {
+
+        private static final long serialVersionUID = 1L;
+
+        private final ListIterator<E> delegate;
+
+        public ObservableListIterator(ListIterator<E> delegate) {
+            super();
+            this.delegate = delegate;
+        }
+
+        @Override
+        public void add(E e) {
+            delegate.add(e);
+            fireEvent(null);
+        }
+
+        @Override
+        public boolean hasNext() {
+            return delegate.hasNext();
+        }
+
+        @Override
+        public boolean hasPrevious() {
+            return delegate.hasPrevious();
+        }
+
+        @Override
+        public E next() {
+            return delegate.next();
+        }
+
+        @Override
+        public int nextIndex() {
+            return delegate.nextIndex();
+        }
+
+        @Override
+        public E previous() {
+            return delegate.previous();
+        }
+
+        @Override
+        public int previousIndex() {
+            return delegate.previousIndex();
+        }
+
+        @Override
+        public void remove() {
+            delegate.remove();
+            fireEvent(null);
+        }
+
+        @Override
+        public void set(E e) {
+            delegate.set(e);
+            fireEvent(null);
+        }
     }
 }

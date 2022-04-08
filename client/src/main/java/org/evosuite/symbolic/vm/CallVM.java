@@ -61,9 +61,8 @@ public final class CallVM extends AbstractVM {
      * Instrumentation
      */
     private final ConcolicInstrumentingClassLoader classLoader;
-
-    private int stackParamCount = 0;
     private final HashMap<Member, MemberInfo> memberInfos = new HashMap<>();
+    private int stackParamCount = 0;
 
     /**
      * Constructor
@@ -71,6 +70,15 @@ public final class CallVM extends AbstractVM {
     public CallVM(SymbolicEnvironment env, ConcolicInstrumentingClassLoader classLoader) {
         this.env = env;
         this.classLoader = classLoader;
+    }
+
+    private static Method findMethodFromClass(Class<?> clazz, String methodName, Class<?>[] argTypes) {
+        Method method = null;
+        try {
+            method = clazz.getDeclaredMethod(methodName, argTypes);
+        } catch (NoSuchMethodException ignored) {
+        }
+        return method;
     }
 
     /**
@@ -984,15 +992,6 @@ public final class CallVM extends AbstractVM {
         return classes;
     }
 
-    private static Method findMethodFromClass(Class<?> clazz, String methodName, Class<?>[] argTypes) {
-        Method method = null;
-        try {
-            method = clazz.getDeclaredMethod(methodName, argTypes);
-        } catch (NoSuchMethodException ignored) {
-        }
-        return method;
-    }
-
     /**
      * Resolves (static) method overloading.
      * <p>
@@ -1136,6 +1135,11 @@ public final class CallVM extends AbstractVM {
         return frame;
     }
 
+    private boolean callResultIsPushed() {
+        return env.topFrame().weInvokedInstrumentedCode()
+                && !env.topFrame().weInvokedSyntheticLambdaCodeThatInvokesNonInstrCode();
+    }
+
     /**
      * Nested class: Container for maximum size of operand stack and maximum
      * number of local variables.
@@ -1148,10 +1152,5 @@ public final class CallVM extends AbstractVM {
             this.maxStack = maxStack;
             this.maxLocals = maxLocals;
         }
-    }
-
-    private boolean callResultIsPushed() {
-        return env.topFrame().weInvokedInstrumentedCode()
-                && !env.topFrame().weInvokedSyntheticLambdaCodeThatInvokesNonInstrCode();
     }
 }

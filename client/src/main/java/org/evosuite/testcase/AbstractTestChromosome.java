@@ -37,6 +37,17 @@ public abstract class AbstractTestChromosome<E extends AbstractTestChromosome<E>
 
     /**
      * <p>
+     * getTestCase
+     * </p>
+     *
+     * @return a {@link org.evosuite.testcase.TestCase} object.
+     */
+    public TestCase getTestCase() {
+        return test;
+    }
+
+    /**
+     * <p>
      * setTestCase
      * </p>
      *
@@ -47,17 +58,6 @@ public abstract class AbstractTestChromosome<E extends AbstractTestChromosome<E>
         clearCachedResults();
         clearCachedMutationResults();
         setChanged(true);
-    }
-
-    /**
-     * <p>
-     * getTestCase
-     * </p>
-     *
-     * @return a {@link org.evosuite.testcase.TestCase} object.
-     */
-    public TestCase getTestCase() {
-        return test;
     }
 
     public abstract ExecutionResult executeForFitnessFunction(

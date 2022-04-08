@@ -31,9 +31,8 @@ import java.util.Map;
 public class CacheCheckResult {
 
     public static final String ONLY_SOLUTIONS_FROM_SATISFIABLE_QUERIES_CAN_BE_RETRIEVED = "Only solutions from satisfiable queries can be retrieved.";
-
-    private Map<String, Object> smtSolution;
     private final CacheQueryStatus cacheQueryStatus;
+    private Map<String, Object> smtSolution;
 
     public CacheCheckResult(CacheQueryStatus cacheQueryState) {
         this.cacheQueryStatus = cacheQueryState;

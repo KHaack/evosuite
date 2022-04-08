@@ -41,10 +41,9 @@ import java.util.*;
 public class CsvJUnitData {
 
     private static final Logger logger = LoggerFactory.getLogger(CsvJUnitData.class);
-
-    private String targetClass;
     private final Map<String, Double> coverageValues = new LinkedHashMap<>();
     private final Map<String, String> coverageBitString = new LinkedHashMap<>();
+    private String targetClass;
     private int totalNumberOfStatements;
     private int numberOfTests;
     private int totalNumberOfFailures;

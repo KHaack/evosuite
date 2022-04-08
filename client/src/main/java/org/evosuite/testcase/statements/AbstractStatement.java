@@ -52,54 +52,19 @@ import static java.util.stream.Collectors.joining;
 public abstract class AbstractStatement implements Statement, Serializable {
 
     /**
-     * An interface to enable the concrete statements to use the executer/1
-     * method.
-     **/
-    protected abstract class Executer {
-        /**
-         * The execute statement should, when called only execute exactly one
-         * statement. For example executing java.reflect.Field.get()/1 could be
-         * the responsibility of the execute method. Execute SHOULD NOT catch
-         * any exceptions. Exception handling SHOULD be done by
-         * AbstractStatement.executer()/1.
-         */
-        public abstract void execute() throws InvocationTargetException,
-                IllegalArgumentException, IllegalAccessException, InstantiationException,
-                CodeUnderTestException;
-
-        /**
-         * A call to this method should return a set of throwables.
-         * AbstractStatement.executer()/1 will catch all exceptions thrown by
-         * Executer.execute()/1. All exception in the returned set will be
-         * thrown to a higher layer. If the others are thrown or returned by
-         * AbstractStatement.executer()/1 is to be defined by executer()/1.
-         *
-         * @return
-         */
-        public Set<Class<? extends Throwable>> throwableExceptions() {
-            return new HashSet<>();
-        }
-    }
-
-    private static final long serialVersionUID = 8993506743384548704L;
-
-    /**
      * Constant <code>logger</code>
      */
     protected static final Logger logger = LoggerFactory.getLogger(AbstractStatement.class);
-
-    /**
-     * The return value of this statement. Should never be null.
-     */
-    protected VariableReference retval;
-
+    private static final long serialVersionUID = 8993506743384548704L;
     /**
      * Reference of the test case this statement belongs to. Should never be null.
      */
     protected final TestCase tc;
-
+    /**
+     * The return value of this statement. Should never be null.
+     */
+    protected VariableReference retval;
     protected Set<Assertion> assertions = new LinkedHashSet<>();
-
     protected String comment = "";
 
     /**
@@ -144,6 +109,22 @@ public abstract class AbstractStatement implements Statement, Serializable {
             this.retval = new VariableReferenceImpl(tc, type);
         }
         this.tc = tc;
+    }
+
+    /**
+     * <p>
+     * getExceptionClass
+     * </p>
+     *
+     * @param t a {@link java.lang.Throwable} object.
+     * @return a {@link java.lang.Class} object.
+     */
+    public static Class<?> getExceptionClass(Throwable t) {
+        Class<?> clazz = t.getClass();
+        while (!Modifier.isPublic(clazz.getModifiers())) {
+            clazz = clazz.getSuperclass();
+        }
+        return clazz;
     }
 
     /**
@@ -385,19 +366,6 @@ public abstract class AbstractStatement implements Statement, Serializable {
      * {@inheritDoc}
      */
     @Override
-    public void setAssertions(Set<Assertion> assertions) {
-        assertions.forEach(a -> a.setStatement(this));
-        this.assertions = assertions;
-    }
-
-    /* (non-Javadoc)
-     * @see org.evosuite.testcase.StatementInterface#getAssertionCode()
-     */
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public String getAssertionCode() {
         return assertions.stream()
                 .filter(Objects::nonNull)
@@ -406,7 +374,7 @@ public abstract class AbstractStatement implements Statement, Serializable {
     }
 
     /* (non-Javadoc)
-     * @see org.evosuite.testcase.StatementInterface#removeAssertions()
+     * @see org.evosuite.testcase.StatementInterface#getAssertionCode()
      */
 
     /**
@@ -418,7 +386,7 @@ public abstract class AbstractStatement implements Statement, Serializable {
     }
 
     /* (non-Javadoc)
-     * @see org.evosuite.testcase.StatementInterface#removeAssertion(org.evosuite.assertion.Assertion)
+     * @see org.evosuite.testcase.StatementInterface#removeAssertions()
      */
 
     /**
@@ -430,7 +398,7 @@ public abstract class AbstractStatement implements Statement, Serializable {
     }
 
     /* (non-Javadoc)
-     * @see org.evosuite.testcase.StatementInterface#getAssertions()
+     * @see org.evosuite.testcase.StatementInterface#removeAssertion(org.evosuite.assertion.Assertion)
      */
 
     /**
@@ -439,6 +407,19 @@ public abstract class AbstractStatement implements Statement, Serializable {
     @Override
     public Set<Assertion> getAssertions() {
         return assertions;
+    }
+
+    /* (non-Javadoc)
+     * @see org.evosuite.testcase.StatementInterface#getAssertions()
+     */
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setAssertions(Set<Assertion> assertions) {
+        assertions.forEach(a -> a.setStatement(this));
+        this.assertions = assertions;
     }
 
     /* (non-Javadoc)
@@ -454,32 +435,16 @@ public abstract class AbstractStatement implements Statement, Serializable {
     }
 
     /**
-     * <p>
-     * getExceptionClass
-     * </p>
-     *
-     * @param t a {@link java.lang.Throwable} object.
-     * @return a {@link java.lang.Class} object.
-     */
-    public static Class<?> getExceptionClass(Throwable t) {
-        Class<?> clazz = t.getClass();
-        while (!Modifier.isPublic(clazz.getModifiers())) {
-            clazz = clazz.getSuperclass();
-        }
-        return clazz;
-    }
-
-    /* (non-Javadoc)
-     * @see org.evosuite.testcase.StatementInterface#getPosition()
-     */
-
-    /**
      * {@inheritDoc}
      */
     @Override
     public int getPosition() {
         return retval.getStPosition();
     }
+
+    /* (non-Javadoc)
+     * @see org.evosuite.testcase.StatementInterface#getPosition()
+     */
 
     @Override
     public boolean isAccessible() {
@@ -503,10 +468,6 @@ public abstract class AbstractStatement implements Statement, Serializable {
         return false;
     }
 
-    /* (non-Javadoc)
-     * @see org.evosuite.testcase.StatementInterface#mutate(org.evosuite.testcase.TestCase)
-     */
-
     /**
      * {@inheritDoc}
      */
@@ -516,7 +477,7 @@ public abstract class AbstractStatement implements Statement, Serializable {
     }
 
     /* (non-Javadoc)
-     * @see org.evosuite.testcase.StatementInterface#clone(org.evosuite.testcase.TestCase)
+     * @see org.evosuite.testcase.StatementInterface#mutate(org.evosuite.testcase.TestCase)
      */
 
     /**
@@ -531,7 +492,7 @@ public abstract class AbstractStatement implements Statement, Serializable {
     }
 
     /* (non-Javadoc)
-     * @see org.evosuite.testcase.StatementInterface#changeClassLoader(java.lang.ClassLoader)
+     * @see org.evosuite.testcase.StatementInterface#clone(org.evosuite.testcase.TestCase)
      */
 
     /**
@@ -542,6 +503,10 @@ public abstract class AbstractStatement implements Statement, Serializable {
         getVariableReferences().forEach(v -> v.changeClassLoader(loader));
         assertions.forEach(a -> a.changeClassLoader(loader));
     }
+
+    /* (non-Javadoc)
+     * @see org.evosuite.testcase.StatementInterface#changeClassLoader(java.lang.ClassLoader)
+     */
 
     /**
      * <p>
@@ -554,5 +519,35 @@ public abstract class AbstractStatement implements Statement, Serializable {
     @Override
     public boolean isReflectionStatement() {
         return false;
+    }
+
+    /**
+     * An interface to enable the concrete statements to use the executer/1
+     * method.
+     **/
+    protected abstract class Executer {
+        /**
+         * The execute statement should, when called only execute exactly one
+         * statement. For example executing java.reflect.Field.get()/1 could be
+         * the responsibility of the execute method. Execute SHOULD NOT catch
+         * any exceptions. Exception handling SHOULD be done by
+         * AbstractStatement.executer()/1.
+         */
+        public abstract void execute() throws InvocationTargetException,
+                IllegalArgumentException, IllegalAccessException, InstantiationException,
+                CodeUnderTestException;
+
+        /**
+         * A call to this method should return a set of throwables.
+         * AbstractStatement.executer()/1 will catch all exceptions thrown by
+         * Executer.execute()/1. All exception in the returned set will be
+         * thrown to a higher layer. If the others are thrown or returned by
+         * AbstractStatement.executer()/1 is to be defined by executer()/1.
+         *
+         * @return
+         */
+        public Set<Class<? extends Throwable>> throwableExceptions() {
+            return new HashSet<>();
+        }
     }
 }

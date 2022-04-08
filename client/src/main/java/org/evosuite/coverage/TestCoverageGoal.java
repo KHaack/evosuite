@@ -42,29 +42,6 @@ public abstract class TestCoverageGoal {
      */
     protected final static Logger logger = LoggerFactory.getLogger(TestCoverageGoal.class);
 
-
-    /**
-     * Return true if this coverage goal is covered by the given test
-     *
-     * @param test a {@link org.evosuite.testcase.TestChromosome} object.
-     * @return a boolean.
-     */
-    public abstract boolean isCovered(TestChromosome test);
-
-    /**
-     * Determine if there is an existing test case covering this goal
-     *
-     * @param tests a {@link java.util.List} object.
-     * @return a boolean.
-     */
-    public boolean isCovered(List<TestChromosome> tests) {
-        for (TestChromosome test : tests) {
-            if (isCovered(test))
-                return true;
-        }
-        return false;
-    }
-
     /**
      * <p>
      * hasTimeout
@@ -87,6 +64,28 @@ public abstract class TestCoverageGoal {
             return result.getExceptionThrownAtPosition(size) instanceof TestCaseExecutor.TimeoutExceeded;
         }
 
+        return false;
+    }
+
+    /**
+     * Return true if this coverage goal is covered by the given test
+     *
+     * @param test a {@link org.evosuite.testcase.TestChromosome} object.
+     * @return a boolean.
+     */
+    public abstract boolean isCovered(TestChromosome test);
+
+    /**
+     * Determine if there is an existing test case covering this goal
+     *
+     * @param tests a {@link java.util.List} object.
+     * @return a boolean.
+     */
+    public boolean isCovered(List<TestChromosome> tests) {
+        for (TestChromosome test : tests) {
+            if (isCovered(test))
+                return true;
+        }
         return false;
     }
 

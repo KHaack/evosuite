@@ -34,16 +34,14 @@ public class MaxFitnessEvaluationsStoppingCondition<T extends Chromosome<T>> ext
     private static final Logger logger = LoggerFactory.getLogger(MaxFitnessEvaluationsStoppingCondition.class);
 
     private static final long serialVersionUID = 208241490252275613L;
-
-    /**
-     * Maximum number of evaluations
-     */
-    protected long maxEvaluations;
-
     /**
      * Maximum number of iterations
      */
     protected static long currentEvaluation = 0;
+    /**
+     * Maximum number of evaluations
+     */
+    protected long maxEvaluations;
 
     public MaxFitnessEvaluationsStoppingCondition() {
         maxEvaluations = Properties.SEARCH_BUDGET;
@@ -51,6 +49,15 @@ public class MaxFitnessEvaluationsStoppingCondition<T extends Chromosome<T>> ext
 
     public MaxFitnessEvaluationsStoppingCondition(MaxFitnessEvaluationsStoppingCondition<?> that) {
         this.maxEvaluations = that.maxEvaluations;
+    }
+
+    /**
+     * Static getter method
+     *
+     * @return a long.
+     */
+    public static long getNumFitnessEvaluations() {
+        return currentEvaluation;
     }
 
     @Override
@@ -80,15 +87,6 @@ public class MaxFitnessEvaluationsStoppingCondition<T extends Chromosome<T>> ext
     }
 
     /**
-     * Static getter method
-     *
-     * @return a long.
-     */
-    public static long getNumFitnessEvaluations() {
-        return currentEvaluation;
-    }
-
-    /**
      * {@inheritDoc}
      * <p>
      * At the end, reset
@@ -106,16 +104,16 @@ public class MaxFitnessEvaluationsStoppingCondition<T extends Chromosome<T>> ext
      * {@inheritDoc}
      */
     @Override
-    public void setLimit(long limit) {
-        maxEvaluations = limit;
+    public long getLimit() {
+        return maxEvaluations;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public long getLimit() {
-        return maxEvaluations;
+    public void setLimit(long limit) {
+        maxEvaluations = limit;
     }
 
     /* (non-Javadoc)

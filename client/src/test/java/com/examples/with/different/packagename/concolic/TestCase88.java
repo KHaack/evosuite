@@ -24,14 +24,6 @@ import java.lang.reflect.Method;
 
 public class TestCase88 {
 
-    public int callbackMethodToIgnore(int left, int right) {
-        int counter = 0;
-        for (int i = 0; i <= right; i++) {
-            counter += left;
-        }
-        return counter;
-    }
-
     public static void test(int int0, int int1) throws SecurityException, NoSuchMethodException,
             IllegalArgumentException, IllegalAccessException,
             InvocationTargetException {
@@ -45,6 +37,14 @@ public class TestCase88 {
         int int3 = 210;
 
         Assertions.checkEquals(int2, int3);
+    }
+
+    public int callbackMethodToIgnore(int left, int right) {
+        int counter = 0;
+        for (int i = 0; i <= right; i++) {
+            counter += left;
+        }
+        return counter;
     }
 
 }

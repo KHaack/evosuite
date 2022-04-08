@@ -34,10 +34,10 @@ import java.util.Set;
 
 public final class RealComparison extends AbstractExpression<Long> implements
         IntegerValue {
-    private static final long serialVersionUID = 1L;
-
     protected static final Logger log = LoggerFactory.getLogger(RealComparison.class);
-
+    private static final long serialVersionUID = 1L;
+    private final Expression<Double> left;
+    private final Expression<Double> right;
     /**
      * <p>
      * Constructor for RealComparison.
@@ -58,9 +58,6 @@ public final class RealComparison extends AbstractExpression<Long> implements
             throw new ConstraintTooLongException(getSize());
         }
     }
-
-    private final Expression<Double> left;
-    private final Expression<Double> right;
 
     /**
      * {@inheritDoc}

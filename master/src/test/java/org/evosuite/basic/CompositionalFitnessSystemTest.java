@@ -51,12 +51,11 @@ import static org.junit.Assert.assertEquals;
  */
 public class CompositionalFitnessSystemTest extends SystemTestBase {
 
+    private static final Criterion[] defaultCriterion = Properties.CRITERION;
     private final double ANY_DOUBLE_1 = 2.0;
     private final double ANY_DOUBLE_2 = 5.0;
     private final double ANY_DOUBLE_3 = 6.0;
     private final double ANY_DOUBLE_4 = 3.0;
-
-    private static final Criterion[] defaultCriterion = Properties.CRITERION;
 
     @Before
     public void beforeTest() {

@@ -46,6 +46,11 @@ public class ZeroFitnessStoppingCondition extends StoppingConditionImpl {
     }
 
     @Override
+    public void setLimit(long limit) {
+        // Nothing
+    }
+
+    @Override
     public boolean isFinished() {
         return lastFitness <= 0.0;
     }
@@ -53,11 +58,6 @@ public class ZeroFitnessStoppingCondition extends StoppingConditionImpl {
     @Override
     public void reset() {
         lastFitness = Double.MAX_VALUE;
-    }
-
-    @Override
-    public void setLimit(long limit) {
-        // Nothing
     }
 
     @Override

@@ -37,58 +37,27 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Threads are very complex to handle.
  * For the moment, we mock only certain aspects: TODO
- *
+ * <p>
  * Created by arcuri on 9/23/14.
  */
 public class MockThread extends Thread implements OverrideMock {
 
+    public final static int MIN_PRIORITY = 1;
+
+    // ----- mock internals -------
+    public final static int NORM_PRIORITY = 5;
+    public final static int MAX_PRIORITY = 10;
+    private static final Logger logger = LoggerFactory.getLogger(MockThread.class);
+    private static final Map<Integer, Long> threadMap = new ConcurrentHashMap<>();
+
     static {
         final Integer javaVersion = Integer.valueOf(SystemUtils.JAVA_VERSION.split("\\.")[0]);
-        if(javaVersion < 11){
+        if (javaVersion < 11) {
             try {
                 Method destroy = MockThread.class.getMethod("destroy");
             } catch (NoSuchMethodException e) {
                 e.printStackTrace();
             }
-        }
-    }
-
-    // ----- mock internals -------
-
-    private static final Logger logger = LoggerFactory.getLogger(MockThread.class);
-
-    private static final Map<Integer, Long> threadMap = new ConcurrentHashMap<>();
-
-    public static void reset() {
-        threadMap.clear();
-    }
-
-    private boolean isSutRelated() {
-        String sut = RuntimeSettings.className;
-        String threadName = this.getClass().getName();
-        String targetName = target==null ? null : target.getClass().getName();
-
-        /*
-            Note: this check would not recognize code like:
-
-            Thread t = new Thread(); t.start();
-
-            however, as it does nothing, no point in starting it anyway
-         */
-
-        return  match(sut,threadName) || match(sut,targetName);
-    }
-
-    private boolean match(String sut, String other) {
-        if(other==null || other.length() < sut.length()) {
-            return false;
-        }
-        if(other.length() == sut.length()) {
-            //is the thread the SUT itself?
-            return other.equals(sut);
-        } else {
-            //anonymous or internal class of the SUT
-            return other.startsWith(sut+"$");
         }
     }
 
@@ -99,106 +68,23 @@ public class MockThread extends Thread implements OverrideMock {
 
     // ------ public static fields --------
 
-    public final static int MIN_PRIORITY = 1;
-    public final static int NORM_PRIORITY = 5;
-    public final static int MAX_PRIORITY = 10;
-
-
-    // ------ static  methods  --------
-
-    public static Thread currentThread() {
-        return Thread.currentThread();
-    }
-
-    @EvoSuiteExclude
-    public static void yield() {
-        Thread.yield();
-    }
-
-    @EvoSuiteExclude
-    public static void sleep(long millis) throws InterruptedException {
-        //no point in doing any sleep
-        //MockThread.yield(); //just in case to change thread //FIXME quite a few side effects
-        Thread.sleep(Math.min(millis,50)); //TODO maybe should be a parameter
-    }
-
-    @EvoSuiteExclude
-    public static void sleep(long millis, int nanos)
-            throws InterruptedException {
-        MockThread.sleep(millis);
-    }
-
-    public static boolean interrupted() {
-        return Thread.interrupted();
-    }
-
-    public static int activeCount() {
-        return Thread.activeCount();
-    }
-
-    public static int enumerate(Thread[] tarray) {
-        return Thread.enumerate(tarray);
-    }
-
-    public static void dumpStack() {
-        if(!MockFramework.isEnabled()) {
-            Thread.dumpStack();
-        } else {
-            new MockException("Stack trace").printStackTrace();
-        }
-    }
-
-    public static Map<Thread, StackTraceElement[]> getAllStackTraces() {
-        if(!MockFramework.isEnabled()) {
-            return Thread.getAllStackTraces();
-        }
-        //get actual running threads, and then replace stack traces
-
-        //this will ask for permissions, but we grant it anyway
-        Set<Thread> threads =  Thread.getAllStackTraces().keySet();
-        Map<Thread, StackTraceElement[]> m = new HashMap<>(threads.size());
-        for(Thread t : threads) {
-            m.put(t,MockThrowable.getDefaultStackTrace());
-        }
-
-        return m;
-    }
-
-    public static boolean holdsLock(Object obj) {
-        return Thread.holdsLock(obj);
-    }
-
-    public static void setDefaultUncaughtExceptionHandler(UncaughtExceptionHandler eh) {
-        Thread.setDefaultUncaughtExceptionHandler(eh);
-    }
-
-    public static UncaughtExceptionHandler getDefaultUncaughtExceptionHandler() {
-        return Thread.getDefaultUncaughtExceptionHandler();
-    }
-
-    @Override
-    protected Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
-
-    // -------- constructors ---------
-
     public MockThread() {
         super();
         mockSetup(null);
     }
-
     public MockThread(Runnable target) {
         super(target);
         this.target = target;
         mockSetup(null);
     }
-
     public MockThread(ThreadGroup group, Runnable target) {
         super(group, target);
         this.target = target;
         mockSetup(null);
     }
+
+
+    // ------ static  methods  --------
 
     public MockThread(String name) {
         super(name);
@@ -229,18 +115,128 @@ public class MockThread extends Thread implements OverrideMock {
         mockSetup(name);
     }
 
+    public static void reset() {
+        threadMap.clear();
+    }
+
+    public static Thread currentThread() {
+        return Thread.currentThread();
+    }
+
+    @EvoSuiteExclude
+    public static void yield() {
+        Thread.yield();
+    }
+
+    @EvoSuiteExclude
+    public static void sleep(long millis) throws InterruptedException {
+        //no point in doing any sleep
+        //MockThread.yield(); //just in case to change thread //FIXME quite a few side effects
+        Thread.sleep(Math.min(millis, 50)); //TODO maybe should be a parameter
+    }
+
+    @EvoSuiteExclude
+    public static void sleep(long millis, int nanos)
+            throws InterruptedException {
+        MockThread.sleep(millis);
+    }
+
+    public static boolean interrupted() {
+        return Thread.interrupted();
+    }
+
+    public static int activeCount() {
+        return Thread.activeCount();
+    }
+
+    public static int enumerate(Thread[] tarray) {
+        return Thread.enumerate(tarray);
+    }
+
+    // -------- constructors ---------
+
+    public static void dumpStack() {
+        if (!MockFramework.isEnabled()) {
+            Thread.dumpStack();
+        } else {
+            new MockException("Stack trace").printStackTrace();
+        }
+    }
+
+    public static Map<Thread, StackTraceElement[]> getAllStackTraces() {
+        if (!MockFramework.isEnabled()) {
+            return Thread.getAllStackTraces();
+        }
+        //get actual running threads, and then replace stack traces
+
+        //this will ask for permissions, but we grant it anyway
+        Set<Thread> threads = Thread.getAllStackTraces().keySet();
+        Map<Thread, StackTraceElement[]> m = new HashMap<>(threads.size());
+        for (Thread t : threads) {
+            m.put(t, MockThrowable.getDefaultStackTrace());
+        }
+
+        return m;
+    }
+
+    public static boolean holdsLock(Object obj) {
+        return Thread.holdsLock(obj);
+    }
+
+    public static UncaughtExceptionHandler getDefaultUncaughtExceptionHandler() {
+        return Thread.getDefaultUncaughtExceptionHandler();
+    }
+
+    public static void setDefaultUncaughtExceptionHandler(UncaughtExceptionHandler eh) {
+        Thread.setDefaultUncaughtExceptionHandler(eh);
+    }
+
+    private boolean isSutRelated() {
+        String sut = RuntimeSettings.className;
+        String threadName = this.getClass().getName();
+        String targetName = target == null ? null : target.getClass().getName();
+
+        /*
+            Note: this check would not recognize code like:
+
+            Thread t = new Thread(); t.start();
+
+            however, as it does nothing, no point in starting it anyway
+         */
+
+        return match(sut, threadName) || match(sut, targetName);
+    }
+
+    private boolean match(String sut, String other) {
+        if (other == null || other.length() < sut.length()) {
+            return false;
+        }
+        if (other.length() == sut.length()) {
+            //is the thread the SUT itself?
+            return other.equals(sut);
+        } else {
+            //anonymous or internal class of the SUT
+            return other.startsWith(sut + "$");
+        }
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
+
     private void mockSetup(String name) {
-        if(!MockFramework.isEnabled()) {
+        if (!MockFramework.isEnabled()) {
             return;
         }
 
-        if(name == null) {
+        if (name == null) {
             /*
                 If SUT did not specify any name, we need
                 to change the one automatically given by the JVM,
                 as it could be non-deterministic
              */
-            setName("MockThread-"+getId());
+            setName("MockThread-" + getId());
         }
     }
 
@@ -250,12 +246,12 @@ public class MockThread extends Thread implements OverrideMock {
     @EvoSuiteExclude
     public synchronized void start() {
 
-        if(!MockFramework.isEnabled()) {
+        if (!MockFramework.isEnabled()) {
             super.start();
             return;
         }
 
-        if(!isSutRelated()) {
+        if (!isSutRelated()) {
             //no point in starting those 3rd party threads
             return;
         }
@@ -296,7 +292,6 @@ public class MockThread extends Thread implements OverrideMock {
     }
 
 
-
     @Override
     public String toString() {
         return super.toString();
@@ -314,7 +309,7 @@ public class MockThread extends Thread implements OverrideMock {
 
     @Override
     public StackTraceElement[] getStackTrace() {
-        if(!MockFramework.isEnabled()) {
+        if (!MockFramework.isEnabled()) {
             return super.getStackTrace();
         }
         return MockThrowable.getDefaultStackTrace();
@@ -323,7 +318,7 @@ public class MockThread extends Thread implements OverrideMock {
 
     @Override
     public long getId() {
-        if(!MockFramework.isEnabled()) {
+        if (!MockFramework.isEnabled()) {
             return super.getId();
         }
 

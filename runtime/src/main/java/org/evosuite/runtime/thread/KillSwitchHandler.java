@@ -36,6 +36,15 @@ public class KillSwitchHandler implements KillSwitch {
         return singleton;
     }
 
+    /**
+     * Wrapper around {@link KillSwitchHandler#checkTimeout()} to simplify instrumentation
+     *
+     * @throws RuntimeException
+     */
+    public static void killIfTimeout() throws RuntimeException {
+        getInstance().checkTimeout();
+    }
+
     @Override
     public void setKillSwitch(boolean kill) {
         this.kill = kill;
@@ -50,14 +59,5 @@ public class KillSwitchHandler implements KillSwitch {
         if (kill) {
             throw new RuntimeException("Kill switch");
         }
-    }
-
-    /**
-     * Wrapper around {@link KillSwitchHandler#checkTimeout()} to simplify instrumentation
-     *
-     * @throws RuntimeException
-     */
-    public static void killIfTimeout() throws RuntimeException {
-        getInstance().checkTimeout();
     }
 }

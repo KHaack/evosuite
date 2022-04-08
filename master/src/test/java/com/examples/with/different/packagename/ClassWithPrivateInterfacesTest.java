@@ -32,6 +32,21 @@ import static org.junit.Assert.assertNull;
  */
 public class ClassWithPrivateInterfacesTest {
 
+    @Test
+    public void testGetAllInterfaces() {
+        final List<Class<?>> list = ClassWithPrivateInterfaces.getAllInterfaces(CY.class);
+
+        assertEquals(6, list.size());
+        assertEquals(IB.class, list.get(0));
+        assertEquals(IC.class, list.get(1));
+        assertEquals(ID.class, list.get(2));
+        assertEquals(IE.class, list.get(3));
+        assertEquals(IF.class, list.get(4));
+        assertEquals(IA.class, list.get(5));
+
+        assertNull(ClassWithPrivateInterfaces.getAllInterfaces(null));
+    }
+
     private interface IA {
     }
 
@@ -54,20 +69,5 @@ public class ClassWithPrivateInterfacesTest {
     }
 
     private static class CY extends CX implements IB, IC {
-    }
-
-    @Test
-    public void testGetAllInterfaces() {
-        final List<Class<?>> list = ClassWithPrivateInterfaces.getAllInterfaces(CY.class);
-
-        assertEquals(6, list.size());
-        assertEquals(IB.class, list.get(0));
-        assertEquals(IC.class, list.get(1));
-        assertEquals(ID.class, list.get(2));
-        assertEquals(IE.class, list.get(3));
-        assertEquals(IF.class, list.get(4));
-        assertEquals(IA.class, list.get(5));
-
-        assertNull(ClassWithPrivateInterfaces.getAllInterfaces(null));
     }
 }

@@ -57,13 +57,11 @@ public class TestSuiteMinimizer {
      * Logger
      */
     private final static Logger logger = LoggerFactory.getLogger(TestSuiteMinimizer.class);
-
-    private final List<TestFitnessFactory<?>> testFitnessFactories = new ArrayList<>();
-
     /**
      * Assume the search has not started until startTime != 0
      */
     protected static long startTime = 0L;
+    private final List<TestFitnessFactory<?>> testFitnessFactories = new ArrayList<>();
 
     /**
      * <p>

@@ -44,13 +44,6 @@ public class ClassCallGraph extends EvoSuiteGraph<ClassCallNode, ClassCallEdge> 
     private final ClassLoader classLoader;
 
     /**
-     * @return the classLoader
-     */
-    public ClassLoader getClassLoader() {
-        return classLoader;
-    }
-
-    /**
      * <p>
      * Constructor for ClassCallGraph.
      * </p>
@@ -64,6 +57,13 @@ public class ClassCallGraph extends EvoSuiteGraph<ClassCallNode, ClassCallEdge> 
         this.classLoader = classLoader;
 
         compute();
+    }
+
+    /**
+     * @return the classLoader
+     */
+    public ClassLoader getClassLoader() {
+        return classLoader;
     }
 
     private void compute() {

@@ -41,17 +41,11 @@ import java.util.Map;
 import static org.junit.Assert.*;
 
 public class TestConstraintSolver1 extends RandomizedTC {
-    public void testMe(String x) {
-        if (x.length() == 5 && x.charAt(4) == '_') {
-            System.out.println("Juhu");
-        }
-    }
+    private static final String INIT_STRING = "abc_e";
 
     // ((INT)var0(abc_e).length()) == 5
     // ((INT)(var0(abc_e) charAt 3)) == 95
     // ((INT)(var0(abc_e) charAt 4)) != 43
-
-    private static final String INIT_STRING = "abc_e";
     private static final String EXPECTED_STRING = "abcbb";
 
     private static Collection<Constraint<?>> buildConstraintSystem() {
@@ -74,6 +68,12 @@ public class TestConstraintSolver1 extends RandomizedTC {
         IntegerConstraint constr3 = new IntegerConstraint(charAt4, Comparator.EQ, const43);
 
         return Arrays.<Constraint<?>>asList(constr1, constr2, constr3);
+    }
+
+    public void testMe(String x) {
+        if (x.length() == 5 && x.charAt(4) == '_') {
+            System.out.println("Juhu");
+        }
     }
 
     @Test

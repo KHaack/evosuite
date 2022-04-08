@@ -33,11 +33,9 @@ import java.util.*;
 
 public class InspectorManager {
 
-    private static InspectorManager instance = null;
-
     private static final Logger logger = LoggerFactory
             .getLogger(InspectorManager.class);
-
+    private static InspectorManager instance = null;
     private final Map<Class<?>, List<Inspector>> inspectors = new HashMap<>();
 
     private final Map<String, List<String>> blackList = new HashMap<>();
@@ -46,6 +44,24 @@ public class InspectorManager {
         // TODO: Need to replace this with proper analysis
         // readInspectors();
         initializeBlackList();
+    }
+
+    /**
+     * <p>
+     * Getter for the field <code>instance</code>.
+     * </p>
+     *
+     * @return a {@link org.evosuite.assertion.InspectorManager} object.
+     */
+    public static InspectorManager getInstance() {
+        if (instance == null) {
+            instance = new InspectorManager();
+        }
+        return instance;
+    }
+
+    public static void resetSingleton() {
+        instance = null;
     }
 
     private void initializeBlackList() {
@@ -116,24 +132,6 @@ public class InspectorManager {
                 Arrays.asList("getWhen"));
         blackList.put("java.lang.StringBuffer",
                 Arrays.asList("capacity"));
-    }
-
-    /**
-     * <p>
-     * Getter for the field <code>instance</code>.
-     * </p>
-     *
-     * @return a {@link org.evosuite.assertion.InspectorManager} object.
-     */
-    public static InspectorManager getInstance() {
-        if (instance == null) {
-            instance = new InspectorManager();
-        }
-        return instance;
-    }
-
-    public static void resetSingleton() {
-        instance = null;
     }
 
     private boolean isInspectorMethod(Method method) {

@@ -21,12 +21,45 @@ package com.examples.with.different.packagename.concolic;
 
 public class TestCase71 {
 
+    /**
+     * @param args
+     */
+    // char char0 = ConcolicMarker.mark('Q', "char0");
+    // char char1 = ConcolicMarker.mark('\u0007', "char1");
+    // char char2 = ConcolicMarker.mark('%', "char2");
+    // char char3 = ConcolicMarker.mark('\n', "char3");
+    // char char4 = ConcolicMarker.mark('>', "char4");
+    // char char5 = ConcolicMarker.mark('7', "char5");
+    // char char6 = ConcolicMarker.mark('\u000B', "char6");
+    // char char7 = ConcolicMarker.mark('\u001B', "char7");
+    // char char8 = ConcolicMarker.mark('l', "char8");
+    public static void test(char char0, char char1, char char2, char char3,
+                            char char4, char char5, char char6, char char7, char char8) {
+        Stemmer stemmer0 = new Stemmer();
+        char[] charArray0 = new char[8];
+        charArray0[0] = char0;
+        charArray0[1] = char1;
+        charArray0[2] = char2;
+        charArray0[3] = char3;
+        charArray0[4] = char4;
+        charArray0[5] = char5;
+        charArray0[6] = char6;
+        charArray0[7] = char7;
+        stemmer0.add(charArray0, char1);
+        stemmer0.add(char8);
+        stemmer0.add(char8);
+        stemmer0.stem();
+        String string0 = stemmer0.toString();
+        Stemmer stemmer1 = new Stemmer();
+        String string1 = stemmer1.toString();
+    }
+
     public static class Stemmer {
+        private static final int INC = 50;
         private char[] b;
         private int i, /* offset into b */
                 i_end, /* offset to end of stemmed word */
                 j, k;
-        private static final int INC = 50;
 
         /* unit of size whereby b is increased */
         public Stemmer() {
@@ -551,39 +584,6 @@ public class TestCase71 {
          * forcing lower case must be done outside the Stemmer class. Usage:
          * Stemmer file-name file-name ...
          */
-    }
-
-    /**
-     * @param args
-     */
-    // char char0 = ConcolicMarker.mark('Q', "char0");
-    // char char1 = ConcolicMarker.mark('\u0007', "char1");
-    // char char2 = ConcolicMarker.mark('%', "char2");
-    // char char3 = ConcolicMarker.mark('\n', "char3");
-    // char char4 = ConcolicMarker.mark('>', "char4");
-    // char char5 = ConcolicMarker.mark('7', "char5");
-    // char char6 = ConcolicMarker.mark('\u000B', "char6");
-    // char char7 = ConcolicMarker.mark('\u001B', "char7");
-    // char char8 = ConcolicMarker.mark('l', "char8");
-    public static void test(char char0, char char1, char char2, char char3,
-                            char char4, char char5, char char6, char char7, char char8) {
-        Stemmer stemmer0 = new Stemmer();
-        char[] charArray0 = new char[8];
-        charArray0[0] = char0;
-        charArray0[1] = char1;
-        charArray0[2] = char2;
-        charArray0[3] = char3;
-        charArray0[4] = char4;
-        charArray0[5] = char5;
-        charArray0[6] = char6;
-        charArray0[7] = char7;
-        stemmer0.add(charArray0, char1);
-        stemmer0.add(char8);
-        stemmer0.add(char8);
-        stemmer0.stem();
-        String string0 = stemmer0.toString();
-        Stemmer stemmer1 = new Stemmer();
-        String string1 = stemmer1.toString();
     }
 
 }

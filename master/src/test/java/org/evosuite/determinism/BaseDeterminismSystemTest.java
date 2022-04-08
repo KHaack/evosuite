@@ -53,37 +53,6 @@ public class BaseDeterminismSystemTest {
         Properties.IS_RUNNING_A_SYSTEM_TEST = false;
     }
 
-
-    @Test
-    public void testBase() {
-        checkDeterminism(com.examples.with.different.packagename.TrivialInt.class);
-    }
-
-    @Test
-    public void testLS() {
-        checkDeterminism(IsstaFoo.class, () -> {
-            Properties.DSE_PROBABILITY = 0.0;
-            Properties.LOCAL_SEARCH_PROBABILITY = 1.0;
-            Properties.LOCAL_SEARCH_RATE = 1;
-            Properties.LOCAL_SEARCH_BUDGET_TYPE = Properties.LocalSearchBudgetType.TESTS;
-            Properties.LOCAL_SEARCH_BUDGET = 100;
-            Properties.SEARCH_BUDGET = 5000;
-        });
-    }
-
-
-    @Test
-    public void testDSE() {
-        checkDeterminism(IsstaFoo.class, () -> {
-            Properties.DSE_PROBABILITY = 1.0;
-            Properties.LOCAL_SEARCH_PROBABILITY = 1.0;
-            Properties.LOCAL_SEARCH_RATE = 1;
-            Properties.LOCAL_SEARCH_BUDGET_TYPE = Properties.LocalSearchBudgetType.TESTS;
-            Properties.LOCAL_SEARCH_BUDGET = 100;
-            Properties.SEARCH_BUDGET = 5000;
-        });
-    }
-
     public static void checkDeterminism(Class<?> target) {
         checkDeterminism(target, null);
     }
@@ -161,5 +130,34 @@ public class BaseDeterminismSystemTest {
         }
 
         return buffer.toString();
+    }
+
+    @Test
+    public void testBase() {
+        checkDeterminism(com.examples.with.different.packagename.TrivialInt.class);
+    }
+
+    @Test
+    public void testLS() {
+        checkDeterminism(IsstaFoo.class, () -> {
+            Properties.DSE_PROBABILITY = 0.0;
+            Properties.LOCAL_SEARCH_PROBABILITY = 1.0;
+            Properties.LOCAL_SEARCH_RATE = 1;
+            Properties.LOCAL_SEARCH_BUDGET_TYPE = Properties.LocalSearchBudgetType.TESTS;
+            Properties.LOCAL_SEARCH_BUDGET = 100;
+            Properties.SEARCH_BUDGET = 5000;
+        });
+    }
+
+    @Test
+    public void testDSE() {
+        checkDeterminism(IsstaFoo.class, () -> {
+            Properties.DSE_PROBABILITY = 1.0;
+            Properties.LOCAL_SEARCH_PROBABILITY = 1.0;
+            Properties.LOCAL_SEARCH_RATE = 1;
+            Properties.LOCAL_SEARCH_BUDGET_TYPE = Properties.LocalSearchBudgetType.TESTS;
+            Properties.LOCAL_SEARCH_BUDGET = 100;
+            Properties.SEARCH_BUDGET = 5000;
+        });
     }
 }

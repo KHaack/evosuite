@@ -51,6 +51,8 @@ import java.util.List;
  */
 public class EvoSuite {
 
+    private static final Logger logger = LoggerFactory.getLogger(EvoSuite.class);
+    private static final String separator = System.getProperty("file.separator");
     /**
      * Functional moved to @{@link JavaExecCmdUtil#getJavaBinExecutablePath()}
      * Constant
@@ -59,9 +61,6 @@ public class EvoSuite {
     //public final static String JAVA_CMD = javaHome + separator + "bin" + separator + "java";
 
     public static String base_dir_path = System.getProperty("user.dir");
-    private static final Logger logger = LoggerFactory.getLogger(EvoSuite.class);
-
-    private static final String separator = System.getProperty("file.separator");
     //private static String javaHome = System.getProperty("java.home");
 
     static {
@@ -112,6 +111,14 @@ public class EvoSuite {
          * Some threads could still be running, so we need to kill the process explicitly
          */
         System.exit(0);
+    }
+
+    private static void checkProperties() {
+        Logger evoLogger = LoggingUtils.getEvoLogger();
+        if (Properties.USE_SEPARATE_CLASSLOADER && Properties.TEST_FORMAT == Properties.OutputFormat.JUNIT5) {
+            evoLogger.warn("* WARNING - Generating JUnit 5 tests with the option to use a separate classloader will result in not " +
+                    "runnable tests. Set either -Dtest_format=JUNIT4 or -Duse_separate_classloader=false");
+        }
     }
 
     private void setupProperties() {
@@ -342,14 +349,6 @@ public class EvoSuite {
         }
 
         return null;
-    }
-
-    private static void checkProperties() {
-        Logger evoLogger = LoggingUtils.getEvoLogger();
-        if (Properties.USE_SEPARATE_CLASSLOADER && Properties.TEST_FORMAT == Properties.OutputFormat.JUNIT5) {
-            evoLogger.warn("* WARNING - Generating JUnit 5 tests with the option to use a separate classloader will result in not " +
-                    "runnable tests. Set either -Dtest_format=JUNIT4 or -Duse_separate_classloader=false");
-        }
     }
 
 }

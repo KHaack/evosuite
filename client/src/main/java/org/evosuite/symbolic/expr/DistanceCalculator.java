@@ -39,73 +39,6 @@ public class DistanceCalculator implements ConstraintVisitor<Object, Void> {
 
     static Logger log = LoggerFactory.getLogger(DistanceCalculator.class);
 
-    @Override
-    public Object visit(IntegerConstraint n, Void arg) {
-
-        ExpressionEvaluator visitor = new ExpressionEvaluator();
-        long leftVal = (Long) n.getLeftOperand().accept(visitor, null);
-        long rightVal = (Long) n.getRightOperand().accept(visitor, null);
-
-        // special integer constraint: string indexOf char != -1
-        long distance = getDistanceIndexOfCFound(n, leftVal, rightVal);
-        if (distance != -1)
-            return distance;
-
-        // special integer constraint: string indexOfCI char index != -1
-        distance = getDistanceIndexOfCIFound(n, leftVal, rightVal);
-        if (distance != -1)
-            return distance;
-
-        // special integer constraint: string indexOf char == k (k>-1)
-        distance = getDistanceIndexOfCEqualsK(n, leftVal, rightVal);
-        if (distance != -1)
-            return distance;
-
-        // special integer constraint: string indexOf char int == k (k>-1)
-        distance = getDistanceIndexOfCIEqualsK(n, leftVal, rightVal);
-        if (distance != -1)
-            return distance;
-
-        // special case: regex
-        distance = getDistanceRegex(n, leftVal, rightVal);
-        if (distance != -1)
-            return distance;
-
-        // special cases: reader.read()==-1
-        // special cases: reader.read()!=-1
-        distance = getDistanceStringReaderLength(n, leftVal, rightVal);
-        if (distance != -1)
-            return distance;
-
-        distance = getDistanceStringIsInteger(n, leftVal, rightVal);
-        if (distance != -1)
-            return distance;
-
-        Comparator cmpr = n.getComparator();
-        log.debug("Calculating distance for " + leftVal + " " + cmpr + " " + rightVal);
-
-        distance = leftVal - rightVal;
-
-
-        switch (cmpr) {
-            case EQ:
-                return Math.abs(distance);
-            case NE:
-                return distance != 0 ? (long) 0 : (long) 1;
-            case LT:
-                return distance < 0 ? 0 : distance + 1;
-            case LE:
-                return distance <= 0 ? 0 : distance;
-            case GT:
-                return distance > 0 ? 0 : Math.abs(distance) + 1;
-            case GE:
-                return distance >= 0 ? 0 : Math.abs(distance);
-            default:
-                log.warn("getIntegerDist: unimplemented comparator");
-                return Long.MAX_VALUE;
-        }
-    }
-
     private static long getDistanceStringIsInteger(IntegerConstraint n, long leftVal, long rightVal) {
 
         if (n.getLeftOperand() instanceof StringUnaryToIntegerExpression && n.getComparator() == Comparator.NE
@@ -147,74 +80,6 @@ public class DistanceCalculator implements ConstraintVisitor<Object, Void> {
 
         }
         return -1;
-    }
-
-    @Override
-    public Object visit(RealConstraint n, Void arg) {
-        ExpressionEvaluator visitor = new ExpressionEvaluator();
-        double left = (Double) n.getLeftOperand().accept(visitor, null);
-        double right = (Double) n.getRightOperand().accept(visitor, null);
-
-        Comparator cmpr = n.getComparator();
-
-        switch (cmpr) {
-
-            case EQ:
-
-                return Math.abs(left - right);
-            case NE:
-
-                return (left - right) != 0 ? (double) 0 : (double) 1;
-            case LT:
-
-                return left - right < 0 ? 0 : left - right + 1;
-            case LE:
-
-                return left - right <= 0 ? 0 : left - right;
-            case GT:
-
-                return left - right > 0 ? 0 : right - left + 1;
-            case GE:
-
-                return left - right >= 0 ? 0 : right - left;
-
-            default:
-                log.warn("getIntegerDist: unimplemented comparator");
-                return Double.MAX_VALUE;
-        }
-
-    }
-
-    @Override
-    public Object visit(StringConstraint n, Void arg) {
-        Expression<?> exprLeft = n.getLeftOperand();
-        Comparator cmpr = n.getComparator();
-        double distance = 0.0;
-
-        if (exprLeft instanceof StringBinaryComparison) {
-            StringBinaryComparison scTarget = (StringBinaryComparison) exprLeft;
-            distance = getStringDistance(scTarget);
-            log.debug("Calculating distance of constraint " + n);
-        } else if (exprLeft instanceof StringMultipleComparison) {
-            StringMultipleComparison scTarget = (StringMultipleComparison) exprLeft;
-            distance = getStringDistance(scTarget);
-            log.debug("Calculating distance of constraint " + n);
-        } else if (exprLeft instanceof HasMoreTokensExpr) {
-            HasMoreTokensExpr hasMoreTokensExpr = (HasMoreTokensExpr) exprLeft;
-            distance = getStringDistance(hasMoreTokensExpr);
-            log.debug("Calculating distance of constraint " + n);
-        } else {
-            assert (false) : "Invalid string comparison";
-        }
-        assert (((Long) n.getRightOperand().getConcreteValue()).intValue() == 0);
-        if (cmpr == Comparator.NE) {
-            return distance;
-        } else {
-            // if we don't want to satisfy return 0
-            // if not satisfied Long.MAX_VALUE else
-            return distance > 0 ? 0.0 : Double.MAX_VALUE;
-        }
-
     }
 
     private static long getDistanceIndexOfCEqualsK(IntegerConstraint n, long leftVal, long rightVal) {
@@ -649,6 +514,141 @@ public class DistanceCalculator implements ConstraintVisitor<Object, Void> {
 
     private static double RegexMatches(String val, String regex) {
         return RegexDistanceUtils.getDistanceTailoredForStringAVM(val, regex);
+    }
+
+    @Override
+    public Object visit(IntegerConstraint n, Void arg) {
+
+        ExpressionEvaluator visitor = new ExpressionEvaluator();
+        long leftVal = (Long) n.getLeftOperand().accept(visitor, null);
+        long rightVal = (Long) n.getRightOperand().accept(visitor, null);
+
+        // special integer constraint: string indexOf char != -1
+        long distance = getDistanceIndexOfCFound(n, leftVal, rightVal);
+        if (distance != -1)
+            return distance;
+
+        // special integer constraint: string indexOfCI char index != -1
+        distance = getDistanceIndexOfCIFound(n, leftVal, rightVal);
+        if (distance != -1)
+            return distance;
+
+        // special integer constraint: string indexOf char == k (k>-1)
+        distance = getDistanceIndexOfCEqualsK(n, leftVal, rightVal);
+        if (distance != -1)
+            return distance;
+
+        // special integer constraint: string indexOf char int == k (k>-1)
+        distance = getDistanceIndexOfCIEqualsK(n, leftVal, rightVal);
+        if (distance != -1)
+            return distance;
+
+        // special case: regex
+        distance = getDistanceRegex(n, leftVal, rightVal);
+        if (distance != -1)
+            return distance;
+
+        // special cases: reader.read()==-1
+        // special cases: reader.read()!=-1
+        distance = getDistanceStringReaderLength(n, leftVal, rightVal);
+        if (distance != -1)
+            return distance;
+
+        distance = getDistanceStringIsInteger(n, leftVal, rightVal);
+        if (distance != -1)
+            return distance;
+
+        Comparator cmpr = n.getComparator();
+        log.debug("Calculating distance for " + leftVal + " " + cmpr + " " + rightVal);
+
+        distance = leftVal - rightVal;
+
+
+        switch (cmpr) {
+            case EQ:
+                return Math.abs(distance);
+            case NE:
+                return distance != 0 ? (long) 0 : (long) 1;
+            case LT:
+                return distance < 0 ? 0 : distance + 1;
+            case LE:
+                return distance <= 0 ? 0 : distance;
+            case GT:
+                return distance > 0 ? 0 : Math.abs(distance) + 1;
+            case GE:
+                return distance >= 0 ? 0 : Math.abs(distance);
+            default:
+                log.warn("getIntegerDist: unimplemented comparator");
+                return Long.MAX_VALUE;
+        }
+    }
+
+    @Override
+    public Object visit(RealConstraint n, Void arg) {
+        ExpressionEvaluator visitor = new ExpressionEvaluator();
+        double left = (Double) n.getLeftOperand().accept(visitor, null);
+        double right = (Double) n.getRightOperand().accept(visitor, null);
+
+        Comparator cmpr = n.getComparator();
+
+        switch (cmpr) {
+
+            case EQ:
+
+                return Math.abs(left - right);
+            case NE:
+
+                return (left - right) != 0 ? (double) 0 : (double) 1;
+            case LT:
+
+                return left - right < 0 ? 0 : left - right + 1;
+            case LE:
+
+                return left - right <= 0 ? 0 : left - right;
+            case GT:
+
+                return left - right > 0 ? 0 : right - left + 1;
+            case GE:
+
+                return left - right >= 0 ? 0 : right - left;
+
+            default:
+                log.warn("getIntegerDist: unimplemented comparator");
+                return Double.MAX_VALUE;
+        }
+
+    }
+
+    @Override
+    public Object visit(StringConstraint n, Void arg) {
+        Expression<?> exprLeft = n.getLeftOperand();
+        Comparator cmpr = n.getComparator();
+        double distance = 0.0;
+
+        if (exprLeft instanceof StringBinaryComparison) {
+            StringBinaryComparison scTarget = (StringBinaryComparison) exprLeft;
+            distance = getStringDistance(scTarget);
+            log.debug("Calculating distance of constraint " + n);
+        } else if (exprLeft instanceof StringMultipleComparison) {
+            StringMultipleComparison scTarget = (StringMultipleComparison) exprLeft;
+            distance = getStringDistance(scTarget);
+            log.debug("Calculating distance of constraint " + n);
+        } else if (exprLeft instanceof HasMoreTokensExpr) {
+            HasMoreTokensExpr hasMoreTokensExpr = (HasMoreTokensExpr) exprLeft;
+            distance = getStringDistance(hasMoreTokensExpr);
+            log.debug("Calculating distance of constraint " + n);
+        } else {
+            assert (false) : "Invalid string comparison";
+        }
+        assert (((Long) n.getRightOperand().getConcreteValue()).intValue() == 0);
+        if (cmpr == Comparator.NE) {
+            return distance;
+        } else {
+            // if we don't want to satisfy return 0
+            // if not satisfied Long.MAX_VALUE else
+            return distance > 0 ? 0.0 : Double.MAX_VALUE;
+        }
+
     }
 
 }

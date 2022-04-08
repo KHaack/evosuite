@@ -43,122 +43,131 @@ public abstract class MockSocketImpl extends SocketImpl implements OverrideMock 
     protected int port;
     protected int localport;
      */
-    
+
     /*
      * Abstract methods from superclass.
      * Still need to be declared here, because they might be
      * called by other net classes in same package
      */
     protected abstract void create(boolean stream) throws IOException;
+
     protected abstract void connect(String host, int port) throws IOException;
+
     protected abstract void connect(InetAddress address, int port) throws IOException;
+
     protected abstract void connect(SocketAddress address, int timeout) throws IOException;
+
     protected abstract void bind(InetAddress host, int port) throws IOException;
+
     protected abstract void listen(int backlog) throws IOException;
+
     protected abstract void accept(SocketImpl s) throws IOException;
+
     protected abstract InputStream getInputStream() throws IOException;
+
     protected abstract OutputStream getOutputStream() throws IOException;
+
     protected abstract int available() throws IOException;
+
     protected abstract void close() throws IOException;
-    protected abstract void sendUrgentData (int data) throws IOException;
-     
+
+    protected abstract void sendUrgentData(int data) throws IOException;
+
 
     @Override
     protected void shutdownInput() throws IOException {
-      //throw new IOException("Method not implemented!");
-    		super.shutdownInput();
+        //throw new IOException("Method not implemented!");
+        super.shutdownInput();
     }
 
     @Override
     protected void shutdownOutput() throws IOException {
-      //throw new IOException("Method not implemented!");
-    		super.shutdownOutput();
+        //throw new IOException("Method not implemented!");
+        super.shutdownOutput();
     }
 
     @Override
     protected FileDescriptor getFileDescriptor() {
         //return fd;
-    		return super.getFileDescriptor();
+        return super.getFileDescriptor();
     }
 
     @Override
     protected InetAddress getInetAddress() {
         //return address;
-    		return super.getInetAddress();
+        return super.getInetAddress();
     }
 
     @Override
     protected int getPort() {
         //return port;
-    		return super.getPort();
+        return super.getPort();
     }
 
     @Override
     protected int getLocalPort() {
         //return localport;
-    		return super.getLocalPort();
+        return super.getLocalPort();
     }
-        
+
+    protected void setLocalPort(int p) {
+        localport = p;
+    }
+
     @Override
-    protected boolean supportsUrgentData () {
+    protected boolean supportsUrgentData() {
         //return false; // must be overridden in sub-class
-    		return super.supportsUrgentData();
+        return super.supportsUrgentData();
     }
 
     @Override
     protected void setPerformancePreferences(int connectionTime,
-                                          int latency,
-                                          int bandwidth){
+                                             int latency,
+                                             int bandwidth) {
         super.setPerformancePreferences(connectionTime, latency, bandwidth);
     }
-    
+
+    //-----------------------------------------------
+
     @Override
     public String toString() {
-    		return super.toString();
+        return super.toString();
         //return "Socket[addr=" + getInetAddress() +
-          //  ",port=" + getPort() + ",localport=" + getLocalPort()  + "]";
+        //  ",port=" + getPort() + ",localport=" + getLocalPort()  + "]";
+    }
+
+    protected void setRemoteAddress(InetAddress remoteAddress) {
+        address = remoteAddress;
+    }
+
+    protected void setRemotePort(int p) {
+        port = p;
     }
 
     //-----------------------------------------------
 
-    protected void setRemoteAddress(InetAddress remoteAddress){
-    		address = remoteAddress;
-    }
-        
-    protected void setRemotePort(int p){
-    		port = p;
-    }
-    
-    protected void setLocalPort(int p){
-    		localport = p;
-    }
-    
-    //-----------------------------------------------
-    
     /*
-     *  Following are methods that are package level 
+     *  Following are methods that are package level
      *  in SocketImpl, and as such they cannot be overridden
-     *  
+     *
      *  TODO need to check ALL of their callers in java.net.*
      */
-    
-    
-    protected void setSocket(MockSocket soc) {
-        this.socket = soc;
-    }
 
     protected Socket getSocket() {
         return socket;
     }
 
-    protected void setServerSocket(MockServerSocket soc) {
-        this.serverSocket = soc;
+    protected void setSocket(MockSocket soc) {
+        this.socket = soc;
     }
 
     protected ServerSocket getServerSocket() {
         return serverSocket;
     }
 
+    protected void setServerSocket(MockServerSocket soc) {
+        this.serverSocket = soc;
+    }
 
     protected void reset() throws IOException {
         address = null;
@@ -166,5 +175,5 @@ public abstract class MockSocketImpl extends SocketImpl implements OverrideMock 
         localport = 0;
     }
 
-	
+
 }

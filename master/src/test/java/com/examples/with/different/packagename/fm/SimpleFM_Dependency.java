@@ -24,6 +24,14 @@ package com.examples.with.different.packagename.fm;
  */
 public class SimpleFM_Dependency {
 
+    public static boolean bar(Foo foo) {
+        if (foo.foo()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public interface Bar {
         String getBar();
     }
@@ -38,14 +46,6 @@ public class SimpleFM_Dependency {
 
         public boolean foo() {
             return bar.getBar().equals("bar");
-        }
-    }
-
-    public static boolean bar(Foo foo) {
-        if (foo.foo()) {
-            return true;
-        } else {
-            return false;
         }
     }
 }

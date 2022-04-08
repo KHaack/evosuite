@@ -83,6 +83,185 @@ public class TestSuiteGenerator {
     private static final String FOR_NAME = "forName";
     private static final Logger logger = LoggerFactory.getLogger(TestSuiteGenerator.class);
 
+    /**
+     * Returns true iif the test case execution has thrown an instance of ExceptionInInitializerError
+     *
+     * @param execResult of the test case execution
+     * @return true if the test case has thrown an ExceptionInInitializerError
+     */
+    private static boolean hasThrownInitializerError(ExecutionResult execResult) {
+        for (Throwable t : execResult.getAllThrownExceptions()) {
+            if (t instanceof ExceptionInInitializerError) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns the initialized  error from the test case execution
+     *
+     * @param execResult of the test case execution
+     * @return null if there were no thrown instances of ExceptionInInitializerError
+     */
+    private static ExceptionInInitializerError getInitializerError(ExecutionResult execResult) {
+        for (Throwable t : execResult.getAllThrownExceptions()) {
+            if (t instanceof ExceptionInInitializerError) {
+                ExceptionInInitializerError exceptionInInitializerError = (ExceptionInInitializerError) t;
+                return exceptionInInitializerError;
+            }
+        }
+        return null;
+    }
+
+    private static void writeJUnitTestSuiteForFailedInitialization() throws EvosuiteError {
+        TestSuiteChromosome suite = new TestSuiteChromosome();
+        DefaultTestCase test = buildLoadTargetClassTestCase(Properties.TARGET_CLASS);
+        suite.addTest(test);
+        writeJUnitTestsAndCreateResult(suite);
+    }
+
+    /**
+     * Creates a single Test Case that only loads the target class.
+     * <code>
+     * Thread currentThread = Thread.currentThread();
+     * ClassLoader classLoader = currentThread.getClassLoader();
+     * classLoader.load(className);
+     * </code>
+     *
+     * @param className the class to be loaded
+     * @return
+     * @throws EvosuiteError if a reflection error happens while creating the test case
+     */
+    private static DefaultTestCase buildLoadTargetClassTestCase(String className) throws EvosuiteError {
+        DefaultTestCase test = new DefaultTestCase();
+
+        StringPrimitiveStatement stmt0 = new StringPrimitiveStatement(test, className);
+        VariableReference string0 = test.addStatement(stmt0);
+        try {
+            Method currentThreadMethod = Thread.class.getMethod("currentThread");
+            Statement currentThreadStmt = new MethodStatement(test,
+                    new GenericMethod(currentThreadMethod, currentThreadMethod.getDeclaringClass()), null,
+                    Collections.emptyList());
+            VariableReference currentThreadVar = test.addStatement(currentThreadStmt);
+
+            Method getContextClassLoaderMethod = Thread.class.getMethod("getContextClassLoader");
+            Statement getContextClassLoaderStmt = new MethodStatement(test,
+                    new GenericMethod(getContextClassLoaderMethod, getContextClassLoaderMethod.getDeclaringClass()),
+                    currentThreadVar, Collections.emptyList());
+            VariableReference contextClassLoaderVar = test.addStatement(getContextClassLoaderStmt);
+
+//			Method loadClassMethod = ClassLoader.class.getMethod("loadClass", String.class);
+//			Statement loadClassStmt = new MethodStatement(test,
+//					new GenericMethod(loadClassMethod, loadClassMethod.getDeclaringClass()), contextClassLoaderVar,
+//					Collections.singletonList(string0));
+//			test.addStatement(loadClassStmt);
+
+            BooleanPrimitiveStatement stmt1 = new BooleanPrimitiveStatement(test, true);
+            VariableReference boolean0 = test.addStatement(stmt1);
+
+            Method forNameMethod = Class.class.getMethod("forName", String.class, boolean.class, ClassLoader.class);
+            Statement forNameStmt = new MethodStatement(test,
+                    new GenericMethod(forNameMethod, forNameMethod.getDeclaringClass()), null,
+                    Arrays.asList(string0, boolean0, contextClassLoaderVar));
+            test.addStatement(forNameStmt);
+
+            return test;
+        } catch (NoSuchMethodException | SecurityException e) {
+            throw new EvosuiteError("Unexpected exception while creating Class Initializer Test Case");
+        }
+    }
+
+    private static int checkAllTestsIfTime(List<TestCase> testCases, long delta) {
+        if (TimeController.getInstance().hasTimeToExecuteATestCase()
+                && TimeController.getInstance().isThereStillTimeInThisPhase(delta)) {
+            return JUnitAnalyzer.handleTestsThatAreUnstable(testCases);
+        }
+        return 0;
+    }
+
+    /**
+     * <p>
+     * If Properties.JUNIT_TESTS is set, this method writes the given test cases
+     * to the default directory Properties.TEST_DIR.
+     *
+     * <p>
+     * The name of the test will be equal to the SUT followed by the given
+     * suffix
+     *
+     * @param testSuite a test suite.
+     */
+    public static TestGenerationResult writeJUnitTestsAndCreateResult(TestSuiteChromosome testSuite, String suffix) {
+        List<TestCase> tests = testSuite.getTests();
+        if (Properties.JUNIT_TESTS) {
+            ClientServices.getInstance().getClientNode().changeState(ClientState.WRITING_TESTS);
+
+            TestSuiteWriter suiteWriter = new TestSuiteWriter();
+            suiteWriter.insertTests(tests);
+
+            String name = Properties.TARGET_CLASS.substring(Properties.TARGET_CLASS.lastIndexOf(".") + 1);
+            String testDir = Properties.TEST_DIR;
+
+            LoggingUtils.getEvoLogger().info("* " + ClientProcess.getPrettyPrintIdentifier() + "Writing JUnit test case '"
+                    + (name + suffix) + "' to " + testDir);
+            suiteWriter.writeTestSuite(name + suffix, testDir, testSuite.getLastExecutionResults());
+        }
+        return TestGenerationResultBuilder.buildSuccessResult();
+    }
+
+    /**
+     * @param testSuite the test cases which should be written to file
+     */
+    public static TestGenerationResult writeJUnitTestsAndCreateResult(TestSuiteChromosome testSuite) {
+        return writeJUnitTestsAndCreateResult(testSuite, Properties.JUNIT_SUFFIX);
+    }
+
+    /**
+     * <p>
+     * getFitnessFunctions
+     * </p>
+     *
+     * @return a list of {@link org.evosuite.testsuite.TestSuiteFitnessFunction}
+     * objects.
+     */
+    public static List<TestSuiteFitnessFunction> getFitnessFunctions() {
+        List<TestSuiteFitnessFunction> ffs = new ArrayList<>();
+        for (int i = 0; i < Properties.CRITERION.length; i++) {
+            ffs.add(FitnessFunctions.getFitnessFunction(Properties.CRITERION[i]));
+        }
+
+        return ffs;
+    }
+
+    /**
+     * <p>
+     * getFitnessFactories
+     * </p>
+     *
+     * @return a list of {@link org.evosuite.coverage.TestFitnessFactory}
+     * objects.
+     */
+    public static List<TestFitnessFactory<? extends TestFitnessFunction>> getFitnessFactories() {
+        List<TestFitnessFactory<? extends TestFitnessFunction>> goalsFactory = new ArrayList<>();
+        for (int i = 0; i < Properties.CRITERION.length; i++) {
+            goalsFactory.add(FitnessFunctions.getFitnessFactory(Properties.CRITERION[i]));
+        }
+
+        return goalsFactory;
+    }
+
+    /**
+     * <p>
+     * main
+     * </p>
+     *
+     * @param args an array of {@link java.lang.String} objects.
+     */
+    public static void main(String[] args) {
+        TestSuiteGenerator generator = new TestSuiteGenerator();
+        generator.generateTestSuite();
+        System.exit(0);
+    }
 
     private void initializeTargetClass() throws Throwable {
         String cp = ClassPathHandler.getInstance().getTargetProjectClasspath();
@@ -238,38 +417,6 @@ public class TestSuiteGenerator {
     }
 
     /**
-     * Returns true iif the test case execution has thrown an instance of ExceptionInInitializerError
-     *
-     * @param execResult of the test case execution
-     * @return true if the test case has thrown an ExceptionInInitializerError
-     */
-    private static boolean hasThrownInitializerError(ExecutionResult execResult) {
-        for (Throwable t : execResult.getAllThrownExceptions()) {
-            if (t instanceof ExceptionInInitializerError) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-
-    /**
-     * Returns the initialized  error from the test case execution
-     *
-     * @param execResult of the test case execution
-     * @return null if there were no thrown instances of ExceptionInInitializerError
-     */
-    private static ExceptionInInitializerError getInitializerError(ExecutionResult execResult) {
-        for (Throwable t : execResult.getAllThrownExceptions()) {
-            if (t instanceof ExceptionInInitializerError) {
-                ExceptionInInitializerError exceptionInInitializerError = (ExceptionInInitializerError) t;
-                return exceptionInInitializerError;
-            }
-        }
-        return null;
-    }
-
-    /**
      * Reports the initialized classes during class initialization to the
      * ClassReInitializater and configures the ClassReInitializer accordingly
      */
@@ -281,64 +428,6 @@ public class TestSuiteGenerator {
         // set the behaviour of the ClassReInitializer
         final boolean reset_all_classes = Properties.RESET_ALL_CLASSES_DURING_TEST_GENERATION;
         ClassReInitializer.getInstance().setReInitializeAllClasses(reset_all_classes);
-    }
-
-    private static void writeJUnitTestSuiteForFailedInitialization() throws EvosuiteError {
-        TestSuiteChromosome suite = new TestSuiteChromosome();
-        DefaultTestCase test = buildLoadTargetClassTestCase(Properties.TARGET_CLASS);
-        suite.addTest(test);
-        writeJUnitTestsAndCreateResult(suite);
-    }
-
-    /**
-     * Creates a single Test Case that only loads the target class.
-     * <code>
-     * Thread currentThread = Thread.currentThread();
-     * ClassLoader classLoader = currentThread.getClassLoader();
-     * classLoader.load(className);
-     * </code>
-     *
-     * @param className the class to be loaded
-     * @return
-     * @throws EvosuiteError if a reflection error happens while creating the test case
-     */
-    private static DefaultTestCase buildLoadTargetClassTestCase(String className) throws EvosuiteError {
-        DefaultTestCase test = new DefaultTestCase();
-
-        StringPrimitiveStatement stmt0 = new StringPrimitiveStatement(test, className);
-        VariableReference string0 = test.addStatement(stmt0);
-        try {
-            Method currentThreadMethod = Thread.class.getMethod("currentThread");
-            Statement currentThreadStmt = new MethodStatement(test,
-                    new GenericMethod(currentThreadMethod, currentThreadMethod.getDeclaringClass()), null,
-                    Collections.emptyList());
-            VariableReference currentThreadVar = test.addStatement(currentThreadStmt);
-
-            Method getContextClassLoaderMethod = Thread.class.getMethod("getContextClassLoader");
-            Statement getContextClassLoaderStmt = new MethodStatement(test,
-                    new GenericMethod(getContextClassLoaderMethod, getContextClassLoaderMethod.getDeclaringClass()),
-                    currentThreadVar, Collections.emptyList());
-            VariableReference contextClassLoaderVar = test.addStatement(getContextClassLoaderStmt);
-
-//			Method loadClassMethod = ClassLoader.class.getMethod("loadClass", String.class);
-//			Statement loadClassStmt = new MethodStatement(test,
-//					new GenericMethod(loadClassMethod, loadClassMethod.getDeclaringClass()), contextClassLoaderVar,
-//					Collections.singletonList(string0));
-//			test.addStatement(loadClassStmt);
-
-            BooleanPrimitiveStatement stmt1 = new BooleanPrimitiveStatement(test, true);
-            VariableReference boolean0 = test.addStatement(stmt1);
-
-            Method forNameMethod = Class.class.getMethod("forName", String.class, boolean.class, ClassLoader.class);
-            Statement forNameStmt = new MethodStatement(test,
-                    new GenericMethod(forNameMethod, forNameMethod.getDeclaringClass()), null,
-                    Arrays.asList(string0, boolean0, contextClassLoaderVar));
-            test.addStatement(forNameStmt);
-
-            return test;
-        } catch (NoSuchMethodException | SecurityException e) {
-            throw new EvosuiteError("Unexpected exception while creating Class Initializer Test Case");
-        }
     }
 
     /**
@@ -608,14 +697,6 @@ public class TestSuiteGenerator {
 
     }
 
-    private static int checkAllTestsIfTime(List<TestCase> testCases, long delta) {
-        if (TimeController.getInstance().hasTimeToExecuteATestCase()
-                && TimeController.getInstance().isThereStillTimeInThisPhase(delta)) {
-            return JUnitAnalyzer.handleTestsThatAreUnstable(testCases);
-        }
-        return 0;
-    }
-
     private TestSuiteChromosome generateTests() {
         // Make sure target class is loaded at this point
         TestCluster.getInstance();
@@ -647,42 +728,6 @@ public class TestSuiteGenerator {
          */
 
         return testSuite;
-    }
-
-    /**
-     * <p>
-     * If Properties.JUNIT_TESTS is set, this method writes the given test cases
-     * to the default directory Properties.TEST_DIR.
-     *
-     * <p>
-     * The name of the test will be equal to the SUT followed by the given
-     * suffix
-     *
-     * @param testSuite a test suite.
-     */
-    public static TestGenerationResult writeJUnitTestsAndCreateResult(TestSuiteChromosome testSuite, String suffix) {
-        List<TestCase> tests = testSuite.getTests();
-        if (Properties.JUNIT_TESTS) {
-            ClientServices.getInstance().getClientNode().changeState(ClientState.WRITING_TESTS);
-
-            TestSuiteWriter suiteWriter = new TestSuiteWriter();
-            suiteWriter.insertTests(tests);
-
-            String name = Properties.TARGET_CLASS.substring(Properties.TARGET_CLASS.lastIndexOf(".") + 1);
-            String testDir = Properties.TEST_DIR;
-
-            LoggingUtils.getEvoLogger().info("* " + ClientProcess.getPrettyPrintIdentifier() + "Writing JUnit test case '"
-                    + (name + suffix) + "' to " + testDir);
-            suiteWriter.writeTestSuite(name + suffix, testDir, testSuite.getLastExecutionResults());
-        }
-        return TestGenerationResultBuilder.buildSuccessResult();
-    }
-
-    /**
-     * @param testSuite the test cases which should be written to file
-     */
-    public static TestGenerationResult writeJUnitTestsAndCreateResult(TestSuiteChromosome testSuite) {
-        return writeJUnitTestsAndCreateResult(testSuite, Properties.JUNIT_SUFFIX);
     }
 
     public void writeJUnitFailingTests() {
@@ -722,23 +767,6 @@ public class TestSuiteGenerator {
     }
 
     /**
-     * <p>
-     * getFitnessFunctions
-     * </p>
-     *
-     * @return a list of {@link org.evosuite.testsuite.TestSuiteFitnessFunction}
-     * objects.
-     */
-    public static List<TestSuiteFitnessFunction> getFitnessFunctions() {
-        List<TestSuiteFitnessFunction> ffs = new ArrayList<>();
-        for (int i = 0; i < Properties.CRITERION.length; i++) {
-            ffs.add(FitnessFunctions.getFitnessFunction(Properties.CRITERION[i]));
-        }
-
-        return ffs;
-    }
-
-    /**
      * Prints out all information regarding this GAs stopping conditions
      * <p>
      * So far only used for testing purposes in TestSuiteGenerator
@@ -762,36 +790,6 @@ public class TestSuiteGenerator {
             r += sc.toString() + " ";
 
         return r;
-    }
-
-    /**
-     * <p>
-     * getFitnessFactories
-     * </p>
-     *
-     * @return a list of {@link org.evosuite.coverage.TestFitnessFactory}
-     * objects.
-     */
-    public static List<TestFitnessFactory<? extends TestFitnessFunction>> getFitnessFactories() {
-        List<TestFitnessFactory<? extends TestFitnessFunction>> goalsFactory = new ArrayList<>();
-        for (int i = 0; i < Properties.CRITERION.length; i++) {
-            goalsFactory.add(FitnessFunctions.getFitnessFactory(Properties.CRITERION[i]));
-        }
-
-        return goalsFactory;
-    }
-
-    /**
-     * <p>
-     * main
-     * </p>
-     *
-     * @param args an array of {@link java.lang.String} objects.
-     */
-    public static void main(String[] args) {
-        TestSuiteGenerator generator = new TestSuiteGenerator();
-        generator.generateTestSuite();
-        System.exit(0);
     }
 
 }

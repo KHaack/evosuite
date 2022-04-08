@@ -29,10 +29,10 @@ import java.net.*;
 /**
  * Note: UDP is seldom used, and most of the functions here are not called in SF110.
  * Implementing all of them is therefore not the top priority
- * 
+ * <p>
  * Created by arcuri on 12/7/14.
  */
-public class EvoDatagramSocketImpl extends DatagramSocketImpl{
+public class EvoDatagramSocketImpl extends DatagramSocketImpl {
 
     private String localHost;
 
@@ -57,7 +57,6 @@ public class EvoDatagramSocketImpl extends DatagramSocketImpl{
     }
 
 
-
     // ------   abstract methods   ------
 
     @Override
@@ -68,18 +67,18 @@ public class EvoDatagramSocketImpl extends DatagramSocketImpl{
     @Override
     public void bind(int lport, InetAddress laddr) throws SocketException {
 
-        if(lport == 0){
+        if (lport == 0) {
             lport = VirtualNetwork.getInstance().getNewLocalEphemeralPort();
         }
 
         localPort = lport;
         localHost = laddr.getHostAddress();
-        VirtualNetwork.getInstance().openUdpServer(localHost,localPort);
+        VirtualNetwork.getInstance().openUdpServer(localHost, localPort);
     }
 
     @Override
     public void send(DatagramPacket p) throws IOException {
-        if(p.getData()==null || p.getAddress()==null){
+        if (p.getData() == null || p.getAddress() == null) {
             throw new MockNullPointerException("null buffer || null address");
         }
         VirtualNetwork.getInstance().sentPacketBySUT(p);
@@ -87,16 +86,16 @@ public class EvoDatagramSocketImpl extends DatagramSocketImpl{
 
     @Override
     public void receive(DatagramPacket p) throws IOException {
-       DatagramPacket received = VirtualNetwork.getInstance().pullUdpPacket(localHost,localPort);
-       if(received != null){
-           p.setData(received.getData());
-           p.setAddress(received.getAddress());
-           p.setPort(received.getPort());
-           p.setLength(received.getLength());
-       } else {
-           //no point in simulating a blocking call
-           throw new MockIOException("Simulated IO exception");
-       }
+        DatagramPacket received = VirtualNetwork.getInstance().pullUdpPacket(localHost, localPort);
+        if (received != null) {
+            p.setData(received.getData());
+            p.setAddress(received.getAddress());
+            p.setPort(received.getPort());
+            p.setLength(received.getLength());
+        } else {
+            //no point in simulating a blocking call
+            throw new MockIOException("Simulated IO exception");
+        }
     }
 
     @Override
@@ -112,18 +111,13 @@ public class EvoDatagramSocketImpl extends DatagramSocketImpl{
     }
 
     @Override
-    public void setTTL(byte ttl) throws IOException {
-        //TODO
-    }
-
-    @Override
     public byte getTTL() throws IOException {
         //TODO
         return 0;
     }
 
     @Override
-    public void setTimeToLive(int ttl) throws IOException {
+    public void setTTL(byte ttl) throws IOException {
         //TODO
     }
 
@@ -131,6 +125,11 @@ public class EvoDatagramSocketImpl extends DatagramSocketImpl{
     public int getTimeToLive() throws IOException {
         //TODO
         return 0;
+    }
+
+    @Override
+    public void setTimeToLive(int ttl) throws IOException {
+        //TODO
     }
 
     @Override

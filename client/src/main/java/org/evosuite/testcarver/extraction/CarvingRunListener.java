@@ -41,9 +41,8 @@ import java.util.*;
 
 public class CarvingRunListener extends RunListener {
 
-    private final Map<Class<?>, List<TestCase>> carvedTests = new LinkedHashMap<>();
-
     private final static Logger logger = LoggerFactory.getLogger(CarvingRunListener.class);
+    private final Map<Class<?>, List<TestCase>> carvedTests = new LinkedHashMap<>();
 
     public Map<Class<?>, List<TestCase>> getTestCases() {
         return carvedTests;

@@ -31,11 +31,6 @@ import java.time.temporal.TemporalAccessor;
  * Created by gordon on 24/01/2016.
  */
 public class MockMinguoDate implements StaticReplacementMock {
-    @Override
-    public String getMockedClassName() {
-        return MinguoDate.class.getName();
-    }
-
     public static MinguoDate now() {
         return now(MockClock.systemDefaultZone());
     }
@@ -54,6 +49,11 @@ public class MockMinguoDate implements StaticReplacementMock {
 
     public static MinguoDate from(TemporalAccessor temporal) {
         return MinguoDate.from(temporal);
+    }
+
+    @Override
+    public String getMockedClassName() {
+        return MinguoDate.class.getName();
     }
 
 }

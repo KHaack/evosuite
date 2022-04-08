@@ -56,20 +56,10 @@ public final class VirtualFileSystem {
      * The only instance of this class
      */
     private static final VirtualFileSystem singleton = new VirtualFileSystem();
-
-    /**
-     * The root of the VFS
-     *
-     * <p>
-     * TODO: we might need to simulate more than one root on same FS
-     */
-    private VFolder root;
-
     /**
      * An atomic counter for generating unique names for tmp files
      */
     private final AtomicInteger tmpFileCounter;
-
     /**
      * Regular files that are accessed during the search. Tmp files are not
      * considered, as they are not interesting from a point of view of
@@ -82,21 +72,25 @@ public final class VirtualFileSystem {
      * X already exists.
      */
     private final Set<String> accessedFiles;
-
-    /**
-     * Check if all operations in this VFS should throw IOException
-     */
-    private volatile boolean shouldAllThrowIOException;
-
     /**
      * The classes in this set are marked to throw IOException
      */
     private final Set<String> classesThatShouldThrowIOException;
-
     /**
      * A set of all IO leaking resources (eg streams) created during the search
      */
     private final Set<LeakingResource> leakingResources;
+    /**
+     * The root of the VFS
+     *
+     * <p>
+     * TODO: we might need to simulate more than one root on same FS
+     */
+    private VFolder root;
+    /**
+     * Check if all operations in this VFS should throw IOException
+     */
+    private volatile boolean shouldAllThrowIOException;
 
     //--------------------------------------------------------------------------
 
@@ -117,6 +111,27 @@ public final class VirtualFileSystem {
      */
     public static VirtualFileSystem getInstance() {
         return singleton;
+    }
+
+    public static String getWorkingDirPath() {
+        //this should be set in the scaffolding file
+        return java.lang.System.getProperty("user.dir");
+    }
+
+    public static String getDefaultParent() {
+        //TODO this need more checking/validation
+        return File.separator;
+    }
+
+    protected static String[] tokenize(String path, char separator) {
+        String[] tokens = path.split(separator == '\\' ? "\\\\" : File.separator);
+        List<String> list = new ArrayList<>(tokens.length);
+        for (String token : tokens) {
+            if (!token.isEmpty()) {
+                list.add(token);
+            }
+        }
+        return list.toArray(new String[0]);
     }
 
     /**
@@ -209,16 +224,6 @@ public final class VirtualFileSystem {
 
         //important to clear, as above code would modify this field
         accessedFiles.clear();
-    }
-
-    public static String getWorkingDirPath() {
-        //this should be set in the scaffolding file
-        return java.lang.System.getProperty("user.dir");
-    }
-
-    public static String getDefaultParent() {
-        //TODO this need more checking/validation
-        return File.separator;
     }
 
     private void markAccessedFile(String path) {
@@ -419,17 +424,6 @@ public final class VirtualFileSystem {
 
     private String[] tokenize(String path) {
         return tokenize(path, File.separatorChar);
-    }
-
-    protected static String[] tokenize(String path, char separator) {
-        String[] tokens = path.split(separator == '\\' ? "\\\\" : File.separator);
-        List<String> list = new ArrayList<>(tokens.length);
-        for (String token : tokens) {
-            if (!token.isEmpty()) {
-                list.add(token);
-            }
-        }
-        return list.toArray(new String[0]);
     }
 
     private boolean isUnixStyle() {

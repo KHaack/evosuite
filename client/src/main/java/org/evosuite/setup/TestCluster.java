@@ -52,45 +52,36 @@ import static java.util.stream.Collectors.toCollection;
 public class TestCluster {
 
     protected static final Logger logger = LoggerFactory.getLogger(TestCluster.class);
-
-    /**
-     * Singleton instance
-     */
-    private static TestCluster instance = null;
-
     /**
      * Set of all classes already analyzed
      */
     @Deprecated
     private final static Set<Class<?>> analyzedClasses = new LinkedHashSet<>();
-
     /**
      * UUT methods we want to cover when testing
      */
     private final static Set<GenericAccessibleObject<?>> testMethods = new LinkedHashSet<>();
-
-    /**
-     * Methods used to modify and set the environment of the UUT
-     */
-    private final Set<GenericAccessibleObject<?>> environmentMethods;
-
     /**
      * Static information about how to generate types
      */
     private final static Map<GenericClass<?>, Set<GenericAccessibleObject<?>>> generators = new LinkedHashMap<>();
-
     /**
      * Cached information about how to generate types
      */
     private final static Map<GenericClass<?>, Set<GenericAccessibleObject<?>>> generatorCache = new LinkedHashMap<>();
-
     /**
      * Static information about how to modify types
      */
     private final static Map<GenericClass<?>, Set<GenericAccessibleObject<?>>> modifiers = new LinkedHashMap<>();
-
+    /**
+     * Singleton instance
+     */
+    private static TestCluster instance = null;
     private static InheritanceTree inheritanceTree = null;
-
+    /**
+     * Methods used to modify and set the environment of the UUT
+     */
+    private final Set<GenericAccessibleObject<?>> environmentMethods;
     private final EnvironmentTestClusterAugmenter environmentAugmenter;
 
     //-------------------------------------------------------------------
@@ -124,6 +115,44 @@ public class TestCluster {
         CastClassManager.getInstance().clear();
 
         instance = null;
+    }
+
+    /**
+     * @return the inheritancetree
+     */
+    public static InheritanceTree getInheritanceTree() {
+        return inheritanceTree;
+    }
+
+    /**
+     * @param inheritancetree the inheritancetree to set
+     */
+    protected static void setInheritanceTree(InheritanceTree inheritancetree) {
+        inheritanceTree = inheritancetree;
+    }
+
+    public static boolean isTargetClassName(String className) {
+        if (!Properties.TARGET_CLASS_PREFIX.isEmpty()
+                && className.startsWith(Properties.TARGET_CLASS_PREFIX)) {
+            // exclude existing tests from the target project
+            try {
+                Class<?> clazz = TestGenerationContext.getInstance().getClassLoaderForSUT().loadClass(className);
+                return !CoverageAnalysis.isTest(clazz);
+            } catch (ClassNotFoundException e) {
+                logger.info("Could not load class: {}", className);
+            }
+        }
+        if (className.equals(Properties.TARGET_CLASS)
+                || className.startsWith(Properties.TARGET_CLASS + "$")) {
+            return true;
+        }
+
+        if (Properties.INSTRUMENT_PARENT) {
+            return inheritanceTree.getSubclasses(Properties.TARGET_CLASS).contains(className);
+        }
+
+        return false;
+
     }
 
     /**
@@ -171,7 +200,6 @@ public class TestCluster {
 
         generatorCache.clear();
     }
-
 
     /**
      * if a class X has a generator non-static method for Y, but, among its own generators for X it has one
@@ -282,46 +310,6 @@ public class TestCluster {
     public void handleRuntimeAccesses(TestCase test) {
         environmentAugmenter.handleRuntimeAccesses(test);
     }
-
-    /**
-     * @return the inheritancetree
-     */
-    public static InheritanceTree getInheritanceTree() {
-        return inheritanceTree;
-    }
-
-
-    /**
-     * @param inheritancetree the inheritancetree to set
-     */
-    protected static void setInheritanceTree(InheritanceTree inheritancetree) {
-        inheritanceTree = inheritancetree;
-    }
-
-    public static boolean isTargetClassName(String className) {
-        if (!Properties.TARGET_CLASS_PREFIX.isEmpty()
-                && className.startsWith(Properties.TARGET_CLASS_PREFIX)) {
-            // exclude existing tests from the target project
-            try {
-                Class<?> clazz = TestGenerationContext.getInstance().getClassLoaderForSUT().loadClass(className);
-                return !CoverageAnalysis.isTest(clazz);
-            } catch (ClassNotFoundException e) {
-                logger.info("Could not load class: {}", className);
-            }
-        }
-        if (className.equals(Properties.TARGET_CLASS)
-                || className.startsWith(Properties.TARGET_CLASS + "$")) {
-            return true;
-        }
-
-        if (Properties.INSTRUMENT_PARENT) {
-            return inheritanceTree.getSubclasses(Properties.TARGET_CLASS).contains(className);
-        }
-
-        return false;
-
-    }
-
 
     /**
      * Add a generator reflection object

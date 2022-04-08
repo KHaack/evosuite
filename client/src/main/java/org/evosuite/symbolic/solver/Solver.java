@@ -40,6 +40,7 @@ import java.util.*;
  */
 public abstract class Solver {
 
+    static Logger logger = LoggerFactory.getLogger(Solver.class);
     private final boolean addMissingVariables;
     private final SolverCache solverCache;
 
@@ -55,52 +56,6 @@ public abstract class Solver {
     public Solver(boolean addMissingVariables, SolverCache solverCache) {
         this.addMissingVariables = addMissingVariables;
         this.solverCache = solverCache;
-    }
-
-    static Logger logger = LoggerFactory.getLogger(Solver.class);
-
-    /**
-     * @param constraints a constraint system to be solved
-     * @return a non-null result that is SAT or UNSAT
-     * @throws SolverTimeoutException    a timeout occurred while executing the solver
-     * @throws IOException               an IOException occurred while executing the solver
-     * @throws SolverParseException      the solver's result could not be parsed into a valid SolverResult
-     * @throws SolverEmptyQueryException the solver
-     * @throws SolverErrorException      the solver reported an error after its execution
-     */
-    public SolverResult solve(Collection<Constraint<?>> constraints) throws SolverTimeoutException, SolverParseException, SolverEmptyQueryException, SolverErrorException, IOException {
-        if (solverCache.hasCachedResult(constraints)) {
-            return solverCache.getCachedResult();
-        }
-
-        SolverResult solverResult;
-        try {
-            solverResult = executeSolver(constraints);
-
-            if (solverResult != null && !solverResult.isUnknown()) {
-                solverCache.saveSolverResult(constraints, solverResult);
-            }
-        } catch (IllegalArgumentException | IOException e) {
-            solverResult = null;
-        }
-
-        return solverResult;
-    }
-
-    /**
-     * @param constraints
-     * @return
-     * @throws SolverTimeoutException
-     * @throws IOException
-     * @throws SolverParseException
-     * @throws SolverEmptyQueryException
-     * @throws SolverErrorException
-     */
-    public abstract SolverResult executeSolver(Collection<Constraint<?>> constraints) throws SolverTimeoutException,
-            IOException, SolverParseException, SolverEmptyQueryException, SolverErrorException;
-
-    protected boolean addMissingVariables() {
-        return addMissingVariables;
     }
 
     /**
@@ -233,6 +188,50 @@ public abstract class Solver {
         }
 
         return newArray;
+    }
+
+    /**
+     * @param constraints a constraint system to be solved
+     * @return a non-null result that is SAT or UNSAT
+     * @throws SolverTimeoutException    a timeout occurred while executing the solver
+     * @throws IOException               an IOException occurred while executing the solver
+     * @throws SolverParseException      the solver's result could not be parsed into a valid SolverResult
+     * @throws SolverEmptyQueryException the solver
+     * @throws SolverErrorException      the solver reported an error after its execution
+     */
+    public SolverResult solve(Collection<Constraint<?>> constraints) throws SolverTimeoutException, SolverParseException, SolverEmptyQueryException, SolverErrorException, IOException {
+        if (solverCache.hasCachedResult(constraints)) {
+            return solverCache.getCachedResult();
+        }
+
+        SolverResult solverResult;
+        try {
+            solverResult = executeSolver(constraints);
+
+            if (solverResult != null && !solverResult.isUnknown()) {
+                solverCache.saveSolverResult(constraints, solverResult);
+            }
+        } catch (IllegalArgumentException | IOException e) {
+            solverResult = null;
+        }
+
+        return solverResult;
+    }
+
+    /**
+     * @param constraints
+     * @return
+     * @throws SolverTimeoutException
+     * @throws IOException
+     * @throws SolverParseException
+     * @throws SolverEmptyQueryException
+     * @throws SolverErrorException
+     */
+    public abstract SolverResult executeSolver(Collection<Constraint<?>> constraints) throws SolverTimeoutException,
+            IOException, SolverParseException, SolverEmptyQueryException, SolverErrorException;
+
+    protected boolean addMissingVariables() {
+        return addMissingVariables;
     }
 
 }

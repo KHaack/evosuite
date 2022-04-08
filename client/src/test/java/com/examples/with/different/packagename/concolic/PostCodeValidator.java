@@ -63,6 +63,36 @@ public final class PostCodeValidator extends Validator {
         setErrorText("Please enter a valid postcode");
     }
 
+    /**
+     * If the user has omitted a space in the
+     * postcode this method inserts a space in
+     * the right place
+     *
+     * @param str The postcode String
+     * @return The Postcode with a space inserted (if required)
+     */
+    public static String insertRequiredSpace(String str) {
+        String strResult = "";
+        //lets put in a space
+        // if the user hasn't before we validate
+
+        if (str.indexOf(" ") == -1) // not found a space
+        {
+            try {
+                strResult = str.substring(0, str.length() - 3) + " " +
+                        str.substring(str.length() - 3);
+                System.out.println("inserting Space2 : " + strResult);
+            } catch (StringIndexOutOfBoundsException ex) {
+                System.out.println(ex.getMessage());
+                strResult = str;
+            }
+
+        } else {
+            strResult = str;
+        }
+
+        return strResult;
+    }
 
     /**
      * Checks whether the input is a valid UK Postcode
@@ -110,37 +140,6 @@ public final class PostCodeValidator extends Validator {
 
         }
 
-    }
-
-    /**
-     * If the user has omitted a space in the
-     * postcode this method inserts a space in
-     * the right place
-     *
-     * @param str The postcode String
-     * @return The Postcode with a space inserted (if required)
-     */
-    public static String insertRequiredSpace(String str) {
-        String strResult = "";
-        //lets put in a space
-        // if the user hasn't before we validate
-
-        if (str.indexOf(" ") == -1) // not found a space
-        {
-            try {
-                strResult = str.substring(0, str.length() - 3) + " " +
-                        str.substring(str.length() - 3);
-                System.out.println("inserting Space2 : " + strResult);
-            } catch (StringIndexOutOfBoundsException ex) {
-                System.out.println(ex.getMessage());
-                strResult = str;
-            }
-
-        } else {
-            strResult = str;
-        }
-
-        return strResult;
     }
 
 }

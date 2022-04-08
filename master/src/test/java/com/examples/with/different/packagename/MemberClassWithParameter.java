@@ -21,6 +21,13 @@ package com.examples.with.different.packagename;
 
 public class MemberClassWithParameter {
 
+    public boolean testMe(MemberClass x, Integer y) {
+        if (x.getX().equals(y))
+            return true;
+        else
+            return false;
+    }
+
     public class MemberClass {
         private Integer x;
 
@@ -31,12 +38,5 @@ public class MemberClassWithParameter {
         public Integer getX() {
             return x;
         }
-    }
-
-    public boolean testMe(MemberClass x, Integer y) {
-        if (x.getX().equals(y))
-            return true;
-        else
-            return false;
     }
 }

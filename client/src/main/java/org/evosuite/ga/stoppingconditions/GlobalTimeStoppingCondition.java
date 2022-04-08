@@ -56,10 +56,23 @@ public class GlobalTimeStoppingCondition<T extends Chromosome<T>> extends Stoppi
         // empty copy constructor
     }
 
+    /**
+     * <p>
+     * forceReset
+     * </p>
+     */
+    public static void forceReset() {
+        startTime = 0;
+    }
+
     @Override
     public GlobalTimeStoppingCondition<T> clone() {
         return new GlobalTimeStoppingCondition<>(this);
     }
+
+    /* (non-Javadoc)
+     * @see org.evosuite.ga.StoppingCondition#getCurrentValue()
+     */
 
     /**
      * {@inheritDoc}
@@ -71,7 +84,7 @@ public class GlobalTimeStoppingCondition<T extends Chromosome<T>> extends Stoppi
     }
 
     /* (non-Javadoc)
-     * @see org.evosuite.ga.StoppingCondition#getCurrentValue()
+     * @see org.evosuite.ga.StoppingCondition#isFinished()
      */
 
     /**
@@ -84,7 +97,7 @@ public class GlobalTimeStoppingCondition<T extends Chromosome<T>> extends Stoppi
     }
 
     /* (non-Javadoc)
-     * @see org.evosuite.ga.StoppingCondition#isFinished()
+     * @see org.evosuite.ga.StoppingCondition#reset()
      */
 
     /**
@@ -101,10 +114,6 @@ public class GlobalTimeStoppingCondition<T extends Chromosome<T>> extends Stoppi
                 && (current_time - startTime) / 1000 > Properties.GLOBAL_TIMEOUT;
     }
 
-    /* (non-Javadoc)
-     * @see org.evosuite.ga.StoppingCondition#reset()
-     */
-
     /**
      * {@inheritDoc}
      */
@@ -114,6 +123,10 @@ public class GlobalTimeStoppingCondition<T extends Chromosome<T>> extends Stoppi
             startTime = System.currentTimeMillis();
     }
 
+    /* (non-Javadoc)
+     * @see org.evosuite.ga.StoppingCondition#setLimit(int)
+     */
+
     /**
      * Fully resets the stopping condition. The start time is set to the current
      * time and thus "no time has elapsed so far". If you want a conditional
@@ -122,19 +135,6 @@ public class GlobalTimeStoppingCondition<T extends Chromosome<T>> extends Stoppi
      */
     public void fullReset() {
         startTime = System.currentTimeMillis();
-    }
-
-    /* (non-Javadoc)
-     * @see org.evosuite.ga.StoppingCondition#setLimit(int)
-     */
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setLimit(long limit) {
-        // TODO Auto-generated method stub
-
     }
 
     /**
@@ -147,12 +147,12 @@ public class GlobalTimeStoppingCondition<T extends Chromosome<T>> extends Stoppi
     }
 
     /**
-     * <p>
-     * forceReset
-     * </p>
+     * {@inheritDoc}
      */
-    public static void forceReset() {
-        startTime = 0;
+    @Override
+    public void setLimit(long limit) {
+        // TODO Auto-generated method stub
+
     }
 
     /**

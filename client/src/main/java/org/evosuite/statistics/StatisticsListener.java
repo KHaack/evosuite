@@ -43,17 +43,11 @@ public class StatisticsListener<T extends Chromosome<T>> implements SearchListen
     private static final long serialVersionUID = -8229756367168023616L;
 
     private final BlockingQueue<T> individuals;
-
-    private volatile boolean done;
-
-    private volatile double bestFitness;
-
-    private volatile boolean minimizing;
-
-    private int numFitnessEvaluations;
-
     private final Thread notifier;
-
+    private volatile boolean done;
+    private volatile double bestFitness;
+    private volatile boolean minimizing;
+    private int numFitnessEvaluations;
     /**
      * When did we send an individual due to a new generation iteration?
      */

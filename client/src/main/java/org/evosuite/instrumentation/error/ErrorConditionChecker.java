@@ -35,6 +35,7 @@ import java.math.BigDecimal;
  */
 public class ErrorConditionChecker {
 
+    protected final static int HALFWAY = Integer.MAX_VALUE / 2;
     private static final Logger logger = LoggerFactory.getLogger(ErrorConditionChecker.class);
 
     /**
@@ -106,8 +107,6 @@ public class ErrorConditionChecker {
         }
         return Integer.MAX_VALUE;
     }
-
-    protected final static int HALFWAY = Integer.MAX_VALUE / 2;
 
     protected static int overflowDistanceAdd(int op1, int op2) {
         int result = op1 + op2;

@@ -70,15 +70,6 @@ public abstract class AbstractTestSuiteChromosome<T extends AbstractTestSuiteChr
     }
 
     /**
-     * <p>Getter for the field <code>testChromosomeFactory</code>.</p>
-     *
-     * @return a {@link org.evosuite.ga.ChromosomeFactory} object.
-     */
-    public ChromosomeFactory<? extends E> getTestChromosomeFactory() {
-        return testChromosomeFactory;
-    }
-
-    /**
      * Creates a deep copy of source.
      *
      * @param source a {@link org.evosuite.testsuite.AbstractTestSuiteChromosome} object.
@@ -99,6 +90,15 @@ public abstract class AbstractTestSuiteChromosome<T extends AbstractTestSuiteChr
         this.setNumberOfEvaluations(source.getNumberOfEvaluations());
         this.setKineticEnergy(source.getKineticEnergy());
         this.setNumCollisions(source.getNumCollisions());
+    }
+
+    /**
+     * <p>Getter for the field <code>testChromosomeFactory</code>.</p>
+     *
+     * @return a {@link org.evosuite.ga.ChromosomeFactory} object.
+     */
+    public ChromosomeFactory<? extends E> getTestChromosomeFactory() {
+        return testChromosomeFactory;
     }
 
     /**

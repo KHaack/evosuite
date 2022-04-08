@@ -38,9 +38,8 @@ import java.util.List;
  */
 public class ExcludedClasses {
 
-    private static boolean classesLoaded = false;
-
     public static List<String> excludedClasses = new ArrayList<>();
+    private static boolean classesLoaded = false;
 
     private static void loadExcludedClassNames() {
         if (classesLoaded)
@@ -113,14 +112,14 @@ public class ExcludedClasses {
 
         if (RuntimeInstrumentation.getAvoidInstrumentingShadedClasses()) {
             list.addAll(Arrays.asList(/*
-             * TODO:
-             * These classes are shaded. So, should be no problem in instrumenting them during search, even though
-             * they are used by EvoSuite. However, problems arise when running system tests before shading :(
-             * For now, we just skip them, but need to check if it leads to side effects
-             *
-             * Main problem due to libraries used in the generated JUnit files to test JavaEE applications relying on database
-             *
-             */
+                     * TODO:
+                     * These classes are shaded. So, should be no problem in instrumenting them during search, even though
+                     * they are used by EvoSuite. However, problems arise when running system tests before shading :(
+                     * For now, we just skip them, but need to check if it leads to side effects
+                     *
+                     * Main problem due to libraries used in the generated JUnit files to test JavaEE applications relying on database
+                     *
+                     */
                     "org.hibernate.", "org.hsqldb.", "org.jboss.",
                     "org.springframework.", "org.apache.commons.logging.", "javassist.", "antlr.", "org.dom4j.",
                     "org.aopalliance.",

@@ -31,18 +31,16 @@ import java.util.Collection;
 final class IntegerAVM extends VariableAVM {
 
 
-    public IntegerAVM(IntegerVariable intVar, Collection<Constraint<?>> cnstr, long startTimeMillis, long timeout) {
-        super(cnstr, startTimeMillis, timeout);
-        this.intVar = intVar;
-    }
-
     static Logger log = LoggerFactory.getLogger(IntegerAVM.class);
-
+    private final IntegerVariable intVar;
     private long checkpointedConcreteValue;
 
     private double checkpointedDistance = Double.MAX_VALUE;
 
-    private final IntegerVariable intVar;
+    public IntegerAVM(IntegerVariable intVar, Collection<Constraint<?>> cnstr, long startTimeMillis, long timeout) {
+        super(cnstr, startTimeMillis, timeout);
+        this.intVar = intVar;
+    }
 
     /**
      * Saves a new checkpoint for the current value and the current distance.

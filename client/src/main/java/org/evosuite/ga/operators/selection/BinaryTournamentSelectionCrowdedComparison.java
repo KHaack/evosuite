@@ -33,18 +33,15 @@ import java.util.List;
 public class BinaryTournamentSelectionCrowdedComparison<T extends Chromosome<T>>
         extends SelectionFunction<T> {
     private static final long serialVersionUID = -6887165634607218631L;
-
+    private final RankAndCrowdingDistanceComparator<T> comparator;
     /**
      * index stores the actual index for selection
      */
     private int index = 0;
-
     /**
      * indexes stores a permutation of ints
      */
     private int[] indexes;
-
-    private final RankAndCrowdingDistanceComparator<T> comparator;
 
     public BinaryTournamentSelectionCrowdedComparison() {
         this.comparator = new RankAndCrowdingDistanceComparator<>(this.maximize);

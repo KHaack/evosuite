@@ -41,10 +41,8 @@ import java.util.Set;
 public final class StringMultipleComparison extends AbstractExpression<Long> implements
         StringComparison, MultipleExpression<String> {
 
-    private static final long serialVersionUID = -3844726361666119758L;
-
     protected static final Logger log = LoggerFactory.getLogger(StringMultipleComparison.class);
-
+    private static final long serialVersionUID = -3844726361666119758L;
     private final Operator op;
 
     private final Expression<String> left;

@@ -53,20 +53,38 @@ public class CheapPurityAnalyzer {
 
     private static final Logger logger = LoggerFactory
             .getLogger(CheapPurityAnalyzer.class);
-
-    private final HashSet<MethodEntry> updateFieldMethodList = new HashSet<>();
-    private final HashMap<MethodEntry, Boolean> purityCache = new HashMap<>();
-    private final HashSet<MethodEntry> methodEntries = new HashSet<>();
-
     /**
      * We return this value when we can't conclude if a given method is pure or not.
      */
     private static final boolean DEFAULT_PURITY_VALUE = false;
-
     private static final CheapPurityAnalyzer instance = new CheapPurityAnalyzer();
+    private final HashSet<MethodEntry> updateFieldMethodList = new HashSet<>();
+    private final HashMap<MethodEntry, Boolean> purityCache = new HashMap<>();
+    private final HashSet<MethodEntry> methodEntries = new HashSet<>();
+    private final HashMap<MethodEntry, Set<MethodEntry>> staticCalls = new HashMap<>();
+    private final HashMap<MethodEntry, Set<MethodEntry>> virtualCalls = new HashMap<>();
+    private final HashMap<MethodEntry, Set<MethodEntry>> specialCalls = new HashMap<>();
+    private final HashMap<MethodEntry, Set<MethodEntry>> interfaceCalls = new HashMap<>();
+    private final HashSet<MethodEntry> interfaceMethodEntries = new HashSet<>();
+    private final HashSet<MethodEntry> methodsWithBodies = new HashSet<>();
 
     public static CheapPurityAnalyzer getInstance() {
         return instance;
+    }
+
+    private static void addCall(HashMap<MethodEntry, Set<MethodEntry>> calls,
+                                String sourceClassName, String sourceMethodName,
+                                String sourceDescriptor, String targetClassName,
+                                String targetMethodName, String targetDescriptor) {
+
+        MethodEntry sourceEntry = new MethodEntry(sourceClassName,
+                sourceMethodName, sourceDescriptor);
+        MethodEntry targetEntry = new MethodEntry(targetClassName,
+                targetMethodName, targetDescriptor);
+        if (!calls.containsKey(sourceEntry)) {
+            calls.put(sourceEntry, new HashSet<>());
+        }
+        calls.get(sourceEntry).add(targetEntry);
     }
 
     public List<String> getPureMethods(String className) {
@@ -366,6 +384,75 @@ public class CheapPurityAnalyzer {
         return isPureValue;
     }
 
+    public void addMethod(String className, String methodName,
+                          String methodDescriptor) {
+        MethodEntry entry = new MethodEntry(className, methodName,
+                methodDescriptor);
+        methodEntries.add(entry);
+    }
+
+    public void addUpdatesFieldMethod(String className, String methodName,
+                                      String descriptor) {
+        String classNameWithDots = className.replace('/', '.');
+        MethodEntry entry = new MethodEntry(classNameWithDots, methodName,
+                descriptor);
+        updateFieldMethodList.add(entry);
+    }
+
+    public void addStaticCall(String sourceClassName, String sourceMethodName,
+                              String sourceDescriptor, String targetClassName,
+                              String targetMethodName, String targetDescriptor) {
+
+        addCall(staticCalls, sourceClassName, sourceMethodName,
+                sourceDescriptor, targetClassName, targetMethodName,
+                targetDescriptor);
+
+    }
+
+    public void addVirtualCall(String sourceClassName, String sourceMethodName,
+                               String sourceDescriptor, String targetClassName,
+                               String targetMethodName, String targetDescriptor) {
+
+        addCall(virtualCalls, sourceClassName, sourceMethodName,
+                sourceDescriptor, targetClassName, targetMethodName,
+                targetDescriptor);
+
+    }
+
+    public void addInterfaceCall(String sourceClassName,
+                                 String sourceMethodName, String sourceDescriptor,
+                                 String targetClassName, String targetMethodName,
+                                 String targetDescriptor) {
+
+        addCall(interfaceCalls, sourceClassName, sourceMethodName,
+                sourceDescriptor, targetClassName, targetMethodName,
+                targetDescriptor);
+
+    }
+
+    public void addSpecialCall(String sourceClassName, String sourceMethodName,
+                               String sourceDescriptor, String targetClassName,
+                               String targetMethodName, String targetDescriptor) {
+
+        addCall(specialCalls, sourceClassName, sourceMethodName,
+                sourceDescriptor, targetClassName, targetMethodName,
+                targetDescriptor);
+    }
+
+    public void addInterfaceMethod(String className, String methodName,
+                                   String methodDescriptor) {
+        MethodEntry entry = new MethodEntry(className, methodName,
+                methodDescriptor);
+        interfaceMethodEntries.add(entry);
+    }
+
+    public void addMethodWithBody(String className, String methodName,
+                                  String methodDescriptor) {
+        MethodEntry entry = new MethodEntry(className, methodName,
+                methodDescriptor);
+        methodsWithBodies.add(entry);
+    }
+
     private static class MethodEntry {
         private final String className;
         private final String methodName;
@@ -408,99 +495,6 @@ public class CheapPurityAnalyzer {
                     + methodName + ", descriptor=" + descriptor
                     + "]";
         }
-    }
-
-    public void addMethod(String className, String methodName,
-                          String methodDescriptor) {
-        MethodEntry entry = new MethodEntry(className, methodName,
-                methodDescriptor);
-        methodEntries.add(entry);
-    }
-
-    public void addUpdatesFieldMethod(String className, String methodName,
-                                      String descriptor) {
-        String classNameWithDots = className.replace('/', '.');
-        MethodEntry entry = new MethodEntry(classNameWithDots, methodName,
-                descriptor);
-        updateFieldMethodList.add(entry);
-    }
-
-    private final HashMap<MethodEntry, Set<MethodEntry>> staticCalls = new HashMap<>();
-    private final HashMap<MethodEntry, Set<MethodEntry>> virtualCalls = new HashMap<>();
-    private final HashMap<MethodEntry, Set<MethodEntry>> specialCalls = new HashMap<>();
-    private final HashMap<MethodEntry, Set<MethodEntry>> interfaceCalls = new HashMap<>();
-
-    public void addStaticCall(String sourceClassName, String sourceMethodName,
-                              String sourceDescriptor, String targetClassName,
-                              String targetMethodName, String targetDescriptor) {
-
-        addCall(staticCalls, sourceClassName, sourceMethodName,
-                sourceDescriptor, targetClassName, targetMethodName,
-                targetDescriptor);
-
-    }
-
-    public void addVirtualCall(String sourceClassName, String sourceMethodName,
-                               String sourceDescriptor, String targetClassName,
-                               String targetMethodName, String targetDescriptor) {
-
-        addCall(virtualCalls, sourceClassName, sourceMethodName,
-                sourceDescriptor, targetClassName, targetMethodName,
-                targetDescriptor);
-
-    }
-
-    public void addInterfaceCall(String sourceClassName,
-                                 String sourceMethodName, String sourceDescriptor,
-                                 String targetClassName, String targetMethodName,
-                                 String targetDescriptor) {
-
-        addCall(interfaceCalls, sourceClassName, sourceMethodName,
-                sourceDescriptor, targetClassName, targetMethodName,
-                targetDescriptor);
-
-    }
-
-    private static void addCall(HashMap<MethodEntry, Set<MethodEntry>> calls,
-                                String sourceClassName, String sourceMethodName,
-                                String sourceDescriptor, String targetClassName,
-                                String targetMethodName, String targetDescriptor) {
-
-        MethodEntry sourceEntry = new MethodEntry(sourceClassName,
-                sourceMethodName, sourceDescriptor);
-        MethodEntry targetEntry = new MethodEntry(targetClassName,
-                targetMethodName, targetDescriptor);
-        if (!calls.containsKey(sourceEntry)) {
-            calls.put(sourceEntry, new HashSet<>());
-        }
-        calls.get(sourceEntry).add(targetEntry);
-    }
-
-    public void addSpecialCall(String sourceClassName, String sourceMethodName,
-                               String sourceDescriptor, String targetClassName,
-                               String targetMethodName, String targetDescriptor) {
-
-        addCall(specialCalls, sourceClassName, sourceMethodName,
-                sourceDescriptor, targetClassName, targetMethodName,
-                targetDescriptor);
-    }
-
-    private final HashSet<MethodEntry> interfaceMethodEntries = new HashSet<>();
-
-    private final HashSet<MethodEntry> methodsWithBodies = new HashSet<>();
-
-    public void addInterfaceMethod(String className, String methodName,
-                                   String methodDescriptor) {
-        MethodEntry entry = new MethodEntry(className, methodName,
-                methodDescriptor);
-        interfaceMethodEntries.add(entry);
-    }
-
-    public void addMethodWithBody(String className, String methodName,
-                                  String methodDescriptor) {
-        MethodEntry entry = new MethodEntry(className, methodName,
-                methodDescriptor);
-        methodsWithBodies.add(entry);
     }
 
 }

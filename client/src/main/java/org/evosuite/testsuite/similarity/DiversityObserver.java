@@ -37,8 +37,8 @@ import java.util.List;
  */
 public class DiversityObserver implements SearchListener<TestSuiteChromosome> {
 
+    public static final int GAP_PENALTY = -2;
     private static final Logger logger = LoggerFactory.getLogger(DiversityObserver.class);
-
     private static final long serialVersionUID = -3761776930918618235L;
 
     public DiversityObserver() {
@@ -48,27 +48,6 @@ public class DiversityObserver implements SearchListener<TestSuiteChromosome> {
     public DiversityObserver(DiversityObserver that) {
         // empty copy constructor
     }
-
-    @Override
-    public void iteration(GeneticAlgorithm<TestSuiteChromosome> algorithm) {
-        List<TestSuiteChromosome> individuals = algorithm.getPopulation();
-        double diversity = 0.0;
-        int numComparisons = 0;
-        for (int i = 0; i < individuals.size() - 1; i++) {
-            for (int j = i + 1; j < individuals.size(); j++) {
-                double pairDiversity = getSuiteSimilarity(individuals.get(i), individuals.get(j));
-                logger.debug("Adding diversity of pair " + i + ", " + j + " of " + pairDiversity);
-                diversity += pairDiversity;
-                numComparisons += 1;
-            }
-        }
-        diversity = 1.0 - diversity / numComparisons;
-        logger.info("Resulting diversity for " + numComparisons + " pairs: " + diversity);
-        ClientServices.getInstance().getClientNode().trackOutputVariable(RuntimeVariable.DiversityTimeline, diversity);
-
-    }
-
-    public static final int GAP_PENALTY = -2;
 
     /**
      * Naive similarity comparison between suites simply consists of merging all tests to a single test
@@ -96,8 +75,6 @@ public class DiversityObserver implements SearchListener<TestSuiteChromosome> {
 
         return getNeedlemanWunschScore(test1, test2);
     }
-
-    // TODO: Similarity based on vectors of types of calls
 
     /**
      * Sequence alignment based distance
@@ -132,6 +109,8 @@ public class DiversityObserver implements SearchListener<TestSuiteChromosome> {
         }
         return matrix[test1.size()][test2.size()] / max;
     }
+
+    // TODO: Similarity based on vectors of types of calls
 
     // matches are given +1, mismatches are given -
     private static int getStatementSimilarity(Statement s1, Statement s2) {
@@ -175,7 +154,6 @@ public class DiversityObserver implements SearchListener<TestSuiteChromosome> {
         return ps.getReturnClass();
     }
 
-
     public static void printMatrix(int[][] matrix) {
         for (final int[] ints : matrix) {
             for (final int i : ints) {
@@ -183,6 +161,25 @@ public class DiversityObserver implements SearchListener<TestSuiteChromosome> {
             }
             System.out.println();
         }
+    }
+
+    @Override
+    public void iteration(GeneticAlgorithm<TestSuiteChromosome> algorithm) {
+        List<TestSuiteChromosome> individuals = algorithm.getPopulation();
+        double diversity = 0.0;
+        int numComparisons = 0;
+        for (int i = 0; i < individuals.size() - 1; i++) {
+            for (int j = i + 1; j < individuals.size(); j++) {
+                double pairDiversity = getSuiteSimilarity(individuals.get(i), individuals.get(j));
+                logger.debug("Adding diversity of pair " + i + ", " + j + " of " + pairDiversity);
+                diversity += pairDiversity;
+                numComparisons += 1;
+            }
+        }
+        diversity = 1.0 - diversity / numComparisons;
+        logger.info("Resulting diversity for " + numComparisons + " pairs: " + diversity);
+        ClientServices.getInstance().getClientNode().trackOutputVariable(RuntimeVariable.DiversityTimeline, diversity);
+
     }
 
     @Override

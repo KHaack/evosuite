@@ -52,15 +52,11 @@ public class TestSuiteLocalSearchObjective implements LocalSearchObjective<TestC
     private final TestSuiteChromosome suite;
 
     private final int testIndex;
-
+    private final Map<TestSuiteFitnessFunction, Double> lastFitness = new HashMap<>();
+    private final Map<TestSuiteFitnessFunction, Double> lastCoverage = new HashMap<>();
     // TODO: This assumes we are not doing NSGA-II
     private boolean isMaximization = false;
-
     private double lastFitnessSum = 0.0;
-
-    private final Map<TestSuiteFitnessFunction, Double> lastFitness = new HashMap<>();
-
-    private final Map<TestSuiteFitnessFunction, Double> lastCoverage = new HashMap<>();
 
     /**
      * Creates a Local Search objective for a TestCase that will be optimized

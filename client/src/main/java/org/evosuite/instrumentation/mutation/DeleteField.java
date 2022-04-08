@@ -43,13 +43,66 @@ import java.util.List;
  */
 public class DeleteField implements MutationOperator {
 
-    private static final Logger logger = LoggerFactory.getLogger(DeleteField.class);
-
     public static final String NAME = "DeleteField";
+    private static final Logger logger = LoggerFactory.getLogger(DeleteField.class);
 
     /* (non-Javadoc)
      * @see org.evosuite.cfg.instrumentation.mutation.MutationOperator#apply(org.objectweb.asm.tree.MethodNode, java.lang.String, java.lang.String, org.evosuite.cfg.BytecodeInstruction)
      */
+
+    private static AbstractInsnNode getDefault(Type type) {
+        if (type.equals(Type.BOOLEAN_TYPE)) {
+            return new LdcInsnNode(0);
+        } else if (type.equals(Type.INT_TYPE)) {
+            return new LdcInsnNode(0);
+        } else if (type.equals(Type.BYTE_TYPE)) {
+            return new LdcInsnNode(0);
+        } else if (type.equals(Type.CHAR_TYPE)) {
+            return new LdcInsnNode(0);
+        } else if (type.equals(Type.DOUBLE_TYPE)) {
+            return new LdcInsnNode(0.0);
+        } else if (type.equals(Type.FLOAT_TYPE)) {
+            return new LdcInsnNode(0.0F);
+        } else if (type.equals(Type.LONG_TYPE)) {
+            return new LdcInsnNode(0L);
+        } else if (type.equals(Type.SHORT_TYPE)) {
+            return new LdcInsnNode(0);
+        } else if (type.equals(Type.VOID_TYPE)) {
+            return new LabelNode();
+        } else {
+            return new InsnNode(Opcodes.ACONST_NULL);
+        }
+    }
+
+    /**
+     * <p>
+     * getDistance
+     * </p>
+     *
+     * @param val1 a double.
+     * @param val2 a double.
+     * @return a double.
+     */
+    public static double getDistance(double val1, double val2) {
+        return val1 == val2 ? 1.0 : 0.0;
+    }
+
+    /**
+     * <p>
+     * getDistance
+     * </p>
+     *
+     * @param obj1 a {@link java.lang.Object} object.
+     * @param obj2 a {@link java.lang.Object} object.
+     * @return a double.
+     */
+    public static double getDistance(Object obj1, Object obj2) {
+        if (obj1 == null) {
+            return obj2 == null ? 1.0 : 0.0;
+        } else {
+            return obj1.equals(obj2) ? 1.0 : 0.0;
+        }
+    }
 
     /**
      * {@inheritDoc}
@@ -84,30 +137,6 @@ public class DeleteField implements MutationOperator {
         return mutations;
     }
 
-    private static AbstractInsnNode getDefault(Type type) {
-        if (type.equals(Type.BOOLEAN_TYPE)) {
-            return new LdcInsnNode(0);
-        } else if (type.equals(Type.INT_TYPE)) {
-            return new LdcInsnNode(0);
-        } else if (type.equals(Type.BYTE_TYPE)) {
-            return new LdcInsnNode(0);
-        } else if (type.equals(Type.CHAR_TYPE)) {
-            return new LdcInsnNode(0);
-        } else if (type.equals(Type.DOUBLE_TYPE)) {
-            return new LdcInsnNode(0.0);
-        } else if (type.equals(Type.FLOAT_TYPE)) {
-            return new LdcInsnNode(0.0F);
-        } else if (type.equals(Type.LONG_TYPE)) {
-            return new LdcInsnNode(0L);
-        } else if (type.equals(Type.SHORT_TYPE)) {
-            return new LdcInsnNode(0);
-        } else if (type.equals(Type.VOID_TYPE)) {
-            return new LabelNode();
-        } else {
-            return new InsnNode(Opcodes.ACONST_NULL);
-        }
-    }
-
     /**
      * <p>
      * getInfectionDistance
@@ -134,36 +163,6 @@ public class DeleteField implements MutationOperator {
         }
 
         return distance;
-    }
-
-    /**
-     * <p>
-     * getDistance
-     * </p>
-     *
-     * @param val1 a double.
-     * @param val2 a double.
-     * @return a double.
-     */
-    public static double getDistance(double val1, double val2) {
-        return val1 == val2 ? 1.0 : 0.0;
-    }
-
-    /**
-     * <p>
-     * getDistance
-     * </p>
-     *
-     * @param obj1 a {@link java.lang.Object} object.
-     * @param obj2 a {@link java.lang.Object} object.
-     * @return a double.
-     */
-    public static double getDistance(Object obj1, Object obj2) {
-        if (obj1 == null) {
-            return obj2 == null ? 1.0 : 0.0;
-        } else {
-            return obj1.equals(obj2) ? 1.0 : 0.0;
-        }
     }
 
     /* (non-Javadoc)

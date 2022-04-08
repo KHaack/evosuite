@@ -41,53 +41,10 @@ import java.util.Set;
  */
 public class PrimitiveExpression extends AbstractStatement {
 
-    public enum Operator {
-        TIMES("*"), //
-        DIVIDE("/"), //
-        REMAINDER("%"), //
-        PLUS("+"), //
-        MINUS("-"), //
-        LEFT_SHIFT("<<"), //
-        RIGHT_SHIFT_SIGNED(">>"), //
-        RIGHT_SHIFT_UNSIGNED(">>>"), //
-        LESS("<"), //
-        GREATER(">"), //
-        LESS_EQUALS("<="), //
-        GREATER_EQUALS(">="), //
-        EQUALS("=="), //
-        NOT_EQUALS("!="), //
-        XOR("^"), //
-        AND("&"), //
-        OR("|"), //
-        CONDITIONAL_AND("&&"), //
-        CONDITIONAL_OR("||");
-
-        public static Operator toOperator(String code) {
-            for (Operator operator : values()) {
-                if (operator.code.equals(code)) {
-                    return operator;
-                }
-            }
-            throw new RuntimeException("No operator for " + code);
-        }
-
-        private final String code;
-
-        Operator(String code) {
-            this.code = code;
-        }
-
-        public String toCode() {
-            return code;
-        }
-    }
-
     private static final long serialVersionUID = 1L;
-
-    private VariableReference leftOperand;
     private final Operator operator;
+    private VariableReference leftOperand;
     private VariableReference rightOperand;
-
     /**
      * <p>
      * Constructor for PrimitiveExpression.
@@ -270,5 +227,46 @@ public class PrimitiveExpression extends AbstractStatement {
     @Override
     public String toString() {
         return getCode();
+    }
+
+    public enum Operator {
+        TIMES("*"), //
+        DIVIDE("/"), //
+        REMAINDER("%"), //
+        PLUS("+"), //
+        MINUS("-"), //
+        LEFT_SHIFT("<<"), //
+        RIGHT_SHIFT_SIGNED(">>"), //
+        RIGHT_SHIFT_UNSIGNED(">>>"), //
+        LESS("<"), //
+        GREATER(">"), //
+        LESS_EQUALS("<="), //
+        GREATER_EQUALS(">="), //
+        EQUALS("=="), //
+        NOT_EQUALS("!="), //
+        XOR("^"), //
+        AND("&"), //
+        OR("|"), //
+        CONDITIONAL_AND("&&"), //
+        CONDITIONAL_OR("||");
+
+        private final String code;
+
+        Operator(String code) {
+            this.code = code;
+        }
+
+        public static Operator toOperator(String code) {
+            for (Operator operator : values()) {
+                if (operator.code.equals(code)) {
+                    return operator;
+                }
+            }
+            throw new RuntimeException("No operator for " + code);
+        }
+
+        public String toCode() {
+            return code;
+        }
     }
 }

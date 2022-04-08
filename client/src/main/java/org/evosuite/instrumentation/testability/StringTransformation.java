@@ -57,6 +57,15 @@ public class StringTransformation {
         this.cn = cn;
     }
 
+    private static boolean isStringMethod(AbstractInsnNode node) {
+        if (node.getOpcode() == Opcodes.INVOKESTATIC) {
+            MethodInsnNode methodInsnNode = (MethodInsnNode) node;
+            return methodInsnNode.owner.equals(Type.getInternalName(StringHelper.class))
+                    && methodInsnNode.name.startsWith("String");
+        }
+        return false;
+    }
+
     /**
      * <p>
      * transform
@@ -249,15 +258,6 @@ public class StringTransformation {
             }
         }
         return changed;
-    }
-
-    private static boolean isStringMethod(AbstractInsnNode node) {
-        if (node.getOpcode() == Opcodes.INVOKESTATIC) {
-            MethodInsnNode methodInsnNode = (MethodInsnNode) node;
-            return methodInsnNode.owner.equals(Type.getInternalName(StringHelper.class))
-                    && methodInsnNode.name.startsWith("String");
-        }
-        return false;
     }
 
     /**

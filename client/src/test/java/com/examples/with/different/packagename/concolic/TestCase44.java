@@ -21,18 +21,6 @@ package com.examples.with.different.packagename.concolic;
 
 public class TestCase44 {
 
-    private static class Foo {
-
-        public boolean bar(int i) {
-
-            if (i == Integer.MAX_VALUE) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-    }
-
     /**
      * @param args
      */
@@ -55,6 +43,18 @@ public class TestCase44 {
         Foo foo4 = new Foo();
         Foo foo5 = new Foo();
         boolean boolean9 = foo0.bar(int1);
+    }
+
+    private static class Foo {
+
+        public boolean bar(int i) {
+
+            if (i == Integer.MAX_VALUE) {
+                return true;
+            } else {
+                return false;
+            }
+        }
     }
 
 }

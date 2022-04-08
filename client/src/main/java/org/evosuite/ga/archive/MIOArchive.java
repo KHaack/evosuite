@@ -44,17 +44,14 @@ import static java.util.stream.Collectors.*;
  */
 public class MIOArchive extends Archive {
 
+    public static final MIOArchive instance = new MIOArchive();
     private static final long serialVersionUID = -6100903230303784634L;
-
     private static final Logger logger = LoggerFactory.getLogger(MIOArchive.class);
-
     /**
      * Map used to store all targets (keys of the map) and the corresponding covering solutions
      * (values of the map)
      **/
     protected final Map<TestFitnessFunction, Population> archive = new LinkedHashMap<>();
-
-    public static final MIOArchive instance = new MIOArchive();
 
     /**
      * {@inheritDoc}

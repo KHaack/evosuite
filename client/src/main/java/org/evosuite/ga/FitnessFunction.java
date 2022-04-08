@@ -31,12 +31,28 @@ import java.io.Serializable;
  */
 public abstract class FitnessFunction<T extends Chromosome<T>> implements Serializable {
 
-    private static final long serialVersionUID = -8876797554111396910L;
-
     /**
      * Constant <code>logger</code>
      */
     protected static final Logger logger = LoggerFactory.getLogger(FitnessFunction.class);
+    private static final long serialVersionUID = -8876797554111396910L;
+
+    /**
+     * Normalize a value using Andrea's normalization function
+     *
+     * @param value a double.
+     * @return a double.
+     * @throws java.lang.IllegalArgumentException if any.
+     */
+    public static double normalize(double value) throws IllegalArgumentException {
+        if (value < 0d) {
+            throw new IllegalArgumentException("Values to normalize cannot be negative");
+        }
+        if (Double.isInfinite(value)) {
+            return 1.0;
+        }
+        return value / (1.0 + value);
+    }
 
     /**
      * Make sure that the individual gets to know about its fitness
@@ -69,23 +85,6 @@ public abstract class FitnessFunction<T extends Chromosome<T>> implements Serial
      * @return new fitness
      */
     public abstract double getFitness(T individual);
-
-    /**
-     * Normalize a value using Andrea's normalization function
-     *
-     * @param value a double.
-     * @return a double.
-     * @throws java.lang.IllegalArgumentException if any.
-     */
-    public static double normalize(double value) throws IllegalArgumentException {
-        if (value < 0d) {
-            throw new IllegalArgumentException("Values to normalize cannot be negative");
-        }
-        if (Double.isInfinite(value)) {
-            return 1.0;
-        }
-        return value / (1.0 + value);
-    }
 
     /**
      * Do we need to maximize, or minimize this function?

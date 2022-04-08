@@ -55,25 +55,26 @@ import java.util.Set;
 public class EnvironmentTestClusterAugmenter {
 
     private static final Logger logger = LoggerFactory.getLogger(EnvironmentTestClusterAugmenter.class);
-
-    private volatile boolean hasAddedRandom;
-    private volatile boolean hasAddedSystem;
-    private volatile boolean hasAddedFiles;
-    private volatile boolean hasAddedSystemIn;
-
-    private volatile boolean hasAddedRemoteURLs;
-    private volatile boolean hasAddedUdpSupport;
-    private volatile boolean hasAddedTcpListeningSupport;
-    private volatile boolean hasAddedTcpRemoteSupport;
-
     private final TestCluster cluster;
-    private TestClusterGenerator testClusterGenerator;
-
     /**
      * Keep track of all EvoSuite classes that have been already fully handled
      * (via recursion)
      */
     private final Set<String> handledClasses;
+    private volatile boolean hasAddedRandom;
+    private volatile boolean hasAddedSystem;
+    private volatile boolean hasAddedFiles;
+    private volatile boolean hasAddedSystemIn;
+    private volatile boolean hasAddedRemoteURLs;
+    private volatile boolean hasAddedUdpSupport;
+    private volatile boolean hasAddedTcpListeningSupport;
+    private volatile boolean hasAddedTcpRemoteSupport;
+    private TestClusterGenerator testClusterGenerator;
+    private boolean hasAddedJOptionPaneInputsForStrings = false;
+    private boolean hasAddedJOptionPaneYesNoCancelSelection = false;
+    private boolean hasAddedJOptionPaneYesNoSelection = false;
+    private boolean hasAddedJOptionPaneOkCancelSelection = false;
+    private boolean hasAddedJOptionPaneOptionSelection = false;
 
     public EnvironmentTestClusterAugmenter(TestCluster cluster) {
         this.cluster = cluster;
@@ -128,16 +129,6 @@ public class EnvironmentTestClusterAugmenter {
             handleNetwork(test);
         }
     }
-
-    private boolean hasAddedJOptionPaneInputsForStrings = false;
-
-    private boolean hasAddedJOptionPaneYesNoCancelSelection = false;
-
-    private boolean hasAddedJOptionPaneYesNoSelection = false;
-
-    private boolean hasAddedJOptionPaneOkCancelSelection = false;
-
-    private boolean hasAddedJOptionPaneOptionSelection = false;
 
     private void handleGUI() {
 

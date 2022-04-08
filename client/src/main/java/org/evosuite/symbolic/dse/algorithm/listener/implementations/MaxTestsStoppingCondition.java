@@ -93,15 +93,15 @@ public class MaxTestsStoppingCondition extends StoppingConditionImpl {
      * {@inheritDoc}
      */
     @Override
-    public void setLimit(long limit) {
-        maxTests = limit;
+    public long getLimit() {
+        return maxTests;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public long getLimit() {
-        return maxTests;
+    public void setLimit(long limit) {
+        maxTests = limit;
     }
 }

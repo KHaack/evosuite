@@ -21,8 +21,8 @@ package com.examples.with.different.packagename.testcarver;
 
 public class Simple {
 
-    private int x;
     private final int y = 3;
+    private int x;
 
     public boolean incr() {
         x++;

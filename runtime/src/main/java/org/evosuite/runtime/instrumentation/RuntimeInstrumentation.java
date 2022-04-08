@@ -41,7 +41,10 @@ import org.slf4j.LoggerFactory;
 public class RuntimeInstrumentation {
 
     private static final Logger logger = LoggerFactory.getLogger(RuntimeInstrumentation.class);
-
+    /**
+     * This should ONLY be set by SystemTest
+     */
+    private static boolean avoidInstrumentingShadedClasses = false;
     /**
      * If we are re-instrumenting a class, then we cannot change its
      * signature: eg add new methods
@@ -50,17 +53,12 @@ public class RuntimeInstrumentation {
      */
     private volatile boolean retransformingMode;
 
-    /**
-     * This should ONLY be set by SystemTest
-     */
-    private static boolean avoidInstrumentingShadedClasses = false;
-
     public RuntimeInstrumentation() {
         retransformingMode = false;
     }
 
-    public void setRetransformingMode(boolean on) {
-        retransformingMode = on;
+    public static boolean getAvoidInstrumentingShadedClasses() {
+        return RuntimeInstrumentation.avoidInstrumentingShadedClasses;
     }
 
     /**
@@ -68,10 +66,6 @@ public class RuntimeInstrumentation {
      */
     public static void setAvoidInstrumentingShadedClasses(boolean avoidInstrumentingShadedClasses) {
         RuntimeInstrumentation.avoidInstrumentingShadedClasses = avoidInstrumentingShadedClasses;
-    }
-
-    public static boolean getAvoidInstrumentingShadedClasses() {
-        return RuntimeInstrumentation.avoidInstrumentingShadedClasses;
     }
 
     public static boolean checkIfCanInstrument(String className) {
@@ -88,6 +82,10 @@ public class RuntimeInstrumentation {
 
         // Instrumenting clover coverage instrumentation helper classes breaks clover
         return !className.contains("__CLR");
+    }
+
+    public void setRetransformingMode(boolean on) {
+        retransformingMode = on;
     }
 
     public boolean isAlreadyInstrumented(ClassReader reader) {

@@ -37,6 +37,8 @@ import java.lang.reflect.Type;
  */
 public class BytePrimitiveStatement extends NumericalPrimitiveStatement<Byte> {
 
+    private static final long serialVersionUID = -8123457944460041347L;
+
     /**
      * <p>
      * Constructor for BytePrimitiveStatement.
@@ -71,8 +73,6 @@ public class BytePrimitiveStatement extends NumericalPrimitiveStatement<Byte> {
     public BytePrimitiveStatement(TestCase tc, Type type) {
         super(tc, type, (byte) 0);
     }
-
-    private static final long serialVersionUID = -8123457944460041347L;
 
     /* (non-Javadoc)
      * @see org.evosuite.testcase.PrimitiveStatement#zero()

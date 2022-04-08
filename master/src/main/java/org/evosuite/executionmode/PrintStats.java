@@ -46,9 +46,8 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 public class PrintStats {
 
-    private static final Logger logger = LoggerFactory.getLogger(PrintStats.class);
-
     public static final String NAME = "printStats";
+    private static final Logger logger = LoggerFactory.getLogger(PrintStats.class);
 
     public static Option getOption() {
         return new Option(NAME, "print class information (coverable goals)");

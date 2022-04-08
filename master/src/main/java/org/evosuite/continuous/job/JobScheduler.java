@@ -39,12 +39,8 @@ public class JobScheduler {
 
 
     private static final Logger logger = LoggerFactory.getLogger(JobScheduler.class);
-
-
-    private final ProjectStaticData projectData;
-
     protected final CtgConfiguration configuration;
-
+    private final ProjectStaticData projectData;
     private ScheduleType currentSchedule;
 
     /**

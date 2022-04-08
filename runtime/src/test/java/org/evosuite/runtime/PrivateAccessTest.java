@@ -189,26 +189,29 @@ class FooConstructor {
 }
 
 class FooFields implements Serializable {
-    private String s;
-    private static int n;
-
     public static final long serialVersionUID = 1L;
-
-    public String getS() {
-        return s;
-    }
+    private static int n;
+    private String s;
 
     public static int getN() {
         return n;
     }
+
+    public String getS() {
+        return s;
+    }
 }
 
 class FooMethods {
-    public String s;
     public static int n;
+    public String s;
 
     private static int getN() {
         return n;
+    }
+
+    private static void throwNPE() {
+        throw new NullPointerException("NPE");
     }
 
     private String getS() {
@@ -226,9 +229,5 @@ class FooMethods {
 
     private String compute(String s, int x) {
         return s + x;
-    }
-
-    private static void throwNPE() {
-        throw new NullPointerException("NPE");
     }
 }

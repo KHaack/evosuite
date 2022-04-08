@@ -21,20 +21,11 @@ package com.examples.with.different.packagename.staticfield;
 
 public class StaticFinalSingletonField {
 
-    private int value;
-
     private final static StaticFinalSingletonField instance = new StaticFinalSingletonField();
+    private int value;
 
     public static StaticFinalSingletonField getInstance() {
         return instance;
-    }
-
-    public int getValue() {
-        return value;
-    }
-
-    public void incValue() {
-        value++;
     }
 
     public static int checkMe() {
@@ -47,6 +38,14 @@ public class StaticFinalSingletonField {
         } else {
             return Integer.MAX_VALUE;
         }
+    }
+
+    public int getValue() {
+        return value;
+    }
+
+    public void incValue() {
+        value++;
     }
 
 }

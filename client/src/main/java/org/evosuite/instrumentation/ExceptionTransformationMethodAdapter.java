@@ -44,6 +44,9 @@ public class ExceptionTransformationMethodAdapter extends GeneratorAdapter {
     private final String methodName;
 
     private final MethodVisitor next;
+    private final List<TryCatchBlock> tryCatchBlocks = new LinkedList<>();
+    private final List<TryCatchBlock> instrumentedTryCatchBlocks = new LinkedList<>();
+
 
     public ExceptionTransformationMethodAdapter(MethodVisitor mv, String className,
                                                 String methodName, int access, String desc) {
@@ -159,7 +162,6 @@ public class ExceptionTransformationMethodAdapter extends GeneratorAdapter {
 
     }
 
-
     @Override
     public void visitEnd() {
         // regenerate try-catch table
@@ -177,29 +179,20 @@ public class ExceptionTransformationMethodAdapter extends GeneratorAdapter {
         super.visitEnd();
     }
 
-    private static class TryCatchBlock {
-        public TryCatchBlock(Label start, Label end, Label handler, String type) {
-            this.start = start;
-            this.end = end;
-            this.handler = handler;
-            this.type = type;
-        }
-
-        Label start;
-        Label end;
-        Label handler;
-        String type;
-    }
-
-    private final List<TryCatchBlock> tryCatchBlocks = new LinkedList<>();
-    private final List<TryCatchBlock> instrumentedTryCatchBlocks = new LinkedList<>();
-
     @Override
     public void visitTryCatchBlock(Label start, Label end, Label handler,
                                    String type) {
         TryCatchBlock block = new TryCatchBlock(start, end, handler, type);
         tryCatchBlocks.add(block);
         // super.visitTryCatchBlock(start, end, handler, type);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void visitMaxs(int maxStack, int maxLocals) {
+        super.visitMaxs(maxStack + 1, maxLocals);
     }
 
     /* (non-Javadoc)
@@ -216,14 +209,6 @@ public class ExceptionTransformationMethodAdapter extends GeneratorAdapter {
      * @see org.objectweb.asm.commons.LocalVariablesSorter#visitMaxs(int, int)
      */
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void visitMaxs(int maxStack, int maxLocals) {
-        super.visitMaxs(maxStack + 1, maxLocals);
-    }
-
     public void tagBranch() {
         Label dummyTag = new AnnotatedLabel(false, true);
         // dummyTag.info = Boolean.TRUE;
@@ -234,6 +219,19 @@ public class ExceptionTransformationMethodAdapter extends GeneratorAdapter {
         Label dummyTag = new AnnotatedLabel(false, false);
         // dummyTag.info = Boolean.FALSE;
         super.visitLabel(dummyTag);
+    }
+
+    private static class TryCatchBlock {
+        Label start;
+        Label end;
+        Label handler;
+        String type;
+        public TryCatchBlock(Label start, Label end, Label handler, String type) {
+            this.start = start;
+            this.end = end;
+            this.handler = handler;
+            this.type = type;
+        }
     }
 
 }

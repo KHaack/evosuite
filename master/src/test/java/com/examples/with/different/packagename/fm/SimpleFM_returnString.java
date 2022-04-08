@@ -27,15 +27,15 @@ public class SimpleFM_returnString {
     public final static String TRUE_BRANCH = "true branch";
     public final static String FALSE_BRANCH = "false branch";
 
-    public interface Foo {
-        boolean foo();
-    }
-
     public static String bar(Foo foo) {
         if (foo.foo()) {
             return TRUE_BRANCH;
         } else {
             return FALSE_BRANCH;
         }
+    }
+
+    public interface Foo {
+        boolean foo();
     }
 }

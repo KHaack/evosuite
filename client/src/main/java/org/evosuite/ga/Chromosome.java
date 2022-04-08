@@ -40,18 +40,73 @@ import static java.util.stream.Collectors.averagingDouble;
 public abstract class Chromosome<T extends Chromosome<T>>
         implements Comparable<T>, Serializable, PublicCloneable<T>, SelfTyped<T> {
 
-    private static final long serialVersionUID = -6921897301005213358L;
-
     /**
      * General Class Related Constants
      */
     public static final int MIN_REACHABLE_COVERAGE = 0;
     public static final int MAX_REACHABLE_COVERAGE = 100;
-
+    private static final long serialVersionUID = -6921897301005213358L;
     /**
      * Constant <code>logger</code>
      */
     private static final Logger logger = LoggerFactory.getLogger(Chromosome.class);
+    /**
+     * Last recorded fitness value
+     */
+    private final LinkedHashMap<FitnessFunction<T>, Double> fitnessValues = new LinkedHashMap<>();
+    /**
+     * Previous fitness, to see if there was an improvement
+     */
+    private final LinkedHashMap<FitnessFunction<T>, Double> previousFitnessValues = new LinkedHashMap<>();
+    private final LinkedHashMap<FitnessFunction<T>, Double> coverageValues = new LinkedHashMap<>();
+    /**
+     * The number of uncovered goals with regard to the fitness function given as key
+     */
+    private final LinkedHashMap<FitnessFunction<T>, Integer> numsNotCoveredGoals = new LinkedHashMap<>();
+    /**
+     * The number of covered goals with regard to the fitness function given as key
+     */
+    private final LinkedHashMap<FitnessFunction<T>, Integer> numsCoveredGoals = new LinkedHashMap<>();
+    /**
+     * Generation in which this chromosome was created
+     */
+    protected int age = 0;
+    /**
+     * The Pareto front this chromosome belongs to. The first non-dominated front is assigned rank
+     * 0, the next front rank 1 and so on. A rank of -1 means undefined.
+     */
+    protected int rank = -1;
+    /**
+     *
+     */
+    protected double distance = 0.0;
+
+    // protected double coverage = 0.0;
+
+    // protected int numOfCoveredGoals = 0;
+    // It is a non-negative number and it quantifies the tolerance of the system accepting a worse
+    // solution than the existing one. (field used by Chemical Reaction Optimization algorithms)
+    protected double kineticEnergy = Properties.INITIAL_KINETIC_ENERGY;
+    // When a molecule undergoes a collision, one of the elementary reactions will be triggered and it
+    // may experience a change in its molecular structure. It is a record of the total number of collisions
+    // a molecule has taken. (field used by Chemical Reaction Optimization algorithms)
+    protected int numCollisions = 0;
+    /**
+     * Has this chromosome changed since its fitness was last evaluated?
+     */
+    private boolean changed = true;
+    /**
+     * Has local search been applied to this individual since it was last changed?
+     */
+    private boolean localSearchApplied = false;
+    /**
+     * Keep track of how many times this Chromosome has been mutated
+     */
+    private int numberOfMutations = 0;
+    /**
+     * Keep track of how many times this Chromosome has been evaluated
+     */
+    private int numberOfEvaluations = 0;
 
     /**
      * only used for testing/debugging
@@ -59,77 +114,6 @@ public abstract class Chromosome<T extends Chromosome<T>>
     protected Chromosome() {
         // empty
     }
-
-    /**
-     * Last recorded fitness value
-     */
-    private final LinkedHashMap<FitnessFunction<T>, Double> fitnessValues = new LinkedHashMap<>();
-
-    /**
-     * Previous fitness, to see if there was an improvement
-     */
-    private final LinkedHashMap<FitnessFunction<T>, Double> previousFitnessValues = new LinkedHashMap<>();
-
-    /**
-     * Has this chromosome changed since its fitness was last evaluated?
-     */
-    private boolean changed = true;
-
-    /**
-     * Has local search been applied to this individual since it was last changed?
-     */
-    private boolean localSearchApplied = false;
-
-    private final LinkedHashMap<FitnessFunction<T>, Double> coverageValues = new LinkedHashMap<>();
-
-    /**
-     * The number of uncovered goals with regard to the fitness function given as key
-     */
-    private final LinkedHashMap<FitnessFunction<T>, Integer> numsNotCoveredGoals = new LinkedHashMap<>();
-
-    /**
-     * The number of covered goals with regard to the fitness function given as key
-     */
-    private final LinkedHashMap<FitnessFunction<T>, Integer> numsCoveredGoals = new LinkedHashMap<>();
-
-    // protected double coverage = 0.0;
-
-    // protected int numOfCoveredGoals = 0;
-
-    /**
-     * Generation in which this chromosome was created
-     */
-    protected int age = 0;
-
-    /**
-     * The Pareto front this chromosome belongs to. The first non-dominated front is assigned rank
-     * 0, the next front rank 1 and so on. A rank of -1 means undefined.
-     */
-    protected int rank = -1;
-
-    /**
-     *
-     */
-    protected double distance = 0.0;
-
-    /**
-     * Keep track of how many times this Chromosome has been mutated
-     */
-    private int numberOfMutations = 0;
-
-    /**
-     * Keep track of how many times this Chromosome has been evaluated
-     */
-    private int numberOfEvaluations = 0;
-
-    // It is a non-negative number and it quantifies the tolerance of the system accepting a worse
-    // solution than the existing one. (field used by Chemical Reaction Optimization algorithms)
-    protected double kineticEnergy = Properties.INITIAL_KINETIC_ENERGY;
-
-    // When a molecule undergoes a collision, one of the elementary reactions will be triggered and it
-    // may experience a change in its molecular structure. It is a record of the total number of collisions
-    // a molecule has taken. (field used by Chemical Reaction Optimization algorithms)
-    protected int numCollisions = 0;
 
     /**
      * Return current fitness value
@@ -158,8 +142,19 @@ public abstract class Chromosome<T extends Chromosome<T>>
         return this.fitnessValues;
     }
 
+    public void setFitnessValues(Map<? extends FitnessFunction<T>, Double> fits) {
+        //TODO mainfitness?
+        this.fitnessValues.clear();
+        this.fitnessValues.putAll(fits);
+    }
+
     public Map<FitnessFunction<T>, Double> getPreviousFitnessValues() {
         return this.previousFitnessValues;
+    }
+
+    public void setPreviousFitnessValues(Map<FitnessFunction<T>, Double> lastFits) {
+        this.previousFitnessValues.clear();
+        this.previousFitnessValues.putAll(lastFits);
     }
 
     /**
@@ -171,17 +166,6 @@ public abstract class Chromosome<T extends Chromosome<T>>
      */
     public boolean hasExecutedFitness(FitnessFunction<T> ff) {
         return this.previousFitnessValues.containsKey(ff);
-    }
-
-    public void setFitnessValues(Map<? extends FitnessFunction<T>, Double> fits) {
-        //TODO mainfitness?
-        this.fitnessValues.clear();
-        this.fitnessValues.putAll(fits);
-    }
-
-    public void setPreviousFitnessValues(Map<FitnessFunction<T>, Double> lastFits) {
-        this.previousFitnessValues.clear();
-        this.previousFitnessValues.putAll(lastFits);
     }
 
     /**
@@ -440,11 +424,6 @@ public abstract class Chromosome<T extends Chromosome<T>>
                 .sum();
     }
 
-    public void setNumsOfCoveredGoals(Map<FitnessFunction<T>, Integer> fits) {
-        this.numsCoveredGoals.clear();
-        this.numsCoveredGoals.putAll(fits);
-    }
-
     public void setNumsOfNotCoveredGoals(Map<FitnessFunction<T>, Integer> fits) {
         this.numsNotCoveredGoals.clear();
         this.numsNotCoveredGoals.putAll(fits);
@@ -456,6 +435,11 @@ public abstract class Chromosome<T extends Chromosome<T>>
 
     public Map<FitnessFunction<T>, Integer> getNumsOfCoveredGoals() {
         return this.numsCoveredGoals;
+    }
+
+    public void setNumsOfCoveredGoals(Map<FitnessFunction<T>, Integer> fits) {
+        this.numsCoveredGoals.clear();
+        this.numsCoveredGoals.putAll(fits);
     }
 
     public LinkedHashMap<FitnessFunction<T>, Integer> getNumsNotCoveredGoals() {

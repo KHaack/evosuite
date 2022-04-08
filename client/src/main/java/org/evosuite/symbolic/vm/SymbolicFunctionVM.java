@@ -58,38 +58,10 @@ import java.util.Map;
  */
 public final class SymbolicFunctionVM extends AbstractVM {
 
-    private static class FunctionKey {
-        public FunctionKey(String owner, String name, String desc) {
-            super();
-            this.owner = owner;
-            this.name = name;
-            this.desc = desc;
-        }
-
-        public String owner;
-        public String name;
-        public String desc;
-
-        @Override
-        public int hashCode() {
-            return owner.hashCode() + name.hashCode() + desc.hashCode();
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (o == null || !o.getClass().equals(FunctionKey.class)) {
-                return false;
-            } else {
-                FunctionKey that = (FunctionKey) o;
-                return this.owner.equals(that.owner)
-                        && this.name.equals(that.name)
-                        && this.desc.equals(that.desc);
-            }
-        }
-    }
-
     private final SymbolicEnvironment env;
     private final PathConditionCollector pc;
+    private final Map<FunctionKey, SymbolicFunction> functionsTable = new HashMap<>();
+    private SymbolicFunction functionUnderExecution;
 
     public SymbolicFunctionVM(SymbolicEnvironment env, PathConditionCollector pc) {
         this.env = env;
@@ -188,8 +160,6 @@ public final class SymbolicFunctionVM extends AbstractVM {
         ReferenceOperand op = (ReferenceOperand) getOperandFromStack(moves);
         return op.getReference();
     }
-
-    private final Map<FunctionKey, SymbolicFunction> functionsTable = new HashMap<>();
 
     private SymbolicFunction getFunction(String owner, String name, String desc) {
         FunctionKey k = new FunctionKey(owner, name, desc);
@@ -396,8 +366,6 @@ public final class SymbolicFunctionVM extends AbstractVM {
         }
 
     }
-
-    private SymbolicFunction functionUnderExecution;
 
     @Override
     public void INVOKEINTERFACE(Object conc_receiver, String owner,
@@ -761,5 +729,34 @@ public final class SymbolicFunctionVM extends AbstractVM {
         addFunctionToTable(new StringBufferAppend_D(env));
         addFunctionToTable(new StringBufferAppend_STR(env));
         addFunctionToTable(new StringBuffer_SetLength(env));
+    }
+
+    private static class FunctionKey {
+        public String owner;
+        public String name;
+        public String desc;
+        public FunctionKey(String owner, String name, String desc) {
+            super();
+            this.owner = owner;
+            this.name = name;
+            this.desc = desc;
+        }
+
+        @Override
+        public int hashCode() {
+            return owner.hashCode() + name.hashCode() + desc.hashCode();
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (o == null || !o.getClass().equals(FunctionKey.class)) {
+                return false;
+            } else {
+                FunctionKey that = (FunctionKey) o;
+                return this.owner.equals(that.owner)
+                        && this.name.equals(that.name)
+                        && this.desc.equals(that.desc);
+            }
+        }
     }
 }

@@ -29,11 +29,6 @@ import java.time.temporal.TemporalAccessor;
  * Created by gordon on 24/01/2016.
  */
 public class MockZonedDateTime implements StaticReplacementMock {
-    @Override
-    public String getMockedClassName() {
-        return ZonedDateTime.class.getName();
-    }
-
     public static ZonedDateTime now() {
         return now(MockClock.systemDefaultZone());
     }
@@ -59,7 +54,6 @@ public class MockZonedDateTime implements StaticReplacementMock {
             int hour, int minute, int second, int nanoOfSecond, ZoneId zone) {
         return ZonedDateTime.of(year, month, dayOfMonth, hour, minute, second, nanoOfSecond, zone);
     }
-
 
     public static ZonedDateTime ofLocal(LocalDateTime localDateTime, ZoneId zone, ZoneOffset preferredOffset) {
         return ZonedDateTime.ofLocal(localDateTime, zone, preferredOffset);
@@ -87,5 +81,10 @@ public class MockZonedDateTime implements StaticReplacementMock {
 
     public static ZonedDateTime parse(CharSequence text, DateTimeFormatter formatter) {
         return ZonedDateTime.parse(text, formatter);
+    }
+
+    @Override
+    public String getMockedClassName() {
+        return ZonedDateTime.class.getName();
     }
 }

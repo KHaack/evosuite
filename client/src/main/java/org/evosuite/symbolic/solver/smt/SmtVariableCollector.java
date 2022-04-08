@@ -24,6 +24,8 @@ import java.util.Set;
 
 public final class SmtVariableCollector implements SmtExprVisitor<Void, Void> {
 
+    private final Set<SmtVariable> smtVariables = new HashSet<>();
+
     @Override
     public Void visit(SmtIntConstant n, Void arg) {
         return null;
@@ -38,8 +40,6 @@ public final class SmtVariableCollector implements SmtExprVisitor<Void, Void> {
     public Void visit(SmtStringConstant n, Void arg) {
         return null;
     }
-
-    private final Set<SmtVariable> smtVariables = new HashSet<>();
 
     @Override
     public Void visit(SmtIntVariable n, Void arg) {

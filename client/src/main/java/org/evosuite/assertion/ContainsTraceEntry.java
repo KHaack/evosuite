@@ -28,11 +28,9 @@ import java.util.Set;
 
 public class ContainsTraceEntry implements OutputTraceEntry {
 
-    protected VariableReference containerVar;
-
-    protected Map<VariableReference, Boolean> containsMap = new HashMap<>();
-
     private final Map<Integer, VariableReference> containsMapIntVar = new HashMap<>();
+    protected VariableReference containerVar;
+    protected Map<VariableReference, Boolean> containsMap = new HashMap<>();
 
     public ContainsTraceEntry(VariableReference containerVar) {
         this.containerVar = containerVar;

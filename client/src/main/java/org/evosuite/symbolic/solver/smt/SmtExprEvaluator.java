@@ -33,6 +33,25 @@ public final class SmtExprEvaluator implements SmtExprVisitor<Object, Void> {
         this.solution = solution;
     }
 
+    private static boolean isReal(Object operand) {
+        return (operand instanceof Double);
+    }
+
+    private static boolean isInteger(Object operand) {
+        return (operand instanceof Long);
+    }
+
+    private static boolean isReal(Object left, Object right) {
+        return (left instanceof Double) && (right instanceof Double);
+    }
+
+    private static boolean isInteger(Object left, Object right) {
+        return (left instanceof Long) && (right instanceof Long);
+    }
+
+    private static boolean isString(Object left, Object right) {
+        return (left instanceof String) && (right instanceof String);
+    }
 
     @Override
     public Object visit(SmtArrayVariable.SmtRealArrayVariable n, Void arg) {
@@ -789,26 +808,6 @@ public final class SmtExprEvaluator implements SmtExprVisitor<Object, Void> {
                                 + n.getOperator());
 
         }
-    }
-
-    private static boolean isReal(Object operand) {
-        return (operand instanceof Double);
-    }
-
-    private static boolean isInteger(Object operand) {
-        return (operand instanceof Long);
-    }
-
-    private static boolean isReal(Object left, Object right) {
-        return (left instanceof Double) && (right instanceof Double);
-    }
-
-    private static boolean isInteger(Object left, Object right) {
-        return (left instanceof Long) && (right instanceof Long);
-    }
-
-    private static boolean isString(Object left, Object right) {
-        return (left instanceof String) && (right instanceof String);
     }
 
     @Override

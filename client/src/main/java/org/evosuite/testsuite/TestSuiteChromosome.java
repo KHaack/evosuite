@@ -49,8 +49,39 @@ public final class TestSuiteChromosome
      */
     private static final List<SecondaryObjective<TestSuiteChromosome>>
             secondaryObjectives = new ArrayList<>();
-    private static int secondaryObjIndex = 0;
     private static final long serialVersionUID = 88380759969800800L;
+    private static int secondaryObjIndex = 0;
+
+    /**
+     * <p>
+     * Constructor for TestSuiteChromosome.
+     * </p>
+     */
+    public TestSuiteChromosome() {
+        super();
+    }
+
+    /**
+     * <p>
+     * Constructor for TestSuiteChromosome.
+     * </p>
+     *
+     * @param testChromosomeFactory a {@link org.evosuite.ga.ChromosomeFactory} object.
+     */
+    public TestSuiteChromosome(ChromosomeFactory<TestChromosome> testChromosomeFactory) {
+        super(testChromosomeFactory);
+    }
+
+    /**
+     * <p>
+     * Constructor for TestSuiteChromosome.
+     * </p>
+     *
+     * @param source a {@link org.evosuite.testsuite.TestSuiteChromosome} object.
+     */
+    protected TestSuiteChromosome(TestSuiteChromosome source) {
+        super(source);
+    }
 
     /**
      * Add an additional secondary objective to the end of the list of
@@ -100,38 +131,6 @@ public final class TestSuiteChromosome
     @Override
     public TestSuiteChromosome self() {
         return this;
-    }
-
-    /**
-     * <p>
-     * Constructor for TestSuiteChromosome.
-     * </p>
-     */
-    public TestSuiteChromosome() {
-        super();
-    }
-
-
-    /**
-     * <p>
-     * Constructor for TestSuiteChromosome.
-     * </p>
-     *
-     * @param testChromosomeFactory a {@link org.evosuite.ga.ChromosomeFactory} object.
-     */
-    public TestSuiteChromosome(ChromosomeFactory<TestChromosome> testChromosomeFactory) {
-        super(testChromosomeFactory);
-    }
-
-    /**
-     * <p>
-     * Constructor for TestSuiteChromosome.
-     * </p>
-     *
-     * @param source a {@link org.evosuite.testsuite.TestSuiteChromosome} object.
-     */
-    protected TestSuiteChromosome(TestSuiteChromosome source) {
-        super(source);
     }
 
     /**

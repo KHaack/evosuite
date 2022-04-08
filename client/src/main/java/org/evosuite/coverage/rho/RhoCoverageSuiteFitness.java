@@ -32,11 +32,9 @@ import java.util.*;
 public class RhoCoverageSuiteFitness extends TestSuiteFitnessFunction {
 
     private static final long serialVersionUID = 5460600509431741746L;
-
+    private final Set<Set<Integer>> coverage_matrix_generated_so_far = new LinkedHashSet<>();
     private int previous_number_of_ones = 0;
     private int previous_number_of_test_cases = 0;
-
-    private final Set<Set<Integer>> coverage_matrix_generated_so_far = new LinkedHashSet<>();
 
     @Override
     public double getFitness(TestSuiteChromosome suite) {

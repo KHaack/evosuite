@@ -30,107 +30,107 @@ import org.junit.*;
 
 public class InstrumentingAgent_exceptionsIntTest {
 
-	private final boolean replaceCalls = RuntimeSettings.mockJVMNonDeterminism;
+    private final boolean replaceCalls = RuntimeSettings.mockJVMNonDeterminism;
 
-	public static NullPointerException getNPE(){
-		return new NullPointerException("This shouldn't be mocked");
-	}
+    public static NullPointerException getNPE() {
+        return new NullPointerException("This shouldn't be mocked");
+    }
 
 
-	@BeforeClass
-	public static void initClass(){
-		InstrumentingAgent.initialize();
-	}
+    @BeforeClass
+    public static void initClass() {
+        InstrumentingAgent.initialize();
+    }
 
-	@Before
-	public void storeValues() {
-		RuntimeSettings.mockJVMNonDeterminism = true;
+    @Before
+    public void storeValues() {
+        RuntimeSettings.mockJVMNonDeterminism = true;
         MethodCallReplacementCache.resetSingleton();
-		Runtime.getInstance().resetRuntime();
-	}
+        Runtime.getInstance().resetRuntime();
+    }
 
-	@After
-	public void resetValues() {
-		RuntimeSettings.mockJVMNonDeterminism = replaceCalls;
-	}
-
-
-	@Test
-	public void testExceptions(){
-
-		Object obj = null;
-
-		try{
-			InstrumentingAgent.activate();
-			obj = new ExceptionHolder();
-		} finally {
-			InstrumentingAgent.deactivate();
-		}
-
-		try{
-			MockFramework.enable();
-			ExceptionHolder eh = (ExceptionHolder) obj;
-
-			Assert.assertFalse(eh.getNonMockedNPE() instanceof EvoSuiteMock);
-			Assert.assertTrue(eh.getMockedThrowable() instanceof EvoSuiteMock);
-
-			StackTraceElement[] traces = new MockThrowable().getStackTrace();
-
-			StackTraceElement[] a = eh.getTracesWhenCast();
-			Assert.assertEquals(traces[1], a[1]);
-			
-		} finally{
-			MockFramework.disable();
-		}
-	}
+    @After
+    public void resetValues() {
+        RuntimeSettings.mockJVMNonDeterminism = replaceCalls;
+    }
 
 
-	@Test
-	public void testStaticClassExceptions(){
+    @Test
+    public void testExceptions() {
 
-		Object obj = null;
+        Object obj = null;
 
-		try{
-			InstrumentingAgent.activate();			
-			obj = new ExceptionHolder.StaticPublicException();
-		} finally {
-			InstrumentingAgent.deactivate();
-		}
+        try {
+            InstrumentingAgent.activate();
+            obj = new ExceptionHolder();
+        } finally {
+            InstrumentingAgent.deactivate();
+        }
 
-		try{
-			MockFramework.enable();
+        try {
+            MockFramework.enable();
+            ExceptionHolder eh = (ExceptionHolder) obj;
 
-			Exception foo = (ExceptionHolder.StaticPublicException) obj;
-			Assert.assertTrue(foo instanceof EvoSuiteMock);		
-		} finally{
-			MockFramework.disable();
-		}
-	}
-	
-	@Test
-	public void testReplacementCallInSubClassOfException(){
-		Object obj = null;
+            Assert.assertFalse(eh.getNonMockedNPE() instanceof EvoSuiteMock);
+            Assert.assertTrue(eh.getMockedThrowable() instanceof EvoSuiteMock);
 
-		try{
-			InstrumentingAgent.activate();
-			obj = new ExceptionHolder();
-		} finally {
-			InstrumentingAgent.deactivate();
-		}
+            StackTraceElement[] traces = new MockThrowable().getStackTrace();
 
-		try{
-			MockFramework.enable();
-			
-			StackTraceElement[] traces = new MockThrowable().getStackTrace();
-			
-			ExceptionHolder eh = (ExceptionHolder) obj;
-			StackTraceElement[] b = eh.getTraces();
-			Assert.assertEquals(traces[1], b[1]);
+            StackTraceElement[] a = eh.getTracesWhenCast();
+            Assert.assertEquals(traces[1], a[1]);
 
-		} finally{
-			MockFramework.disable();
-		}
+        } finally {
+            MockFramework.disable();
+        }
+    }
 
-	}
-	
+
+    @Test
+    public void testStaticClassExceptions() {
+
+        Object obj = null;
+
+        try {
+            InstrumentingAgent.activate();
+            obj = new ExceptionHolder.StaticPublicException();
+        } finally {
+            InstrumentingAgent.deactivate();
+        }
+
+        try {
+            MockFramework.enable();
+
+            Exception foo = (ExceptionHolder.StaticPublicException) obj;
+            Assert.assertTrue(foo instanceof EvoSuiteMock);
+        } finally {
+            MockFramework.disable();
+        }
+    }
+
+    @Test
+    public void testReplacementCallInSubClassOfException() {
+        Object obj = null;
+
+        try {
+            InstrumentingAgent.activate();
+            obj = new ExceptionHolder();
+        } finally {
+            InstrumentingAgent.deactivate();
+        }
+
+        try {
+            MockFramework.enable();
+
+            StackTraceElement[] traces = new MockThrowable().getStackTrace();
+
+            ExceptionHolder eh = (ExceptionHolder) obj;
+            StackTraceElement[] b = eh.getTraces();
+            Assert.assertEquals(traces[1], b[1]);
+
+        } finally {
+            MockFramework.disable();
+        }
+
+    }
+
 }

@@ -21,10 +21,6 @@ package com.examples.with.different.packagename.ncs;
 
 public class Triangle {
 
-    public enum TriangleType {
-        INVALID, SCALENE, EQUILATERAL, ISOSCELES
-    }
-
     public static TriangleType exe(int a, int b, int c) {
         int trian;
         if (a <= 0 || b <= 0 || c <= 0)
@@ -58,6 +54,10 @@ public class Triangle {
         }
 
         return TriangleType.INVALID;
+    }
+
+    public enum TriangleType {
+        INVALID, SCALENE, EQUILATERAL, ISOSCELES
     }
 
 }

@@ -30,15 +30,14 @@ import java.util.Map;
 public class ClassTransformer {
 
     private static ClassTransformer instance = new ClassTransformer();
-
-    public static ClassTransformer getInstance() {
-        return instance;
-    }
-
     private final Map<String, Class<?>> instrumentedClasses = new HashMap<>();
 
     private ClassTransformer() {
         // private constructor
+    }
+
+    public static ClassTransformer getInstance() {
+        return instance;
     }
 
     public Class<?> instrumentClass(String fullyQualifiedTargetClass) {

@@ -69,44 +69,34 @@ public class SearchStatistics implements Listener<ClientStateInformation> {
     private static final Map<String, SearchStatistics> instances = new LinkedHashMap<>();
 
     private static final Logger logger = LoggerFactory.getLogger(SearchStatistics.class);
-
-    /**
-     * Map of client id to best individual received from that client so far
-     */
-    private TestSuiteChromosome bestIndividual = null;
-
-    /**
-     * Backend used to output the data
-     */
-    private StatisticsBackend backend = null;
-
     /**
      * Output variables and their values
      */
     private final Map<String, OutputVariable<?>> outputVariables = new TreeMap<>();
-
     /**
      * Variable factories to extract output variables from chromosomes
      */
     private final Map<String, ChromosomeOutputVariableFactory<?>> variableFactories = new TreeMap<>();
-
     /**
      * Variable factories to extract sequence variables
      */
     private final Map<String, SequenceOutputVariableFactory<?>> sequenceOutputVariableFactories = new TreeMap<>();
-
+    private final long startTime = System.currentTimeMillis();
+    private final List<List<TestGenerationResult>> results = new ArrayList<>();
+    /**
+     * Map of client id to best individual received from that client so far
+     */
+    private TestSuiteChromosome bestIndividual = null;
+    /**
+     * Backend used to output the data
+     */
+    private StatisticsBackend backend = null;
     /**
      * Keep track of how far EvoSuite progressed
      */
     private ClientState currentState = ClientState.INITIALIZATION;
-
     private long currentStateStarted = System.currentTimeMillis();
-
     private long searchStartTime = 0L;
-
-    private final long startTime = System.currentTimeMillis();
-
-    private final List<List<TestGenerationResult>> results = new ArrayList<>();
 
     private SearchStatistics() {
         backend = StatisticsBackendFactory.getStatisticsBackend(Properties.STATISTICS_BACKEND);

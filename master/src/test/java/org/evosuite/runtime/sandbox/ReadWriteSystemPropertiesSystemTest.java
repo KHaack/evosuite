@@ -47,15 +47,15 @@ public class ReadWriteSystemPropertiesSystemTest extends SystemTestBase {
 
     private final boolean DEFAULT_REPLACE_CALLS = Properties.REPLACE_CALLS;
 
-    @After
-    public void reset() {
-        Properties.REPLACE_CALLS = DEFAULT_REPLACE_CALLS;
-    }
-
     @BeforeClass
     public static void checkStatus() {
         //such property shouldn't exist
         Assert.assertNull(aProperty);
+    }
+
+    @After
+    public void reset() {
+        Properties.REPLACE_CALLS = DEFAULT_REPLACE_CALLS;
     }
 
     @Test

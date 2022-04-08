@@ -27,41 +27,14 @@ import org.junit.Test;
 import java.awt.image.BufferedImage;
 
 public class TestExample extends ParentTestExample {
-    public static class MockingBird {
-
-        public static MockingBird create(String song) {
-            return new MockingBird(song);
-        }
-
-        private final String song;
-
-        public MockingBird(String song) {
-            this.song = song;
-        }
-
-        public MockingBird doIt(String song) {
-            return this;
-        }
-
-        public boolean executeCmd(int x) {
-            if (song.equals("killSelf") && (x > 7)) {
-                System.out.println("It's a sin to kill a mockingbird.");
-                return true;
-            }
-            return false;
-        }
-
-        public void thisIsIt(String... args) {
-            if (args.length > 0) {
-                System.out.println(args);
-            }
-        }
-    }
-
     protected static Integer otherValue = 10;
 
     static {
         value = 4;
+    }
+
+    public TestExample() {
+        otherValue = 38;
     }
 
     public static BufferedImage createImage(final int width, final int height, final int color) {
@@ -110,10 +83,6 @@ public class TestExample extends ParentTestExample {
         return x + 5;
     }
 
-    public TestExample() {
-        otherValue = 38;
-    }
-
     @Before
     public void goForIt() {
         needed = "convert";
@@ -159,5 +128,36 @@ public class TestExample extends ParentTestExample {
     protected int doOtherCalc(int x) {
         // return doCalc(x, 5);
         return 6;
+    }
+
+    public static class MockingBird {
+
+        private final String song;
+
+        public MockingBird(String song) {
+            this.song = song;
+        }
+
+        public static MockingBird create(String song) {
+            return new MockingBird(song);
+        }
+
+        public MockingBird doIt(String song) {
+            return this;
+        }
+
+        public boolean executeCmd(int x) {
+            if (song.equals("killSelf") && (x > 7)) {
+                System.out.println("It's a sin to kill a mockingbird.");
+                return true;
+            }
+            return false;
+        }
+
+        public void thisIsIt(String... args) {
+            if (args.length > 0) {
+                System.out.println(args);
+            }
+        }
     }
 }

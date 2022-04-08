@@ -68,28 +68,23 @@ public class MultiCriteriaManager extends StructuralGoalManager implements Seria
     private static final Logger logger = LoggerFactory.getLogger(MultiCriteriaManager.class);
 
     private static final long serialVersionUID = 8161137239404885564L;
-
-    protected BranchFitnessGraph graph;
-
-    protected Map<BranchCoverageTestFitness, Set<TestFitnessFunction>> dependencies;
-
     /**
      * Maps branch IDs to the corresponding fitness function, only considering branches we want to
      * take.
      */
     protected final Map<Integer, TestFitnessFunction> branchCoverageTrueMap = new LinkedHashMap<>();
-
     /**
      * Maps branch IDs to the corresponding fitness function, only considering the branches we do
      * <em>not</em> want to take.
      */
     protected final Map<Integer, TestFitnessFunction> branchCoverageFalseMap = new LinkedHashMap<>();
-
     /**
      * Maps branch IDs to the corresponding fitness function, only considering root branches of
      * methods (i.e. the goal is to just invoke the method).
      */
     private final Map<String, TestFitnessFunction> branchlessMethodCoverageMap = new LinkedHashMap<>();
+    protected BranchFitnessGraph graph;
+    protected Map<BranchCoverageTestFitness, Set<TestFitnessFunction>> dependencies;
 
     /**
      * Creates a new {@code MultiCriteriaManager} with the given list of targets. The targets are

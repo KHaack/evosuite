@@ -21,10 +21,6 @@ package com.examples.with.different.packagename.test;
 
 public class AssignmentTest {
 
-    class Foo {
-        public int x = 0;
-    }
-
     public Foo foo = new Foo();
 
     public void foo(AssignmentTest other) {
@@ -41,5 +37,9 @@ public class AssignmentTest {
                 System.out.println("test");
             }
         }
+    }
+
+    class Foo {
+        public int x = 0;
     }
 }

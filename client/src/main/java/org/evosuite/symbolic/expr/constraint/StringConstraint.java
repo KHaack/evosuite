@@ -29,7 +29,12 @@ import org.slf4j.LoggerFactory;
 
 public final class StringConstraint extends Constraint<String> {
 
+    private static final long serialVersionUID = -3187023627540040535L;
     static Logger log = LoggerFactory.getLogger(StringConstraint.class);
+    private final StringComparison left;
+    private final Comparator cmp;
+    private final IntegerConstant right;
+
 
     public StringConstraint(StringComparison left, Comparator comp, IntegerConstant right) {
         super();
@@ -41,13 +46,6 @@ public final class StringConstraint extends Constraint<String> {
             throw new ConstraintTooLongException(getSize());
         }
     }
-
-    private final StringComparison left;
-    private final Comparator cmp;
-    private final IntegerConstant right;
-
-
-    private static final long serialVersionUID = -3187023627540040535L;
 
     @Override
     public Comparator getComparator() {

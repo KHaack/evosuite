@@ -30,11 +30,6 @@ import java.time.temporal.TemporalAccessor;
  */
 public class MockLocalDateTime implements StaticReplacementMock {
 
-    @Override
-    public String getMockedClassName() {
-        return LocalDateTime.class.getName();
-    }
-
     public static LocalDateTime now() {
         return now(MockClock.systemDefaultZone());
     }
@@ -63,16 +58,13 @@ public class MockLocalDateTime implements StaticReplacementMock {
         return LocalDateTime.of(year, month, dayOfMonth, hour, minute);
     }
 
-
     public static LocalDateTime of(int year, int month, int dayOfMonth, int hour, int minute, int second) {
         return LocalDateTime.of(year, month, dayOfMonth, hour, minute, second);
     }
 
-
     public static LocalDateTime of(int year, int month, int dayOfMonth, int hour, int minute, int second, int nanoOfSecond) {
         return LocalDateTime.of(year, month, dayOfMonth, hour, minute, second, nanoOfSecond);
     }
-
 
     public static LocalDateTime of(LocalDate date, LocalTime time) {
         return LocalDateTime.of(date, time);
@@ -96,5 +88,10 @@ public class MockLocalDateTime implements StaticReplacementMock {
 
     public static LocalDateTime parse(CharSequence text, DateTimeFormatter formatter) {
         return LocalDateTime.parse(text, formatter);
+    }
+
+    @Override
+    public String getMockedClassName() {
+        return LocalDateTime.class.getName();
     }
 }

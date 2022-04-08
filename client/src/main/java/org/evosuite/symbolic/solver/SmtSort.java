@@ -25,11 +25,11 @@ public enum SmtSort {
     ARRAY("Array"),
     STRING("String");
 
+    private final String name;
+
     SmtSort(String name) {
         this.name = name;
     }
-
-    private final String name;
 
     public String getName() {
         return this.name;

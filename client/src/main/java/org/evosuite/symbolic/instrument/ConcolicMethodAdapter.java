@@ -76,11 +76,9 @@ public final class ConcolicMethodAdapter extends GeneratorAdapter {
     private final String className;
     private final String methName;
     private final String methDescription;
-
-    private int branchCounter = 1;
-
     private final OperandStack stack;
     private final Set<Label> exceptionHandlers = new HashSet<>();
+    private int branchCounter = 1;
 
     /**
      * Constructor

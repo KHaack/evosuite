@@ -107,6 +107,17 @@ public class FieldStatement extends AbstractStatement {
     }
 
     /**
+     * <p>
+     * Setter for the field <code>source</code>.
+     * </p>
+     *
+     * @param source a {@link org.evosuite.testcase.variable.VariableReference} object.
+     */
+    public void setSource(VariableReference source) {
+        this.source = source;
+    }
+
+    /**
      * Try to replace source of field with all possible choices
      *
      * @param test
@@ -135,17 +146,6 @@ public class FieldStatement extends AbstractStatement {
         }
 
         return false;
-    }
-
-    /**
-     * <p>
-     * Setter for the field <code>source</code>.
-     * </p>
-     *
-     * @param source a {@link org.evosuite.testcase.variable.VariableReference} object.
-     */
-    public void setSource(VariableReference source) {
-        this.source = source;
     }
 
     @Override

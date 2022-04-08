@@ -32,18 +32,16 @@ import java.util.Collection;
 
 final class RealAVM extends VariableAVM {
 
-    public RealAVM(RealVariable realVar, Collection<Constraint<?>> cnstr, long start_time, long timeout) {
-        super(cnstr, start_time, timeout);
-        this.realVar = realVar;
-    }
-
     static Logger log = LoggerFactory.getLogger(RealAVM.class);
-
+    private final RealVariable realVar;
     private double checkpointedConcreteValue;
 
     private double checkpointedDistance = Double.MAX_VALUE;
 
-    private final RealVariable realVar;
+    public RealAVM(RealVariable realVar, Collection<Constraint<?>> cnstr, long start_time, long timeout) {
+        super(cnstr, start_time, timeout);
+        this.realVar = realVar;
+    }
 
     public boolean applyAVM() throws SolverTimeoutException {
         boolean improvement = false;

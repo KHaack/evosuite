@@ -83,6 +83,79 @@ public abstract class TestGenerationAction extends AbstractHandler {
     //@Override
     //public abstract void run(IAction action);
 
+    /**
+     * This is tricky because the evosuite jar in the deployed plugin is
+     * contained in the plugin jar, but for the client process we need it
+     * explicitly on the classpath. Hence, if we see that the evosuite jar is in
+     * another jar, we extract it to a temporary location
+     *
+     * @return Location of the jar file
+     */
+    public static String getEvoSuiteJar() {
+        if (EVOSUITE_CP != null)
+            return EVOSUITE_CP;
+
+        Bundle bundle = Platform.getBundle(Activator.EVOSUITE_CORE_BUNDLE);
+        URL url = bundle.getEntry(Activator.EVOSUITE_JAR);
+
+        try {
+            URL evosuiteLib = FileLocator.resolve(url);
+            System.out.println("Evosuite JAR is at " + evosuiteLib.getPath());
+            if (evosuiteLib.getPath().startsWith("file")) {
+                System.out.println("Need to extract jar");
+                EVOSUITE_CP = setupJar(evosuiteLib);
+            } else {
+                System.out.println("Don't need to extract jar");
+                EVOSUITE_CP = evosuiteLib.getFile();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return EVOSUITE_CP;
+    }
+
+    /**
+     * Performs the actual extraction of the jar file to a temporary directory
+     *
+     * @param evosuiteLib
+     * @return
+     * @throws IOException
+     */
+    protected static String setupJar(URL evosuiteLib) throws IOException {
+        String tmpDir = System.getProperty("java.io.tmpdir");
+        String jarName = tmpDir + File.separator + Activator.EVOSUITE_JAR;
+        System.out.println("Copying jar file to " + jarName);
+        File tempJar = new File(jarName);
+        writeFile(evosuiteLib.openStream(), new File(jarName));
+        return tempJar.getPath();
+    }
+
+    /**
+     * Helper function to copy files
+     *
+     * @param in
+     * @param dest
+     */
+    private static void writeFile(InputStream in, File dest) {
+        try {
+            dest.deleteOnExit();
+            System.out.println("Creating file: " + dest.getPath());
+            if (!dest.exists()) {
+                OutputStream out = new FileOutputStream(dest);
+                byte[] buf = new byte[1024];
+                int len;
+                while ((len = in.read(buf)) > 0) {
+                    out.write(buf, 0, len);
+                }
+                out.close();
+            }
+            in.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public abstract Object execute(ExecutionEvent event) throws ExecutionException;
 
@@ -361,79 +434,6 @@ public abstract class TestGenerationAction extends AbstractHandler {
             e.printStackTrace();
         }
 
-    }
-
-    /**
-     * This is tricky because the evosuite jar in the deployed plugin is
-     * contained in the plugin jar, but for the client process we need it
-     * explicitly on the classpath. Hence, if we see that the evosuite jar is in
-     * another jar, we extract it to a temporary location
-     *
-     * @return Location of the jar file
-     */
-    public static String getEvoSuiteJar() {
-        if (EVOSUITE_CP != null)
-            return EVOSUITE_CP;
-
-        Bundle bundle = Platform.getBundle(Activator.EVOSUITE_CORE_BUNDLE);
-        URL url = bundle.getEntry(Activator.EVOSUITE_JAR);
-
-        try {
-            URL evosuiteLib = FileLocator.resolve(url);
-            System.out.println("Evosuite JAR is at " + evosuiteLib.getPath());
-            if (evosuiteLib.getPath().startsWith("file")) {
-                System.out.println("Need to extract jar");
-                EVOSUITE_CP = setupJar(evosuiteLib);
-            } else {
-                System.out.println("Don't need to extract jar");
-                EVOSUITE_CP = evosuiteLib.getFile();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return EVOSUITE_CP;
-    }
-
-    /**
-     * Performs the actual extraction of the jar file to a temporary directory
-     *
-     * @param evosuiteLib
-     * @return
-     * @throws IOException
-     */
-    protected static String setupJar(URL evosuiteLib) throws IOException {
-        String tmpDir = System.getProperty("java.io.tmpdir");
-        String jarName = tmpDir + File.separator + Activator.EVOSUITE_JAR;
-        System.out.println("Copying jar file to " + jarName);
-        File tempJar = new File(jarName);
-        writeFile(evosuiteLib.openStream(), new File(jarName));
-        return tempJar.getPath();
-    }
-
-    /**
-     * Helper function to copy files
-     *
-     * @param in
-     * @param dest
-     */
-    private static void writeFile(InputStream in, File dest) {
-        try {
-            dest.deleteOnExit();
-            System.out.println("Creating file: " + dest.getPath());
-            if (!dest.exists()) {
-                OutputStream out = new FileOutputStream(dest);
-                byte[] buf = new byte[1024];
-                int len;
-                while ((len = in.read(buf)) > 0) {
-                    out.write(buf, 0, len);
-                }
-                out.close();
-            }
-            in.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     /**

@@ -56,6 +56,16 @@ public class ClientServices<T extends Chromosome<T>> {
         return (ClientServices<T>) instance;
     }
 
+    /**
+     * Shorthand for the commonly used trackOutputVariable method
+     *
+     * @param outputVariable The runtime variable to track
+     * @param value          The value of the runtime variable
+     */
+    public static void track(RuntimeVariable outputVariable, Object value) {
+        ClientServices.getInstance().getClientNode().trackOutputVariable(outputVariable, value);
+    }
+
     public boolean registerServices(String identifier) {
 
         UtilsRMI.ensureRegistryOnLoopbackAddress();
@@ -107,15 +117,5 @@ public class ClientServices<T extends Chromosome<T>> {
             }
             clientNode = new DummyClientNodeImpl<>();
         }
-    }
-
-    /**
-     * Shorthand for the commonly used trackOutputVariable method
-     *
-     * @param outputVariable The runtime variable to track
-     * @param value          The value of the runtime variable
-     */
-    public static void track(RuntimeVariable outputVariable, Object value) {
-        ClientServices.getInstance().getClientNode().trackOutputVariable(outputVariable, value);
     }
 }

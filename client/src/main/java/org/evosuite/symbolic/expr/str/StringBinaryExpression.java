@@ -40,10 +40,8 @@ import java.util.Set;
 public final class StringBinaryExpression extends AbstractExpression<String> implements
         StringValue, BinaryExpression<String> {
 
-    private static final long serialVersionUID = -986689442489666986L;
-
     protected static final Logger log = LoggerFactory.getLogger(StringBinaryExpression.class);
-
+    private static final long serialVersionUID = -986689442489666986L;
     private final Expression<String> left;
     private final Operator op;
     private final Expression<?> right;

@@ -36,20 +36,16 @@ import java.util.Map;
  * @author gordon
  */
 public class MethodCallReplacement {
+    private static final Logger logger = LoggerFactory.getLogger(MethodCallReplacement.class);
     private final String className;
-
     private final String methodName;
     private final String desc;
     private final int origOpcode;
-
     private final String replacementClassName;
     private final String replacementMethodName;
     private final String replacementDesc;
-
     private final boolean popCallee;
     private final boolean popUninitialisedReference;
-
-    private static final Logger logger = LoggerFactory.getLogger(MethodCallReplacement.class);
 
     /**
      * @param className

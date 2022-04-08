@@ -34,16 +34,13 @@ import java.util.Arrays;
 import java.util.List;
 
 public final class Capturer {
-    private static CaptureLog currentLog;
-    private static boolean isCaptureStarted = false;
+    public static final String DEFAULT_SAVE_LOC = "captured.log";
     private static final boolean isShutdownHookAdded = false;
     private static final ArrayList<CaptureLog> logs = new ArrayList<>();
-
-    public static final String DEFAULT_SAVE_LOC = "captured.log";
-
     private static final ArrayList<String[]> classesToBeObserved = new ArrayList<>();
-
     private static final transient Logger logger = LoggerFactory.getLogger(Capturer.class);
+    private static CaptureLog currentLog;
+    private static boolean isCaptureStarted = false;
 
     /*
      * TODO this needs refactoring.

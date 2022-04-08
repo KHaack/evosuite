@@ -46,21 +46,21 @@ public abstract class ExecutableChromosome<E extends ExecutableChromosome<E>> ex
     }
 
     /**
-     * <p>Setter for the field <code>lastExecutionResult</code>.</p>
-     *
-     * @param lastExecutionResult a {@link org.evosuite.testcase.execution.ExecutionResult} object.
-     */
-    public void setLastExecutionResult(ExecutionResult lastExecutionResult) {
-        this.lastExecutionResult = lastExecutionResult;
-    }
-
-    /**
      * <p>Getter for the field <code>lastExecutionResult</code>.</p>
      *
      * @return a {@link org.evosuite.testcase.execution.ExecutionResult} object.
      */
     public ExecutionResult getLastExecutionResult() {
         return lastExecutionResult;
+    }
+
+    /**
+     * <p>Setter for the field <code>lastExecutionResult</code>.</p>
+     *
+     * @param lastExecutionResult a {@link org.evosuite.testcase.execution.ExecutionResult} object.
+     */
+    public void setLastExecutionResult(ExecutionResult lastExecutionResult) {
+        this.lastExecutionResult = lastExecutionResult;
     }
 
     /**

@@ -106,18 +106,15 @@ public class ContinuousTestGeneration {
      * The complete, used classpath
      */
     private final String projectClassPath;
-
-    private CtgConfiguration configuration;
-
     /**
      * An optional folder where to make a copy of the generated tests
      */
     private final String exportFolder;
-
     /**
      * Specify which CUT to use. If {@code null} then use everything in target/prefix
      */
     private final String[] cuts;
+    private CtgConfiguration configuration;
 
     public ContinuousTestGeneration(String target, String projectClassPath, String prefix, CtgConfiguration conf, String[] cuts,
                                     String exportFolder) {
@@ -128,6 +125,35 @@ public class ContinuousTestGeneration {
         this.configuration = conf;
         this.cuts = cuts;
         this.exportFolder = exportFolder;
+    }
+
+    public static File resolveExportFolder(String baseFolder, String exportFolder) {
+
+        Path exp = Paths.get(exportFolder);
+        if (exp.isAbsolute()) {
+            return exp.toFile();
+        } else {
+            return Paths.get(baseFolder, exportFolder).toAbsolutePath().toFile();
+        }
+    }
+
+    public static boolean exportToFolder(String baseFolder, String exportFolder) throws IOException {
+        File basedir = new File(baseFolder);
+        File evoFolder = StorageManager.getBestTestFolder(basedir);
+
+        File[] children = evoFolder.listFiles();
+        boolean isEmpty = children == null || children.length == 0;
+
+        if (isEmpty) {
+            return false;
+        }
+
+        File target = resolveExportFolder(baseFolder, exportFolder);
+
+
+        //FileUtils.copyDirectory(evoFolder, target); //This did not overwrite old files!
+        FileIOUtils.copyDirectoryAndOverwriteFilesIfNeeded(evoFolder, target);
+        return true;
     }
 
     /**
@@ -195,36 +221,6 @@ public class ContinuousTestGeneration {
         }
 
         return description;
-    }
-
-    public static File resolveExportFolder(String baseFolder, String exportFolder) {
-
-        Path exp = Paths.get(exportFolder);
-        if (exp.isAbsolute()) {
-            return exp.toFile();
-        } else {
-            return Paths.get(baseFolder, exportFolder).toAbsolutePath().toFile();
-        }
-    }
-
-
-    public static boolean exportToFolder(String baseFolder, String exportFolder) throws IOException {
-        File basedir = new File(baseFolder);
-        File evoFolder = StorageManager.getBestTestFolder(basedir);
-
-        File[] children = evoFolder.listFiles();
-        boolean isEmpty = children == null || children.length == 0;
-
-        if (isEmpty) {
-            return false;
-        }
-
-        File target = resolveExportFolder(baseFolder, exportFolder);
-
-
-        //FileUtils.copyDirectory(evoFolder, target); //This did not overwrite old files!
-        FileIOUtils.copyDirectoryAndOverwriteFilesIfNeeded(evoFolder, target);
-        return true;
     }
 
     /**

@@ -42,10 +42,8 @@ public final class FieldRegistry {
     private static final Set<Integer> registeredObjects = new LinkedHashSet<>();
 
     private static final Logger logger = LoggerFactory.getLogger(FieldRegistry.class);
-
-    private static int captureId = Integer.MAX_VALUE;
-
     public static ClassLoader carvingClassLoader = null;
+    private static int captureId = Integer.MAX_VALUE;
 
     private FieldRegistry() {
     }

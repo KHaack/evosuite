@@ -39,16 +39,13 @@ import java.util.Set;
 public class StatementCoverageTestFitness extends TestFitnessFunction {
 
     private static final long serialVersionUID = 5222436175279169394L;
-
+    protected final List<BranchCoverageTestFitness> branchFitnesses = new ArrayList<>();
     /**
      * Target statement
      */
     private final String className;
     private final String methodName;
     private final Integer instructionID;
-
-    protected final List<BranchCoverageTestFitness> branchFitnesses = new ArrayList<>();
-
     protected transient BytecodeInstruction goalInstruction;
 
     /**

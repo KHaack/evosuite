@@ -30,16 +30,14 @@ import java.io.OutputStream;
 
 public class ProcessLauncher {
 
+    private static final Logger logger = LoggerFactory.getLogger(ProcessLauncher.class);
     private final OutputStream outAndErr;
-
     private final InputStream input;
 
     public ProcessLauncher(OutputStream outAndErr, InputStream input) {
         this.outAndErr = outAndErr;
         this.input = input;
     }
-
-    private static final Logger logger = LoggerFactory.getLogger(ProcessLauncher.class);
 
     public int launchNewProcess(String parsedCommand, int timeout) throws IOException, ProcessTimeoutException {
         int ret_code = launchNewProcess(null, parsedCommand, timeout);

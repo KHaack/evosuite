@@ -35,11 +35,11 @@ import static org.junit.Assert.assertTrue;
 
 public class BIMutatedMethodSeedingTestSuiteChromosomeFactorySystemTest extends SystemTestBase {
 
+    private final static double SEED_PROBABILITY = Properties.SEED_PROBABILITY;
+    private final static int SEED_MUTATIONS = Properties.SEED_MUTATIONS;
     ChromosomeSampleFactory defaultFactory = new ChromosomeSampleFactory();
     TestSuiteChromosome bestIndividual;
     GeneticAlgorithm<TestSuiteChromosome> ga;
-    private final static double SEED_PROBABILITY = Properties.SEED_PROBABILITY;
-    private final static int SEED_MUTATIONS = Properties.SEED_MUTATIONS;
 
     @Before
     public void setup() {

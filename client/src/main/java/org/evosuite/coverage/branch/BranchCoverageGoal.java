@@ -39,31 +39,22 @@ import java.io.Serializable;
 public class BranchCoverageGoal implements Serializable, Comparable<BranchCoverageGoal> {
 
     private static final long serialVersionUID = 2962922303111452419L;
-
-    /**
-     * The branch to be covered. If set to {@code null} it means we want to cover the root branch
-     * of the given method, i.e., just call the method.
-     */
-    private transient Branch branch;
-
     /**
      * Whether to make the branch instruction jump.
      */
     private final boolean value;
     private final String className;
     private final String methodName;
-
-
     /**
      * The line number in the source code. This information is stored in the bytecode if the
      * code was compiled in debug mode. If no info, we would get a negative value (e.g., -1) here.
      */
     private final int lineNumber;
-
-    public int getId() {
-        return branch.getActualBranchId();
-
-    }
+    /**
+     * The branch to be covered. If set to {@code null} it means we want to cover the root branch
+     * of the given method, i.e., just call the method.
+     */
+    private transient Branch branch;
 
     /**
      * Can be used to create an arbitrary {@code BranchCoverageGoal} trying to cover the
@@ -162,6 +153,11 @@ public class BranchCoverageGoal implements Serializable, Comparable<BranchCovera
         this.methodName = methodName;
         lineNumber = BytecodeInstructionPool.getInstance(TestGenerationContext.getInstance().getClassLoaderForSUT())
                 .getFirstLineNumberOfMethod(className, methodName);
+    }
+
+    public int getId() {
+        return branch.getActualBranchId();
+
     }
 
     /**

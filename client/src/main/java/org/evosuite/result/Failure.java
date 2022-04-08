@@ -34,16 +34,11 @@ public class Failure implements Serializable {
     private static final long serialVersionUID = -6308624160029658643L;
 
     private final String className;
-
-    private String methodName;
-
-    private String exceptionName;
-
-    private String exceptionMessage;
-
-    private StackTraceElement[] stackTrace;
-
     private final int lineNo;
+    private String methodName;
+    private String exceptionName;
+    private String exceptionMessage;
+    private StackTraceElement[] stackTrace;
 
     public Failure(ContractViolation violation) {
         this.className = Properties.TARGET_CLASS;

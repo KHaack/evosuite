@@ -45,9 +45,8 @@ public final class SmtModelParser extends ResultParser {
     public static final String BLANK_SPACE_TOKEN = " ";
     public static final String LEFT_PARENTHESIS_TOKEN = "(";
     public static final String RIGHT_PARENTHESIS_TOKEN = ")";
-
-    private final Map<String, Object> initialValues;
     static Logger logger = LoggerFactory.getLogger(SmtModelParser.class);
+    private final Map<String, Object> initialValues;
 
     public SmtModelParser(Map<String, Object> initialValues) {
         this.initialValues = initialValues;
@@ -55,6 +54,189 @@ public final class SmtModelParser extends ResultParser {
 
     public SmtModelParser() {
         this.initialValues = null;
+    }
+
+    private static String consumeTokens(StringTokenizer tokenizer, String... tokensToConsume) {
+        List<String> tokenList = Arrays.asList(tokensToConsume);
+        while (tokenizer.hasMoreTokens()) {
+            String token = tokenizer.nextToken();
+            if (!tokenList.contains(token)) {
+                return token;
+            }
+        }
+        // reached end of string
+        return null;
+    }
+
+    private static String decode(String encodedString) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < encodedString.length(); i++) {
+            char c = encodedString.charAt(i);
+            if (c == '\\') {
+                if (i < encodedString.length() - 1) {
+                    switch (encodedString.charAt(i + 1)) {
+                        case 'b': {
+                            builder.append('\b');
+                            i++;
+                            break;
+                        }
+                        case 't': {
+                            builder.append('\t');
+                            i++;
+                            break;
+                        }
+                        case 'n': {
+                            builder.append('\n');
+                            i++;
+                            break;
+                        }
+                        case '\\': {
+                            builder.append('\\');
+                            i++;
+                            break;
+                        }
+                        case 'x': {
+                            String hexString = encodedString.substring(i + 2, i + 4);
+                            int decimal = Integer.parseInt(hexString, 16);
+                            builder.append((char) decimal);
+                            i = i + 3;
+                            break;
+                        }
+                        default: {
+                            builder.append(c);
+                        }
+                    }
+                }
+
+            } else {
+                builder.append(c);
+            }
+        }
+        return builder.toString();
+
+    }
+
+    private static Double parseRealValue(StringTokenizer tokenizer) {
+        String token = consumeTokens(tokenizer, NEW_LINE_TOKEN, BLANK_SPACE_TOKEN);
+
+        Double value;
+        if (!token.equals(LEFT_PARENTHESIS_TOKEN)) {
+            value = Double.parseDouble(token);
+
+        } else {
+            token = consumeTokens(tokenizer, NEW_LINE_TOKEN, BLANK_SPACE_TOKEN);
+            if (token.equals(MINUS_TOKEN)) {
+
+                token = consumeTokens(tokenizer, NEW_LINE_TOKEN, BLANK_SPACE_TOKEN);
+                if (token.equals(LEFT_PARENTHESIS_TOKEN)) {
+                    token = consumeTokens(tokenizer, NEW_LINE_TOKEN, BLANK_SPACE_TOKEN);
+                    checkExpectedToken(SLASH_TOKEN, token);
+
+                    token = consumeTokens(tokenizer, NEW_LINE_TOKEN, BLANK_SPACE_TOKEN);
+                    String numeratorStr = token;
+
+                    token = consumeTokens(tokenizer, NEW_LINE_TOKEN, BLANK_SPACE_TOKEN);
+                    String denominatorStr = token;
+
+                    value = parseRational(true, numeratorStr, denominatorStr);
+
+                    token = consumeTokens(tokenizer, NEW_LINE_TOKEN, BLANK_SPACE_TOKEN);
+                    checkExpectedToken(RIGHT_PARENTHESIS_TOKEN, token);
+
+                    token = consumeTokens(tokenizer, NEW_LINE_TOKEN, BLANK_SPACE_TOKEN);
+                    checkExpectedToken(RIGHT_PARENTHESIS_TOKEN, token);
+                } else {
+                    String absoluteValueStr = token;
+                    value = Double.parseDouble(MINUS_TOKEN + absoluteValueStr);
+
+                    token = consumeTokens(tokenizer, NEW_LINE_TOKEN, BLANK_SPACE_TOKEN);
+                    checkExpectedToken(RIGHT_PARENTHESIS_TOKEN, token);
+                }
+            } else {
+
+                if (token.equals(SLASH_TOKEN)) {
+
+                    token = consumeTokens(tokenizer, NEW_LINE_TOKEN, BLANK_SPACE_TOKEN);
+
+                    String numeratorStr;
+                    boolean neg;
+                    if (token.equals(LEFT_PARENTHESIS_TOKEN)) {
+
+                        token = consumeTokens(tokenizer, NEW_LINE_TOKEN, BLANK_SPACE_TOKEN);
+                        checkExpectedToken(MINUS_TOKEN, token);
+
+                        neg = true;
+
+                        token = consumeTokens(tokenizer, NEW_LINE_TOKEN, BLANK_SPACE_TOKEN);
+                        numeratorStr = token;
+
+                        token = consumeTokens(tokenizer, NEW_LINE_TOKEN, BLANK_SPACE_TOKEN);
+                        checkExpectedToken(RIGHT_PARENTHESIS_TOKEN, token);
+                    } else {
+                        neg = false;
+                        numeratorStr = token;
+                    }
+
+                    token = consumeTokens(tokenizer, NEW_LINE_TOKEN, BLANK_SPACE_TOKEN);
+
+                    String denominatorStr = token;
+                    value = parseRational(neg, numeratorStr, denominatorStr);
+
+                    token = consumeTokens(tokenizer, NEW_LINE_TOKEN, BLANK_SPACE_TOKEN);
+                    checkExpectedToken(RIGHT_PARENTHESIS_TOKEN, token);
+                } else {
+
+                    value = Double.parseDouble(token);
+                }
+            }
+        }
+
+        return value;
+    }
+
+    private static Long parseIntegerValue(StringTokenizer tokenizer) {
+        String token = consumeTokens(tokenizer, NEW_LINE_TOKEN, BLANK_SPACE_TOKEN);
+        boolean neg = false;
+        String integerValueStr;
+        if (token.equals(LEFT_PARENTHESIS_TOKEN)) {
+            neg = true;
+            token = consumeTokens(tokenizer, NEW_LINE_TOKEN, BLANK_SPACE_TOKEN);
+
+            checkExpectedToken(MINUS_TOKEN, token);
+            token = consumeTokens(tokenizer, NEW_LINE_TOKEN, BLANK_SPACE_TOKEN);
+
+            integerValueStr = token;
+        } else {
+            integerValueStr = token;
+        }
+        Long value;
+        if (neg) {
+            String absoluteIntegerValue = integerValueStr;
+            value = Long.parseLong(MINUS_TOKEN + absoluteIntegerValue);
+        } else {
+            value = Long.parseLong(integerValueStr);
+        }
+        if (neg) {
+            token = consumeTokens(tokenizer, NEW_LINE_TOKEN, BLANK_SPACE_TOKEN);
+            checkExpectedToken(RIGHT_PARENTHESIS_TOKEN, token);
+        }
+
+        return value;
+    }
+
+    private static void checkExpectedToken(String expectedToken, String actualToken) {
+        if (!actualToken.equals(expectedToken)) {
+            throw new IllegalArgumentException(
+                    "Malformed solver solution. Expected \"" + expectedToken + "\" but found \"" + actualToken + "\"");
+        }
+    }
+
+    private static void addMissingValues(Map<String, Object> initialValues, Map<String, Object> solution) {
+        for (String otherVarName : initialValues.keySet()) {
+            if (!solution.containsKey(otherVarName)) {
+                solution.put(otherVarName, initialValues.get(otherVarName));
+            }
+        }
     }
 
     public SolverResult parse(String solverResultStr)
@@ -314,18 +496,6 @@ public final class SmtModelParser extends ResultParser {
         );
     }
 
-    private static String consumeTokens(StringTokenizer tokenizer, String... tokensToConsume) {
-        List<String> tokenList = Arrays.asList(tokensToConsume);
-        while (tokenizer.hasMoreTokens()) {
-            String token = tokenizer.nextToken();
-            if (!tokenList.contains(token)) {
-                return token;
-            }
-        }
-        // reached end of string
-        return null;
-    }
-
     private String parseStringValue(StringTokenizer tokenizer) {
         String token;
         token = consumeTokens(tokenizer, NEW_LINE_TOKEN, BLANK_SPACE_TOKEN);
@@ -351,178 +521,7 @@ public final class SmtModelParser extends ResultParser {
         return string;
     }
 
-    private static String decode(String encodedString) {
-        StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < encodedString.length(); i++) {
-            char c = encodedString.charAt(i);
-            if (c == '\\') {
-                if (i < encodedString.length() - 1) {
-                    switch (encodedString.charAt(i + 1)) {
-                        case 'b': {
-                            builder.append('\b');
-                            i++;
-                            break;
-                        }
-                        case 't': {
-                            builder.append('\t');
-                            i++;
-                            break;
-                        }
-                        case 'n': {
-                            builder.append('\n');
-                            i++;
-                            break;
-                        }
-                        case '\\': {
-                            builder.append('\\');
-                            i++;
-                            break;
-                        }
-                        case 'x': {
-                            String hexString = encodedString.substring(i + 2, i + 4);
-                            int decimal = Integer.parseInt(hexString, 16);
-                            builder.append((char) decimal);
-                            i = i + 3;
-                            break;
-                        }
-                        default: {
-                            builder.append(c);
-                        }
-                    }
-                }
-
-            } else {
-                builder.append(c);
-            }
-        }
-        return builder.toString();
-
-    }
-
     private String removeQuotes(String stringWithQuotes) {
         return stringWithQuotes.substring(1, stringWithQuotes.length() - 1);
-    }
-
-    private static Double parseRealValue(StringTokenizer tokenizer) {
-        String token = consumeTokens(tokenizer, NEW_LINE_TOKEN, BLANK_SPACE_TOKEN);
-
-        Double value;
-        if (!token.equals(LEFT_PARENTHESIS_TOKEN)) {
-            value = Double.parseDouble(token);
-
-        } else {
-            token = consumeTokens(tokenizer, NEW_LINE_TOKEN, BLANK_SPACE_TOKEN);
-            if (token.equals(MINUS_TOKEN)) {
-
-                token = consumeTokens(tokenizer, NEW_LINE_TOKEN, BLANK_SPACE_TOKEN);
-                if (token.equals(LEFT_PARENTHESIS_TOKEN)) {
-                    token = consumeTokens(tokenizer, NEW_LINE_TOKEN, BLANK_SPACE_TOKEN);
-                    checkExpectedToken(SLASH_TOKEN, token);
-
-                    token = consumeTokens(tokenizer, NEW_LINE_TOKEN, BLANK_SPACE_TOKEN);
-                    String numeratorStr = token;
-
-                    token = consumeTokens(tokenizer, NEW_LINE_TOKEN, BLANK_SPACE_TOKEN);
-                    String denominatorStr = token;
-
-                    value = parseRational(true, numeratorStr, denominatorStr);
-
-                    token = consumeTokens(tokenizer, NEW_LINE_TOKEN, BLANK_SPACE_TOKEN);
-                    checkExpectedToken(RIGHT_PARENTHESIS_TOKEN, token);
-
-                    token = consumeTokens(tokenizer, NEW_LINE_TOKEN, BLANK_SPACE_TOKEN);
-                    checkExpectedToken(RIGHT_PARENTHESIS_TOKEN, token);
-                } else {
-                    String absoluteValueStr = token;
-                    value = Double.parseDouble(MINUS_TOKEN + absoluteValueStr);
-
-                    token = consumeTokens(tokenizer, NEW_LINE_TOKEN, BLANK_SPACE_TOKEN);
-                    checkExpectedToken(RIGHT_PARENTHESIS_TOKEN, token);
-                }
-            } else {
-
-                if (token.equals(SLASH_TOKEN)) {
-
-                    token = consumeTokens(tokenizer, NEW_LINE_TOKEN, BLANK_SPACE_TOKEN);
-
-                    String numeratorStr;
-                    boolean neg;
-                    if (token.equals(LEFT_PARENTHESIS_TOKEN)) {
-
-                        token = consumeTokens(tokenizer, NEW_LINE_TOKEN, BLANK_SPACE_TOKEN);
-                        checkExpectedToken(MINUS_TOKEN, token);
-
-                        neg = true;
-
-                        token = consumeTokens(tokenizer, NEW_LINE_TOKEN, BLANK_SPACE_TOKEN);
-                        numeratorStr = token;
-
-                        token = consumeTokens(tokenizer, NEW_LINE_TOKEN, BLANK_SPACE_TOKEN);
-                        checkExpectedToken(RIGHT_PARENTHESIS_TOKEN, token);
-                    } else {
-                        neg = false;
-                        numeratorStr = token;
-                    }
-
-                    token = consumeTokens(tokenizer, NEW_LINE_TOKEN, BLANK_SPACE_TOKEN);
-
-                    String denominatorStr = token;
-                    value = parseRational(neg, numeratorStr, denominatorStr);
-
-                    token = consumeTokens(tokenizer, NEW_LINE_TOKEN, BLANK_SPACE_TOKEN);
-                    checkExpectedToken(RIGHT_PARENTHESIS_TOKEN, token);
-                } else {
-
-                    value = Double.parseDouble(token);
-                }
-            }
-        }
-
-        return value;
-    }
-
-    private static Long parseIntegerValue(StringTokenizer tokenizer) {
-        String token = consumeTokens(tokenizer, NEW_LINE_TOKEN, BLANK_SPACE_TOKEN);
-        boolean neg = false;
-        String integerValueStr;
-        if (token.equals(LEFT_PARENTHESIS_TOKEN)) {
-            neg = true;
-            token = consumeTokens(tokenizer, NEW_LINE_TOKEN, BLANK_SPACE_TOKEN);
-
-            checkExpectedToken(MINUS_TOKEN, token);
-            token = consumeTokens(tokenizer, NEW_LINE_TOKEN, BLANK_SPACE_TOKEN);
-
-            integerValueStr = token;
-        } else {
-            integerValueStr = token;
-        }
-        Long value;
-        if (neg) {
-            String absoluteIntegerValue = integerValueStr;
-            value = Long.parseLong(MINUS_TOKEN + absoluteIntegerValue);
-        } else {
-            value = Long.parseLong(integerValueStr);
-        }
-        if (neg) {
-            token = consumeTokens(tokenizer, NEW_LINE_TOKEN, BLANK_SPACE_TOKEN);
-            checkExpectedToken(RIGHT_PARENTHESIS_TOKEN, token);
-        }
-
-        return value;
-    }
-
-    private static void checkExpectedToken(String expectedToken, String actualToken) {
-        if (!actualToken.equals(expectedToken)) {
-            throw new IllegalArgumentException(
-                    "Malformed solver solution. Expected \"" + expectedToken + "\" but found \"" + actualToken + "\"");
-        }
-    }
-
-    private static void addMissingValues(Map<String, Object> initialValues, Map<String, Object> solution) {
-        for (String otherVarName : initialValues.keySet()) {
-            if (!solution.containsKey(otherVarName)) {
-                solution.put(otherVarName, initialValues.get(otherVarName));
-            }
-        }
     }
 }

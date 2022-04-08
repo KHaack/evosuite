@@ -36,15 +36,26 @@ import java.util.*;
 public class System {
 
     private static final Logger logger = LoggerFactory.getLogger(System.class);
-
-    private static boolean wasTimeAccessed = false;
-
     /**
      * Default Java properties before we run the SUT
      */
     private static final java.util.Properties defaultProperties;
-
     private static final Set<String> systemProperties;
+    /**
+     * Keep track of which System properties were read
+     */
+    private static final Set<String> readProperties = new LinkedHashSet<>();
+    private static final Map<Integer, Integer> hashKeys = new HashMap<>();
+    private static boolean wasTimeAccessed = false;
+    /**
+     * If SUT changed some properties, we need to re-set the default values
+     */
+    private static volatile boolean needToRestoreProperties;
+    /**
+     * Current time returns numbers increased by 1
+     */
+    // Initialised to 2014-02-14, 20:21
+    private static long currentTime = 1392409281320L;
 
     static {
 
@@ -65,17 +76,6 @@ public class System {
         }
         defaultProperties = prop;
     }
-
-
-    /**
-     * If SUT changed some properties, we need to re-set the default values
-     */
-    private static volatile boolean needToRestoreProperties;
-
-    /**
-     * Keep track of which System properties were read
-     */
-    private static final Set<String> readProperties = new LinkedHashSet<>();
 
     /**
      * Restore to their original values all the properties that have
@@ -158,22 +158,6 @@ public class System {
     }
 
     /**
-     * <p >
-     * This exception tells the test execution that it should stop at this point
-     * </p>
-     *
-     * <p>
-     * Note that it extends {@code Error}, as we need something that is
-     * unchecked
-     * </p>
-     */
-    public static class SystemExitException extends Error {
-
-        private static final long serialVersionUID = 1L;
-
-    }
-
-    /**
      * Replacement function for System.exit
      *
      * @param status a int.
@@ -187,12 +171,6 @@ public class System {
 
         throw new SystemExitException();
     }
-
-    /**
-     * Current time returns numbers increased by 1
-     */
-    // Initialised to 2014-02-14, 20:21
-    private static long currentTime = 1392409281320L;
 
     /**
      * Replacement function for System.currentTimeMillis
@@ -215,8 +193,6 @@ public class System {
         //wasTimeAccessed = true;
         return currentTime; //++;
     }
-
-    private static final Map<Integer, Integer> hashKeys = new HashMap<>();
 
     public static void registerObjectForIdentityHashCode(Object o) {
         identityHashCode(o);
@@ -288,7 +264,6 @@ public class System {
         return 0;
     }
 
-
     /**
      * Allow setting the time
      *
@@ -345,5 +320,21 @@ public class System {
      */
     public static boolean wasTimeAccessed() {
         return wasTimeAccessed;
+    }
+
+    /**
+     * <p >
+     * This exception tells the test execution that it should stop at this point
+     * </p>
+     *
+     * <p>
+     * Note that it extends {@code Error}, as we need something that is
+     * unchecked
+     * </p>
+     */
+    public static class SystemExitException extends Error {
+
+        private static final long serialVersionUID = 1L;
+
     }
 }

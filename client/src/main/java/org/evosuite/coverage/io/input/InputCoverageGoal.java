@@ -84,126 +84,6 @@ public class InputCoverageGoal implements Serializable, Comparable<InputCoverage
         this.numericValue = numericValue;
     }
 
-
-    /**
-     * @return the className
-     */
-    public String getClassName() {
-        return className;
-    }
-
-    /**
-     * @return the methodName
-     */
-    public String getMethodName() {
-        return methodName;
-    }
-
-    /**
-     * @return the argument index
-     */
-    public int getArgIndex() {
-        return argIndex;
-    }
-
-    /**
-     * @return the type
-     */
-    public Type getType() {
-        return Type.getType(type);
-    }
-
-    /**
-     * @return the value
-     */
-    public String getValueDescriptor() {
-        return valueDescriptor;
-    }
-
-    public Number getNumericValue() {
-        return numericValue;
-    }
-
-    // inherited from Object
-
-    /**
-     * {@inheritDoc}
-     * <p/>
-     * Readable representation
-     */
-    @Override
-    public String toString() {
-        return className + "." + methodName + "[" + argIndex + "]:" + valueDescriptor;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + className.hashCode();
-        result = prime * result + methodName.hashCode();
-        result = prime * result + argIndex;
-        result = prime * result + (type == null ? 0 : type.hashCode());
-        result = prime * result + (valueDescriptor == null ? 0 : valueDescriptor.hashCode());
-        return result;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-
-        InputCoverageGoal other = (InputCoverageGoal) obj;
-
-        if (this.argIndex != other.argIndex)
-            return false;
-
-        if (!this.methodName.equals(other.methodName) && this.className.equals(other.className))
-            return false;
-
-        if ((this.type == null && other.type != null) || (this.type != null && other.type == null))
-            return false;
-
-        if (this.type != null && !this.type.equals(other.type))
-            return false;
-
-        if ((this.valueDescriptor == null && other.valueDescriptor != null) || (this.valueDescriptor != null && other.valueDescriptor == null))
-            return false;
-
-        return this.valueDescriptor == null || this.valueDescriptor.equals(other.valueDescriptor);
-    }
-
-    @Override
-    public int compareTo(InputCoverageGoal o) {
-
-        int diff = className.compareTo(o.className);
-        if (diff == 0) {
-            int diff2 = methodName.compareTo(o.methodName);
-            if (diff2 == 0) {
-                if (argIndex == o.argIndex) {
-                    int diff3 = type.compareTo(o.type);
-                    if (diff3 == 0)
-                        return this.valueDescriptor.compareTo(o.valueDescriptor);
-                    else
-                        return diff3;
-                } else
-                    return Integer.compare(argIndex, o.argIndex);
-            } else
-                return diff2;
-        } else
-            return diff;
-    }
-
     @SuppressWarnings("rawtypes")
     public static Set<InputCoverageGoal> createCoveredGoalsFromParameters(String className, String methodName, String methodDesc, List<Object> argumentsValues) {
         Set<InputCoverageGoal> goals = new LinkedHashSet<>();
@@ -324,5 +204,124 @@ public class InputCoverageGoal implements Serializable, Comparable<InputCoverage
      */
     private static boolean isJavaNumber(Object val) {
         return val instanceof Number && val.getClass().getName().startsWith("java.");
+    }
+
+    /**
+     * @return the className
+     */
+    public String getClassName() {
+        return className;
+    }
+
+    /**
+     * @return the methodName
+     */
+    public String getMethodName() {
+        return methodName;
+    }
+
+    /**
+     * @return the argument index
+     */
+    public int getArgIndex() {
+        return argIndex;
+    }
+
+    /**
+     * @return the type
+     */
+    public Type getType() {
+        return Type.getType(type);
+    }
+
+    // inherited from Object
+
+    /**
+     * @return the value
+     */
+    public String getValueDescriptor() {
+        return valueDescriptor;
+    }
+
+    public Number getNumericValue() {
+        return numericValue;
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p/>
+     * Readable representation
+     */
+    @Override
+    public String toString() {
+        return className + "." + methodName + "[" + argIndex + "]:" + valueDescriptor;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + className.hashCode();
+        result = prime * result + methodName.hashCode();
+        result = prime * result + argIndex;
+        result = prime * result + (type == null ? 0 : type.hashCode());
+        result = prime * result + (valueDescriptor == null ? 0 : valueDescriptor.hashCode());
+        return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+
+        InputCoverageGoal other = (InputCoverageGoal) obj;
+
+        if (this.argIndex != other.argIndex)
+            return false;
+
+        if (!this.methodName.equals(other.methodName) && this.className.equals(other.className))
+            return false;
+
+        if ((this.type == null && other.type != null) || (this.type != null && other.type == null))
+            return false;
+
+        if (this.type != null && !this.type.equals(other.type))
+            return false;
+
+        if ((this.valueDescriptor == null && other.valueDescriptor != null) || (this.valueDescriptor != null && other.valueDescriptor == null))
+            return false;
+
+        return this.valueDescriptor == null || this.valueDescriptor.equals(other.valueDescriptor);
+    }
+
+    @Override
+    public int compareTo(InputCoverageGoal o) {
+
+        int diff = className.compareTo(o.className);
+        if (diff == 0) {
+            int diff2 = methodName.compareTo(o.methodName);
+            if (diff2 == 0) {
+                if (argIndex == o.argIndex) {
+                    int diff3 = type.compareTo(o.type);
+                    if (diff3 == 0)
+                        return this.valueDescriptor.compareTo(o.valueDescriptor);
+                    else
+                        return diff3;
+                } else
+                    return Integer.compare(argIndex, o.argIndex);
+            } else
+                return diff2;
+        } else
+            return diff;
     }
 }

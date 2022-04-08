@@ -34,11 +34,11 @@ public class ClassWithObserver {
         return f;
     }
 
-    public int size() {
-        return size;
-    }
-
     public void setF(boolean f) {
         this.f = f;
+    }
+
+    public int size() {
+        return size;
     }
 }

@@ -37,76 +37,75 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public abstract class MockFileSystemView extends FileSystemView  implements OverrideMock{
+public abstract class MockFileSystemView extends FileSystemView implements OverrideMock {
 
-	static FileSystemView windowsFileSystemView = null;
-	static FileSystemView unixFileSystemView = null;
-	static FileSystemView genericFileSystemView = null;
+    static FileSystemView windowsFileSystemView = null;
+    static FileSystemView unixFileSystemView = null;
+    static FileSystemView genericFileSystemView = null;
 
-	private boolean useSystemExtensionHiding =
-			UIManager.getDefaults().getBoolean("FileChooser.useSystemExtensionHiding");
-
-
-	public static FileSystemView getFileSystemView() {
-		if(File.separatorChar == '\\') {
-			if(windowsFileSystemView == null) {
-				windowsFileSystemView = new MockWindowsFileSystemView();
-			}
-			return windowsFileSystemView;
-		}
-
-		if(File.separatorChar == '/') {
-			if(unixFileSystemView == null) {
-				unixFileSystemView = new MockUnixFileSystemView();
-			}
-			return unixFileSystemView;
-		}
+    private boolean useSystemExtensionHiding =
+            UIManager.getDefaults().getBoolean("FileChooser.useSystemExtensionHiding");
 
 
-		if(genericFileSystemView == null) {
-			genericFileSystemView = new MockGenericFileSystemView();
-		}
-		return genericFileSystemView;
-	}
+    public MockFileSystemView() {
+        final WeakReference<MockFileSystemView> weakReference = new WeakReference<>(this);
+
+        UIManager.addPropertyChangeListener(new PropertyChangeListener() {
+            public void propertyChange(PropertyChangeEvent evt) {
+                MockFileSystemView fileSystemView = weakReference.get();
+
+                if (fileSystemView == null) {
+                    // FileSystemView was destroyed
+                    UIManager.removePropertyChangeListener(this);
+                } else {
+                    if (evt.getPropertyName().equals("lookAndFeel")) {
+                        fileSystemView.useSystemExtensionHiding =
+                                UIManager.getDefaults().getBoolean("FileChooser.useSystemExtensionHiding");
+                    }
+                }
+            }
+        });
+    }
+
+    public static FileSystemView getFileSystemView() {
+        if (File.separatorChar == '\\') {
+            if (windowsFileSystemView == null) {
+                windowsFileSystemView = new MockWindowsFileSystemView();
+            }
+            return windowsFileSystemView;
+        }
+
+        if (File.separatorChar == '/') {
+            if (unixFileSystemView == null) {
+                unixFileSystemView = new MockUnixFileSystemView();
+            }
+            return unixFileSystemView;
+        }
 
 
-	public MockFileSystemView() {
-		final WeakReference<MockFileSystemView> weakReference = new WeakReference<>(this);
+        if (genericFileSystemView == null) {
+            genericFileSystemView = new MockGenericFileSystemView();
+        }
+        return genericFileSystemView;
+    }
 
-		UIManager.addPropertyChangeListener(new PropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent evt) {
-				MockFileSystemView fileSystemView = weakReference.get();
+    @Override
+    public boolean isRoot(File f) {
+        return super.isRoot(f);
+    }
 
-				if (fileSystemView == null) {
-					// FileSystemView was destroyed
-					UIManager.removePropertyChangeListener(this);
-				} else {
-					if (evt.getPropertyName().equals("lookAndFeel")) {
-						fileSystemView.useSystemExtensionHiding =
-								UIManager.getDefaults().getBoolean("FileChooser.useSystemExtensionHiding");
-					}
-				}
-			}
-		});
-	}
+    @Override
+    public Boolean isTraversable(File f) {
+        return super.isTraversable(f);
+    }
 
-	@Override
-	public boolean isRoot(File f) {
-		return super.isRoot(f);
-	}
+    @Override
+    public String getSystemDisplayName(File f) {
+        if (f == null) {
+            return null;
+        }
 
-	@Override
-	public Boolean isTraversable(File f) {
-		return super.isTraversable(f);
-	}
-
-	@Override
-	public String getSystemDisplayName(File f) {
-		if (f == null) {
-			return null;
-		}
-
-		String name = f.getName();
+        String name = f.getName();
 
 		/*
 		if (!name.equals("..") && !name.equals(".") &&
@@ -120,24 +119,24 @@ public abstract class MockFileSystemView extends FileSystemView  implements Over
 			}
 		}
 		 */
-		if (name == null || name.length() == 0) {
-			name = f.getPath(); // e.g. "/"
-		}
-		//}
+        if (name == null || name.length() == 0) {
+            name = f.getPath(); // e.g. "/"
+        }
+        //}
 
-		return name;
-	}
+        return name;
+    }
 
-	@Override
-	public String getSystemTypeDescription(File f) {
-		return super.getSystemTypeDescription(f);
-	}
+    @Override
+    public String getSystemTypeDescription(File f) {
+        return super.getSystemTypeDescription(f);
+    }
 
-	@Override
-	public Icon getSystemIcon(File f) {
-		if (f == null) {
-			return null;
-		}
+    @Override
+    public Icon getSystemIcon(File f) {
+        if (f == null) {
+            return null;
+        }
 
 		/*
 		ShellFolder sf;
@@ -155,15 +154,15 @@ public abstract class MockFileSystemView extends FileSystemView  implements Over
 		} else {
 		 */
 
-		return UIManager.getIcon(f.isDirectory() ? "FileView.directoryIcon" : "FileView.fileIcon");
-		//}
-	}
+        return UIManager.getIcon(f.isDirectory() ? "FileView.directoryIcon" : "FileView.fileIcon");
+        //}
+    }
 
-	@Override
-	public boolean isParent(File folder, File file) {
-		if (folder == null || file == null) {
-			return false;
-		} /* else if (folder instanceof ShellFolder) {
+    @Override
+    public boolean isParent(File folder, File file) {
+        if (folder == null || file == null) {
+            return false;
+        } /* else if (folder instanceof ShellFolder) {
 			File parent = file.getParentFile();
 			if (parent != null && parent.equals(folder)) {
 				return true;
@@ -176,12 +175,12 @@ public abstract class MockFileSystemView extends FileSystemView  implements Over
 			}
 			return false;
 		} */ else {
-			return folder.equals(file.getParentFile());
-		}
-	}
+            return folder.equals(file.getParentFile());
+        }
+    }
 
-	@Override
-	public File getChild(File parent, String fileName) {
+    @Override
+    public File getChild(File parent, String fileName) {
 		/*
 		if (parent instanceof ShellFolder) {
 			File[] children = getFiles(parent, false);
@@ -192,11 +191,11 @@ public abstract class MockFileSystemView extends FileSystemView  implements Over
 			}
 		}
 		*/
-		return createFileObject(parent, fileName);
-	}
+        return createFileObject(parent, fileName);
+    }
 
-	@Override
-	public boolean isFileSystem(File f) {
+    @Override
+    public boolean isFileSystem(File f) {
 		/*
 		if (f instanceof ShellFolder) {
 			ShellFolder sf = (ShellFolder)f;
@@ -207,125 +206,125 @@ public abstract class MockFileSystemView extends FileSystemView  implements Over
 			return true;
 		}
 		*/
-		return true;
-	}
+        return true;
+    }
 
-	@Override
-	public boolean isHiddenFile(File f) {
-		return super.isHiddenFile(f);
-	}
+    @Override
+    public boolean isHiddenFile(File f) {
+        return super.isHiddenFile(f);
+    }
 
-	@Override
-	public boolean isFileSystemRoot(File dir) {
+    @Override
+    public boolean isFileSystemRoot(File dir) {
 
-		FSObject fso = VirtualFileSystem.getInstance().findFSObject(dir.getAbsolutePath());
-		if(fso==null || !(fso instanceof VFolder)){
-			return false;
-		}
+        FSObject fso = VirtualFileSystem.getInstance().findFSObject(dir.getAbsolutePath());
+        if (fso == null || !(fso instanceof VFolder)) {
+            return false;
+        }
 
-		VFolder folder = (VFolder) fso;
-		return folder.isRoot();
-	}
+        VFolder folder = (VFolder) fso;
+        return folder.isRoot();
+    }
 
-	@Override
-	public boolean isDrive(File dir) {
-		return super.isDrive(dir);
-	}
+    @Override
+    public boolean isDrive(File dir) {
+        return super.isDrive(dir);
+    }
 
-	@Override
-	public boolean isFloppyDrive(File dir) {
-		return super.isFloppyDrive(dir);
-	}
+    @Override
+    public boolean isFloppyDrive(File dir) {
+        return super.isFloppyDrive(dir);
+    }
 
-	@Override
-	public boolean isComputerNode(File dir) {
-		
-		//return ShellFolder.isComputerNode(dir);
-		/*
-		 * TODO: not really sure how to mock this one, and if
-		 * we actually need it
-		 * 
-		 */
-		return false;
-	}
+    @Override
+    public boolean isComputerNode(File dir) {
 
-	@Override
-	public File[] getRoots() {
-		// Don't cache this array, because filesystem might change
-		//File[] roots = (File[])ShellFolder.get("roots");
-		File[] roots = MockFile.listRoots();
+        //return ShellFolder.isComputerNode(dir);
+        /*
+         * TODO: not really sure how to mock this one, and if
+         * we actually need it
+         *
+         */
+        return false;
+    }
 
-		for (int i = 0; i < roots.length; i++) {
-			if (isFileSystemRoot(roots[i])) {
-				roots[i] = createFileSystemRoot(roots[i]);
-			}
-		}
-		return roots;
-	}
+    @Override
+    public File[] getRoots() {
+        // Don't cache this array, because filesystem might change
+        //File[] roots = (File[])ShellFolder.get("roots");
+        File[] roots = MockFile.listRoots();
+
+        for (int i = 0; i < roots.length; i++) {
+            if (isFileSystemRoot(roots[i])) {
+                roots[i] = createFileSystemRoot(roots[i]);
+            }
+        }
+        return roots;
+    }
 
 
-	// Providing default implementations for the remaining methods
-	// because most OS file systems will likely be able to use this
-	// code. If a given OS can't, override these methods in its
-	// implementation.
+    // Providing default implementations for the remaining methods
+    // because most OS file systems will likely be able to use this
+    // code. If a given OS can't, override these methods in its
+    // implementation.
 
-	@Override
-	public File getHomeDirectory() {
-		return super.getHomeDirectory();
-	}
+    @Override
+    public File getHomeDirectory() {
+        return super.getHomeDirectory();
+    }
 
-	public File getDefaultDirectory() {
-		//File f = (File)ShellFolder.get("fileChooserDefaultFolder");
-		File f = getHomeDirectory();
-		
-		if (isFileSystemRoot(f)) {
-			f = createFileSystemRoot(f);
-		}
-		return f;
-	}
+    public File getDefaultDirectory() {
+        //File f = (File)ShellFolder.get("fileChooserDefaultFolder");
+        File f = getHomeDirectory();
 
-	@Override
-	public File createFileObject(File dir, String filename) {
-		if(dir == null) {
-			return new MockFile(filename);
-		} else {
-			return new MockFile(dir, filename);
-		}
-	}
+        if (isFileSystemRoot(f)) {
+            f = createFileSystemRoot(f);
+        }
+        return f;
+    }
 
-	@Override
-	public File createFileObject(String path) {
-		File f = new MockFile(path);
-		if (isFileSystemRoot(f)) {
-			f = createFileSystemRoot(f);
-		}
-		return f;
-	}
+    @Override
+    public File createFileObject(File dir, String filename) {
+        if (dir == null) {
+            return new MockFile(filename);
+        } else {
+            return new MockFile(dir, filename);
+        }
+    }
 
-	@Override
-	public File[] getFiles(File dir, boolean useFileHiding) {
-		List<File> files = new ArrayList<>();
+    @Override
+    public File createFileObject(String path) {
+        File f = new MockFile(path);
+        if (isFileSystemRoot(f)) {
+            f = createFileSystemRoot(f);
+        }
+        return f;
+    }
 
-		if(dir==null){
-			return new File[0];
-		}
-		
-		//File[] names = ((ShellFolder) dir).listFiles(!useFileHiding);
-		File[] names = dir.listFiles();
-		
-		if (names == null) {
-			return new File[0];
-		}
+    @Override
+    public File[] getFiles(File dir, boolean useFileHiding) {
+        List<File> files = new ArrayList<>();
 
-		for (File f : names) {
-			if (Thread.currentThread().isInterrupted()) {
-				break;
-			}
+        if (dir == null) {
+            return new File[0];
+        }
 
-			//if (!(f instanceof ShellFolder)) {
-				if (isFileSystemRoot(f)) {
-					f = createFileSystemRoot(f);
-				}
+        //File[] names = ((ShellFolder) dir).listFiles(!useFileHiding);
+        File[] names = dir.listFiles();
+
+        if (names == null) {
+            return new File[0];
+        }
+
+        for (File f : names) {
+            if (Thread.currentThread().isInterrupted()) {
+                break;
+            }
+
+            //if (!(f instanceof ShellFolder)) {
+            if (isFileSystemRoot(f)) {
+                f = createFileSystemRoot(f);
+            }
 				/*
 				try {
 					f = ShellFolder.getShellFolder(f);
@@ -339,23 +338,23 @@ public abstract class MockFileSystemView extends FileSystemView  implements Over
 					continue;
 				}
 				*/
-			//}
-			if (!useFileHiding || !isHiddenFile(f)) {
-				files.add(f);
-			}
-		}
+            //}
+            if (!useFileHiding || !isHiddenFile(f)) {
+                files.add(f);
+            }
+        }
 
-		return files.toArray(new File[files.size()]);
-	}
+        return files.toArray(new File[files.size()]);
+    }
 
 
-	@Override
-	public File getParentDirectory(File dir) {
-		if (dir == null || !dir.exists()) {
-			return null;
-		}
+    @Override
+    public File getParentDirectory(File dir) {
+        if (dir == null || !dir.exists()) {
+            return null;
+        }
 
-		return dir.getParentFile();
+        return dir.getParentFile();
 		
 		/*
 		ShellFolder sf;
@@ -387,132 +386,131 @@ public abstract class MockFileSystemView extends FileSystemView  implements Over
 			return psf;
 		}
 		*/
-	}
+    }
 
 
-	@Override
-	protected File createFileSystemRoot(File f) {
-		
-		if(f instanceof MockFileSystemRoot){
-			return f;
-		}
-		
-		return new MockFileSystemRoot(f);
-	}
+    @Override
+    protected File createFileSystemRoot(File f) {
+
+        if (f instanceof MockFileSystemRoot) {
+            return f;
+        }
+
+        return new MockFileSystemRoot(f);
+    }
 
 
-	static class MockFileSystemRoot extends MockFile {
+    static class MockFileSystemRoot extends MockFile {
 
-		private static final long serialVersionUID = -7059909648025194367L;
+        private static final long serialVersionUID = -7059909648025194367L;
 
-		public MockFileSystemRoot(File f) {
-			super(f,"");
-		}
+        public MockFileSystemRoot(File f) {
+            super(f, "");
+        }
 
-		public MockFileSystemRoot(String s) {
-			super(s);
-		}
+        public MockFileSystemRoot(String s) {
+            super(s);
+        }
 
-		public boolean isDirectory() {
-			return true;
-		}
+        public boolean isDirectory() {
+            return true;
+        }
 
-		public String getName() {
-			return getPath();
-		}
-	}
+        public String getName() {
+            return getPath();
+        }
+    }
 }
 
 
 class MockUnixFileSystemView extends MockFileSystemView {
 
-	private static final String newFolderString =
-			UIManager.getString("FileChooser.other.newFolder");
-	private static final String newFolderNextString  =
-			UIManager.getString("FileChooser.other.newFolder.subsequent");
+    private static final String newFolderString =
+            UIManager.getString("FileChooser.other.newFolder");
+    private static final String newFolderNextString =
+            UIManager.getString("FileChooser.other.newFolder.subsequent");
 
-	public File createNewFolder(File containingDir) throws IOException {
-		if(containingDir == null) {
-			throw new IOException("Containing directory is null:");
-		}
-		
-		File newFolder;
-		// Unix - using OpenWindows' default folder name. Can't find one for Motif/CDE.
-		newFolder = createFileObject(containingDir, newFolderString);
-		int i = 1;
-		while (newFolder.exists() && i < 100) {
-			newFolder = createFileObject(containingDir, MessageFormat.format(
-					newFolderNextString, i));
-			i++;
-		}
+    public File createNewFolder(File containingDir) throws IOException {
+        if (containingDir == null) {
+            throw new IOException("Containing directory is null:");
+        }
 
-		if(newFolder.exists()) {
-			throw new IOException("Directory already exists:" + newFolder.getAbsolutePath());
-		} else {
-			newFolder.mkdirs();
-		}
+        File newFolder;
+        // Unix - using OpenWindows' default folder name. Can't find one for Motif/CDE.
+        newFolder = createFileObject(containingDir, newFolderString);
+        int i = 1;
+        while (newFolder.exists() && i < 100) {
+            newFolder = createFileObject(containingDir, MessageFormat.format(
+                    newFolderNextString, i));
+            i++;
+        }
 
-		return newFolder;
-	}
+        if (newFolder.exists()) {
+            throw new IOException("Directory already exists:" + newFolder.getAbsolutePath());
+        } else {
+            newFolder.mkdirs();
+        }
 
-	public boolean isFileSystemRoot(File dir) {
-		return dir != null && dir.getAbsolutePath().equals("/");
-	}
+        return newFolder;
+    }
 
-	public boolean isDrive(File dir) {
-		return isFloppyDrive(dir);
-	}
+    public boolean isFileSystemRoot(File dir) {
+        return dir != null && dir.getAbsolutePath().equals("/");
+    }
 
-	public boolean isFloppyDrive(File dir) {
-		// Could be looking at the path for Solaris, but wouldn't be reliable.
-		// For example:
-		// return (dir != null && dir.getAbsolutePath().toLowerCase().startsWith("/floppy"));
-		return false;
-	}
+    public boolean isDrive(File dir) {
+        return isFloppyDrive(dir);
+    }
 
-	public boolean isComputerNode(File dir) {
-		if (dir != null) {
-			String parent = dir.getParent();
-			if (parent != null && parent.equals("/net")) {
-				return true;
-			}
-		}
-		return false;
-	}
+    public boolean isFloppyDrive(File dir) {
+        // Could be looking at the path for Solaris, but wouldn't be reliable.
+        // For example:
+        // return (dir != null && dir.getAbsolutePath().toLowerCase().startsWith("/floppy"));
+        return false;
+    }
+
+    public boolean isComputerNode(File dir) {
+        if (dir != null) {
+            String parent = dir.getParent();
+            if (parent != null && parent.equals("/net")) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
-
 
 
 class MockWindowsFileSystemView extends MockFileSystemView {
 
-	private static final String newFolderString =
-			UIManager.getString("FileChooser.win32.newFolder");
-	private static final String newFolderNextString  =
-			UIManager.getString("FileChooser.win32.newFolder.subsequent");
+    private static final String newFolderString =
+            UIManager.getString("FileChooser.win32.newFolder");
+    private static final String newFolderNextString =
+            UIManager.getString("FileChooser.win32.newFolder.subsequent");
 
-	public Boolean isTraversable(File f) {
-		return isFileSystemRoot(f) || isComputerNode(f) || f.isDirectory();
-	}
+    public Boolean isTraversable(File f) {
+        return isFileSystemRoot(f) || isComputerNode(f) || f.isDirectory();
+    }
 
-	public File getChild(File parent, String fileName) {
-		if (fileName.startsWith("\\")
-				&& !fileName.startsWith("\\\\")
-				&& isFileSystem(parent)) {
+    public File getChild(File parent, String fileName) {
+        if (fileName.startsWith("\\")
+                && !fileName.startsWith("\\\\")
+                && isFileSystem(parent)) {
 
-			//Path is relative to the root of parent's drive
-			String path = parent.getAbsolutePath();
-			if (path.length() >= 2
-					&& path.charAt(1) == ':'
-					&& Character.isLetter(path.charAt(0))) {
+            //Path is relative to the root of parent's drive
+            String path = parent.getAbsolutePath();
+            if (path.length() >= 2
+                    && path.charAt(1) == ':'
+                    && Character.isLetter(path.charAt(0))) {
 
-				return createFileObject(path.substring(0, 2) + fileName);
-			}
-		}
-		return super.getChild(parent, fileName);
-	}
+                return createFileObject(path.substring(0, 2) + fileName);
+            }
+        }
+        return super.getChild(parent, fileName);
+    }
 
-	public String getSystemTypeDescription(File f) {
-		return super.getSystemTypeDescription(f);
+    public String getSystemTypeDescription(File f) {
+        return super.getSystemTypeDescription(f);
 		/*
 		if (f == null) {
 			return null;
@@ -524,54 +522,54 @@ class MockWindowsFileSystemView extends MockFileSystemView {
 			return null;
 		}
 		*/
-	}
+    }
 
-	/**
-	 * @return the home directory on the drive the code exists on.
-	 */
-	public File getHomeDirectory() {
-		File executionPath = createFileObject(System.getProperty("user.dir"));
-		File[] roots = getRoots();
+    /**
+     * @return the home directory on the drive the code exists on.
+     */
+    public File getHomeDirectory() {
+        File executionPath = createFileObject(System.getProperty("user.dir"));
+        File[] roots = getRoots();
 
-		for (File root : roots) {
-			if(root.toPath().getRoot().equals(executionPath.toPath().getRoot())) {
-				return root;
-			}
-		}
+        for (File root : roots) {
+            if (root.toPath().getRoot().equals(executionPath.toPath().getRoot())) {
+                return root;
+            }
+        }
 
-		return roots[0];
-	}
+        return roots[0];
+    }
 
-	/**
-	 * Creates a new folder with a default folder name.
-	 */
-	public File createNewFolder(File containingDir) throws IOException {
-		if(containingDir == null) {
-			throw new IOException("Containing directory is null:");
-		}
-		// Using NT's default folder name
-		File newFolder = createFileObject(containingDir, newFolderString);
-		int i = 2;
-		while (newFolder.exists() && i < 100) {
-			newFolder = createFileObject(containingDir, MessageFormat.format(
-					newFolderNextString, i));
-			i++;
-		}
+    /**
+     * Creates a new folder with a default folder name.
+     */
+    public File createNewFolder(File containingDir) throws IOException {
+        if (containingDir == null) {
+            throw new IOException("Containing directory is null:");
+        }
+        // Using NT's default folder name
+        File newFolder = createFileObject(containingDir, newFolderString);
+        int i = 2;
+        while (newFolder.exists() && i < 100) {
+            newFolder = createFileObject(containingDir, MessageFormat.format(
+                    newFolderNextString, i));
+            i++;
+        }
 
-		if(newFolder.exists()) {
-			throw new IOException("Directory already exists:" + newFolder.getAbsolutePath());
-		} else {
-			newFolder.mkdirs();
-		}
+        if (newFolder.exists()) {
+            throw new IOException("Directory already exists:" + newFolder.getAbsolutePath());
+        } else {
+            newFolder.mkdirs();
+        }
 
-		return newFolder;
-	}
+        return newFolder;
+    }
 
-	public boolean isDrive(File dir) {
-		return isFileSystemRoot(dir);
-	}
+    public boolean isDrive(File dir) {
+        return isFileSystemRoot(dir);
+    }
 
-	public boolean isFloppyDrive(final File dir) {
+    public boolean isFloppyDrive(final File dir) {
 		/*
 		String path = AccessController.doPrivileged(new PrivilegedAction<String>() {
 			public String run() {
@@ -579,35 +577,36 @@ class MockWindowsFileSystemView extends MockFileSystemView {
 			}
 		});
 		 */
-		String path = dir.getAbsolutePath();
-		return path != null && (path.equals("A:\\") || path.equals("B:\\"));
-	}
+        String path = dir.getAbsolutePath();
+        return path != null && (path.equals("A:\\") || path.equals("B:\\"));
+    }
 
-	/**
-	 * Returns a File object constructed from the given path string.
-	 */
-	public File createFileObject(String path) {
-		// Check for missing backslash after drive letter such as "C:" or "C:filename"
-		if (path.length() >= 2 && path.charAt(1) == ':' && Character.isLetter(path.charAt(0))) {
-			if (path.length() == 2) {
-				path += "\\";
-			} else if (path.charAt(2) != '\\') {
-				path = path.substring(0, 2) + "\\" + path.substring(2);
-			}
-		}
-		return super.createFileObject(path);
-	}
+    /**
+     * Returns a File object constructed from the given path string.
+     */
+    public File createFileObject(String path) {
+        // Check for missing backslash after drive letter such as "C:" or "C:filename"
+        if (path.length() >= 2 && path.charAt(1) == ':' && Character.isLetter(path.charAt(0))) {
+            if (path.length() == 2) {
+                path += "\\";
+            } else if (path.charAt(2) != '\\') {
+                path = path.substring(0, 2) + "\\" + path.substring(2);
+            }
+        }
+        return super.createFileObject(path);
+    }
 
-	protected File createFileSystemRoot(File f) {
-		// Problem: Removable drives on Windows return false on f.exists()
-		// Workaround: Override exists() to always return true.
-		return new MockFileSystemRoot(f) {			
-			private static final long serialVersionUID = 1L;
-			public boolean exists() {
-				return true;
-			}
-		};
-	}
+    protected File createFileSystemRoot(File f) {
+        // Problem: Removable drives on Windows return false on f.exists()
+        // Workaround: Override exists() to always return true.
+        return new MockFileSystemRoot(f) {
+            private static final long serialVersionUID = 1L;
+
+            public boolean exists() {
+                return true;
+            }
+        };
+    }
 
 }
 
@@ -616,27 +615,27 @@ class MockWindowsFileSystemView extends MockFileSystemView {
  */
 class MockGenericFileSystemView extends MockFileSystemView {
 
-	private static final String newFolderString =
-			UIManager.getString("FileChooser.other.newFolder");
+    private static final String newFolderString =
+            UIManager.getString("FileChooser.other.newFolder");
 
-	/**
-	 * Creates a new folder with a default folder name.
-	 */
-	public File createNewFolder(File containingDir) throws IOException {
-		if(containingDir == null) {
-			throw new IOException("Containing directory is null:");
-		}
-		// Using NT's default folder name
-		File newFolder = createFileObject(containingDir, newFolderString);
+    /**
+     * Creates a new folder with a default folder name.
+     */
+    public File createNewFolder(File containingDir) throws IOException {
+        if (containingDir == null) {
+            throw new IOException("Containing directory is null:");
+        }
+        // Using NT's default folder name
+        File newFolder = createFileObject(containingDir, newFolderString);
 
-		if(newFolder.exists()) {
-			throw new IOException("Directory already exists:" + newFolder.getAbsolutePath());
-		} else {
-			newFolder.mkdirs();
-		}
+        if (newFolder.exists()) {
+            throw new IOException("Directory already exists:" + newFolder.getAbsolutePath());
+        } else {
+            newFolder.mkdirs();
+        }
 
-		return newFolder;
-	}
+        return newFolder;
+    }
 
 }
 

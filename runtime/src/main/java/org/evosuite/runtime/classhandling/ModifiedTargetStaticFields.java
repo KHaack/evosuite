@@ -34,6 +34,12 @@ import java.util.Collection;
 public class ModifiedTargetStaticFields {
 
     private static final Logger logger = LoggerFactory.getLogger(ModifiedTargetStaticFields.class);
+    private static ModifiedTargetStaticFields instance;
+    private final ArrayList<String> finalFields = new ArrayList<>();
+
+    private ModifiedTargetStaticFields() {
+
+    }
 
     /**
      * gets the current set of modified target static fields
@@ -53,14 +59,6 @@ public class ModifiedTargetStaticFields {
     public static void resetSingleton() {
         instance = null;
     }
-
-    private static ModifiedTargetStaticFields instance;
-
-    private ModifiedTargetStaticFields() {
-
-    }
-
-    private final ArrayList<String> finalFields = new ArrayList<>();
 
     /**
      * Adds a collection of final fields whose final modifier was removed by our

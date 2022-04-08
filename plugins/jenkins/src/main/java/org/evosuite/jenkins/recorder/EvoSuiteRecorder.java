@@ -75,28 +75,28 @@ public class EvoSuiteRecorder extends Recorder {
         return this.disableAutoCommit;
     }
 
-    public boolean getDisableAutoPush() {
-        return this.disableAutoPush;
-    }
-
-    public String getBranchName() {
-        return this.branchName;
-    }
-
-    public String getCtgBestsDir() {
-        return this.ctgBestsDir;
-    }
-
     public void setDisableAutoCommit(boolean disableAutoCommit) {
         this.disableAutoCommit = disableAutoCommit;
+    }
+
+    public boolean getDisableAutoPush() {
+        return this.disableAutoPush;
     }
 
     public void setDisableAutoPush(boolean disableAutoPush) {
         this.disableAutoPush = disableAutoPush;
     }
 
+    public String getBranchName() {
+        return this.branchName;
+    }
+
     public void setBranchName(String branchName) {
         this.branchName = branchName;
+    }
+
+    public String getCtgBestsDir() {
+        return this.ctgBestsDir;
     }
 
     public void setCtgBestsDir(String ctgBestsDir) {

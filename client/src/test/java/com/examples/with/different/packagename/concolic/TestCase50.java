@@ -22,6 +22,53 @@ package com.examples.with.different.packagename.concolic;
 public class TestCase50 {
 
     /**
+     * @param args
+     */
+    // char char0 = ConcolicMarker.mark('U', "char0");
+    // char char1 = ConcolicMarker.mark('U', "char1");
+    // char char2 = ConcolicMarker.mark(')', "char2");
+    // char char3 = ConcolicMarker.mark('j', "char3");
+    // char char4 = ConcolicMarker.mark('s', "char4");
+    // char char5 = ConcolicMarker.mark('\u001A', "char5");
+    public static void test(char char0, char char1, char char2, char char3,
+                            char char4, char char5) {
+        Stemmer stemmer0 = new Stemmer();
+        char[] charArray0 = stemmer0.getResultBuffer();
+        stemmer0.add(char0);
+        stemmer0.add(char1);
+        String string0 = stemmer0.toString();
+        char[] charArray1 = new char[4];
+        charArray1[0] = char0;
+        stemmer0.add(charArray1[1]);
+        char[] charArray2 = stemmer0.getResultBuffer();
+        charArray1[0] = char0;
+        int int0 = -1696;
+        stemmer0.add(charArray1, int0);
+        charArray1[1] = char0;
+        charArray1[2] = char2;
+        char[] charArray3 = stemmer0.getResultBuffer();
+        charArray1[3] = char0;
+        charArray1[1] = char0;
+        String string1 = stemmer0.toString();
+        stemmer0.stem();
+        stemmer0.add(char2);
+        stemmer0.add(charArray1[1]);
+        stemmer0.add(charArray1[0]);
+        charArray1[2] = char0;
+        int int1 = stemmer0.getResultLength();
+        charArray1[3] = char0;
+        stemmer0.stem();
+        int int2 = -1518;
+        stemmer0.add(char4);
+        char[] charArray4 = stemmer0.getResultBuffer();
+        int int3 = stemmer0.getResultLength();
+        stemmer0.add(char5);
+        stemmer0.add(charArray1, int2);
+        stemmer0.add(charArray1[3]);
+
+    }
+
+    /**
      * Stemmer, implementing the Porter Stemming Algorithm
      * <p>
      * The Stemmer class transforms a word into its root form. The input word
@@ -30,11 +77,11 @@ public class TestCase50 {
      */
 
     public static class Stemmer {
+        private static final int INC = 50;
         private char[] b;
         private int i, /* offset into b */
                 i_end, /* offset to end of stemmed word */
                 j, k;
-        private static final int INC = 50;
 
         /* unit of size whereby b is increased */
         public Stemmer() {
@@ -561,53 +608,6 @@ public class TestCase50 {
          * forcing lower case must be done outside the Stemmer class. Usage:
          * Stemmer file-name file-name ...
          */
-    }
-
-    /**
-     * @param args
-     */
-    // char char0 = ConcolicMarker.mark('U', "char0");
-    // char char1 = ConcolicMarker.mark('U', "char1");
-    // char char2 = ConcolicMarker.mark(')', "char2");
-    // char char3 = ConcolicMarker.mark('j', "char3");
-    // char char4 = ConcolicMarker.mark('s', "char4");
-    // char char5 = ConcolicMarker.mark('\u001A', "char5");
-    public static void test(char char0, char char1, char char2, char char3,
-                            char char4, char char5) {
-        Stemmer stemmer0 = new Stemmer();
-        char[] charArray0 = stemmer0.getResultBuffer();
-        stemmer0.add(char0);
-        stemmer0.add(char1);
-        String string0 = stemmer0.toString();
-        char[] charArray1 = new char[4];
-        charArray1[0] = char0;
-        stemmer0.add(charArray1[1]);
-        char[] charArray2 = stemmer0.getResultBuffer();
-        charArray1[0] = char0;
-        int int0 = -1696;
-        stemmer0.add(charArray1, int0);
-        charArray1[1] = char0;
-        charArray1[2] = char2;
-        char[] charArray3 = stemmer0.getResultBuffer();
-        charArray1[3] = char0;
-        charArray1[1] = char0;
-        String string1 = stemmer0.toString();
-        stemmer0.stem();
-        stemmer0.add(char2);
-        stemmer0.add(charArray1[1]);
-        stemmer0.add(charArray1[0]);
-        charArray1[2] = char0;
-        int int1 = stemmer0.getResultLength();
-        charArray1[3] = char0;
-        stemmer0.stem();
-        int int2 = -1518;
-        stemmer0.add(char4);
-        char[] charArray4 = stemmer0.getResultBuffer();
-        int int3 = stemmer0.getResultLength();
-        stemmer0.add(char5);
-        stemmer0.add(charArray1, int2);
-        stemmer0.add(charArray1[3]);
-
     }
 
 }

@@ -30,14 +30,8 @@ import java.util.Set;
  */
 public class Sandbox {
 
-    public enum SandboxMode {
-        OFF, RECOMMENDED, IO
-    }
-
     private static final Logger logger = LoggerFactory.getLogger(Sandbox.class);
-
     private static volatile MSecurityManager manager;
-
     /**
      * count how often we tried to init the sandbox.
      *
@@ -48,7 +42,6 @@ public class Sandbox {
      * are stable, etc), and those test cases do init/reset the sandbox
      */
     private static volatile int counter;
-
     private static boolean checkForInitialization = false;
 
     public static void setCheckForInitialization(boolean checkForInitialization) {
@@ -161,11 +154,15 @@ public class Sandbox {
         manager.doneWithExecutingUnsafeCodeOnSameThread();
     }
 
-
     public static boolean isSafeToExecuteSUTCode() {
         if (!isSecurityManagerInitialized()) {
             return false;
         }
         return manager.isSafeToExecuteSUTCode();
+    }
+
+
+    public enum SandboxMode {
+        OFF, RECOMMENDED, IO
     }
 }

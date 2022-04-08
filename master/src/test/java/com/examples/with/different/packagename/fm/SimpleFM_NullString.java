@@ -24,10 +24,6 @@ package com.examples.with.different.packagename.fm;
  */
 public class SimpleFM_NullString {
 
-    public interface Foo {
-        String get(Object obj);
-    }
-
     public void bar(Foo foo) {
         String a = foo.get(new Object());
         if (a != null) {
@@ -37,5 +33,9 @@ public class SimpleFM_NullString {
                 System.out.println("target");
             }
         }
+    }
+
+    public interface Foo {
+        String get(Object obj);
     }
 }

@@ -40,13 +40,13 @@ import java.util.*;
 
 public class DescriptorMapping {
 
-    private static int id = 0;
-
-    private final Map<String, String> descriptorMapping = new HashMap<>();
-
     private static final Logger logger = LoggerFactory.getLogger(DescriptorMapping.class);
-
+    private static int id = 0;
     private static DescriptorMapping instance = null;
+    final Map<String, String> originalDesc = new HashMap<>();
+    final Map<String, String> originalName = new HashMap<>();
+    private final Map<String, String> descriptorMapping = new HashMap<>();
+    private final Map<String, String> nameMapping = new HashMap<>();
 
     private DescriptorMapping() {
 
@@ -63,12 +63,6 @@ public class DescriptorMapping {
 
         return instance;
     }
-
-    final Map<String, String> originalDesc = new HashMap<>();
-
-    final Map<String, String> originalName = new HashMap<>();
-
-    private final Map<String, String> nameMapping = new HashMap<>();
 
     /**
      * <p>shouldTransform</p>

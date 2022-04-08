@@ -131,8 +131,8 @@ public class StringUtils {
      * StringUtils.contains("abc", "Z") = false
      * </pre>
      *
-     * @param str  the CharSequence to check, may be null
-     * @param searchStr  the CharSequence to find, may be null
+     * @param str       the CharSequence to check, may be null
+     * @param searchStr the CharSequence to find, may be null
      * @return true if the CharSequence contains the search CharSequence irrespective of
      * case or false if not or {@code null} string input
      * @since 3.0 Changed signature from containsIgnoreCase(String, String) to containsIgnoreCase(CharSequence, CharSequence)
@@ -154,12 +154,12 @@ public class StringUtils {
     /**
      * Green implementation of regionMatches.
      *
-     * @param cs the {@code CharSequence} to be processed
+     * @param cs         the {@code CharSequence} to be processed
      * @param ignoreCase whether or not to be case insensitive
-     * @param thisStart the index to start on the {@code cs} CharSequence
-     * @param substring the {@code CharSequence} to be looked for
-     * @param start the index to start on the {@code substring} CharSequence
-     * @param length character length of the region
+     * @param thisStart  the index to start on the {@code cs} CharSequence
+     * @param substring  the {@code CharSequence} to be looked for
+     * @param start      the index to start on the {@code substring} CharSequence
+     * @param length     character length of the region
      * @return whether the region matched
      */
     private static boolean regionMatches(final CharSequence cs, final boolean ignoreCase, final int thisStart,

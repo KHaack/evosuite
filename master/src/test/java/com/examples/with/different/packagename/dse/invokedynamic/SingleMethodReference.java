@@ -26,6 +26,20 @@ package com.examples.with.different.packagename.dse.invokedynamic;
  */
 public class SingleMethodReference {
 
+    public static int instanceRefNoContext(int y) {
+        MyIntegerClassStateless myInt = new MyIntegerClassStateless();
+
+        GetIntNoContext magic = myInt::testNoContext;
+        return magic.testNoContext(y);
+    }
+
+    public static int instanceRefContext(int y) {
+        MyIntegerClassWithState myInt = new MyIntegerClassWithState(y);
+
+        GetIntContext magic = myInt::testContext;
+        return magic.testContext();
+    }
+
     interface GetIntContext {
         int testContext();
     }
@@ -61,19 +75,5 @@ public class SingleMethodReference {
                 return 2;
         }
 
-    }
-
-    public static int instanceRefNoContext(int y) {
-        MyIntegerClassStateless myInt = new MyIntegerClassStateless();
-
-        GetIntNoContext magic = myInt::testNoContext;
-        return magic.testNoContext(y);
-    }
-
-    public static int instanceRefContext(int y) {
-        MyIntegerClassWithState myInt = new MyIntegerClassWithState(y);
-
-        GetIntContext magic = myInt::testContext;
-        return magic.testContext();
     }
 }

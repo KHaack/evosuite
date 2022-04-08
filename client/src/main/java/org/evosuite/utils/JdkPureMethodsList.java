@@ -60,10 +60,10 @@ public enum JdkPureMethodsList {
         Set<String> set = new HashSet<>(2020);
 
         try (
-            InputStream fstream = this.getClass().getResourceAsStream(
-                    "/jdkPureMethods.txt");
-            DataInputStream in = new DataInputStream(fstream);
-            BufferedReader br = new BufferedReader(new InputStreamReader(in)); ) {
+                InputStream fstream = this.getClass().getResourceAsStream(
+                        "/jdkPureMethods.txt");
+                DataInputStream in = new DataInputStream(fstream);
+                BufferedReader br = new BufferedReader(new InputStreamReader(in));) {
             String strLine;
             while ((strLine = br.readLine()) != null) {
                 set.add(strLine);

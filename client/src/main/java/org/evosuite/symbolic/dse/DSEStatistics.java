@@ -44,13 +44,10 @@ import java.util.List;
  */
 public class DSEStatistics {
 
-    static Logger logger = LoggerFactory.getLogger(DSEStatistics.class);
-
     /**
      * Messages Constants
      **/
     public static final String NO_QUERY_CACHE_CALLS_WERE_MADE = "No query cache calls were made";
-
     /**
      * Tracking of runtime variables used in DSE,
      * please add them here when adding a new one so they are saved in the backend
@@ -81,8 +78,43 @@ public class DSEStatistics {
             RuntimeVariable.NumberOfPathsExplored.name(),
             RuntimeVariable.NumberOfPathsDiverged.name()
     );
-
+    static Logger logger = LoggerFactory.getLogger(DSEStatistics.class);
     private static DSEStatistics instance = null;
+    private final List<Boolean> changes = new LinkedList<>();
+    private final ConstraintTypeCounter constraintTypeCounter = new ConstraintTypeCounter();
+    // Solver metrics
+    private long nrOfUNSATs = 0;
+    private long nrOfSATs = 0;
+    private long nrOfTimeouts = 0;
+    private long totalSolvingTimeMillis = 0;
+    private long totalConcolicExecutionTimeMillis = 0;
+    private long totalTestExecutionTime = 0;
+    // Solver cahe
+    private long queryCacheHits = 0;
+    private long querycacheSize = 0;
+    private long queryCacheCalls = 0;
+    // New solutions found metrics
+    private long nrOfSolutionWithNoImprovement = 0;
+    private long nrOfNewTestFound = 0;
+    // Path condition metrics
+    private int pathConditionCount = 0;
+    private int pathsExploredCounter = 0;
+    private int pathDivergencesCounter = 0;
+    private int maxPathConditionLength;
+    private int minPathConditionLength;
+    private double avgPathConditionLength;
+    // Constraint metrics
+    private int constraintCount = 0;
+    private int maxConstraintSize = 0;
+    private int minConstraintSize = 0;
+    private int constraintTooLongCounter = 0;
+    private double avgConstraintSize = 0;
+    /**
+     * This class cannot be built directly
+     */
+    private DSEStatistics() {
+
+    }
 
     public static DSEStatistics getInstance() {
         if (instance == null) {
@@ -98,48 +130,6 @@ public class DSEStatistics {
     public static void clear() {
         instance = null;
     }
-
-    /**
-     * This class cannot be built directly
-     */
-    private DSEStatistics() {
-
-    }
-
-    // Solver metrics
-    private long nrOfUNSATs = 0;
-    private long nrOfSATs = 0;
-    private long nrOfTimeouts = 0;
-    private long totalSolvingTimeMillis = 0;
-    private long totalConcolicExecutionTimeMillis = 0;
-    private long totalTestExecutionTime = 0;
-
-    // Solver cahe
-    private long queryCacheHits = 0;
-    private long querycacheSize = 0;
-    private long queryCacheCalls = 0;
-
-    // New solutions found metrics
-    private long nrOfSolutionWithNoImprovement = 0;
-    private long nrOfNewTestFound = 0;
-
-    // Path condition metrics
-    private int pathConditionCount = 0;
-    private int pathsExploredCounter = 0;
-    private int pathDivergencesCounter = 0;
-    private int maxPathConditionLength;
-    private int minPathConditionLength;
-    private double avgPathConditionLength;
-
-    // Constraint metrics
-    private int constraintCount = 0;
-    private int maxConstraintSize = 0;
-    private int minConstraintSize = 0;
-    private int constraintTooLongCounter = 0;
-    private double avgConstraintSize = 0;
-
-    private final List<Boolean> changes = new LinkedList<>();
-    private final ConstraintTypeCounter constraintTypeCounter = new ConstraintTypeCounter();
 
     public void reportNewUNSAT() {
         nrOfUNSATs++;

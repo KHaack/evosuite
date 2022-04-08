@@ -36,11 +36,7 @@ import java.util.*;
 public class ThreadStopper {
 
     private static final Logger logger = LoggerFactory.getLogger(ThreadStopper.class);
-
-    protected transient Set<Thread> currentRunningThreads;
-
     private final KillSwitch killSwitch;
-
     /**
      * Set of threads that we shouldn't try to stop, usually
      * based on:
@@ -48,12 +44,11 @@ public class ThreadStopper {
      * Properties.IGNORE_THREADS
      */
     private final Set<String> threadsToIgnore;
-
     /**
      * for how many ms should we wait on joining the threads?
      */
     private final long timeout;
-
+    protected transient Set<Thread> currentRunningThreads;
     /**
      * time stamp from when timeout are calculated
      */

@@ -36,24 +36,18 @@ import java.util.Set;
  */
 public abstract class LanguageModelSearch implements Comparator<Chromosome> {
     protected static final int GENERATIONS = 1000000;
-    private static final Logger logger = LoggerFactory.getLogger(LanguageModelSearch.class);
-    protected final LangModel languageModel;
-    protected final String startPoint;
-    protected final ValueMinimizer.Minimization objective;
-    protected final ConstantValue constantValue;
-
     protected static final int MAX_EVALUATIONS;
+    private static final Logger logger = LoggerFactory.getLogger(LanguageModelSearch.class);
 
     static {
         MAX_EVALUATIONS = Properties.LM_ITERATIONS;
     }
 
-    public int getEvaluations() {
-        return evaluations;
-    }
-
+    protected final LangModel languageModel;
+    protected final String startPoint;
+    protected final ValueMinimizer.Minimization objective;
+    protected final ConstantValue constantValue;
     private int evaluations = 0;
-
 
     public LanguageModelSearch(ValueMinimizer.Minimization objective, ConstantValue constantValue) {
         try {
@@ -113,6 +107,10 @@ public abstract class LanguageModelSearch implements Comparator<Chromosome> {
         }
         assert String.valueOf(array).length() == input.length();
         return String.valueOf(array);
+    }
+
+    public int getEvaluations() {
+        return evaluations;
     }
 
     public String mutate(final String input) {

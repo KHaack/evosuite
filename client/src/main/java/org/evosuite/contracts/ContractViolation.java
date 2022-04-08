@@ -51,22 +51,17 @@ public class ContractViolation {
     private static final Logger logger = LoggerFactory.getLogger(ContractViolation.class);
 
     private final Contract contract;
-
-    private TestCase test;
-
-    private Statement statement;
-
     /**
      * If the statement execution leads to a contract violation with an
      * undeclared exception this is stored here
      */
     private final Throwable exception;
-
     /**
      * List of all variables involved in the contract violation
      */
     private final List<VariableReference> variables = new ArrayList<>();
-
+    private TestCase test;
+    private Statement statement;
     private boolean isMinimized = false;
 
     /**

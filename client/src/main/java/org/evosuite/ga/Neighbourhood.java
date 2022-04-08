@@ -38,12 +38,10 @@ public class Neighbourhood<T extends Chromosome<T>> implements NeighborModels<T>
      * The population size
      **/
     private final int population_size;
-
     /**
-     * Position values of different neighbourhood based on the direction
-     **/
-    private int _L, _R, _N, _S, _W, _E, _NE, _NW, _SE, _SW, _NN, _SS, _EE, _WW;
-
+     * Collection of cells will be returned by different models of neighbourhood
+     */
+    private final List<T> chromosomes = new ArrayList<>();
     /**
      * An array that represents the grid
      **/
@@ -53,11 +51,10 @@ public class Neighbourhood<T extends Chromosome<T>> implements NeighborModels<T>
      * Number of chromosomes per one row of a grid
      **/
     int columns;
-
     /**
-     * Collection of cells will be returned by different models of neighbourhood
-     */
-    private final List<T> chromosomes = new ArrayList<>();
+     * Position values of different neighbourhood based on the direction
+     **/
+    private int _L, _R, _N, _S, _W, _E, _NE, _NW, _SE, _SW, _NN, _SS, _EE, _WW;
 
     public Neighbourhood(int populationSize) {
 

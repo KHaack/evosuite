@@ -23,7 +23,7 @@ import java.io.File;
 
 public class GetFile {
 
-	public File get(){
-		return new File("foo");
-	}
+    public File get() {
+        return new File("foo");
+    }
 }

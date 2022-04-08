@@ -62,10 +62,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class EvoSuiteExecutor {
 
     private static EvoSuiteExecutor singleton = new EvoSuiteExecutor();
-
-    private volatile Thread thread;
-
     private final AtomicBoolean running = new AtomicBoolean(false);
+    private volatile Thread thread;
 
 
     private EvoSuiteExecutor() {

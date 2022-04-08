@@ -39,12 +39,10 @@ public class JavaExecCmdUtilUnixTest {
     private static final String JAVA_HOME_MOCK_PATH =
             SEPARATOR + "usr" + SEPARATOR + "home" + SEPARATOR + "jdk_8";
     private static final String MOCK_OS = "Mac OS X";
-
-    @Rule
-    public EnvironmentVariables environmentVariables = new EnvironmentVariables();
-
     @Rule
     public final RestoreSystemProperties restoreSystemProperties = new RestoreSystemProperties();
+    @Rule
+    public EnvironmentVariables environmentVariables = new EnvironmentVariables();
 
     @Before
     public void initTestEnvironment() {

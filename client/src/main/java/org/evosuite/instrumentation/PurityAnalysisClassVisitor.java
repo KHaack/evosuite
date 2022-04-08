@@ -35,43 +35,9 @@ import java.util.HashMap;
 public class PurityAnalysisClassVisitor extends ClassVisitor {
 
     private final CheapPurityAnalyzer purityAnalyzer;
-
-    public static class MethodEntry {
-        private final String className;
-        private final String methodName;
-        private final String descriptor;
-
-        public MethodEntry(String className, String methodName,
-                           String descriptor) {
-            this.className = className;
-            this.methodName = methodName;
-            this.descriptor = descriptor;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (o == null)
-                return false;
-
-            if (!o.getClass().equals(MethodEntry.class))
-                return false;
-
-            MethodEntry that = (MethodEntry) o;
-
-            return this.className.equals(that.className)
-                    && this.methodName.equals(that.methodName)
-                    && this.descriptor.equals(that.descriptor);
-        }
-
-        @Override
-        public int hashCode() {
-            return this.className.hashCode() + this.methodName.hashCode()
-                    + this.descriptor.hashCode();
-        }
-    }
-
     private final String className;
     private final HashMap<MethodEntry, PurityAnalysisMethodVisitor> method_adapters = new HashMap<>();
+    private boolean visitingInterface = false;
 
     /**
      * <p>
@@ -131,8 +97,6 @@ public class PurityAnalysisClassVisitor extends ClassVisitor {
         }
     }
 
-    private boolean visitingInterface = false;
-
     @Override
     public void visit(int version, int access, String name, String signature,
                       String superName, String[] interfaces) {
@@ -140,5 +104,39 @@ public class PurityAnalysisClassVisitor extends ClassVisitor {
             visitingInterface = true;
         }
         super.visit(version, access, name, signature, superName, interfaces);
+    }
+
+    public static class MethodEntry {
+        private final String className;
+        private final String methodName;
+        private final String descriptor;
+
+        public MethodEntry(String className, String methodName,
+                           String descriptor) {
+            this.className = className;
+            this.methodName = methodName;
+            this.descriptor = descriptor;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (o == null)
+                return false;
+
+            if (!o.getClass().equals(MethodEntry.class))
+                return false;
+
+            MethodEntry that = (MethodEntry) o;
+
+            return this.className.equals(that.className)
+                    && this.methodName.equals(that.methodName)
+                    && this.descriptor.equals(that.descriptor);
+        }
+
+        @Override
+        public int hashCode() {
+            return this.className.hashCode() + this.methodName.hashCode()
+                    + this.descriptor.hashCode();
+        }
     }
 }

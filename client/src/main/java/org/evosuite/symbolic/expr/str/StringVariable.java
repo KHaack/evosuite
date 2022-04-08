@@ -56,6 +56,14 @@ public final class StringVariable extends AbstractExpression<String>
         this.maxValue = concVal;
     }
 
+    private static boolean isAsciiPrintable(char ch) {
+        return ch >= 32 && ch < 127;
+    }
+
+    /*
+     * store the better value here
+     */
+
     /**
      * <p>
      * setConcreteValue
@@ -66,10 +74,6 @@ public final class StringVariable extends AbstractExpression<String>
     public void setConcreteValue(String concValue) {
         this.concreteValue = concValue;
     }
-
-    /*
-     * store the better value here
-     */
 
     /**
      * {@inheritDoc}
@@ -96,10 +100,6 @@ public final class StringVariable extends AbstractExpression<String>
     @Override
     public String getName() {
         return name;
-    }
-
-    private static boolean isAsciiPrintable(char ch) {
-        return ch >= 32 && ch < 127;
     }
 
     private String removeNonAsciiPrintable(String string) {

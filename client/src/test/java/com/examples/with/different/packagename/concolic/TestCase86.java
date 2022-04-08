@@ -23,12 +23,6 @@ import org.junit.Test;
 
 public class TestCase86 {
 
-    @Test
-    public void runTest() {
-        int int0 = Integer.MAX_VALUE;
-        test(int0);
-    }
-
     public static void test(int int0) {
         int[] intArray0 = new int[10];
         intArray0[0] = int0;
@@ -46,5 +40,11 @@ public class TestCase86 {
         int int4 = objectArray0.length;
         int int5 = objectArray1.length;
         Assertions.checkEquals(int4, int5);
+    }
+
+    @Test
+    public void runTest() {
+        int int0 = Integer.MAX_VALUE;
+        test(int0);
     }
 }

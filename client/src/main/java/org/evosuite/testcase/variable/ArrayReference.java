@@ -137,6 +137,22 @@ public class ArrayReference extends VariableReferenceImpl {
 
     /**
      * <p>
+     * Setter for the field <code>lengths</code>.
+     * </p>
+     *
+     * @param lengths a {@link java.util.List} object.
+     */
+    public void setLengths(List<Integer> lengths) {
+        this.lengths = new int[lengths.size()];
+        int idx = 0;
+        for (Integer length : lengths) {
+            this.lengths[idx] = length;
+            idx++;
+        }
+    }
+
+    /**
+     * <p>
      * Setter for an element of the field <code>lengths</code>.
      * </p>
      *
@@ -189,22 +205,6 @@ public class ArrayReference extends VariableReferenceImpl {
      */
     public int getArrayDimensions() {
         return lengths.length;
-    }
-
-    /**
-     * <p>
-     * Setter for the field <code>lengths</code>.
-     * </p>
-     *
-     * @param lengths a {@link java.util.List} object.
-     */
-    public void setLengths(List<Integer> lengths) {
-        this.lengths = new int[lengths.size()];
-        int idx = 0;
-        for (Integer length : lengths) {
-            this.lengths[idx] = length;
-            idx++;
-        }
     }
 
     public int getMaximumIndex() {

@@ -42,10 +42,8 @@ import java.util.*;
  */
 public class ReplaceComparisonOperator implements MutationOperator {
 
-    private static final Logger logger = LoggerFactory.getLogger(ReplaceComparisonOperator.class);
-
     public static final String NAME = "ReplaceComparisonOperator";
-
+    private static final Logger logger = LoggerFactory.getLogger(ReplaceComparisonOperator.class);
     private static final Set<Integer> opcodesReference = new HashSet<>();
 
     private static final Set<Integer> opcodesNull = new HashSet<>();
@@ -53,6 +51,8 @@ public class ReplaceComparisonOperator implements MutationOperator {
     private static final Set<Integer> opcodesInt = new HashSet<>();
 
     private static final Set<Integer> opcodesIntInt = new HashSet<>();
+    private static final int TRUE = -1;
+    private static final int FALSE = -2;
 
     static {
         opcodesReference.addAll(Arrays.asList(Opcodes.IF_ACMPEQ,
@@ -65,150 +65,6 @@ public class ReplaceComparisonOperator implements MutationOperator {
                 Opcodes.IF_ICMPGE, Opcodes.IF_ICMPGT, Opcodes.IF_ICMPLE,
                 Opcodes.IF_ICMPLT, Opcodes.IF_ICMPNE));
 
-    }
-
-    private String getOp(int opcode) {
-        switch (opcode) {
-            case Opcodes.IFEQ:
-            case Opcodes.IF_ACMPEQ:
-            case Opcodes.IF_ICMPEQ:
-                return "==";
-            case Opcodes.IFNE:
-            case Opcodes.IF_ACMPNE:
-            case Opcodes.IF_ICMPNE:
-                return "!=";
-            case Opcodes.IFLT:
-            case Opcodes.IF_ICMPLT:
-                return "<";
-            case Opcodes.IFLE:
-            case Opcodes.IF_ICMPLE:
-                return "<=";
-            case Opcodes.IFGT:
-            case Opcodes.IF_ICMPGT:
-                return ">";
-            case Opcodes.IFGE:
-            case Opcodes.IF_ICMPGE:
-                return ">=";
-            case Opcodes.IFNULL:
-                return "= null";
-            case Opcodes.IFNONNULL:
-                return "!= null";
-        }
-        throw new RuntimeException("Unknown opcode: " + opcode);
-    }
-
-    private static final int TRUE = -1;
-
-    private static final int FALSE = -2;
-
-    /* (non-Javadoc)
-     * @see org.evosuite.cfg.instrumentation.MutationOperator#apply(org.objectweb.asm.tree.MethodNode, java.lang.String, java.lang.String, org.evosuite.cfg.BytecodeInstruction)
-     */
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<Mutation> apply(MethodNode mn, String className, String methodName,
-                                BytecodeInstruction instruction, Frame frame) {
-        JumpInsnNode node = (JumpInsnNode) instruction.getASMNode();
-        List<Mutation> mutations = new LinkedList<>();
-        LabelNode target = node.label;
-
-        boolean isBoolean = frame.getStack(frame.getStackSize() - 1) == BooleanValueInterpreter.BOOLEAN_VALUE;
-
-        for (Integer op : getOperators(node.getOpcode(), isBoolean)) {
-            logger.debug("Adding replacement " + op);
-            if (op >= 0) {
-                // insert mutation into bytecode with conditional
-                JumpInsnNode mutation = new JumpInsnNode(op, target);
-                // insert mutation into pool
-                Mutation mutationObject = MutationPool.getInstance(TestGenerationContext.getInstance().getClassLoaderForSUT()).addMutation(className,
-                        methodName,
-                        NAME + " "
-                                + getOp(node.getOpcode())
-                                + " -> "
-                                + getOp(op),
-                        instruction,
-                        mutation,
-                        getInfectionDistance(node.getOpcode(),
-                                op));
-                mutations.add(mutationObject);
-            } else {
-                // Replace relational operator with TRUE/FALSE
-
-                InsnList mutation = new InsnList();
-                if (opcodesInt.contains(node.getOpcode()))
-                    mutation.add(new InsnNode(Opcodes.POP));
-                else
-                    mutation.add(new InsnNode(Opcodes.POP2));
-                if (op == TRUE) {
-                    mutation.add(new LdcInsnNode(1));
-                } else {
-                    mutation.add(new LdcInsnNode(0));
-                }
-                mutation.add(new JumpInsnNode(Opcodes.IFNE, target));
-                Mutation mutationObject = MutationPool.getInstance(TestGenerationContext.getInstance().getClassLoaderForSUT()).addMutation(className,
-                        methodName,
-                        NAME + " "
-                                + getOp(node.getOpcode())
-                                + " -> " + op,
-                        instruction,
-                        mutation,
-                        getInfectionDistance(node.getOpcode(),
-                                op));
-                mutations.add(mutationObject);
-            }
-        }
-
-        return mutations;
-    }
-
-    /**
-     * <p>getInfectionDistance</p>
-     *
-     * @param opcodeOrig a int.
-     * @param opcodeNew  a int.
-     * @return a {@link org.objectweb.asm.tree.InsnList} object.
-     */
-    public InsnList getInfectionDistance(int opcodeOrig, int opcodeNew) {
-        InsnList distance = new InsnList();
-        switch (opcodeOrig) {
-            case Opcodes.IF_ICMPEQ:
-            case Opcodes.IF_ICMPNE:
-            case Opcodes.IF_ICMPLE:
-            case Opcodes.IF_ICMPLT:
-            case Opcodes.IF_ICMPGE:
-            case Opcodes.IF_ICMPGT:
-                distance.add(new InsnNode(Opcodes.DUP2));
-                distance.add(new LdcInsnNode(opcodeOrig));
-                distance.add(new LdcInsnNode(opcodeNew));
-                distance.add(new MethodInsnNode(
-                        Opcodes.INVOKESTATIC,
-                        PackageInfo.getNameWithSlash(ReplaceComparisonOperator.class),
-                        "getInfectionDistance", "(IIII)D", false));
-                break;
-
-            case Opcodes.IFEQ:
-            case Opcodes.IFNE:
-            case Opcodes.IFLE:
-            case Opcodes.IFLT:
-            case Opcodes.IFGE:
-            case Opcodes.IFGT:
-                distance.add(new InsnNode(Opcodes.DUP));
-                distance.add(new LdcInsnNode(opcodeOrig));
-                distance.add(new LdcInsnNode(opcodeNew));
-                distance.add(new MethodInsnNode(
-                        Opcodes.INVOKESTATIC,
-                        PackageInfo.getNameWithSlash(ReplaceComparisonOperator.class),
-                        "getInfectionDistance", "(III)D", false));
-                break;
-
-            default:
-                distance.add(new LdcInsnNode(0.0));
-        }
-
-        return distance;
     }
 
     /**
@@ -356,6 +212,10 @@ public class ReplaceComparisonOperator implements MutationOperator {
                 + opcodeNew);
     }
 
+    /* (non-Javadoc)
+     * @see org.evosuite.cfg.instrumentation.MutationOperator#apply(org.objectweb.asm.tree.MethodNode, java.lang.String, java.lang.String, org.evosuite.cfg.BytecodeInstruction)
+     */
+
     /**
      * <p>getInfectionDistance</p>
      *
@@ -497,6 +357,142 @@ public class ReplaceComparisonOperator implements MutationOperator {
 
         throw new RuntimeException("Unknown operator replacement: " + opcodeOrig + " -> "
                 + opcodeNew);
+    }
+
+    private String getOp(int opcode) {
+        switch (opcode) {
+            case Opcodes.IFEQ:
+            case Opcodes.IF_ACMPEQ:
+            case Opcodes.IF_ICMPEQ:
+                return "==";
+            case Opcodes.IFNE:
+            case Opcodes.IF_ACMPNE:
+            case Opcodes.IF_ICMPNE:
+                return "!=";
+            case Opcodes.IFLT:
+            case Opcodes.IF_ICMPLT:
+                return "<";
+            case Opcodes.IFLE:
+            case Opcodes.IF_ICMPLE:
+                return "<=";
+            case Opcodes.IFGT:
+            case Opcodes.IF_ICMPGT:
+                return ">";
+            case Opcodes.IFGE:
+            case Opcodes.IF_ICMPGE:
+                return ">=";
+            case Opcodes.IFNULL:
+                return "= null";
+            case Opcodes.IFNONNULL:
+                return "!= null";
+        }
+        throw new RuntimeException("Unknown opcode: " + opcode);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Mutation> apply(MethodNode mn, String className, String methodName,
+                                BytecodeInstruction instruction, Frame frame) {
+        JumpInsnNode node = (JumpInsnNode) instruction.getASMNode();
+        List<Mutation> mutations = new LinkedList<>();
+        LabelNode target = node.label;
+
+        boolean isBoolean = frame.getStack(frame.getStackSize() - 1) == BooleanValueInterpreter.BOOLEAN_VALUE;
+
+        for (Integer op : getOperators(node.getOpcode(), isBoolean)) {
+            logger.debug("Adding replacement " + op);
+            if (op >= 0) {
+                // insert mutation into bytecode with conditional
+                JumpInsnNode mutation = new JumpInsnNode(op, target);
+                // insert mutation into pool
+                Mutation mutationObject = MutationPool.getInstance(TestGenerationContext.getInstance().getClassLoaderForSUT()).addMutation(className,
+                        methodName,
+                        NAME + " "
+                                + getOp(node.getOpcode())
+                                + " -> "
+                                + getOp(op),
+                        instruction,
+                        mutation,
+                        getInfectionDistance(node.getOpcode(),
+                                op));
+                mutations.add(mutationObject);
+            } else {
+                // Replace relational operator with TRUE/FALSE
+
+                InsnList mutation = new InsnList();
+                if (opcodesInt.contains(node.getOpcode()))
+                    mutation.add(new InsnNode(Opcodes.POP));
+                else
+                    mutation.add(new InsnNode(Opcodes.POP2));
+                if (op == TRUE) {
+                    mutation.add(new LdcInsnNode(1));
+                } else {
+                    mutation.add(new LdcInsnNode(0));
+                }
+                mutation.add(new JumpInsnNode(Opcodes.IFNE, target));
+                Mutation mutationObject = MutationPool.getInstance(TestGenerationContext.getInstance().getClassLoaderForSUT()).addMutation(className,
+                        methodName,
+                        NAME + " "
+                                + getOp(node.getOpcode())
+                                + " -> " + op,
+                        instruction,
+                        mutation,
+                        getInfectionDistance(node.getOpcode(),
+                                op));
+                mutations.add(mutationObject);
+            }
+        }
+
+        return mutations;
+    }
+
+    /**
+     * <p>getInfectionDistance</p>
+     *
+     * @param opcodeOrig a int.
+     * @param opcodeNew  a int.
+     * @return a {@link org.objectweb.asm.tree.InsnList} object.
+     */
+    public InsnList getInfectionDistance(int opcodeOrig, int opcodeNew) {
+        InsnList distance = new InsnList();
+        switch (opcodeOrig) {
+            case Opcodes.IF_ICMPEQ:
+            case Opcodes.IF_ICMPNE:
+            case Opcodes.IF_ICMPLE:
+            case Opcodes.IF_ICMPLT:
+            case Opcodes.IF_ICMPGE:
+            case Opcodes.IF_ICMPGT:
+                distance.add(new InsnNode(Opcodes.DUP2));
+                distance.add(new LdcInsnNode(opcodeOrig));
+                distance.add(new LdcInsnNode(opcodeNew));
+                distance.add(new MethodInsnNode(
+                        Opcodes.INVOKESTATIC,
+                        PackageInfo.getNameWithSlash(ReplaceComparisonOperator.class),
+                        "getInfectionDistance", "(IIII)D", false));
+                break;
+
+            case Opcodes.IFEQ:
+            case Opcodes.IFNE:
+            case Opcodes.IFLE:
+            case Opcodes.IFLT:
+            case Opcodes.IFGE:
+            case Opcodes.IFGT:
+                distance.add(new InsnNode(Opcodes.DUP));
+                distance.add(new LdcInsnNode(opcodeOrig));
+                distance.add(new LdcInsnNode(opcodeNew));
+                distance.add(new MethodInsnNode(
+                        Opcodes.INVOKESTATIC,
+                        PackageInfo.getNameWithSlash(ReplaceComparisonOperator.class),
+                        "getInfectionDistance", "(III)D", false));
+                break;
+
+            default:
+                distance.add(new LdcInsnNode(0.0));
+        }
+
+        return distance;
     }
 
     private Set<Integer> getOperators(int opcode, boolean isBoolean) {

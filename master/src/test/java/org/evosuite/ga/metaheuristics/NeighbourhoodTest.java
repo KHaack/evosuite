@@ -33,8 +33,8 @@ import static org.junit.Assert.assertEquals;
 
 /**
  * Unit tests for Neighbourhood's functions (i.e, part of Cellular GA functions)
- * @author Nasser Albunian
  *
+ * @author Nasser Albunian
  */
 public class NeighbourhoodTest {
 

@@ -21,10 +21,10 @@ package com.examples.with.different.packagename.staticfield;
 
 public class StaticFoo {
 
+    private static int counter = 0;
+
     public StaticFoo() {
     }
-
-    private static int counter = 0;
 
     public static boolean bar(int value) throws IllegalStateException {
         if (counter > 0)

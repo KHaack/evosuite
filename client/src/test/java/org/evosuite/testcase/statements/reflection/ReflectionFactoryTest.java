@@ -29,13 +29,6 @@ import java.lang.reflect.Field;
  */
 public class ReflectionFactoryTest {
 
-    public static class Foo {
-
-        private int x;
-        public double p;
-    }
-
-
     @Test
     public void testGetNumberOfUsableFields() throws Exception {
 
@@ -44,5 +37,11 @@ public class ReflectionFactoryTest {
 
         Field f = rf.nextField();
         Assert.assertEquals(Foo.class.getDeclaredField("x"), f);
+    }
+
+    public static class Foo {
+
+        public double p;
+        private int x;
     }
 }

@@ -39,21 +39,12 @@ import org.slf4j.LoggerFactory;
  */
 public class ExecutionPathClassAdapter extends ClassVisitor {
 
-    private final String className;
-
-    private static boolean isMutation() {
-        return ArrayUtil.contains(Properties.CRITERION, Criterion.MUTATION)
-                || ArrayUtil.contains(Properties.CRITERION, Criterion.STRONGMUTATION)
-                || ArrayUtil.contains(Properties.CRITERION, Criterion.WEAKMUTATION);
-    }
-
     private static final Logger logger = LoggerFactory.getLogger(ExecutionPathClassAdapter.class);
-
+    private final String className;
     /**
      * Skip methods on enums - at least some
      */
     private boolean isEnum = false;
-
     /**
      * Skip default constructors on anonymous classes
      */
@@ -70,6 +61,12 @@ public class ExecutionPathClassAdapter extends ClassVisitor {
     public ExecutionPathClassAdapter(ClassVisitor visitor, String className) {
         super(Opcodes.ASM9, visitor);
         this.className = ResourceList.getClassNameFromResourcePath(className);
+    }
+
+    private static boolean isMutation() {
+        return ArrayUtil.contains(Properties.CRITERION, Criterion.MUTATION)
+                || ArrayUtil.contains(Properties.CRITERION, Criterion.STRONGMUTATION)
+                || ArrayUtil.contains(Properties.CRITERION, Criterion.WEAKMUTATION);
     }
 
     /* (non-Javadoc)

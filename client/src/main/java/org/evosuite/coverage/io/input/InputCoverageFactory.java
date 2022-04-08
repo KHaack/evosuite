@@ -51,6 +51,10 @@ public class InputCoverageFactory extends AbstractFitnessFactory<InputCoverageTe
      * org.evosuite.coverage.TestCoverageFactory#getCoverageGoals()
      */
 
+    public static InputCoverageTestFitness createGoal(String className, String methodName, int argIndex, Type argType, String descriptor) {
+        return new InputCoverageTestFitness(new InputCoverageGoal(className, methodName, argIndex, argType, descriptor));
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -157,9 +161,5 @@ public class InputCoverageFactory extends AbstractFitnessFactory<InputCoverageTe
         }
         goalComputationTime = System.currentTimeMillis() - start;
         return goals;
-    }
-
-    public static InputCoverageTestFitness createGoal(String className, String methodName, int argIndex, Type argType, String descriptor) {
-        return new InputCoverageTestFitness(new InputCoverageGoal(className, methodName, argIndex, argType, descriptor));
     }
 }

@@ -30,17 +30,12 @@ import java.util.Objects;
  * Created by gordon on 23/01/2016.
  */
 public class MockInstant implements StaticReplacementMock {
-    @Override
-    public String getMockedClassName() {
-        return Instant.class.getName();
+    public static Instant now() {
+        return MockClock.systemUTC().instant();
     }
 
 
     // ---- static methods -------
-
-    public static Instant now() {
-        return MockClock.systemUTC().instant();
-    }
 
     public static Instant now(Clock clock) {
         Objects.requireNonNull(clock, "clock");
@@ -55,7 +50,6 @@ public class MockInstant implements StaticReplacementMock {
         return Instant.ofEpochSecond(epochSecond, nanoAdjustment);
     }
 
-
     public static Instant ofEpochMilli(long epochMilli) {
         return Instant.ofEpochMilli(epochMilli);
     }
@@ -64,16 +58,15 @@ public class MockInstant implements StaticReplacementMock {
         return Instant.from(temporal);
     }
 
-
     public static Instant parse(final CharSequence text) {
         return Instant.parse(text);
     }
 
-    // ----- instance replacement methods -------------
-
     public static boolean isSupported(Instant instant, TemporalField field) {
         return instant.isSupported(field);
     }
+
+    // ----- instance replacement methods -------------
 
     public static boolean isSupported(Instant instant, TemporalUnit unit) {
         return instant.isSupported(unit);
@@ -200,6 +193,10 @@ public class MockInstant implements StaticReplacementMock {
         return instant.toString();
     }
 
+    @Override
+    public String getMockedClassName() {
+        return Instant.class.getName();
+    }
 
 
 }

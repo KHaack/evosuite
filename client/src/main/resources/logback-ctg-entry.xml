@@ -44,21 +44,21 @@
 
 
     <logger name="evo_logger" level="ALL" additivity="false">
-        <appender-ref ref="EVO_LOGGER" />
+        <appender-ref ref="EVO_LOGGER"/>
     </logger>
 
 
     <logger name="org.evosuite" level="${log.level:-WARN}">
-        <appender-ref ref="STDOUT" />
+        <appender-ref ref="STDOUT"/>
     </logger>
 
     <logger name="shaded.org.evosuite" level="${log.level:-WARN}">
-        <appender-ref ref="STDOUT" />
+        <appender-ref ref="STDOUT"/>
     </logger>
 
-    <logger name="org.evosuite.shaded" level="OFF" />
+    <logger name="org.evosuite.shaded" level="OFF"/>
 
-    <root level="OFF" />
+    <root level="OFF"/>
 
 
 </configuration>

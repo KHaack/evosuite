@@ -32,11 +32,9 @@ import java.security.InvalidParameterException;
  */
 public class TargetCoverageReachedStoppingCondition extends StoppingConditionImpl {
 
-    private static final long serialVersionUID = 7235280321530441520L;
-
     public static final String AND = " and ";
     public static final String ERROR_LIMIT_PARAMETER_MUST_BE_IN_BOUNDS = "ERROR | limit parameter must be in bounds ";
-
+    private static final long serialVersionUID = 7235280321530441520L;
     /**
      * Bound values for setLimit input
      */
@@ -63,17 +61,6 @@ public class TargetCoverageReachedStoppingCondition extends StoppingConditionImp
         return targetCoverage;
     }
 
-    @Override
-    public boolean isFinished() {
-        return lastCoverage >= targetCoverage;
-    }
-
-    @Override
-    public void reset() {
-        lastCoverage = Chromosome.MIN_REACHABLE_COVERAGE;
-        targetCoverage = Chromosome.MAX_REACHABLE_COVERAGE;
-    }
-
     /**
      * Sets the limit of the coverage.
      * <p>
@@ -94,6 +81,17 @@ public class TargetCoverageReachedStoppingCondition extends StoppingConditionImp
             );
         }
         targetCoverage = (int) limit;
+    }
+
+    @Override
+    public boolean isFinished() {
+        return lastCoverage >= targetCoverage;
+    }
+
+    @Override
+    public void reset() {
+        lastCoverage = Chromosome.MIN_REACHABLE_COVERAGE;
+        targetCoverage = Chromosome.MAX_REACHABLE_COVERAGE;
     }
 
     @Override

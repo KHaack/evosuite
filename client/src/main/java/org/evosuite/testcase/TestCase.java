@@ -408,6 +408,13 @@ public interface TestCase extends Iterable<Statement>, Cloneable, Listenable<Voi
     boolean isUnstable();
 
     /**
+     * Define whether this test case is unstable or not
+     *
+     * @param unstable
+     */
+    void setUnstable(boolean unstable);
+
+    /**
      * Check if test case is valid (executable)
      *
      * @return a boolean.
@@ -439,7 +446,6 @@ public interface TestCase extends Iterable<Statement>, Cloneable, Listenable<Voi
      */
     void replace(VariableReference var1, VariableReference var2);
 
-
     /**
      * Set new statement at position
      *
@@ -450,13 +456,6 @@ public interface TestCase extends Iterable<Statement>, Cloneable, Listenable<Voi
      * variable reference and not use references
      */
     VariableReference setStatement(Statement statement, int position);
-
-    /**
-     * Define whether this test case is unstable or not
-     *
-     * @param unstable
-     */
-    void setUnstable(boolean unstable);
 
     /**
      * <p>size</p>

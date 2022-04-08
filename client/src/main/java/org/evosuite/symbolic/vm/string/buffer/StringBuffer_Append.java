@@ -35,12 +35,11 @@ import org.evosuite.symbolic.vm.heap.SymbolicHeap;
 public abstract class StringBuffer_Append extends SymbolicFunction {
 
     private static final String APPEND = "append";
+    protected String stringValBeforeExecution;
 
     public StringBuffer_Append(SymbolicEnvironment env, String desc) {
         super(env, Types.JAVA_LANG_STRING_BUFFER, APPEND, desc);
     }
-
-    protected String stringValBeforeExecution;
 
     @Override
     public IntegerConstraint beforeExecuteFunction() {

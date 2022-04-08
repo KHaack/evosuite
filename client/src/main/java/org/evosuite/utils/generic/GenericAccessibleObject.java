@@ -54,6 +54,15 @@ public abstract class GenericAccessibleObject<T extends GenericAccessibleObject<
 
     protected List<GenericClass<?>> typeVariables = new ArrayList<>();
 
+    /**
+     * Constructs a new GenericAccessibleObject with the given {@code owner} class.
+     *
+     * @param owner the class where this accessible object is located in
+     */
+    public GenericAccessibleObject(GenericClass<?> owner) {
+        this.owner = owner;
+    }
+
     protected static Type getTypeFromExactReturnType(GenericArrayType returnType,
                                                      GenericArrayType type) {
         return GenericArrayTypeImpl.createArrayType(getTypeFromExactReturnType(returnType.getGenericComponentType(),
@@ -153,15 +162,6 @@ public abstract class GenericAccessibleObject<T extends GenericAccessibleObject<
         } else {
             throw new AssertionError("Unexpected type " + type.getClass());
         }
-    }
-
-    /**
-     * Constructs a new GenericAccessibleObject with the given {@code owner} class.
-     *
-     * @param owner the class where this accessible object is located in
-     */
-    public GenericAccessibleObject(GenericClass<?> owner) {
-        this.owner = owner;
     }
 
     /**
@@ -385,6 +385,12 @@ public abstract class GenericAccessibleObject<T extends GenericAccessibleObject<
 
     public abstract TypeVariable<?>[] getTypeParameters();
 
+    public void setTypeParameters(List<GenericClass<?>> parameterTypes) {
+        typeVariables.clear();
+        for (GenericClass<?> parameter : parameterTypes)
+            typeVariables.add(GenericClassFactory.get(parameter));
+    }
+
     protected Map<TypeVariable<?>, GenericClass<?>> getTypeVariableMap() {
         Map<TypeVariable<?>, GenericClass<?>> typeMap = new HashMap<>();
         int pos = 0;
@@ -443,12 +449,6 @@ public abstract class GenericAccessibleObject<T extends GenericAccessibleObject<
             varMap.addAll(getTypeVariableMap());
             return varMap.map(toMapType);
         }
-    }
-
-    public void setTypeParameters(List<GenericClass<?>> parameterTypes) {
-        typeVariables.clear();
-        for (GenericClass<?> parameter : parameterTypes)
-            typeVariables.add(GenericClassFactory.get(parameter));
     }
 
     @Override

@@ -87,16 +87,16 @@ public class ZeroFitnessStoppingCondition<T extends Chromosome<T>> extends Stopp
      * {@inheritDoc}
      */
     @Override
-    public void setLimit(long limit) {
-        // Do nothing
+    public long getLimit() {
+        return 0;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public long getLimit() {
-        return 0;
+    public void setLimit(long limit) {
+        // Do nothing
     }
 
     /* (non-Javadoc)

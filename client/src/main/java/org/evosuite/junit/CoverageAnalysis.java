@@ -700,6 +700,13 @@ public class CoverageAnalysis {
         tests.sort((t0, t1) -> Integer.compare(t1.getName().length(), t0.getName().length()));
     }
 
+    // just for testing
+    protected static void reset() {
+        totalGoals = 0;
+        totalCoveredGoals = 0;
+        targetClasses.clear();
+    }
+
     /**
      * <p>
      * run
@@ -723,12 +730,5 @@ public class CoverageAnalysis {
          */
 
         util.informSearchIsFinished(null);
-    }
-
-    // just for testing
-    protected static void reset() {
-        totalGoals = 0;
-        totalCoveredGoals = 0;
-        targetClasses.clear();
     }
 }

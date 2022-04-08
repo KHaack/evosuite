@@ -21,6 +21,8 @@ package com.examples.with.different.packagename.concolic;
 
 public class MathDouble {
 
+    private Double f = 3.1416;
+
     public double divide(double a, double b) {
         return a / b;
     }
@@ -40,8 +42,6 @@ public class MathDouble {
     public double substract(double a, double b) {
         return a - b;
     }
-
-    private Double f = 3.1416;
 
     public void unreach() {
         if (f == null) {

@@ -34,6 +34,8 @@ import static org.junit.Assert.*;
 
 public abstract class TestSolverFloats extends TestSolver {
 
+    private static final double DELTA = 1e-15;
+
     private static DefaultTestCase buildTestCaseFraction() throws SecurityException, NoSuchMethodException {
         TestCaseBuilder tc = new TestCaseBuilder();
         VariableReference double0 = tc.appendDoublePrimitive(Math.PI - 3);
@@ -41,98 +43,6 @@ public abstract class TestSolverFloats extends TestSolver {
         Method method = TestCaseFloatFraction.class.getMethod("test", double.class);
         tc.appendMethod(null, method, double0);
         return tc.getDefaultTestCase();
-    }
-
-    private static final double DELTA = 1e-15;
-
-    @Test
-    public void testEq() throws SecurityException, NoSuchMethodException, SolverTimeoutException {
-
-        DefaultTestCase tc = buildTestCaseEq();
-        Collection<Constraint<?>> constraints = DefaultTestCaseConcolicExecutor.execute(tc);
-        Map<String, Object> solution = solve(getSolver(), constraints);
-        assertNotNull(solution);
-        Double var0 = (Double) solution.get("var0");
-        Double var1 = (Double) solution.get("var1");
-
-        assertEquals(var0.intValue(), var1.intValue());
-    }
-
-    @Test
-    public void testFraction() throws SecurityException, NoSuchMethodException, SolverTimeoutException {
-
-        DefaultTestCase tc = buildTestCaseFraction();
-        Collection<Constraint<?>> constraints = DefaultTestCaseConcolicExecutor.execute(tc);
-        Map<String, Object> solution = solve(getSolver(), constraints);
-        assertNotNull(solution);
-        Double var0 = (Double) solution.get("var0");
-
-        assertTrue(var0 > 0);
-        assertTrue(var0 < 1);
-    }
-
-    @Test
-    public void testGt() throws SecurityException, NoSuchMethodException, SolverTimeoutException {
-
-        DefaultTestCase tc = buildTestCaseGt();
-        Collection<Constraint<?>> constraints = DefaultTestCaseConcolicExecutor.execute(tc);
-        Map<String, Object> solution = solve(getSolver(), constraints);
-        assertNotNull(solution);
-        Double var0 = (Double) solution.get("var0");
-        Double var1 = (Double) solution.get("var1");
-
-        assertTrue(var0 > var1);
-    }
-
-    @Test
-    public void testGte() throws SecurityException, NoSuchMethodException, SolverTimeoutException {
-
-        DefaultTestCase tc = buildTestCaseGte();
-        Collection<Constraint<?>> constraints = DefaultTestCaseConcolicExecutor.execute(tc);
-        Map<String, Object> solution = solve(getSolver(), constraints);
-        assertNotNull(solution);
-        Double var0 = (Double) solution.get("var0");
-        Double var1 = (Double) solution.get("var1");
-
-        assertTrue(var0 >= var1);
-    }
-
-    @Test
-    public void testLt() throws SecurityException, NoSuchMethodException, SolverTimeoutException {
-
-        DefaultTestCase tc = buildTestCaseLt();
-        Collection<Constraint<?>> constraints = DefaultTestCaseConcolicExecutor.execute(tc);
-        Map<String, Object> solution = solve(getSolver(), constraints);
-        assertNotNull(solution);
-        Double var0 = (Double) solution.get("var0");
-        Double var1 = (Double) solution.get("var1");
-
-        assertTrue(var0 < var1);
-    }
-
-    @Test
-    public void testLte() throws SecurityException, NoSuchMethodException, SolverTimeoutException {
-
-        DefaultTestCase tc = buildTestCaseLte();
-        Collection<Constraint<?>> constraints = DefaultTestCaseConcolicExecutor.execute(tc);
-        Map<String, Object> solution = solve(getSolver(), constraints);
-        assertNotNull(solution);
-        Double var0 = (Double) solution.get("var0");
-        Double var1 = (Double) solution.get("var1");
-
-        assertTrue(var0 <= var1);
-    }
-
-    @Test
-    public void testNeq() throws SecurityException, NoSuchMethodException, SolverTimeoutException {
-        DefaultTestCase tc = buildTestCaseNeq();
-        Collection<Constraint<?>> constraints = DefaultTestCaseConcolicExecutor.execute(tc);
-        Map<String, Object> solution = solve(getSolver(), constraints);
-        assertNotNull(solution);
-        Double var0 = (Double) solution.get("var0");
-        Double var1 = (Double) solution.get("var1");
-
-        assertTrue(var0.intValue() != var1.intValue());
     }
 
     private static DefaultTestCase buildTestCaseEq() throws SecurityException, NoSuchMethodException {
@@ -242,6 +152,96 @@ public abstract class TestSolverFloats extends TestSolver {
         Method method = TestCaseFloatMod.class.getMethod("test", double.class);
         tc.appendMethod(null, method, double0);
         return tc.getDefaultTestCase();
+    }
+
+    @Test
+    public void testEq() throws SecurityException, NoSuchMethodException, SolverTimeoutException {
+
+        DefaultTestCase tc = buildTestCaseEq();
+        Collection<Constraint<?>> constraints = DefaultTestCaseConcolicExecutor.execute(tc);
+        Map<String, Object> solution = solve(getSolver(), constraints);
+        assertNotNull(solution);
+        Double var0 = (Double) solution.get("var0");
+        Double var1 = (Double) solution.get("var1");
+
+        assertEquals(var0.intValue(), var1.intValue());
+    }
+
+    @Test
+    public void testFraction() throws SecurityException, NoSuchMethodException, SolverTimeoutException {
+
+        DefaultTestCase tc = buildTestCaseFraction();
+        Collection<Constraint<?>> constraints = DefaultTestCaseConcolicExecutor.execute(tc);
+        Map<String, Object> solution = solve(getSolver(), constraints);
+        assertNotNull(solution);
+        Double var0 = (Double) solution.get("var0");
+
+        assertTrue(var0 > 0);
+        assertTrue(var0 < 1);
+    }
+
+    @Test
+    public void testGt() throws SecurityException, NoSuchMethodException, SolverTimeoutException {
+
+        DefaultTestCase tc = buildTestCaseGt();
+        Collection<Constraint<?>> constraints = DefaultTestCaseConcolicExecutor.execute(tc);
+        Map<String, Object> solution = solve(getSolver(), constraints);
+        assertNotNull(solution);
+        Double var0 = (Double) solution.get("var0");
+        Double var1 = (Double) solution.get("var1");
+
+        assertTrue(var0 > var1);
+    }
+
+    @Test
+    public void testGte() throws SecurityException, NoSuchMethodException, SolverTimeoutException {
+
+        DefaultTestCase tc = buildTestCaseGte();
+        Collection<Constraint<?>> constraints = DefaultTestCaseConcolicExecutor.execute(tc);
+        Map<String, Object> solution = solve(getSolver(), constraints);
+        assertNotNull(solution);
+        Double var0 = (Double) solution.get("var0");
+        Double var1 = (Double) solution.get("var1");
+
+        assertTrue(var0 >= var1);
+    }
+
+    @Test
+    public void testLt() throws SecurityException, NoSuchMethodException, SolverTimeoutException {
+
+        DefaultTestCase tc = buildTestCaseLt();
+        Collection<Constraint<?>> constraints = DefaultTestCaseConcolicExecutor.execute(tc);
+        Map<String, Object> solution = solve(getSolver(), constraints);
+        assertNotNull(solution);
+        Double var0 = (Double) solution.get("var0");
+        Double var1 = (Double) solution.get("var1");
+
+        assertTrue(var0 < var1);
+    }
+
+    @Test
+    public void testLte() throws SecurityException, NoSuchMethodException, SolverTimeoutException {
+
+        DefaultTestCase tc = buildTestCaseLte();
+        Collection<Constraint<?>> constraints = DefaultTestCaseConcolicExecutor.execute(tc);
+        Map<String, Object> solution = solve(getSolver(), constraints);
+        assertNotNull(solution);
+        Double var0 = (Double) solution.get("var0");
+        Double var1 = (Double) solution.get("var1");
+
+        assertTrue(var0 <= var1);
+    }
+
+    @Test
+    public void testNeq() throws SecurityException, NoSuchMethodException, SolverTimeoutException {
+        DefaultTestCase tc = buildTestCaseNeq();
+        Collection<Constraint<?>> constraints = DefaultTestCaseConcolicExecutor.execute(tc);
+        Map<String, Object> solution = solve(getSolver(), constraints);
+        assertNotNull(solution);
+        Double var0 = (Double) solution.get("var0");
+        Double var1 = (Double) solution.get("var1");
+
+        assertTrue(var0.intValue() != var1.intValue());
     }
 
     @Test

@@ -27,15 +27,15 @@ import java.util.List;
  */
 class ClassWithPrivateInnerClass {
 
-    private class Property {
-        final String foo = "";
-    }
-
     protected Property getProperty() {
         return new Property();
     }
 
     public List<Property> getPropertyList() {
         return Collections.EMPTY_LIST;
+    }
+
+    private class Property {
+        final String foo = "";
     }
 }

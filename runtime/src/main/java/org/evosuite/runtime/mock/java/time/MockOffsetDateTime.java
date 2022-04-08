@@ -30,11 +30,6 @@ import java.util.Comparator;
  * Created by gordon on 24/01/2016.
  */
 public class MockOffsetDateTime implements StaticReplacementMock {
-    @Override
-    public String getMockedClassName() {
-        return OffsetDateTime.class.getName();
-    }
-
     public static Comparator<OffsetDateTime> timeLineOrder() {
         return OffsetDateTime.timeLineOrder();
     }
@@ -79,5 +74,10 @@ public class MockOffsetDateTime implements StaticReplacementMock {
 
     public static OffsetDateTime parse(CharSequence text, DateTimeFormatter formatter) {
         return OffsetDateTime.parse(text, formatter);
+    }
+
+    @Override
+    public String getMockedClassName() {
+        return OffsetDateTime.class.getName();
     }
 }

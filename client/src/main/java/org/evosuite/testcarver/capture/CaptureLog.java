@@ -36,8 +36,6 @@ public final class CaptureLog implements Cloneable {
 
     //=============   static, final fields ===================================================
 
-    private static final Logger logger = LoggerFactory.getLogger(CaptureLog.class);
-
     public static final Object[] NO_ARGS = new Object[0];
     public static final String OBSERVED_INIT = "<init>";
     public static final String PLAIN_INIT = CaptureLog.class.getName() + ".PLAIN";
@@ -45,25 +43,20 @@ public final class CaptureLog implements Cloneable {
             + ".COLLECTION";
     public static final String MAP_INIT = CaptureLog.class.getName() + ".MAP";
     public static final String ARRAY_INIT = CaptureLog.class.getName() + ".ARRAY";
-
     public static final String NOT_OBSERVED_INIT = CaptureLog.class.getName() + ".XINIT";
-
     public static final String END_CAPTURE_PSEUDO_METHOD = CaptureLog.class.getName()
             + ".END_CAPTURE";
     public static final int PSEUDO_CAPTURE_ID = Integer.MAX_VALUE; // for internally created statement (PLAIN_INIT and NOT_OBSERVED_INIT)
-
     public static final String EMPTY_DESC = Type.getMethodDescriptor(Type.VOID_TYPE
     );
     public static final int NO_DEPENDENCY = -1;
-
     public static final String PUTFIELD = "PUTFIELD";
     public static final String PUTSTATIC = "PUTSTATIC";
     public static final String GETFIELD = "GETFIELD";
     public static final String GETSTATIC = "GETSTATIC";
-
     public static final Object RETURN_TYPE_VOID = CaptureLog.class.getName()
             + ".RETURN_VOID";
-
+    private static final Logger logger = LoggerFactory.getLogger(CaptureLog.class);
     private static final Set<String> NOT_OBSERVED_INIT_METHODS = Collections.synchronizedSet(new LinkedHashSet<>());
 
     static {

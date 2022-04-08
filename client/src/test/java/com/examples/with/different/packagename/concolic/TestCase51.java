@@ -22,6 +22,45 @@ package com.examples.with.different.packagename.concolic;
 public class TestCase51 {
 
     /**
+     * @param args
+     */
+    public static void test() {
+
+        Stemmer stemmer0 = new Stemmer();
+        char[] charArray0 = stemmer0.getResultBuffer();
+        char char0 = 'z';
+        char char1 = 'z';
+        int int0 = stemmer0.getResultLength();
+        stemmer0.add(char0);
+        String string0 = stemmer0.toString();
+        int int1 = stemmer0.getResultLength();
+        char char2 = '_';
+        stemmer0.add(char2);
+        Stemmer stemmer1 = new Stemmer();
+        char[] charArray1 = stemmer0.getResultBuffer();
+        stemmer0.stem();
+        stemmer0.add(charArray0, int1);
+        int int2 = -1848;
+        stemmer0.stem();
+        stemmer0.add(charArray0, int2);
+        char char3 = '\u0010';
+        Stemmer stemmer2 = new Stemmer();
+        stemmer0.add(char3);
+        char char4 = 'u';
+        stemmer0.add(char4);
+        String string1 = stemmer1.toString();
+        stemmer1.add(char1);
+        int int3 = -1550;
+        stemmer1.add(charArray0, int1);
+        int int4 = 571;
+        stemmer1.add(charArray0, int4);
+        stemmer0.add(charArray0, int1);
+        stemmer1.add(charArray0, int3);
+        char[] charArray2 = stemmer0.getResultBuffer();
+        stemmer0.stem();
+    }
+
+    /**
      * Stemmer, implementing the Porter Stemming Algorithm
      * <p>
      * The Stemmer class transforms a word into its root form. The input word
@@ -30,11 +69,11 @@ public class TestCase51 {
      */
 
     public static class Stemmer {
+        private static final int INC = 50;
         private char[] b;
         private int i, /* offset into b */
                 i_end, /* offset to end of stemmed word */
                 j, k;
-        private static final int INC = 50;
 
         /* unit of size whereby b is increased */
         public Stemmer() {
@@ -561,45 +600,6 @@ public class TestCase51 {
          * forcing lower case must be done outside the Stemmer class. Usage:
          * Stemmer file-name file-name ...
          */
-    }
-
-    /**
-     * @param args
-     */
-    public static void test() {
-
-        Stemmer stemmer0 = new Stemmer();
-        char[] charArray0 = stemmer0.getResultBuffer();
-        char char0 = 'z';
-        char char1 = 'z';
-        int int0 = stemmer0.getResultLength();
-        stemmer0.add(char0);
-        String string0 = stemmer0.toString();
-        int int1 = stemmer0.getResultLength();
-        char char2 = '_';
-        stemmer0.add(char2);
-        Stemmer stemmer1 = new Stemmer();
-        char[] charArray1 = stemmer0.getResultBuffer();
-        stemmer0.stem();
-        stemmer0.add(charArray0, int1);
-        int int2 = -1848;
-        stemmer0.stem();
-        stemmer0.add(charArray0, int2);
-        char char3 = '\u0010';
-        Stemmer stemmer2 = new Stemmer();
-        stemmer0.add(char3);
-        char char4 = 'u';
-        stemmer0.add(char4);
-        String string1 = stemmer1.toString();
-        stemmer1.add(char1);
-        int int3 = -1550;
-        stemmer1.add(charArray0, int1);
-        int int4 = 571;
-        stemmer1.add(charArray0, int4);
-        stemmer0.add(charArray0, int1);
-        stemmer1.add(charArray0, int3);
-        char[] charArray2 = stemmer0.getResultBuffer();
-        stemmer0.stem();
     }
 
 }

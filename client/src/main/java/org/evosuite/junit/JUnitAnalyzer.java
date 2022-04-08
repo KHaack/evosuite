@@ -63,15 +63,14 @@ import static org.junit.platform.engine.discovery.ClassNameFilter.includeClassNa
 public abstract class JUnitAnalyzer {
 
     private static final Logger logger = LoggerFactory.getLogger(JUnitAnalyzer.class);
-
-    private static int dirCounter = 0;
-
     private static final String JAVA = ".java";
     private static final String CLASS = ".class";
-
-    private static NonInstrumentingClassLoader loader = new NonInstrumentingClassLoader();
-
     private static final VersionDependentAnalyzing versionDependentAnalyzer;
+    private static int dirCounter = 0;
+    private static NonInstrumentingClassLoader loader = new NonInstrumentingClassLoader();
+    // We have to have a unique name for this test suite as it is loaded by the
+    // EvoSuite classloader, and thus cannot easily be re-loaded
+    private static int NUM = 0;
 
     static {
         versionDependentAnalyzer = Properties.TEST_FORMAT == Properties.OutputFormat.JUNIT5 ?
@@ -286,7 +285,6 @@ public abstract class JUnitAnalyzer {
         return runJUnitOnCurrentProcess(testClasses);
     }
 
-
     private static JUnitResult runJUnitOnCurrentProcess(Class<?>[] testClasses) {
         return versionDependentAnalyzer.runJUnitOnCurrentProcess(testClasses);
     }
@@ -300,10 +298,6 @@ public abstract class JUnitAnalyzer {
         JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
         return compiler != null;
     }
-
-    // We have to have a unique name for this test suite as it is loaded by the
-    // EvoSuite classloader, and thus cannot easily be re-loaded
-    private static int NUM = 0;
 
     private static List<File> compileTests(List<TestCase> tests, File dir) {
 

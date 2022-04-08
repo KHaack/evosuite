@@ -41,16 +41,16 @@ public class IntegerConverterTestCase extends NumberConverterTestBase {
 
     // ------------------------------------------------------------------------
 
+    public static TestSuite suite() {
+        return new TestSuite(IntegerConverterTestCase.class);
+    }
+
     public void setUp() throws Exception {
         converter = makeConverter();
         numbers[0] = new Integer("-12");
         numbers[1] = new Integer("13");
         numbers[2] = new Integer("-22");
         numbers[3] = new Integer("23");
-    }
-
-    public static TestSuite suite() {
-        return new TestSuite(IntegerConverterTestCase.class);
     }
 
     public void tearDown() throws Exception {

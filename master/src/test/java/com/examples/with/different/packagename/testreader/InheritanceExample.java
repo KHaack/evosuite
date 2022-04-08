@@ -30,13 +30,13 @@ public class InheritanceExample extends TestExample {
         initializeAgain();
     }
 
+    public InheritanceExample() {
+        doOtherCalc(value);
+    }
+
     @BeforeClass
     public static void meanWhile() {
         otherValue = doCalc(value, otherValue);
-    }
-
-    public InheritanceExample() {
-        doOtherCalc(value);
     }
 
     @Test

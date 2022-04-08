@@ -35,17 +35,16 @@ import java.util.Set;
 public abstract class ExecutionObserver {
 
     /**
-     * The test case being monitored and executed
-     */
-    protected static TestCase currentTest = null;
-
-    /**
      * Constant <code>WRAPPER_TYPES</code>
      */
     protected static final Set<Class<?>> WRAPPER_TYPES = new HashSet<>(
             Arrays.asList(Boolean.class, Character.class, Byte.class, Short.class,
                     Integer.class, Long.class, Float.class, Double.class,
                     Void.class));
+    /**
+     * The test case being monitored and executed
+     */
+    protected static TestCase currentTest = null;
 
     /**
      * <p>
@@ -60,21 +59,21 @@ public abstract class ExecutionObserver {
     }
 
     /**
-     * Setter method for current test case
-     *
-     * @param test a {@link org.evosuite.testcase.TestCase} object.
-     */
-    public static void setCurrentTest(TestCase test) {
-        currentTest = test;
-    }
-
-    /**
      * Getter method for current test case
      *
      * @return a {@link org.evosuite.testcase.TestCase} object.
      */
     public static TestCase getCurrentTest() {
         return currentTest;
+    }
+
+    /**
+     * Setter method for current test case
+     *
+     * @param test a {@link org.evosuite.testcase.TestCase} object.
+     */
+    public static void setCurrentTest(TestCase test) {
+        currentTest = test;
     }
 
     /**

@@ -49,15 +49,92 @@ import org.slf4j.LoggerFactory;
  */
 public class ClientProcess {
 
-    private static final Logger logger = LoggerFactory.getLogger(ClientProcess.class);
-
     public final static String CLIENT_PREFIX = "Client-";
-
     public final static String DEFAULT_CLIENT_NAME = CLIENT_PREFIX + "0";
-
+    private static final Logger logger = LoggerFactory.getLogger(ClientProcess.class);
+    public static TestGenerationResult result;
     private static String identifier;
 
-    public static TestGenerationResult result;
+    private static void setupRuntimeProperties() {
+        RuntimeSettings.useVFS = Properties.VIRTUAL_FS;
+        RuntimeSettings.mockJVMNonDeterminism = Properties.REPLACE_CALLS;
+        RuntimeSettings.mockSystemIn = Properties.REPLACE_SYSTEM_IN;
+        RuntimeSettings.mockGUI = Properties.REPLACE_GUI;
+        RuntimeSettings.sandboxMode = Properties.SANDBOX_MODE;
+        RuntimeSettings.maxNumberOfThreads = Properties.MAX_STARTED_THREADS;
+        RuntimeSettings.maxNumberOfIterationsPerLoop = Properties.MAX_LOOP_ITERATIONS;
+        RuntimeSettings.useVNET = Properties.VIRTUAL_NET;
+        RuntimeSettings.useSeparateClassLoader = Properties.USE_SEPARATE_CLASSLOADER;
+        RuntimeSettings.className = Properties.TARGET_CLASS;
+        RuntimeSettings.applyUIDTransformation = true;
+        RuntimeSettings.isRunningASystemTest = Properties.IS_RUNNING_A_SYSTEM_TEST;
+        MethodCallReplacementCache.resetSingleton();
+    }
+
+    /**
+     * Returns the client's identifier.
+     */
+    public static String getIdentifier() {
+        return identifier;
+    }
+
+    public static String getPrettyPrintIdentifier() {
+        if (Properties.NUM_PARALLEL_CLIENTS == 1) {
+            return "";
+        }
+        return identifier + ": ";
+    }
+
+    /**
+     * <p>
+     * main
+     * </p>
+     *
+     * @param args an array of {@link java.lang.String} objects.
+     */
+    public static void main(String[] args) {
+
+        /*
+         * important to have it in a variable, otherwise
+         * might be issues with following System.exit if successive
+         * threads change it if this thread is still running
+         */
+        boolean onThread = Properties.CLIENT_ON_THREAD;
+
+        if (args.length > 0) {
+            identifier = args[0];
+        } else {
+            identifier = DEFAULT_CLIENT_NAME;
+        }
+
+        try {
+            LoggingUtils.getEvoLogger().info("* Starting " + getIdentifier());
+            ClientProcess process = new ClientProcess();
+            TimeController.resetSingleton();
+            process.run();
+            if (!onThread) {
+                /*
+                 * If we we are in debug mode in which we run client on separated thread,
+                 * then do not kill the JVM
+                 */
+                System.exit(0);
+            }
+        } catch (Throwable t) {
+            logger.error(getPrettyPrintIdentifier() + "Error when generating tests for: " + Properties.TARGET_CLASS
+                    + " with seed " + Randomness.getSeed() + ". Configuration id : " + Properties.CONFIGURATION_ID, t);
+            t.printStackTrace();
+
+            //sleep 1 sec to be more sure that the above log is recorded
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+            }
+
+            if (!onThread) {
+                System.exit(1);
+            }
+        }
+    }
 
     /**
      * <p>
@@ -128,87 +205,5 @@ public class ClientProcess {
         	in how agents are used (but don't know why...)
          */
         //AgentLoader.loadAgent();
-    }
-
-    private static void setupRuntimeProperties() {
-        RuntimeSettings.useVFS = Properties.VIRTUAL_FS;
-        RuntimeSettings.mockJVMNonDeterminism = Properties.REPLACE_CALLS;
-        RuntimeSettings.mockSystemIn = Properties.REPLACE_SYSTEM_IN;
-        RuntimeSettings.mockGUI = Properties.REPLACE_GUI;
-        RuntimeSettings.sandboxMode = Properties.SANDBOX_MODE;
-        RuntimeSettings.maxNumberOfThreads = Properties.MAX_STARTED_THREADS;
-        RuntimeSettings.maxNumberOfIterationsPerLoop = Properties.MAX_LOOP_ITERATIONS;
-        RuntimeSettings.useVNET = Properties.VIRTUAL_NET;
-        RuntimeSettings.useSeparateClassLoader = Properties.USE_SEPARATE_CLASSLOADER;
-        RuntimeSettings.className = Properties.TARGET_CLASS;
-        RuntimeSettings.applyUIDTransformation = true;
-        RuntimeSettings.isRunningASystemTest = Properties.IS_RUNNING_A_SYSTEM_TEST;
-        MethodCallReplacementCache.resetSingleton();
-    }
-
-
-    /**
-     * Returns the client's identifier.
-     */
-    public static String getIdentifier() {
-        return identifier;
-    }
-
-    public static String getPrettyPrintIdentifier() {
-        if (Properties.NUM_PARALLEL_CLIENTS == 1) {
-            return "";
-        }
-        return identifier + ": ";
-    }
-
-    /**
-     * <p>
-     * main
-     * </p>
-     *
-     * @param args an array of {@link java.lang.String} objects.
-     */
-    public static void main(String[] args) {
-
-        /*
-         * important to have it in a variable, otherwise
-         * might be issues with following System.exit if successive
-         * threads change it if this thread is still running
-         */
-        boolean onThread = Properties.CLIENT_ON_THREAD;
-
-        if (args.length > 0) {
-            identifier = args[0];
-        } else {
-            identifier = DEFAULT_CLIENT_NAME;
-        }
-
-        try {
-            LoggingUtils.getEvoLogger().info("* Starting " + getIdentifier());
-            ClientProcess process = new ClientProcess();
-            TimeController.resetSingleton();
-            process.run();
-            if (!onThread) {
-                /*
-                 * If we we are in debug mode in which we run client on separated thread,
-                 * then do not kill the JVM
-                 */
-                System.exit(0);
-            }
-        } catch (Throwable t) {
-            logger.error(getPrettyPrintIdentifier() + "Error when generating tests for: " + Properties.TARGET_CLASS
-                    + " with seed " + Randomness.getSeed() + ". Configuration id : " + Properties.CONFIGURATION_ID, t);
-            t.printStackTrace();
-
-            //sleep 1 sec to be more sure that the above log is recorded
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-            }
-
-            if (!onThread) {
-                System.exit(1);
-            }
-        }
     }
 }

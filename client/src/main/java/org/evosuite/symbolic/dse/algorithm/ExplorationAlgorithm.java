@@ -57,8 +57,6 @@ import java.util.*;
  */
 public abstract class ExplorationAlgorithm extends ExplorationAlgorithmBase {
 
-    private static final transient Logger logger = LoggerFactory.getLogger(ExplorationAlgorithm.class);
-
     /**
      * Logger Messages
      **/
@@ -75,16 +73,13 @@ public abstract class ExplorationAlgorithm extends ExplorationAlgorithmBase {
     public static final String SOLVER_OUTCOME_IS_SAT_DEBUG_MESSAGE = "query is SAT (solution found)";
     public static final String SOLVER_OUTCOME_IS_UNSAT_DEBUG_MESSAGE = "query is UNSAT (no solution found)";
     public static final String SOLVING_CURRENT_SMT_QUERY_DEBUG_MESSAGE = "* Solving current SMT query";
-
     // Concolic Engine
     public static final String PATH_CONDITION_COLLECTED_SIZE = "Path condition collected with: {} branches";
     public static final String FINISHED_CONCOLIC_EXECUTION_DEBUG_MESSAGE = "Finished concolic execution.";
     public static final String EXECUTING_CONCOLICALLY_THE_CURRENT_TEST_CASE_DEBUG_MESSAGE = "Starting concolic execution of test case: {}";
-
     // TestCase generation
     public static final String NEW_TEST_CASE_SCORE_DEBUG_MESSAGE = "New test case score: {}";
     public static final String NEW_TEST_CASE_CREATED_DEBUG_MESSAGE = "Created new test case from SAT solution: {}";
-
     // Exploration Algorithm
     public static final String PROGRESS_MSG_INFO = "Total progress: {}";
     public static final String STRATEGY_CANNOT_BE_NULL = "Strategy cannot be null";
@@ -94,18 +89,21 @@ public abstract class ExplorationAlgorithm extends ExplorationAlgorithmBase {
     public static final String GENERATING_TESTS_FOR_ENTRY_DEBUG_MESSAGE = "Generating tests for entry method: {}";
     public static final String TESTS_WERE_GENERATED_FOR_ENTRY_METHOD_DEBUG_MESSAGE = "DSE test generation finished. Generated {} test for method {}.";
     public static final String EXPLORATION_STRATEGIES_MUST_BE_INITIALIZED_TO_START_SEARCHING = "Exploration strategies must be initialized to start searching.";
-
     // Path Pruning
     public static final String PATH_PRUNING_SINCE_IT_IS_IN_THE_QUERY_CACHE = "skipping exploring current child since it is in the query cache";
     public static final String PATH_PRUNING_BECAUSE_THE_PATH_CONDITION_WAS_ALREADY_EXPLORED = "skipping exploring current child because the path condition was already explored";
     public static final String PATH_PRUNING_BECAUSE_IT_IS_SATISFIABLE_AND_SOLVED_BY_PREVIOUS_PATH_CONDITION = "skipping exploring current child because it is satisfiable and solved by previous path condition";
     public static final String PATH_PRUNING_BECAUSE_IT_IS_SATISFIABLE_AND_WAS_SOLVED_BY_A_PREVIOUSLY_EXPLORED_PATH_CONDITION = "skipping exploring current child because it is satisfiable and was solved by a previously explored path condition";
-
+    private static final transient Logger logger = LoggerFactory.getLogger(ExplorationAlgorithm.class);
     /**
      * A cache of previous results from the constraint solver
      **/
     protected final transient Map<Set<Constraint<?>>, SolverResult> queryCache = new HashMap<>();
-
+    /**
+     * Internal executor and solver
+     **/
+    private final transient ConcolicExecutor engine;
+    private final transient Solver solver;
     /**
      * Exploration strategies
      **/
@@ -114,12 +112,6 @@ public abstract class ExplorationAlgorithm extends ExplorationAlgorithmBase {
     private transient TestCaseBuildingStrategy testCaseBuildingStrategy;
     private transient TestCaseSelectionStrategy testCaseSelectionStrategy;
     private transient KeepSearchingCriteriaStrategy keepSearchingCriteriaStrategy;
-
-    /**
-     * Internal executor and solver
-     **/
-    private final transient ConcolicExecutor engine;
-    private final transient Solver solver;
 
     public ExplorationAlgorithm() {
         this(

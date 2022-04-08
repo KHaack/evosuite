@@ -22,12 +22,12 @@ package com.examples.with.different.packagename.test;
 public class ObjectTest {
     private Object x = null;
 
-    public void setX(Object x) {
-        this.x = x;
-    }
-
     public Object getX() {
         return x;
+    }
+
+    public void setX(Object x) {
+        this.x = x;
     }
 
     public boolean isEqual(Object y) {

@@ -41,30 +41,27 @@ public class ExecutionTracer {
     private static final Logger logger = LoggerFactory.getLogger(ExecutionTracer.class);
 
     private static ExecutionTracer instance = null;
-
-    /**
-     * We need to disable the execution tracer sometimes, e.g. when calling
-     * equals in the branch distance function
-     */
-    private boolean disabled = true;
-
-    /**
-     * Flag that is used to kill threads that are stuck in endless loops
-     */
-    private boolean killSwitch = false;
-
-    private int num_statements = 0;
-
-    private ExecutionTrace trace;
-
-
     private static boolean checkCallerThread = true;
-
     /**
      * If a thread of a test case survives for some reason (e.g. long call to
      * external library), then we don't want its data in the current trace
      */
     private static volatile Thread currentThread = null;
+    /**
+     * We need to disable the execution tracer sometimes, e.g. when calling
+     * equals in the branch distance function
+     */
+    private boolean disabled = true;
+    /**
+     * Flag that is used to kill threads that are stuck in endless loops
+     */
+    private boolean killSwitch = false;
+    private int num_statements = 0;
+    private ExecutionTrace trace;
+
+    private ExecutionTracer() {
+        trace = new ExecutionTraceProxy();
+    }
 
     /**
      * <p>
@@ -189,15 +186,6 @@ public class ExecutionTracer {
     }
 
     /**
-     * Reset for new execution
-     */
-    public void clear() {
-        trace = new ExecutionTraceProxy();
-        BooleanHelper.clearStack();
-        num_statements = 0;
-    }
-
-    /**
      * Obviously more than one thread is executing during the creation of
      * concurrent TestCases. #TODO steenbuck we should test if
      * Thread.currentThread() is in the set of currently executing threads
@@ -221,29 +209,6 @@ public class ExecutionTracer {
             currentThread = Thread.currentThread();
         }
         return Thread.currentThread() != currentThread;
-    }
-
-    /**
-     * Return trace of current execution
-     *
-     * @return a {@link org.evosuite.testcase.execution.ExecutionTrace} object.
-     */
-    public ExecutionTrace getTrace() {
-        trace.finishCalls();
-        return trace;
-
-        // ExecutionTrace copy = trace.clone();
-        // // copy.finishCalls();
-        // return copy;
-    }
-
-    /**
-     * Return the last explicitly thrown exception
-     *
-     * @return a {@link java.lang.Throwable} object.
-     */
-    public Throwable getLastException() {
-        return trace.getExplicitException();
     }
 
     /**
@@ -487,7 +452,6 @@ public class ExecutionTracer {
         tracer.trace.putStaticPassed(classNameWithDots, fieldName);
     }
 
-
     /**
      * This method is added in the transformed bytecode
      *
@@ -526,7 +490,6 @@ public class ExecutionTracer {
 
         tracer.trace.getStaticPassed(classNameWithDots, fieldName);
     }
-
 
     /**
      * Called by the instrumented code each time a new branch is taken
@@ -811,6 +774,38 @@ public class ExecutionTracer {
     }
 
     /**
+     * Reset for new execution
+     */
+    public void clear() {
+        trace = new ExecutionTraceProxy();
+        BooleanHelper.clearStack();
+        num_statements = 0;
+    }
+
+    /**
+     * Return trace of current execution
+     *
+     * @return a {@link org.evosuite.testcase.execution.ExecutionTrace} object.
+     */
+    public ExecutionTrace getTrace() {
+        trace.finishCalls();
+        return trace;
+
+        // ExecutionTrace copy = trace.clone();
+        // // copy.finishCalls();
+        // return copy;
+    }
+
+    /**
+     * Return the last explicitly thrown exception
+     *
+     * @return a {@link java.lang.Throwable} object.
+     */
+    public Throwable getLastException() {
+        return trace.getExplicitException();
+    }
+
+    /**
      * <p>
      * getNumStatementsExecuted
      * </p>
@@ -819,10 +814,6 @@ public class ExecutionTracer {
      */
     public int getNumStatementsExecuted() {
         return num_statements;
-    }
-
-    private ExecutionTracer() {
-        trace = new ExecutionTraceProxy();
     }
 
 }

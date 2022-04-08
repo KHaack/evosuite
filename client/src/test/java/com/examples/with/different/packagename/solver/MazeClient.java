@@ -23,10 +23,14 @@ import java.util.Arrays;
 
 public class MazeClient {
 
-    private MazeClient() {
-    }
+    // Maze hard-coded dimensions
+    private static final int H_SIZE = 7;
 
     ;
+    private static final int W_SIZE = 11;
+
+    private MazeClient() {
+    }
 
     public static int walk(char move0, char move1, char move2, char move3, char move4, char move5,
                            char move6, char move7, char move8, char move9, char move10, char move11, char move12,
@@ -123,11 +127,6 @@ public class MazeClient {
         System.out.print("Treasure not found.\n");
         return 3;
     }
-
-
-    // Maze hard-coded dimensions
-    private static final int H_SIZE = 7;
-    private static final int W_SIZE = 11;
 
     private static void draw(char[][] maze) {
         int k, j;

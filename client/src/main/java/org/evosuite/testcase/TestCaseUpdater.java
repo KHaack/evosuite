@@ -49,15 +49,12 @@ import java.util.Map;
  */
 public class TestCaseUpdater {
 
-    private static final Logger logger = LoggerFactory.getLogger(TestCaseUpdater.class);
-
     public static final int DEFAULT_STRING_LENGTH = 10;
     public static final int ARRAY_DIMENSION_LOWER_BOUND = 0;
     /**
      * TODO (ilebrero): At some point there can be an empirical study about the max length that arrays usually have in open source projects
      */
     public static final int DEFAULT_ARRAY_LENGTH_UPPER_BOUND = 20;
-
     public static final String NEW_VALUE = "New value: ";
     public static final String UNEXPECTED_VALUE = "Unexpected value: ";
     public static final String NEW_VALUE_IS_NULL = "New value is null";
@@ -65,7 +62,7 @@ public class TestCaseUpdater {
     public static final String NEW_VALUE_IS_OF_AN_UNSUPPORTED_TYPE = "New value is of an unsupported type: ";
     public static final String NEW_REAL_VALUE_IS_OF_AN_UNSUPPORTED_TYPE = "New real value is of an unsupported type: ";
     public static final String NEW_INTEGER_VALUE_IS_OF_AN_UNSUPPORTED_TYPE = "New integer value is of an unsupported type: ";
-
+    private static final Logger logger = LoggerFactory.getLogger(TestCaseUpdater.class);
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     public static TestCase updateTest(TestCase test, Map<String, Object> updatedValues) {

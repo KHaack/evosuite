@@ -47,9 +47,9 @@ import static org.objectweb.asm.Type.VOID_TYPE;
  */
 final class OperandStack {
 
-    private final MethodVisitor mv;
     private static final String CALLER_STACK_PARAM = "CALLER_STACK_PARAM"; //$NON-NLS-1$
     private static final Type TYPE_OBJECT = Type.getObjectType("java/lang/Object"); //$NON-NLS-1$
+    private final MethodVisitor mv;
 
     OperandStack(MethodVisitor mv) {
         this.mv = mv;

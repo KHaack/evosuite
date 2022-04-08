@@ -39,16 +39,12 @@ import java.util.Arrays;
  */
 public class MethodCallReplacementClassAdapter extends ClassVisitor {
 
+    private static final Logger logger = LoggerFactory.getLogger(MethodCallReplacementClassAdapter.class);
     private final String className;
-
     private String superClassName;
-
     private boolean definesHashCode = false;
-
     private boolean isInterface = false;
-
     private boolean definesUid = false;
-
     private boolean canChangeSignature = true;
 
     /**
@@ -61,17 +57,17 @@ public class MethodCallReplacementClassAdapter extends ClassVisitor {
         this(cv, className, true);
     }
 
+
+    /* (non-Javadoc)
+     * @see org.objectweb.asm.ClassVisitor#visitMethod(int, java.lang.String, java.lang.String, java.lang.String, java.lang.String[])
+     */
+
     public MethodCallReplacementClassAdapter(ClassVisitor cv, String className, boolean canAddMethods) {
         super(Opcodes.ASM9, cv);
         this.className = className;
         this.superClassName = null;
         this.canChangeSignature = canAddMethods;
     }
-
-
-    /* (non-Javadoc)
-     * @see org.objectweb.asm.ClassVisitor#visitMethod(int, java.lang.String, java.lang.String, java.lang.String, java.lang.String[])
-     */
 
     /**
      * {@inheritDoc}
@@ -151,8 +147,6 @@ public class MethodCallReplacementClassAdapter extends ClassVisitor {
             super.visit(version, access, name, signature, superName, interfaces);
         }
     }
-
-    private static final Logger logger = LoggerFactory.getLogger(MethodCallReplacementClassAdapter.class);
 
     @Override
     public void visitEnd() {

@@ -59,11 +59,11 @@ public class EvoParameters {
     private int guiHeight;
 
 
-    public static EvoParameters getInstance() {
-        return singleton;
+    private EvoParameters() {
     }
 
-    private EvoParameters() {
+    public static EvoParameters getInstance() {
+        return singleton;
     }
 
     public boolean usesMaven() {

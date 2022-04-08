@@ -75,6 +75,36 @@ public abstract class TestSolverBitwise extends TestSolver {
         return tc.getDefaultTestCase();
     }
 
+    private static DefaultTestCase buildTestCaseShiftLeft() throws SecurityException, NoSuchMethodException {
+        TestCaseBuilder tc = new TestCaseBuilder();
+        VariableReference int0 = tc.appendIntPrimitive(10 << 1);
+        VariableReference int1 = tc.appendIntPrimitive(10);
+
+        Method method = TestCaseShiftLeft.class.getMethod("test", int.class, int.class);
+        tc.appendMethod(null, method, int0, int1);
+        return tc.getDefaultTestCase();
+    }
+
+    private static DefaultTestCase buildTestCaseShiftRight() throws SecurityException, NoSuchMethodException {
+        TestCaseBuilder tc = new TestCaseBuilder();
+        VariableReference int0 = tc.appendIntPrimitive(10 >> 1);
+        VariableReference int1 = tc.appendIntPrimitive(10);
+
+        Method method = TestCaseShiftRight.class.getMethod("test", int.class, int.class);
+        tc.appendMethod(null, method, int0, int1);
+        return tc.getDefaultTestCase();
+    }
+
+    private static DefaultTestCase buildTestCaseShiftRightUnsigned() throws SecurityException, NoSuchMethodException {
+        TestCaseBuilder tc = new TestCaseBuilder();
+        VariableReference int0 = tc.appendIntPrimitive(10 >>> 1);
+        VariableReference int1 = tc.appendIntPrimitive(10);
+
+        Method method = TestCaseShiftRightUnsigned.class.getMethod("test", int.class, int.class);
+        tc.appendMethod(null, method, int0, int1);
+        return tc.getDefaultTestCase();
+    }
+
     @Test
     public void testBitAnd() throws SecurityException, NoSuchMethodException, SolverTimeoutException {
 
@@ -165,35 +195,5 @@ public abstract class TestSolverBitwise extends TestSolver {
         Long var1 = (Long) solution.get("var1");
 
         assertEquals(var0.intValue(), var1.intValue() >>> 1);
-    }
-
-    private static DefaultTestCase buildTestCaseShiftLeft() throws SecurityException, NoSuchMethodException {
-        TestCaseBuilder tc = new TestCaseBuilder();
-        VariableReference int0 = tc.appendIntPrimitive(10 << 1);
-        VariableReference int1 = tc.appendIntPrimitive(10);
-
-        Method method = TestCaseShiftLeft.class.getMethod("test", int.class, int.class);
-        tc.appendMethod(null, method, int0, int1);
-        return tc.getDefaultTestCase();
-    }
-
-    private static DefaultTestCase buildTestCaseShiftRight() throws SecurityException, NoSuchMethodException {
-        TestCaseBuilder tc = new TestCaseBuilder();
-        VariableReference int0 = tc.appendIntPrimitive(10 >> 1);
-        VariableReference int1 = tc.appendIntPrimitive(10);
-
-        Method method = TestCaseShiftRight.class.getMethod("test", int.class, int.class);
-        tc.appendMethod(null, method, int0, int1);
-        return tc.getDefaultTestCase();
-    }
-
-    private static DefaultTestCase buildTestCaseShiftRightUnsigned() throws SecurityException, NoSuchMethodException {
-        TestCaseBuilder tc = new TestCaseBuilder();
-        VariableReference int0 = tc.appendIntPrimitive(10 >>> 1);
-        VariableReference int1 = tc.appendIntPrimitive(10);
-
-        Method method = TestCaseShiftRightUnsigned.class.getMethod("test", int.class, int.class);
-        tc.appendMethod(null, method, int0, int1);
-        return tc.getDefaultTestCase();
     }
 }

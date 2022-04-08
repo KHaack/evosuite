@@ -39,6 +39,11 @@ public class TestFloatOverflow {
     private float x;
     private float y;
 
+    public TestFloatOverflow(float x, float y) {
+        this.x = x;
+        this.y = y;
+    }
+
     // Creates the test data
     @Parameters
     public static Collection<Object[]> data() {
@@ -51,12 +56,6 @@ public class TestFloatOverflow {
         }
         return valuePairs;
     }
-
-    public TestFloatOverflow(float x, float y) {
-        this.x = x;
-        this.y = y;
-    }
-
 
     private void assertOverflow(double doubleResult, int distance, float floatResult) {
         if (doubleResult > Float.MAX_VALUE) {

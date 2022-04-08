@@ -55,21 +55,20 @@ import java.util.concurrent.*;
 public class JobExecutor {
 
     private static final Logger logger = LoggerFactory.getLogger(JobExecutor.class);
-
+    protected final CtgConfiguration configuration;
+    private final String projectClassPath;
+    private final StorageManager storage;
     private volatile boolean executing;
     private long startTimeInMs;
-
     /**
      * This used to wait till all jobs are finished running
      */
     private volatile CountDownLatch latch;
-
     /**
      * Several threads read from this queue to execute jobs
      * on separated process
      */
     private BlockingQueue<JobDefinition> jobQueue;
-
     /**
      * keep track of all the jobs that have been executed so far.
      * Each job definition (value) is indexed by the CUT name (key).
@@ -77,12 +76,6 @@ public class JobExecutor {
      * no more than one job should exist for the same CUT
      */
     private Map<String, JobDefinition> finishedJobs;
-
-    protected final CtgConfiguration configuration;
-
-    private final String projectClassPath;
-
-    private final StorageManager storage;
 
     /**
      * Main constructor

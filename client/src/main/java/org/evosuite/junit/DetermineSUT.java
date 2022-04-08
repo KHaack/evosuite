@@ -50,24 +50,36 @@ public class DetermineSUT {
 
     private Set<String> superClasses = new HashSet<>();
 
-    public static class NoJUnitClassException extends Exception {
-
-        private static final long serialVersionUID = -7035856440476749976L;
-
+    /**
+     * <p>
+     * isJavaClass
+     * </p>
+     *
+     * @param classNameWithDots a {@link java.lang.String} object.
+     * @return a boolean.
+     */
+    public static boolean isJavaClass(String classNameWithDots) {
+        return classNameWithDots.startsWith("java.") //
+                || classNameWithDots.startsWith("javax.") //
+                || classNameWithDots.startsWith("sun.") //
+                || classNameWithDots.startsWith("apple.")
+                || classNameWithDots.startsWith("com.apple.");
     }
 
-    private static class TargetClassSorter implements Comparator<String> {
-        private final String targetClass;
-
-        public TargetClassSorter(String target) {
-            this.targetClass = target;
+    /**
+     * @param args
+     */
+    public static void main(String[] args) {
+        if (args.length != 2) {
+            System.err.println("Expected parameters: <TestCase> <Target Classpath>");
+            return;
         }
-
-        @Override
-        public int compare(String arg0, String arg1) {
-            double distance1 = StringUtils.getLevenshteinDistance(targetClass, arg0);
-            double distance2 = StringUtils.getLevenshteinDistance(targetClass, arg1);
-            return Double.compare(distance1, distance2);
+        Properties.getInstanceSilent();
+        DetermineSUT det = new DetermineSUT();
+        try {
+            System.out.println(det.getSUTName(args[0], args[1]));
+        } catch (NoJUnitClassException e) {
+            System.err.println("Found no JUnit test case");
         }
     }
 
@@ -149,22 +161,6 @@ public class DetermineSUT {
         for (MethodNode mn : methods) {
             handleMethodNode(calledClasses, cn, mn, targetClasses);
         }
-    }
-
-    /**
-     * <p>
-     * isJavaClass
-     * </p>
-     *
-     * @param classNameWithDots a {@link java.lang.String} object.
-     * @return a boolean.
-     */
-    public static boolean isJavaClass(String classNameWithDots) {
-        return classNameWithDots.startsWith("java.") //
-                || classNameWithDots.startsWith("javax.") //
-                || classNameWithDots.startsWith("sun.") //
-                || classNameWithDots.startsWith("apple.")
-                || classNameWithDots.startsWith("com.apple.");
     }
 
     private boolean isValidClass(String name) throws IOException {
@@ -260,20 +256,24 @@ public class DetermineSUT {
         return cn;
     }
 
-    /**
-     * @param args
-     */
-    public static void main(String[] args) {
-        if (args.length != 2) {
-            System.err.println("Expected parameters: <TestCase> <Target Classpath>");
-            return;
+    public static class NoJUnitClassException extends Exception {
+
+        private static final long serialVersionUID = -7035856440476749976L;
+
+    }
+
+    private static class TargetClassSorter implements Comparator<String> {
+        private final String targetClass;
+
+        public TargetClassSorter(String target) {
+            this.targetClass = target;
         }
-        Properties.getInstanceSilent();
-        DetermineSUT det = new DetermineSUT();
-        try {
-            System.out.println(det.getSUTName(args[0], args[1]));
-        } catch (NoJUnitClassException e) {
-            System.err.println("Found no JUnit test case");
+
+        @Override
+        public int compare(String arg0, String arg1) {
+            double distance1 = StringUtils.getLevenshteinDistance(targetClass, arg0);
+            double distance2 = StringUtils.getLevenshteinDistance(targetClass, arg1);
+            return Double.compare(distance1, distance2);
         }
     }
 

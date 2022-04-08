@@ -27,31 +27,31 @@ import java.net.InetAddress;
 
 /**
  * Helper class used to call package level methods in java.net
- * 
+ * <p>
  * TODO this will be needed for rollbacks
- * 
- * @author arcuri
  *
+ * @author arcuri
  */
 public class NetReflectionUtil {
 
-	private static final Logger logger = LoggerFactory.getLogger(NetReflectionUtil.class);
-	
-	/**
-	 * Wrapper for {@code InetAddress.anyLocalAddress()} 
-	 * @return
-	 */
-	public static InetAddress anyLocalAddress(){
-				
-		try {
-			Method m = InetAddress.class.getDeclaredMethod("anyLocalAddress");
-			m.setAccessible(true);
-			return (InetAddress) m.invoke(null);
-		} catch (Exception e) {
-			//should never happen
-			logger.error("Failed to use reflection on InetAddress.anyLocalAddress(): "+e.getMessage(),e);
-		} 
-		
-		return null;
-	}
+    private static final Logger logger = LoggerFactory.getLogger(NetReflectionUtil.class);
+
+    /**
+     * Wrapper for {@code InetAddress.anyLocalAddress()}
+     *
+     * @return
+     */
+    public static InetAddress anyLocalAddress() {
+
+        try {
+            Method m = InetAddress.class.getDeclaredMethod("anyLocalAddress");
+            m.setAccessible(true);
+            return (InetAddress) m.invoke(null);
+        } catch (Exception e) {
+            //should never happen
+            logger.error("Failed to use reflection on InetAddress.anyLocalAddress(): " + e.getMessage(), e);
+        }
+
+        return null;
+    }
 }

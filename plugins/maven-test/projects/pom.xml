@@ -1,4 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
@@ -78,8 +78,6 @@
                     </properties>
                 </configuration>
             </plugin>
-
-
 
 
             <plugin>
@@ -269,10 +267,10 @@
             <id>powermock</id>
             <dependencies>
                 <dependency>
-                <groupId>org.powermock</groupId>
-                <artifactId>powermock-module-junit4-rule-agent</artifactId>
-                <version>${powermock.version}</version>
-                <scope>test</scope>
+                    <groupId>org.powermock</groupId>
+                    <artifactId>powermock-module-junit4-rule-agent</artifactId>
+                    <version>${powermock.version}</version>
+                    <scope>test</scope>
                 </dependency>
             </dependencies>
         </profile>
@@ -282,10 +280,10 @@
             <id>jmockit</id>
             <dependencies>
                 <dependency>
-                <groupId>org.jmockit</groupId>
-                <artifactId>jmockit-coverage</artifactId>
-                <version>${jmockit.version}</version>
-                <scope>runtime</scope>
+                    <groupId>org.jmockit</groupId>
+                    <artifactId>jmockit-coverage</artifactId>
+                    <version>${jmockit.version}</version>
+                    <scope>runtime</scope>
                 </dependency>
             </dependencies>
             <build>
@@ -294,9 +292,9 @@
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
                             <argLine>
-                                 -javaagent:"${settings.localRepository}"/org/jmockit/jmockit-coverage/${jmockit.version}/jmockit-coverage-${jmockit.version}.jar
-                                 -Dcoverage-outputDir=target/jmockit
-                                 -Dcoverage-check=99
+                                -javaagent:"${settings.localRepository}"/org/jmockit/jmockit-coverage/${jmockit.version}/jmockit-coverage-${jmockit.version}.jar
+                                -Dcoverage-outputDir=target/jmockit
+                                -Dcoverage-check=99
                             </argLine>
                         </configuration>
                     </plugin>
@@ -305,12 +303,16 @@
                         <executions>
                             <execution>
                                 <id>coverage.check</id>
-                                <goals><goal>enforce</goal></goals>
+                                <goals>
+                                    <goal>enforce</goal>
+                                </goals>
                                 <phase>test</phase>
                                 <configuration>
                                     <rules>
                                         <requireFilesDontExist>
-                                            <files><file>coverage.check.failed</file></files>
+                                            <files>
+                                                <file>coverage.check.failed</file>
+                                            </files>
                                         </requireFilesDontExist>
                                     </rules>
                                 </configuration>

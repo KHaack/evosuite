@@ -34,6 +34,15 @@ import java.util.*;
  */
 public class MutationPool {
     private static final Map<ClassLoader, MutationPool> instanceMap = new HashMap<>();
+    // maps className -> method inside that class -> list of branches inside that method
+    private final Map<String, Map<String, List<Mutation>>> mutationMap = new LinkedHashMap<>();
+    // maps the mutationIDs assigned by this pool to their respective Mutations
+    private final Map<Integer, Mutation> mutationIdMap = new LinkedHashMap<>();
+    private int numMutations = 0;
+
+    private MutationPool() {
+
+    }
 
     public static MutationPool getInstance(ClassLoader classLoader) {
         if (!instanceMap.containsKey(classLoader)) {
@@ -42,18 +51,6 @@ public class MutationPool {
 
         return instanceMap.get(classLoader);
     }
-
-    private MutationPool() {
-
-    }
-
-    // maps className -> method inside that class -> list of branches inside that method
-    private final Map<String, Map<String, List<Mutation>>> mutationMap = new LinkedHashMap<>();
-
-    // maps the mutationIDs assigned by this pool to their respective Mutations
-    private final Map<Integer, Mutation> mutationIdMap = new LinkedHashMap<>();
-
-    private int numMutations = 0;
 
     public Mutation addMutation(String className, String methodName,
                                 String mutationName, BytecodeInstruction instruction,

@@ -23,6 +23,72 @@ import java.util.Arrays;
 
 public final class SmtOperation extends SmtExpr {
 
+    private final Operator operator;
+    private final SmtExpr[] arguments;
+    private final boolean hasSymbolicValues;
+
+    /**
+     * Unary operation
+     *
+     * @param op
+     * @param arg
+     */
+    public SmtOperation(Operator op, SmtExpr... arg) {
+        this.operator = op;
+        this.arguments = arg;
+        this.hasSymbolicValues = hasSymbolicValue(arg);
+    }
+
+    private static boolean hasSymbolicValue(SmtExpr[] arguments) {
+        for (SmtExpr smtExpr : arguments) {
+            if (smtExpr.isSymbolic()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public <K, V> K accept(SmtExprVisitor<K, V> v, V arg) {
+        return v.visit(this, arg);
+    }
+
+    public SmtExpr[] getArguments() {
+        return arguments;
+    }
+
+    public Operator getOperator() {
+        return operator;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + Arrays.hashCode(arguments);
+        result = prime * result + ((operator == null) ? 0 : operator.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        SmtOperation other = (SmtOperation) obj;
+        if (!Arrays.equals(arguments, other.arguments))
+            return false;
+        return operator == other.operator;
+    }
+
+    @Override
+    public boolean isSymbolic() {
+        return hasSymbolicValues;
+    }
+
     public enum Operator {
         MUL("*"), //
         MINUS("-"), //
@@ -103,73 +169,6 @@ public final class SmtOperation extends SmtExpr {
         public String toString() {
             return rep;
         }
-    }
-
-    private final Operator operator;
-    private final SmtExpr[] arguments;
-
-    private final boolean hasSymbolicValues;
-
-    /**
-     * Unary operation
-     *
-     * @param op
-     * @param arg
-     */
-    public SmtOperation(Operator op, SmtExpr... arg) {
-        this.operator = op;
-        this.arguments = arg;
-        this.hasSymbolicValues = hasSymbolicValue(arg);
-    }
-
-    @Override
-    public <K, V> K accept(SmtExprVisitor<K, V> v, V arg) {
-        return v.visit(this, arg);
-    }
-
-    public SmtExpr[] getArguments() {
-        return arguments;
-    }
-
-    public Operator getOperator() {
-        return operator;
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + Arrays.hashCode(arguments);
-        result = prime * result + ((operator == null) ? 0 : operator.hashCode());
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        SmtOperation other = (SmtOperation) obj;
-        if (!Arrays.equals(arguments, other.arguments))
-            return false;
-        return operator == other.operator;
-    }
-
-    @Override
-    public boolean isSymbolic() {
-        return hasSymbolicValues;
-    }
-
-    private static boolean hasSymbolicValue(SmtExpr[] arguments) {
-        for (SmtExpr smtExpr : arguments) {
-            if (smtExpr.isSymbolic()) {
-                return true;
-            }
-        }
-        return false;
     }
 
 }

@@ -30,11 +30,6 @@ import java.util.Locale;
  */
 public class MockDateFormat implements StaticReplacementMock {
 
-    @Override
-    public String getMockedClassName() {
-        return DateFormat.class.getName();
-    }
-
     public static DateFormat getTimeInstance() {
         DateFormat format = DateFormat.getTimeInstance();
         format.setCalendar(MockCalendar.getInstance());
@@ -86,8 +81,7 @@ public class MockDateFormat implements StaticReplacementMock {
         return format;
     }
 
-    public static DateFormat getDateTimeInstance(int dateStyle, int timeStyle, Locale aLocale)
-    {
+    public static DateFormat getDateTimeInstance(int dateStyle, int timeStyle, Locale aLocale) {
         DateFormat format = DateFormat.getDateTimeInstance(dateStyle, timeStyle, aLocale);
         format.setCalendar(MockCalendar.getInstance());
         return format;
@@ -99,5 +93,10 @@ public class MockDateFormat implements StaticReplacementMock {
 
     public static Locale[] getAvailableLocales() {
         return DateFormat.getAvailableLocales();
+    }
+
+    @Override
+    public String getMockedClassName() {
+        return DateFormat.class.getName();
     }
 }

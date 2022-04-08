@@ -44,73 +44,6 @@ public class BranchCoverageFactory extends
 
     private static final Logger logger = LoggerFactory.getLogger(BranchCoverageFactory.class);
 
-
-    /**
-     * return coverage goals of the target class or of all the contextual branches, depending on the limitToCUT parameter
-     *
-     * @param limitToCUT whether to consider the class under test only ({@code true}) or all known
-     *                   classes ({@code false})
-     * @return
-     */
-    private List<BranchCoverageTestFitness> computeCoverageGoals(boolean limitToCUT) {
-        long start = System.currentTimeMillis();
-        List<BranchCoverageTestFitness> goals = new ArrayList<>();
-
-        // logger.info("Getting branches");
-        for (String className : BranchPool.getInstance(TestGenerationContext.getInstance().getClassLoaderForSUT()).knownClasses()) {
-            //when limitToCUT== true, if not the class under test of a inner/anonymous class, continue
-            if (limitToCUT && !isCUT(className)) continue;
-            //when limitToCUT==false, consider all classes, but excludes libraries ones according the INSTRUMENT_LIBRARIES property
-            if (!limitToCUT && (!Properties.INSTRUMENT_LIBRARIES && !DependencyAnalysis.isTargetProject(className)))
-                continue;
-            final MethodNameMatcher matcher = new MethodNameMatcher();
-            // Branchless methods
-            for (String method : BranchPool.getInstance(TestGenerationContext.getInstance().getClassLoaderForSUT()).getBranchlessMethods(className)) {
-                if (matcher.fullyQualifiedMethodMatches(method)) {
-                    goals.add(createRootBranchTestFitness(className, method));
-                }
-            }
-
-            // Branches
-            for (String methodName : BranchPool.getInstance(TestGenerationContext.getInstance().getClassLoaderForSUT()).knownMethods(className)) {
-                if (!matcher.methodMatches(methodName)) {
-                    logger.info("Method " + methodName + " does not match criteria. ");
-                    continue;
-                }
-
-                for (Branch b : BranchPool.getInstance(TestGenerationContext.getInstance().getClassLoaderForSUT()).retrieveBranchesInMethod(className,
-                        methodName)) {
-                    if (!b.isInstrumented()) {
-                        goals.add(createBranchCoverageTestFitness(b, true));
-                        goals.add(createBranchCoverageTestFitness(b, false));
-                    }
-                }
-            }
-        }
-        goalComputationTime = System.currentTimeMillis() - start;
-        return goals;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * org.evosuite.coverage.TestCoverageFactory#getCoverageGoals()
-     */
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<BranchCoverageTestFitness> getCoverageGoals() {
-        return computeCoverageGoals(true);
-    }
-
-    public List<BranchCoverageTestFitness> getCoverageGoalsForAllKnownClasses() {
-        return computeCoverageGoals(false);
-    }
-
-
     /**
      * Create a fitness function for branch coverage aimed at executing the
      * given ControlDependency.
@@ -124,6 +57,13 @@ public class BranchCoverageFactory extends
         return createBranchCoverageTestFitness(cd.getBranch(),
                 cd.getBranchExpressionValue());
     }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * org.evosuite.coverage.TestCoverageFactory#getCoverageGoals()
+     */
 
     /**
      * Create a fitness function for branch coverage aimed at executing the
@@ -173,6 +113,64 @@ public class BranchCoverageFactory extends
 
         return createRootBranchTestFitness(instruction.getClassName(),
                 instruction.getMethodName());
+    }
+
+    /**
+     * return coverage goals of the target class or of all the contextual branches, depending on the limitToCUT parameter
+     *
+     * @param limitToCUT whether to consider the class under test only ({@code true}) or all known
+     *                   classes ({@code false})
+     * @return
+     */
+    private List<BranchCoverageTestFitness> computeCoverageGoals(boolean limitToCUT) {
+        long start = System.currentTimeMillis();
+        List<BranchCoverageTestFitness> goals = new ArrayList<>();
+
+        // logger.info("Getting branches");
+        for (String className : BranchPool.getInstance(TestGenerationContext.getInstance().getClassLoaderForSUT()).knownClasses()) {
+            //when limitToCUT== true, if not the class under test of a inner/anonymous class, continue
+            if (limitToCUT && !isCUT(className)) continue;
+            //when limitToCUT==false, consider all classes, but excludes libraries ones according the INSTRUMENT_LIBRARIES property
+            if (!limitToCUT && (!Properties.INSTRUMENT_LIBRARIES && !DependencyAnalysis.isTargetProject(className)))
+                continue;
+            final MethodNameMatcher matcher = new MethodNameMatcher();
+            // Branchless methods
+            for (String method : BranchPool.getInstance(TestGenerationContext.getInstance().getClassLoaderForSUT()).getBranchlessMethods(className)) {
+                if (matcher.fullyQualifiedMethodMatches(method)) {
+                    goals.add(createRootBranchTestFitness(className, method));
+                }
+            }
+
+            // Branches
+            for (String methodName : BranchPool.getInstance(TestGenerationContext.getInstance().getClassLoaderForSUT()).knownMethods(className)) {
+                if (!matcher.methodMatches(methodName)) {
+                    logger.info("Method " + methodName + " does not match criteria. ");
+                    continue;
+                }
+
+                for (Branch b : BranchPool.getInstance(TestGenerationContext.getInstance().getClassLoaderForSUT()).retrieveBranchesInMethod(className,
+                        methodName)) {
+                    if (!b.isInstrumented()) {
+                        goals.add(createBranchCoverageTestFitness(b, true));
+                        goals.add(createBranchCoverageTestFitness(b, false));
+                    }
+                }
+            }
+        }
+        goalComputationTime = System.currentTimeMillis() - start;
+        return goals;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<BranchCoverageTestFitness> getCoverageGoals() {
+        return computeCoverageGoals(true);
+    }
+
+    public List<BranchCoverageTestFitness> getCoverageGoalsForAllKnownClasses() {
+        return computeCoverageGoals(false);
     }
 }
 

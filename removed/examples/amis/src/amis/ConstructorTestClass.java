@@ -22,35 +22,34 @@ package amis;
 
 /**
  * @author Andre Mis
- *
  */
 public class ConstructorTestClass extends BaseConstructorTestClass {
 
-	private int targetField = 0;
-	
-	// constructors
-	
-	public ConstructorTestClass() {
-	}
-	
-	public ConstructorTestClass(int anInt) {
-		super(anInt);
-	}
-	
-	public ConstructorTestClass(int anInt, int anotherInt) {
-		super(anInt+anotherInt);
-		
-		targetField = 1;
-		new Object();
+    private int targetField = 0;
+
+    // constructors
+
+    public ConstructorTestClass() {
+    }
+
+    public ConstructorTestClass(int anInt) {
+        super(anInt);
+    }
+
+    public ConstructorTestClass(int anInt, int anotherInt) {
+        super(anInt + anotherInt);
+
+        targetField = 1;
+        new Object();
 //		setTargetField(imPrivate());
-		setTargetField(targetField);
-		new ConstructorTestClass(3);
-	}
-	
-	public ConstructorTestClass(String s) {
-		super(s==null?-1:s.length());
-	}
-	
+        setTargetField(targetField);
+        new ConstructorTestClass(3);
+    }
+
+    public ConstructorTestClass(String s) {
+        super(s == null ? -1 : s.length());
+    }
+
 //	
 //	public ConstructorTestClass(int anInt, int anotherInt, int andAnotherInt) {
 //		targetField = anInt+anotherInt+andAnotherInt;
@@ -68,12 +67,11 @@ public class ConstructorTestClass extends BaseConstructorTestClass {
 //		
 //		return targetField;
 //	}
-	
-	public void setTargetField(int field) {
-		targetField = field;
-//		new ConstructorTestClass();
-	}
-	
+
+    public int getTargetField() {
+        return targetField;
+    }
+
 //	public int setsetMethod() {
 //		setsetTargetField(3);
 //		return targetField;
@@ -82,12 +80,13 @@ public class ConstructorTestClass extends BaseConstructorTestClass {
 //	public void setsetTargetField(int field) {
 //		setTargetField(field);
 //	}
-	
-	public int getTargetField() {
-		return targetField;
-	}
+
+    public void setTargetField(int field) {
+        targetField = field;
+//		new ConstructorTestClass();
+    }
 //	private int imPrivate() {
 //		return 7;
 //	}
-	
+
 }

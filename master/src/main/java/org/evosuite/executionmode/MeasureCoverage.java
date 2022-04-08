@@ -46,9 +46,8 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 public class MeasureCoverage {
 
-    private static final Logger logger = LoggerFactory.getLogger(MeasureCoverage.class);
-
     public static final String NAME = "measureCoverage";
+    private static final Logger logger = LoggerFactory.getLogger(MeasureCoverage.class);
 
     public static Option getOption() {
         return new Option(NAME, "measure coverage on existing test cases");

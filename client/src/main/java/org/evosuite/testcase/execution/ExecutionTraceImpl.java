@@ -45,62 +45,102 @@ import java.util.Map.Entry;
  */
 public class ExecutionTraceImpl implements ExecutionTrace, Cloneable {
 
-    @Deprecated
-    public static class BranchEval {
-        private final int branchId;
-        private CallContext context = null;
-        private final double falseDistance;
-        private final double trueDistance;
-
-        public BranchEval(int branchId, double trueDistance, double falseDistance) {
-            this.branchId = branchId;
-            this.trueDistance = trueDistance;
-            this.falseDistance = falseDistance;
-        }
-
-        public BranchEval(int branchId, double trueDistance, double falseDistance, CallContext context) {
-            this.branchId = branchId;
-            this.trueDistance = trueDistance;
-            this.falseDistance = falseDistance;
-            this.context = context;
-        }
-
-        public int getBranchId() {
-            return branchId;
-        }
-
-        public CallContext getContext() {
-            return context;
-        }
-
-        public double getFalseDistance() {
-            return falseDistance;
-        }
-
-        public double getTrueDistance() {
-            return trueDistance;
-        }
-
-        @Override
-        public String toString() {
-            return "BranchEval [branchId=" + branchId + ", trueDistance=" + trueDistance + ", falseDistance="
-                    + falseDistance + "]";
-        }
-    }
-
     private static final Logger logger = LoggerFactory.getLogger(ExecutionTrace.class);
-
     /**
      * Constant <code>traceCalls=false</code>
      */
     public static boolean traceCalls = false;
-
     public static boolean disableContext = false;
-
     /**
      * Constant <code>traceCoverage=true</code>
      */
     public static boolean traceCoverage = true;
+    public static Set<Integer> gradientBranches = Collections.synchronizedSet(new HashSet<>());
+    public static Set<Integer> gradientBranchesCoveredTrue = Collections.synchronizedSet(new HashSet<>());
+    public static Set<Integer> gradientBranchesCoveredFalse = Collections.synchronizedSet(new HashSet<>());
+    public static Map<RuntimeVariable, Set<Integer>> bytecodeInstructionReached = Collections
+            .synchronizedMap(new HashMap<>());
+    public static Map<RuntimeVariable, Set<Integer>> bytecodeInstructionCoveredTrue = Collections
+            .synchronizedMap(new HashMap<>());
+    public static Map<RuntimeVariable, Set<Integer>> bytecodeInstructionCoveredFalse = Collections
+            .synchronizedMap(new HashMap<>());
+    private final Map<Integer, Double> falseDistancesSum = Collections.synchronizedMap(new HashMap<>());
+    private final Map<Integer, Double> trueDistancesSum = Collections.synchronizedMap(new HashMap<>());
+    // Coverage information
+    public Map<String, Map<String, Map<Integer, Integer>>> coverage = Collections
+            .synchronizedMap(new HashMap<>());
+    public Map<Integer, Integer> coveredFalse = Collections.synchronizedMap(new HashMap<>());
+    public Map<String, Integer> coveredMethods = Collections.synchronizedMap(new HashMap<>());
+    public Map<String, Integer> coveredBranchlessMethods = Collections.synchronizedMap(new HashMap<>());
+    public Map<Integer, Integer> coveredPredicates = Collections.synchronizedMap(new HashMap<>());
+    public Map<Integer, Integer> coveredTrue = Collections.synchronizedMap(new HashMap<>());
+    public Map<Integer, Integer> coveredDefs = Collections.synchronizedMap(new HashMap<>());
+    public Map<Integer, Map<CallContext, Double>> coveredTrueContext = Collections
+            .synchronizedMap(new HashMap<>());
+    public Map<Integer, Map<CallContext, Double>> coveredFalseContext = Collections
+            .synchronizedMap(new HashMap<>());
+    public Map<Integer, Map<CallContext, Integer>> coveredPredicateContext = Collections
+            .synchronizedMap(new HashMap<>());
+    public Map<String, Map<CallContext, Integer>> coveredMethodContext = Collections
+            .synchronizedMap(new HashMap<>());
+    public Map<Integer, Double> falseDistances = Collections.synchronizedMap(new HashMap<>());
+    // finished_calls;
+    public List<MethodCall> finishedCalls = Collections.synchronizedList(new ArrayList<>());
+    public Map<Integer, Object> knownCallerObjects = Collections.synchronizedMap(new HashMap<>());
+    public Map<Integer, Double> mutantDistances = Collections.synchronizedMap(new HashMap<>());
+    // for each Variable-Name these maps hold the data for which objectID
+    // at which time (duCounter) which Definition or Use was passed
+    public Map<String, HashMap<Integer, HashMap<Integer, Integer>>> passedDefinitions = Collections
+            .synchronizedMap(new HashMap<>());
+    public Map<String, HashMap<Integer, HashMap<Integer, Integer>>> passedUses = Collections
+            .synchronizedMap(new HashMap<>());
+    public Map<String, HashMap<Integer, HashMap<Integer, Object>>> passedDefinitionObject = Collections
+            .synchronizedMap(new HashMap<>());
+    public Map<String, HashMap<Integer, HashMap<Integer, Object>>> passedUseObject = Collections
+            .synchronizedMap(new HashMap<>());
+    // Data information
+    public Map<String, Map<String, Map<Integer, Integer>>> returnData = Collections
+            .synchronizedMap(new HashMap<>());
+    public Set<Integer> touchedMutants = Collections.synchronizedSet(new HashSet<>());
+    public Map<Integer, Double> trueDistances = Collections.synchronizedMap(new HashMap<>());
+    // active calls
+    LinkedList<MethodCall> stack = new LinkedList<>();
+    private List<BranchEval> branchesTrace = new ArrayList<>();
+    // number of seen Definitions and uses for indexing purposes
+    private int duCounter = 0;
+    // The last explicitly thrown exception is kept here
+    private Throwable explicitException = null;
+    // to differentiate between different MethodCalls
+    private int methodId = 0;
+    // for defuse-coverage it is important to keep track of all the objects that
+    // called the ExecutionTracer
+    private int objectCounter = 0;
+    private int proxyCount = 1;
+    /**
+     * This set keeps those classes that have a static write (i.e. PUTSTATIC)
+     * during test execution.
+     */
+    private HashSet<String> classesWithStaticWrites = new HashSet<>();
+    /**
+     * This set keeps those classes that have a static read (i.e. GETSTATIC)
+     * during test execution.
+     */
+    private HashSet<String> classesWithStaticReads = new HashSet<>();
+    /**
+     * This field keeps the names of those classes that were initialized (ie
+     * <clinit> was completed during this test execution). The list has no
+     * repetitions.
+     */
+    private List<String> initializedClasses = new LinkedList<>();
+
+    /**
+     * <p>
+     * Constructor for ExecutionTraceImpl.
+     * </p>
+     */
+    public ExecutionTraceImpl() {
+        stack.add(new MethodCall("", "", 0, 0, 0)); // Main method
+    }
 
     private static void checkSaneCall(MethodCall call) {
         if (!((call.trueDistanceTrace.size() == call.falseDistanceTrace.size())
@@ -186,102 +226,6 @@ public class ExecutionTraceImpl implements ExecutionTrace, Cloneable {
                 throw new IllegalStateException("trace.finished_calls-traces not allowed to contain null");
             }
         }
-    }
-
-    private List<BranchEval> branchesTrace = new ArrayList<>();
-
-    // Coverage information
-    public Map<String, Map<String, Map<Integer, Integer>>> coverage = Collections
-            .synchronizedMap(new HashMap<>());
-
-    public Map<Integer, Integer> coveredFalse = Collections.synchronizedMap(new HashMap<>());
-
-    public Map<String, Integer> coveredMethods = Collections.synchronizedMap(new HashMap<>());
-
-    public Map<String, Integer> coveredBranchlessMethods = Collections.synchronizedMap(new HashMap<>());
-
-    public Map<Integer, Integer> coveredPredicates = Collections.synchronizedMap(new HashMap<>());
-
-    public Map<Integer, Integer> coveredTrue = Collections.synchronizedMap(new HashMap<>());
-
-    public Map<Integer, Integer> coveredDefs = Collections.synchronizedMap(new HashMap<>());
-
-    public Map<Integer, Map<CallContext, Double>> coveredTrueContext = Collections
-            .synchronizedMap(new HashMap<>());
-
-    public Map<Integer, Map<CallContext, Double>> coveredFalseContext = Collections
-            .synchronizedMap(new HashMap<>());
-
-    public Map<Integer, Map<CallContext, Integer>> coveredPredicateContext = Collections
-            .synchronizedMap(new HashMap<>());
-
-    public Map<String, Map<CallContext, Integer>> coveredMethodContext = Collections
-            .synchronizedMap(new HashMap<>());
-
-    // number of seen Definitions and uses for indexing purposes
-    private int duCounter = 0;
-    // The last explicitly thrown exception is kept here
-    private Throwable explicitException = null;
-
-    public Map<Integer, Double> falseDistances = Collections.synchronizedMap(new HashMap<>());
-    private final Map<Integer, Double> falseDistancesSum = Collections.synchronizedMap(new HashMap<>());
-    // finished_calls;
-    public List<MethodCall> finishedCalls = Collections.synchronizedList(new ArrayList<>());
-    public Map<Integer, Object> knownCallerObjects = Collections.synchronizedMap(new HashMap<>());
-    // to differentiate between different MethodCalls
-    private int methodId = 0;
-    public Map<Integer, Double> mutantDistances = Collections.synchronizedMap(new HashMap<>());
-    // for defuse-coverage it is important to keep track of all the objects that
-    // called the ExecutionTracer
-    private int objectCounter = 0;
-    // for each Variable-Name these maps hold the data for which objectID
-    // at which time (duCounter) which Definition or Use was passed
-    public Map<String, HashMap<Integer, HashMap<Integer, Integer>>> passedDefinitions = Collections
-            .synchronizedMap(new HashMap<>());
-    public Map<String, HashMap<Integer, HashMap<Integer, Integer>>> passedUses = Collections
-            .synchronizedMap(new HashMap<>());
-
-    public Map<String, HashMap<Integer, HashMap<Integer, Object>>> passedDefinitionObject = Collections
-            .synchronizedMap(new HashMap<>());
-    public Map<String, HashMap<Integer, HashMap<Integer, Object>>> passedUseObject = Collections
-            .synchronizedMap(new HashMap<>());
-
-    private int proxyCount = 1;
-    // Data information
-    public Map<String, Map<String, Map<Integer, Integer>>> returnData = Collections
-            .synchronizedMap(new HashMap<>());
-
-    // active calls
-    LinkedList<MethodCall> stack = new LinkedList<>();
-
-    public Set<Integer> touchedMutants = Collections.synchronizedSet(new HashSet<>());
-
-    public Map<Integer, Double> trueDistances = Collections.synchronizedMap(new HashMap<>());
-
-    private final Map<Integer, Double> trueDistancesSum = Collections.synchronizedMap(new HashMap<>());
-
-    public static Set<Integer> gradientBranches = Collections.synchronizedSet(new HashSet<>());
-
-    public static Set<Integer> gradientBranchesCoveredTrue = Collections.synchronizedSet(new HashSet<>());
-
-    public static Set<Integer> gradientBranchesCoveredFalse = Collections.synchronizedSet(new HashSet<>());
-
-    public static Map<RuntimeVariable, Set<Integer>> bytecodeInstructionReached = Collections
-            .synchronizedMap(new HashMap<>());
-
-    public static Map<RuntimeVariable, Set<Integer>> bytecodeInstructionCoveredTrue = Collections
-            .synchronizedMap(new HashMap<>());
-
-    public static Map<RuntimeVariable, Set<Integer>> bytecodeInstructionCoveredFalse = Collections
-            .synchronizedMap(new HashMap<>());
-
-    /**
-     * <p>
-     * Constructor for ExecutionTraceImpl.
-     * </p>
-     */
-    public ExecutionTraceImpl() {
-        stack.add(new MethodCall("", "", 0, 0, 0)); // Main method
     }
 
     /**
@@ -815,6 +759,12 @@ public class ExecutionTraceImpl implements ExecutionTrace, Cloneable {
         }
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.evosuite.testcase.ExecutionTrace#getCoverageData()
+     */
+
     /**
      * {@inheritDoc}
      */
@@ -825,6 +775,12 @@ public class ExecutionTraceImpl implements ExecutionTrace, Cloneable {
             finishedCalls.add(stack.pop());
         }
     }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.evosuite.testcase.ExecutionTrace#getCoveredFalseBranches()
+     */
 
     /**
      * {@inheritDoc}
@@ -837,7 +793,7 @@ public class ExecutionTraceImpl implements ExecutionTrace, Cloneable {
     /*
      * (non-Javadoc)
      *
-     * @see org.evosuite.testcase.ExecutionTrace#getCoverageData()
+     * @see org.evosuite.testcase.ExecutionTrace#getCoveredLines()
      */
 
     /**
@@ -847,12 +803,6 @@ public class ExecutionTraceImpl implements ExecutionTrace, Cloneable {
     public Map<String, Map<String, Map<Integer, Integer>>> getCoverageData() {
         return coverage;
     }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.evosuite.testcase.ExecutionTrace#getCoveredFalseBranches()
-     */
 
     /**
      * {@inheritDoc}
@@ -867,12 +817,6 @@ public class ExecutionTraceImpl implements ExecutionTrace, Cloneable {
 
         return covered;
     }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.evosuite.testcase.ExecutionTrace#getCoveredLines()
-     */
 
     /**
      * {@inheritDoc}
@@ -891,6 +835,12 @@ public class ExecutionTraceImpl implements ExecutionTrace, Cloneable {
         }
         return coveredLines;
     }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.evosuite.testcase.ExecutionTrace#getCoveredMethods()
+     */
 
     @Override
     public Set<Integer> getCoveredLines() {
@@ -911,7 +861,7 @@ public class ExecutionTraceImpl implements ExecutionTrace, Cloneable {
     /*
      * (non-Javadoc)
      *
-     * @see org.evosuite.testcase.ExecutionTrace#getCoveredMethods()
+     * @see org.evosuite.testcase.ExecutionTrace#getCoveredPredicates()
      */
 
     /**
@@ -922,16 +872,16 @@ public class ExecutionTraceImpl implements ExecutionTrace, Cloneable {
         return coveredMethods.keySet();
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.evosuite.testcase.ExecutionTrace#getCoveredTrueBranches()
+     */
+
     @Override
     public Set<String> getCoveredBranchlessMethods() {
         return coveredBranchlessMethods.keySet();
     }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.evosuite.testcase.ExecutionTrace#getCoveredPredicates()
-     */
 
     /**
      * {@inheritDoc}
@@ -940,12 +890,6 @@ public class ExecutionTraceImpl implements ExecutionTrace, Cloneable {
     public Set<Integer> getCoveredPredicates() {
         return coveredPredicates.keySet();
     }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.evosuite.testcase.ExecutionTrace#getCoveredTrueBranches()
-     */
 
     /**
      * {@inheritDoc}
@@ -960,6 +904,12 @@ public class ExecutionTraceImpl implements ExecutionTrace, Cloneable {
 
         return covered;
     }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.evosuite.testcase.ExecutionTrace#getDefinitionData()
+     */
 
     /*
      * (non-Javadoc)
@@ -981,12 +931,6 @@ public class ExecutionTraceImpl implements ExecutionTrace, Cloneable {
         return coveredDefs;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.evosuite.testcase.ExecutionTrace#getDefinitionData()
-     */
-
     /**
      * {@inheritDoc}
      */
@@ -995,9 +939,21 @@ public class ExecutionTraceImpl implements ExecutionTrace, Cloneable {
         return passedDefinitions;
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.evosuite.testcase.ExecutionTrace#getFalseDistance(int)
+     */
+
     public Map<String, HashMap<Integer, HashMap<Integer, Object>>> getDefinitionDataObjects() {
         return passedDefinitionObject;
     }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.evosuite.testcase.ExecutionTrace#getFalseDistances()
+     */
 
     /**
      * {@inheritDoc}
@@ -1010,7 +966,21 @@ public class ExecutionTraceImpl implements ExecutionTrace, Cloneable {
     /*
      * (non-Javadoc)
      *
-     * @see org.evosuite.testcase.ExecutionTrace#getFalseDistance(int)
+     * @see org.evosuite.testcase.ExecutionTrace#getMethodCalls()
+     */
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setExplicitException(Throwable explicitException) {
+        this.explicitException = explicitException;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.evosuite.testcase.ExecutionTrace#getMethodExecutionCount()
      */
 
     /**
@@ -1024,7 +994,7 @@ public class ExecutionTraceImpl implements ExecutionTrace, Cloneable {
     /*
      * (non-Javadoc)
      *
-     * @see org.evosuite.testcase.ExecutionTrace#getFalseDistances()
+     * @see org.evosuite.testcase.ExecutionTrace#getMutationDistance(int)
      */
 
     /**
@@ -1038,7 +1008,7 @@ public class ExecutionTraceImpl implements ExecutionTrace, Cloneable {
     /*
      * (non-Javadoc)
      *
-     * @see org.evosuite.testcase.ExecutionTrace#getMethodCalls()
+     * @see org.evosuite.testcase.ExecutionTrace#getMutationDistances()
      */
 
     /**
@@ -1052,7 +1022,8 @@ public class ExecutionTraceImpl implements ExecutionTrace, Cloneable {
     /*
      * (non-Javadoc)
      *
-     * @see org.evosuite.testcase.ExecutionTrace#getMethodExecutionCount()
+     * @see org.evosuite.testcase.ExecutionTrace#getPassedDefinitions(java.lang.
+     * String)
      */
 
     /**
@@ -1066,7 +1037,7 @@ public class ExecutionTraceImpl implements ExecutionTrace, Cloneable {
     /*
      * (non-Javadoc)
      *
-     * @see org.evosuite.testcase.ExecutionTrace#getMutationDistance(int)
+     * @see org.evosuite.testcase.ExecutionTrace#getPassedUses(java.lang.String)
      */
 
     /**
@@ -1080,7 +1051,7 @@ public class ExecutionTraceImpl implements ExecutionTrace, Cloneable {
     /*
      * (non-Javadoc)
      *
-     * @see org.evosuite.testcase.ExecutionTrace#getMutationDistances()
+     * @see org.evosuite.testcase.ExecutionTrace#getPredicateExecutionCount()
      */
 
     /**
@@ -1090,13 +1061,6 @@ public class ExecutionTraceImpl implements ExecutionTrace, Cloneable {
     public Map<Integer, Double> getMutationDistances() {
         return mutantDistances;
     }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.evosuite.testcase.ExecutionTrace#getPassedDefinitions(java.lang.
-     * String)
-     */
 
     /**
      * {@inheritDoc}
@@ -1109,7 +1073,7 @@ public class ExecutionTraceImpl implements ExecutionTrace, Cloneable {
     /*
      * (non-Javadoc)
      *
-     * @see org.evosuite.testcase.ExecutionTrace#getPassedUses(java.lang.String)
+     * @see org.evosuite.testcase.ExecutionTrace#getReturnData()
      */
 
     /**
@@ -1123,7 +1087,7 @@ public class ExecutionTraceImpl implements ExecutionTrace, Cloneable {
     /*
      * (non-Javadoc)
      *
-     * @see org.evosuite.testcase.ExecutionTrace#getPredicateExecutionCount()
+     * @see org.evosuite.testcase.ExecutionTrace#getTouchedMutants()
      */
 
     /**
@@ -1145,12 +1109,6 @@ public class ExecutionTraceImpl implements ExecutionTrace, Cloneable {
         return proxyCount;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.evosuite.testcase.ExecutionTrace#getReturnData()
-     */
-
     /**
      * {@inheritDoc}
      */
@@ -1159,12 +1117,6 @@ public class ExecutionTraceImpl implements ExecutionTrace, Cloneable {
         return returnData;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.evosuite.testcase.ExecutionTrace#getTouchedMutants()
-     */
-
     /**
      * {@inheritDoc}
      */
@@ -1172,6 +1124,12 @@ public class ExecutionTraceImpl implements ExecutionTrace, Cloneable {
     public Set<Integer> getTouchedMutants() {
         return touchedMutants;
     }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.evosuite.testcase.ExecutionTrace#getTrueDistance(int)
+     */
 
     @Override
     public Set<Integer> getInfectedMutants() {
@@ -1183,6 +1141,12 @@ public class ExecutionTraceImpl implements ExecutionTrace, Cloneable {
         }
         return infectedMutants;
     }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.evosuite.testcase.ExecutionTrace#getTrueDistances()
+     */
 
     /**
      * {@inheritDoc}
@@ -1208,6 +1172,12 @@ public class ExecutionTraceImpl implements ExecutionTrace, Cloneable {
         removeFinishCalls(r, removableCalls);
         return new ExecutionTraceProxy(r);
     }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.evosuite.testcase.ExecutionTrace#getUseData()
+     */
 
     /**
      * {@inheritDoc}
@@ -1308,12 +1278,6 @@ public class ExecutionTraceImpl implements ExecutionTrace, Cloneable {
         return new ExecutionTraceProxy(r);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.evosuite.testcase.ExecutionTrace#getTrueDistance(int)
-     */
-
     /**
      * {@inheritDoc}
      */
@@ -1325,7 +1289,7 @@ public class ExecutionTraceImpl implements ExecutionTrace, Cloneable {
     /*
      * (non-Javadoc)
      *
-     * @see org.evosuite.testcase.ExecutionTrace#getTrueDistances()
+     * @see org.evosuite.testcase.ExecutionTrace#wasCoveredFalse(int)
      */
 
     /**
@@ -1336,12 +1300,6 @@ public class ExecutionTraceImpl implements ExecutionTrace, Cloneable {
         return trueDistances;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.evosuite.testcase.ExecutionTrace#getUseData()
-     */
-
     /**
      * {@inheritDoc}
      */
@@ -1350,6 +1308,12 @@ public class ExecutionTraceImpl implements ExecutionTrace, Cloneable {
         return passedUses;
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.evosuite.testcase.ExecutionTrace#wasCoveredTrue(int)
+     */
+
     public Map<String, HashMap<Integer, HashMap<Integer, Object>>> getUseDataObjects() {
         return passedUseObject;
     }
@@ -1357,7 +1321,7 @@ public class ExecutionTraceImpl implements ExecutionTrace, Cloneable {
     /*
      * (non-Javadoc)
      *
-     * @see org.evosuite.testcase.ExecutionTrace#wasCoveredFalse(int)
+     * @see org.evosuite.testcase.ExecutionTrace#lazyClone()
      */
 
     /**
@@ -1382,12 +1346,6 @@ public class ExecutionTraceImpl implements ExecutionTrace, Cloneable {
         return result;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.evosuite.testcase.ExecutionTrace#wasCoveredTrue(int)
-     */
-
     /**
      * {@inheritDoc}
      */
@@ -1395,12 +1353,6 @@ public class ExecutionTraceImpl implements ExecutionTrace, Cloneable {
     public boolean hasTrueDistance(int predicateId) {
         return trueDistances.containsKey(predicateId);
     }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.evosuite.testcase.ExecutionTrace#lazyClone()
-     */
 
     /**
      * {@inheritDoc}
@@ -1544,14 +1496,6 @@ public class ExecutionTraceImpl implements ExecutionTrace, Cloneable {
 
     /**
      * {@inheritDoc}
-     */
-    @Override
-    public void setExplicitException(Throwable explicitException) {
-        this.explicitException = explicitException;
-    }
-
-    /**
-     * {@inheritDoc}
      * <p>
      * Returns a String containing the information in passedDefs and passedUses
      * <p>
@@ -1671,6 +1615,12 @@ public class ExecutionTraceImpl implements ExecutionTrace, Cloneable {
         return ret.toString();
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.evosuite.testcase.ExecutionTrace#wasMutationTouched(int)
+     */
+
     /**
      * Adds trace information to the active MethodCall in this.stack
      */
@@ -1738,12 +1688,6 @@ public class ExecutionTraceImpl implements ExecutionTrace, Cloneable {
         duCounter++;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.evosuite.testcase.ExecutionTrace#wasMutationTouched(int)
-     */
-
     /**
      * {@inheritDoc}
      */
@@ -1760,6 +1704,13 @@ public class ExecutionTraceImpl implements ExecutionTrace, Cloneable {
         return falseDistancesSum;
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.evosuite.testcase.ExecutionTrace#getPassedDefIDs()
+     */
+    // Map<String, HashMap<Integer, HashMap<Integer, Integer>>>
+
     /**
      * {@inheritDoc}
      */
@@ -1775,13 +1726,6 @@ public class ExecutionTraceImpl implements ExecutionTrace, Cloneable {
     public Map<String, HashMap<Integer, HashMap<Integer, Integer>>> getPassedUses() {
         return passedUses;
     }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.evosuite.testcase.ExecutionTrace#getPassedDefIDs()
-     */
-    // Map<String, HashMap<Integer, HashMap<Integer, Integer>>>
 
     @Override
     public Set<Integer> getPassedDefIDs() {
@@ -1851,22 +1795,10 @@ public class ExecutionTraceImpl implements ExecutionTrace, Cloneable {
         return coveredMethodContext;
     }
 
-    /**
-     * This set keeps those classes that have a static write (i.e. PUTSTATIC)
-     * during test execution.
-     */
-    private HashSet<String> classesWithStaticWrites = new HashSet<>();
-
     @Override
     public void putStaticPassed(String classNameWithDots, String fieldName) {
         classesWithStaticWrites.add(classNameWithDots);
     }
-
-    /**
-     * This set keeps those classes that have a static read (i.e. GETSTATIC)
-     * during test execution.
-     */
-    private HashSet<String> classesWithStaticReads = new HashSet<>();
 
     @Override
     public void getStaticPassed(String classNameWithDots, String fieldName) {
@@ -1877,13 +1809,6 @@ public class ExecutionTraceImpl implements ExecutionTrace, Cloneable {
     public Set<String> getClassesWithStaticWrites() {
         return classesWithStaticWrites;
     }
-
-    /**
-     * This field keeps the names of those classes that were initialized (ie
-     * <clinit> was completed during this test execution). The list has no
-     * repetitions.
-     */
-    private List<String> initializedClasses = new LinkedList<>();
 
     /**
      * Adds the class to the list of those classes that were initialized during
@@ -1905,5 +1830,48 @@ public class ExecutionTraceImpl implements ExecutionTrace, Cloneable {
     @Override
     public List<String> getInitializedClasses() {
         return this.initializedClasses;
+    }
+
+    @Deprecated
+    public static class BranchEval {
+        private final int branchId;
+        private final double falseDistance;
+        private final double trueDistance;
+        private CallContext context = null;
+
+        public BranchEval(int branchId, double trueDistance, double falseDistance) {
+            this.branchId = branchId;
+            this.trueDistance = trueDistance;
+            this.falseDistance = falseDistance;
+        }
+
+        public BranchEval(int branchId, double trueDistance, double falseDistance, CallContext context) {
+            this.branchId = branchId;
+            this.trueDistance = trueDistance;
+            this.falseDistance = falseDistance;
+            this.context = context;
+        }
+
+        public int getBranchId() {
+            return branchId;
+        }
+
+        public CallContext getContext() {
+            return context;
+        }
+
+        public double getFalseDistance() {
+            return falseDistance;
+        }
+
+        public double getTrueDistance() {
+            return trueDistance;
+        }
+
+        @Override
+        public String toString() {
+            return "BranchEval [branchId=" + branchId + ", trueDistance=" + trueDistance + ", falseDistance="
+                    + falseDistance + "]";
+        }
     }
 }

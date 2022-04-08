@@ -51,13 +51,219 @@ import java.util.Map.Entry;
  */
 public class ReplaceVariable implements MutationOperator {
 
-    private static final Logger logger = LoggerFactory.getLogger(ReplaceVariable.class);
-
     public static final String NAME = "ReplaceVariable";
+    private static final Logger logger = LoggerFactory.getLogger(ReplaceVariable.class);
 
     /* (non-Javadoc)
      * @see org.evosuite.cfg.instrumentation.mutation.MutationOperator#apply(org.objectweb.asm.tree.MethodNode, java.lang.String, java.lang.String, org.evosuite.cfg.BytecodeInstruction)
      */
+
+    /**
+     * <p>
+     * copy
+     * </p>
+     *
+     * @param orig a {@link org.objectweb.asm.tree.InsnList} object.
+     * @return a {@link org.objectweb.asm.tree.InsnList} object.
+     */
+    public static InsnList copy(InsnList orig) {
+        Iterator<?> it = orig.iterator();
+        InsnList copy = new InsnList();
+        while (it.hasNext()) {
+            AbstractInsnNode node = (AbstractInsnNode) it.next();
+
+            if (node instanceof VarInsnNode) {
+                VarInsnNode vn = (VarInsnNode) node;
+                copy.add(new VarInsnNode(vn.getOpcode(), vn.var));
+            } else if (node instanceof FieldInsnNode) {
+                FieldInsnNode fn = (FieldInsnNode) node;
+                copy.add(new FieldInsnNode(fn.getOpcode(), fn.owner, fn.name, fn.desc));
+            } else if (node instanceof InsnNode) {
+                if (node.getOpcode() != Opcodes.POP)
+                    copy.add(new InsnNode(node.getOpcode()));
+            } else if (node instanceof LdcInsnNode) {
+                copy.add(new LdcInsnNode(((LdcInsnNode) node).cst));
+            } else {
+                throw new RuntimeException("Unexpected node type: " + node.getClass());
+            }
+        }
+        return copy;
+    }
+
+    /**
+     * <p>
+     * addPrimitiveDistanceCheck
+     * </p>
+     *
+     * @param distance a {@link org.objectweb.asm.tree.InsnList} object.
+     * @param type     a {@link org.objectweb.asm.Type} object.
+     * @param mutant   a {@link org.objectweb.asm.tree.InsnList} object.
+     */
+    public static void addPrimitiveDistanceCheck(InsnList distance, Type type,
+                                                 InsnList mutant) {
+        distance.add(cast(type, Type.DOUBLE_TYPE));
+        distance.add(copy(mutant));
+        distance.add(cast(type, Type.DOUBLE_TYPE));
+        distance.add(new MethodInsnNode(Opcodes.INVOKESTATIC,
+                PackageInfo.getNameWithSlash(ReplaceVariable.class),
+                "getDistance", "(DD)D", false));
+    }
+
+    /**
+     * <p>
+     * addReferenceDistanceCheck
+     * </p>
+     *
+     * @param distance a {@link org.objectweb.asm.tree.InsnList} object.
+     * @param type     a {@link org.objectweb.asm.Type} object.
+     * @param mutant   a {@link org.objectweb.asm.tree.InsnList} object.
+     */
+    public static void addReferenceDistanceCheck(InsnList distance, Type type,
+                                                 InsnList mutant) {
+        distance.add(copy(mutant));
+        distance.add(new MethodInsnNode(Opcodes.INVOKESTATIC,
+                PackageInfo.getNameWithSlash(ReplaceVariable.class),
+                "getDistance", "(Ljava/lang/Object;Ljava/lang/Object;)D", false));
+    }
+
+    /**
+     * <p>
+     * getDistance
+     * </p>
+     *
+     * @param val1 a double.
+     * @param val2 a double.
+     * @return a double.
+     */
+    public static double getDistance(double val1, double val2) {
+        return val1 == val2 ? 1.0 : 0.0;
+    }
+
+    /**
+     * <p>
+     * getDistance
+     * </p>
+     *
+     * @param obj1 a {@link java.lang.Object} object.
+     * @param obj2 a {@link java.lang.Object} object.
+     * @return a double.
+     */
+    public static double getDistance(Object obj1, Object obj2) {
+        if (obj1 == obj2)
+            return 1.0;
+        else
+            return 0.0;
+    }
+
+    /**
+     * Generates the instructions to cast a numerical value from one type to
+     * another.
+     *
+     * @param from the type of the top stack value
+     * @param to   the type into which this value must be cast.
+     * @return a {@link org.objectweb.asm.tree.InsnList} object.
+     */
+    public static InsnList cast(final Type from, final Type to) {
+        InsnList list = new InsnList();
+
+        if (from != to) {
+            if (from == Type.DOUBLE_TYPE) {
+                if (to == Type.FLOAT_TYPE) {
+                    list.add(new InsnNode(Opcodes.D2F));
+                } else if (to == Type.LONG_TYPE) {
+                    list.add(new InsnNode(Opcodes.D2L));
+                } else {
+                    list.add(new InsnNode(Opcodes.D2I));
+                    list.add(cast(Type.INT_TYPE, to));
+                }
+            } else if (from == Type.FLOAT_TYPE) {
+                if (to == Type.DOUBLE_TYPE) {
+                    list.add(new InsnNode(Opcodes.F2D));
+                } else if (to == Type.LONG_TYPE) {
+                    list.add(new InsnNode(Opcodes.F2L));
+                } else {
+                    list.add(new InsnNode(Opcodes.F2I));
+                    list.add(cast(Type.INT_TYPE, to));
+                }
+            } else if (from == Type.LONG_TYPE) {
+                if (to == Type.DOUBLE_TYPE) {
+                    list.add(new InsnNode(Opcodes.L2D));
+                } else if (to == Type.FLOAT_TYPE) {
+                    list.add(new InsnNode(Opcodes.L2F));
+                } else {
+                    list.add(new InsnNode(Opcodes.L2I));
+                    list.add(cast(Type.INT_TYPE, to));
+                }
+            } else {
+                if (to == Type.BYTE_TYPE) {
+                    list.add(new InsnNode(Opcodes.I2B));
+                } else if (to == Type.CHAR_TYPE) {
+                    list.add(new InsnNode(Opcodes.I2C));
+                } else if (to == Type.DOUBLE_TYPE) {
+                    list.add(new InsnNode(Opcodes.I2D));
+                } else if (to == Type.FLOAT_TYPE) {
+                    list.add(new InsnNode(Opcodes.I2F));
+                } else if (to == Type.LONG_TYPE) {
+                    list.add(new InsnNode(Opcodes.I2L));
+                } else if (to == Type.SHORT_TYPE) {
+                    list.add(new InsnNode(Opcodes.I2S));
+                }
+            }
+        }
+        return list;
+    }
+
+    /**
+     * This replicates TestUsageChecker.canUse but we need to avoid that
+     * we try to access Properties.getTargetClassAndDontInitialise
+     *
+     * @param f
+     * @return
+     */
+    public static boolean canUse(Field f) {
+
+        if (f.getDeclaringClass().equals(java.lang.Object.class))
+            return false;// handled here to avoid printing reasons
+
+        if (f.getDeclaringClass().equals(java.lang.Thread.class))
+            return false;// handled here to avoid printing reasons
+
+        if (f.isSynthetic()) {
+            logger.debug("Skipping synthetic field " + f.getName());
+            return false;
+        }
+
+        if (f.getName().startsWith("ajc$")) {
+            logger.debug("Skipping AspectJ field " + f.getName());
+            return false;
+        }
+
+        // in, out, err
+        if (f.getDeclaringClass().equals(FileDescriptor.class)) {
+            return false;
+        }
+
+        if (Modifier.isPublic(f.getModifiers())) {
+            // It may still be the case that the field is defined in a non-visible superclass of the class
+            // we already know we can use. In that case, the compiler would be fine with accessing the
+            // field, but reflection would start complaining about IllegalAccess!
+            // Therefore, we set the field accessible to be on the safe side
+            TestClusterUtils.makeAccessible(f);
+            return true;
+        }
+
+        // If default access rights, then check if this class is in the same package as the target class
+        if (!Modifier.isPrivate(f.getModifiers())) {
+            String packageName = ClassUtils.getPackageName(f.getDeclaringClass());
+
+            if (packageName.equals(Properties.CLASS_PREFIX)) {
+                TestClusterUtils.makeAccessible(f);
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     /**
      * {@inheritDoc}
@@ -146,74 +352,6 @@ public class ReplaceVariable implements MutationOperator {
 
     /**
      * <p>
-     * copy
-     * </p>
-     *
-     * @param orig a {@link org.objectweb.asm.tree.InsnList} object.
-     * @return a {@link org.objectweb.asm.tree.InsnList} object.
-     */
-    public static InsnList copy(InsnList orig) {
-        Iterator<?> it = orig.iterator();
-        InsnList copy = new InsnList();
-        while (it.hasNext()) {
-            AbstractInsnNode node = (AbstractInsnNode) it.next();
-
-            if (node instanceof VarInsnNode) {
-                VarInsnNode vn = (VarInsnNode) node;
-                copy.add(new VarInsnNode(vn.getOpcode(), vn.var));
-            } else if (node instanceof FieldInsnNode) {
-                FieldInsnNode fn = (FieldInsnNode) node;
-                copy.add(new FieldInsnNode(fn.getOpcode(), fn.owner, fn.name, fn.desc));
-            } else if (node instanceof InsnNode) {
-                if (node.getOpcode() != Opcodes.POP)
-                    copy.add(new InsnNode(node.getOpcode()));
-            } else if (node instanceof LdcInsnNode) {
-                copy.add(new LdcInsnNode(((LdcInsnNode) node).cst));
-            } else {
-                throw new RuntimeException("Unexpected node type: " + node.getClass());
-            }
-        }
-        return copy;
-    }
-
-    /**
-     * <p>
-     * addPrimitiveDistanceCheck
-     * </p>
-     *
-     * @param distance a {@link org.objectweb.asm.tree.InsnList} object.
-     * @param type     a {@link org.objectweb.asm.Type} object.
-     * @param mutant   a {@link org.objectweb.asm.tree.InsnList} object.
-     */
-    public static void addPrimitiveDistanceCheck(InsnList distance, Type type,
-                                                 InsnList mutant) {
-        distance.add(cast(type, Type.DOUBLE_TYPE));
-        distance.add(copy(mutant));
-        distance.add(cast(type, Type.DOUBLE_TYPE));
-        distance.add(new MethodInsnNode(Opcodes.INVOKESTATIC,
-                PackageInfo.getNameWithSlash(ReplaceVariable.class),
-                "getDistance", "(DD)D", false));
-    }
-
-    /**
-     * <p>
-     * addReferenceDistanceCheck
-     * </p>
-     *
-     * @param distance a {@link org.objectweb.asm.tree.InsnList} object.
-     * @param type     a {@link org.objectweb.asm.Type} object.
-     * @param mutant   a {@link org.objectweb.asm.tree.InsnList} object.
-     */
-    public static void addReferenceDistanceCheck(InsnList distance, Type type,
-                                                 InsnList mutant) {
-        distance.add(copy(mutant));
-        distance.add(new MethodInsnNode(Opcodes.INVOKESTATIC,
-                PackageInfo.getNameWithSlash(ReplaceVariable.class),
-                "getDistance", "(Ljava/lang/Object;Ljava/lang/Object;)D", false));
-    }
-
-    /**
-     * <p>
      * getInfectionDistance
      * </p>
      *
@@ -254,35 +392,6 @@ public class ReplaceVariable implements MutationOperator {
             distance.add(Mutation.getDefaultInfectionDistance());
         }
         return distance;
-    }
-
-    /**
-     * <p>
-     * getDistance
-     * </p>
-     *
-     * @param val1 a double.
-     * @param val2 a double.
-     * @return a double.
-     */
-    public static double getDistance(double val1, double val2) {
-        return val1 == val2 ? 1.0 : 0.0;
-    }
-
-    /**
-     * <p>
-     * getDistance
-     * </p>
-     *
-     * @param obj1 a {@link java.lang.Object} object.
-     * @param obj2 a {@link java.lang.Object} object.
-     * @return a double.
-     */
-    public static double getDistance(Object obj1, Object obj2) {
-        if (obj1 == obj2)
-            return 1.0;
-        else
-            return 0.0;
     }
 
     /**
@@ -524,116 +633,6 @@ public class ReplaceVariable implements MutationOperator {
             //e.printStackTrace();
         }
         return alternatives;
-    }
-
-    /**
-     * Generates the instructions to cast a numerical value from one type to
-     * another.
-     *
-     * @param from the type of the top stack value
-     * @param to   the type into which this value must be cast.
-     * @return a {@link org.objectweb.asm.tree.InsnList} object.
-     */
-    public static InsnList cast(final Type from, final Type to) {
-        InsnList list = new InsnList();
-
-        if (from != to) {
-            if (from == Type.DOUBLE_TYPE) {
-                if (to == Type.FLOAT_TYPE) {
-                    list.add(new InsnNode(Opcodes.D2F));
-                } else if (to == Type.LONG_TYPE) {
-                    list.add(new InsnNode(Opcodes.D2L));
-                } else {
-                    list.add(new InsnNode(Opcodes.D2I));
-                    list.add(cast(Type.INT_TYPE, to));
-                }
-            } else if (from == Type.FLOAT_TYPE) {
-                if (to == Type.DOUBLE_TYPE) {
-                    list.add(new InsnNode(Opcodes.F2D));
-                } else if (to == Type.LONG_TYPE) {
-                    list.add(new InsnNode(Opcodes.F2L));
-                } else {
-                    list.add(new InsnNode(Opcodes.F2I));
-                    list.add(cast(Type.INT_TYPE, to));
-                }
-            } else if (from == Type.LONG_TYPE) {
-                if (to == Type.DOUBLE_TYPE) {
-                    list.add(new InsnNode(Opcodes.L2D));
-                } else if (to == Type.FLOAT_TYPE) {
-                    list.add(new InsnNode(Opcodes.L2F));
-                } else {
-                    list.add(new InsnNode(Opcodes.L2I));
-                    list.add(cast(Type.INT_TYPE, to));
-                }
-            } else {
-                if (to == Type.BYTE_TYPE) {
-                    list.add(new InsnNode(Opcodes.I2B));
-                } else if (to == Type.CHAR_TYPE) {
-                    list.add(new InsnNode(Opcodes.I2C));
-                } else if (to == Type.DOUBLE_TYPE) {
-                    list.add(new InsnNode(Opcodes.I2D));
-                } else if (to == Type.FLOAT_TYPE) {
-                    list.add(new InsnNode(Opcodes.I2F));
-                } else if (to == Type.LONG_TYPE) {
-                    list.add(new InsnNode(Opcodes.I2L));
-                } else if (to == Type.SHORT_TYPE) {
-                    list.add(new InsnNode(Opcodes.I2S));
-                }
-            }
-        }
-        return list;
-    }
-
-    /**
-     * This replicates TestUsageChecker.canUse but we need to avoid that
-     * we try to access Properties.getTargetClassAndDontInitialise
-     *
-     * @param f
-     * @return
-     */
-    public static boolean canUse(Field f) {
-
-        if (f.getDeclaringClass().equals(java.lang.Object.class))
-            return false;// handled here to avoid printing reasons
-
-        if (f.getDeclaringClass().equals(java.lang.Thread.class))
-            return false;// handled here to avoid printing reasons
-
-        if (f.isSynthetic()) {
-            logger.debug("Skipping synthetic field " + f.getName());
-            return false;
-        }
-
-        if (f.getName().startsWith("ajc$")) {
-            logger.debug("Skipping AspectJ field " + f.getName());
-            return false;
-        }
-
-        // in, out, err
-        if (f.getDeclaringClass().equals(FileDescriptor.class)) {
-            return false;
-        }
-
-        if (Modifier.isPublic(f.getModifiers())) {
-            // It may still be the case that the field is defined in a non-visible superclass of the class
-            // we already know we can use. In that case, the compiler would be fine with accessing the
-            // field, but reflection would start complaining about IllegalAccess!
-            // Therefore, we set the field accessible to be on the safe side
-            TestClusterUtils.makeAccessible(f);
-            return true;
-        }
-
-        // If default access rights, then check if this class is in the same package as the target class
-        if (!Modifier.isPrivate(f.getModifiers())) {
-            String packageName = ClassUtils.getPackageName(f.getDeclaringClass());
-
-            if (packageName.equals(Properties.CLASS_PREFIX)) {
-                TestClusterUtils.makeAccessible(f);
-                return true;
-            }
-        }
-
-        return false;
     }
     /* (non-Javadoc)
      * @see org.evosuite.cfg.instrumentation.mutation.MutationOperator#isApplicable(org.evosuite.cfg.BytecodeInstruction)

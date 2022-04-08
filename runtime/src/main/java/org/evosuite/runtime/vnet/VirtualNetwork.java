@@ -44,16 +44,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class VirtualNetwork {
 
     /**
-     * Specify a network protocol
-     */
-    public enum ConnectionType {UDP, TCP}
-
-
-    /**
      * Singleton instance
      */
     private static final VirtualNetwork instance = new VirtualNetwork();
-
     /**
      * When we simulate a remote incoming connection, we still need a remote port.
      * Note: in theory we could have the same port if we simulate several different
@@ -61,19 +54,16 @@ public class VirtualNetwork {
      * overhead/complication
      */
     private static final int START_OF_REMOTE_EPHEMERAL_PORTS = 40000;
-
     /**
      * Set of listening ports locally opened by the SUTs.
      * Eg, when the SUTs work as a server, we keep track
      * of which local ports/interfaces they listen to.
      */
     private final Set<EndPointInfo> localListeningPorts;
-
     /**
      * Set of addresses/ports the SUT tried to contact.
      */
     private final Set<EndPointInfo> remoteContactedPorts;
-
     /**
      * key -> address of a remote server
      * <p>
@@ -82,7 +72,6 @@ public class VirtualNetwork {
      * connections (eg with thread-pool), and each one needs its own object instance.
      */
     private final Map<EndPointInfo, Queue<RemoteTcpServer>> remoteCurrentServers;
-
     /**
      * Buffer of incoming connections.
      *
@@ -92,18 +81,15 @@ public class VirtualNetwork {
      * Value -> queue of foreign addresses/ports waiting to connect to the given local address (key)
      */
     private final Map<EndPointInfo, Queue<NativeTcp>> incomingConnections;
-
     /**
      * Keep track of all TCP connections opened during the tests.
      * This is for example useful to check what data the SUT sent.
      */
     private final Set<NativeTcp> openedTcpConnections;
-
     /**
      * Current remote port number that can be opened
      */
     private final AtomicInteger remotePortIndex;
-
     /**
      * Keeping track of all sent UDP messages is likely not a viable option.
      * So, for each remote host, we can keep track of how many UDP were sent to it.
@@ -112,21 +98,17 @@ public class VirtualNetwork {
      * as UDP is stateless.
      */
     private final Map<EndPointInfo, AtomicInteger> sentUdpPackets;
-
     /**
      * key -> local address/port for SUT
      * <p>
      * value -> queue of incoming UDP packets
      */
     private final Map<EndPointInfo, Queue<DatagramPacket>> udpPacketsToSUT;
-
     /**
      * Define what interfaces are available:
      * eg, a loopback one and a wifi
      */
     private final List<NetworkInterfaceState> networkInterfaces;
-
-
     /**
      * Key -> resolved URL (ie based on DNS) of the remote file
      * Value -> the remote file we ll allow the tests to read from
@@ -145,12 +127,10 @@ public class VirtualNetwork {
      * implement at the moment).
      */
     private final Map<String, RemoteFile> remoteFiles;
-
     /**
      * Keep track of what remote URL the SUT tried to access/read from
      */
     private final Set<String> remoteAccessedFiles;
-
     private DNS dns;
 
     /**
@@ -176,15 +156,14 @@ public class VirtualNetwork {
         return instance;
     }
 
-    //------------------------------------------
-
-
     public void init() {
         reset(); //just to be sure
 
         initNetworkInterfaces();
         MockURL.initStaticState();
     }
+
+    //------------------------------------------
 
     public void reset() {
         dns = new DNS();
@@ -202,11 +181,11 @@ public class VirtualNetwork {
         remoteAccessedFiles.clear();
     }
 
-    // -------  observers ----------------------
-
     public Set<String> getViewOfRemoteAccessedFiles() {
         return Collections.unmodifiableSet(remoteAccessedFiles);
     }
+
+    // -------  observers ----------------------
 
     public Set<NativeTcp> getViewOfOpenedTcpConnections() {
         return Collections.unmodifiableSet(openedTcpConnections);
@@ -237,10 +216,6 @@ public class VirtualNetwork {
     public List<NetworkInterfaceState> getAllNetworkInterfaceStates() {
         return new ArrayList<>(networkInterfaces);
     }
-
-
-    //------------------------------------------
-
 
     /**
      * Create a new remote file that can be accessed by the given URL
@@ -275,6 +250,9 @@ public class VirtualNetwork {
 
         return true;
     }
+
+
+    //------------------------------------------
 
     /**
      * Represent the fact that a UDP was sent to a remote host
@@ -428,7 +406,6 @@ public class VirtualNetwork {
         return connection;
     }
 
-
     /**
      * @param addr
      * @return {@code false} if it was not possible to open the listening port
@@ -444,7 +421,6 @@ public class VirtualNetwork {
     public synchronized boolean openUdpServer(String addr, int port) throws IllegalArgumentException {
         return openServer(addr, port, ConnectionType.UDP);
     }
-
 
     private boolean openServer(String addr, int port, ConnectionType type) throws IllegalArgumentException {
 
@@ -471,7 +447,6 @@ public class VirtualNetwork {
         return true;
     }
 
-
     /**
      * Register a remote server that can reply to SUT's connection requests
      */
@@ -485,7 +460,6 @@ public class VirtualNetwork {
 
         queue.add(server);
     }
-
 
     /**
      * Create a mocked TCP connection from the SUT to a remote host
@@ -523,12 +497,11 @@ public class VirtualNetwork {
         return connection;
     }
 
-    //------------------------------------------
-
-
     private boolean isValidLocalServer(EndPointInfo info) {
         return true; //TODO
     }
+
+    //------------------------------------------
 
     private void initNetworkInterfaces() {
 
@@ -546,6 +519,11 @@ public class VirtualNetwork {
             throw new RuntimeException("EvoSuite error: " + e.getMessage());
         }
     }
+
+    /**
+     * Specify a network protocol
+     */
+    public enum ConnectionType {UDP, TCP}
 
     //------------------------------------------
 }

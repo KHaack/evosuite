@@ -41,17 +41,12 @@ import java.util.Set;
 public final class StringMultipleToIntegerExpression extends AbstractExpression<Long>
         implements IntegerValue, MultipleExpression<String> {
 
-    private static final long serialVersionUID = 7172041118401792672L;
-
-    private final ArrayList<Expression<?>> other_v;
-
-    private final Operator op;
-
-    private final Expression<String> left;
-
-    private final Expression<?> right;
-
     protected static final Logger log = LoggerFactory.getLogger(StringMultipleToIntegerExpression.class);
+    private static final long serialVersionUID = 7172041118401792672L;
+    private final ArrayList<Expression<?>> other_v;
+    private final Operator op;
+    private final Expression<String> left;
+    private final Expression<?> right;
 
     /**
      * <p>
@@ -79,6 +74,25 @@ public final class StringMultipleToIntegerExpression extends AbstractExpression<
             DSEStatistics.getInstance().reportConstraintTooLong(getSize());
             throw new ConstraintTooLongException(getSize());
         }
+    }
+
+    private static boolean containsSymbolicVariable(ArrayList<Expression<?>> list) {
+
+        for (Expression<?> e : list) {
+            if (e.containsSymbolicVariable()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static int countSizes(ArrayList<Expression<?>> list) {
+        int retVal = 0;
+        for (Expression<?> e : list) {
+            retVal += e.getSize();
+        }
+        return retVal;
     }
 
     /**
@@ -154,25 +168,6 @@ public final class StringMultipleToIntegerExpression extends AbstractExpression<
     public int hashCode() {
         return this.op.hashCode() + this.left.hashCode() + this.right.hashCode()
                 + this.other_v.hashCode();
-    }
-
-    private static boolean containsSymbolicVariable(ArrayList<Expression<?>> list) {
-
-        for (Expression<?> e : list) {
-            if (e.containsSymbolicVariable()) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private static int countSizes(ArrayList<Expression<?>> list) {
-        int retVal = 0;
-        for (Expression<?> e : list) {
-            retVal += e.getSize();
-        }
-        return retVal;
     }
 
     @Override

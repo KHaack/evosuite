@@ -46,80 +46,6 @@ public class HTMLStatisticsBackend implements StatisticsBackend {
 
     protected static final HtmlAnalyzer html_analyzer = new HtmlAnalyzer();
 
-    @Override
-    public void writeData(Chromosome<?> result, Map<String, OutputVariable<?>> data) {
-
-        new File(getReportDir().getAbsolutePath() + "/img").mkdirs();
-        new File(getReportDir().getAbsolutePath() + "/html/files/").mkdirs();
-        new File(getReportDir().getAbsolutePath() + "/data/").mkdirs();
-        new File(getReportDir().getAbsolutePath() + "/files/").mkdirs();
-
-        copyFile("prettify.js");
-        copyFile("prettify.css");
-        copyFile("style.css");
-        copyFile("foldButton.js");
-        copyFile("foldButton.css");
-        copyFile("jquery.js");
-        copyFile("detected.png");
-        copyFile("not_detected.png");
-        copyFile("img01.jpg");
-        copyFile("img02.jpg");
-        copyFile("img03.jpg");
-        copyFile("img04.png");
-        copyFile("evosuite.png");
-        File file = new File(getReportDir(), "report-generation.html");
-        StringBuffer report = new StringBuffer();
-
-        if (file.exists()) {
-            List<String> lines = FileIOUtils.readFile(file);
-            for (String line : lines) {
-                if (line.contains("<!-- EVOSUITE INSERTION POINT -->")) {
-                    break;
-                }
-                report.append(line);
-            }
-        } else {
-
-            writeHTMLHeader(report, Properties.PROJECT_PREFIX);
-            report.append("<div id=\"header\">\n<div id=\"logo\">");
-			/*
-			if (!Properties.PROJECT_PREFIX.isEmpty()) {
-				report.append("<h1 class=title>EvoSuite: " + Properties.PROJECT_PREFIX
-				        + "</h1>\n");
-			}
-			*/
-            report.append("\n</div><br></div>");
-            try {
-                report.append("Run on "
-                        + java.net.InetAddress.getLocalHost().getHostName() + "\n");
-            } catch (Exception e) {
-            }
-
-            report.append("<div id=\"page\">\n");
-            report.append("<div id=\"page-bgtop\">\n");
-            report.append("<div id=\"page-bgbtm\">\n");
-            report.append("<div id=\"content\">\n");
-            report.append("<div id=\"post\">");
-            report.append("<h2 class=\"title\">Test generation runs:</h2>\n");
-            report.append("<div style=\"clear: both;\">&nbsp;</div><div class=\"entry\">");
-            report.append("<table cellspacing=0>"); // border=0 cellspacing=0 cellpadding=3>");
-            report.append("<tr class=\"top bottom\">");
-            // report.append("<td>Run</td>");
-            report.append("<td>Date</td>");
-            report.append("<td>Time</td>");
-            report.append("<td>Coverage</td>");
-            report.append("<td>Class</td>");
-            // report.append("<td></td>");
-            report.append("</tr>\n");
-        }
-        writeRunTable((TestSuiteChromosome) result, data, report);
-        report.append("</div></div></div></div></div></div>");
-
-        writeHTMLFooter(report);
-
-        FileIOUtils.writeFile(report.toString(), file);
-    }
-
     public static void copyFile(URL src, File dest) {
         try {
             InputStream in;
@@ -212,6 +138,80 @@ public class HTMLStatisticsBackend implements StatisticsBackend {
         buffer.append("</div>\n");
         buffer.append("</body>\n");
         buffer.append("</html>\n");
+    }
+
+    @Override
+    public void writeData(Chromosome<?> result, Map<String, OutputVariable<?>> data) {
+
+        new File(getReportDir().getAbsolutePath() + "/img").mkdirs();
+        new File(getReportDir().getAbsolutePath() + "/html/files/").mkdirs();
+        new File(getReportDir().getAbsolutePath() + "/data/").mkdirs();
+        new File(getReportDir().getAbsolutePath() + "/files/").mkdirs();
+
+        copyFile("prettify.js");
+        copyFile("prettify.css");
+        copyFile("style.css");
+        copyFile("foldButton.js");
+        copyFile("foldButton.css");
+        copyFile("jquery.js");
+        copyFile("detected.png");
+        copyFile("not_detected.png");
+        copyFile("img01.jpg");
+        copyFile("img02.jpg");
+        copyFile("img03.jpg");
+        copyFile("img04.png");
+        copyFile("evosuite.png");
+        File file = new File(getReportDir(), "report-generation.html");
+        StringBuffer report = new StringBuffer();
+
+        if (file.exists()) {
+            List<String> lines = FileIOUtils.readFile(file);
+            for (String line : lines) {
+                if (line.contains("<!-- EVOSUITE INSERTION POINT -->")) {
+                    break;
+                }
+                report.append(line);
+            }
+        } else {
+
+            writeHTMLHeader(report, Properties.PROJECT_PREFIX);
+            report.append("<div id=\"header\">\n<div id=\"logo\">");
+			/*
+			if (!Properties.PROJECT_PREFIX.isEmpty()) {
+				report.append("<h1 class=title>EvoSuite: " + Properties.PROJECT_PREFIX
+				        + "</h1>\n");
+			}
+			*/
+            report.append("\n</div><br></div>");
+            try {
+                report.append("Run on "
+                        + java.net.InetAddress.getLocalHost().getHostName() + "\n");
+            } catch (Exception e) {
+            }
+
+            report.append("<div id=\"page\">\n");
+            report.append("<div id=\"page-bgtop\">\n");
+            report.append("<div id=\"page-bgbtm\">\n");
+            report.append("<div id=\"content\">\n");
+            report.append("<div id=\"post\">");
+            report.append("<h2 class=\"title\">Test generation runs:</h2>\n");
+            report.append("<div style=\"clear: both;\">&nbsp;</div><div class=\"entry\">");
+            report.append("<table cellspacing=0>"); // border=0 cellspacing=0 cellpadding=3>");
+            report.append("<tr class=\"top bottom\">");
+            // report.append("<td>Run</td>");
+            report.append("<td>Date</td>");
+            report.append("<td>Time</td>");
+            report.append("<td>Coverage</td>");
+            report.append("<td>Class</td>");
+            // report.append("<td></td>");
+            report.append("</tr>\n");
+        }
+        writeRunTable((TestSuiteChromosome) result, data, report);
+        report.append("</div></div></div></div></div></div>");
+
+        writeHTMLFooter(report);
+
+        FileIOUtils.writeFile(report.toString(), file);
     }
 
     /**

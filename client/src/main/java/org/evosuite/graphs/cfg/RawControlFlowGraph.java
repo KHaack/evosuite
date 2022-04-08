@@ -52,13 +52,6 @@ public class RawControlFlowGraph extends ControlFlowGraph<BytecodeInstruction> {
     private final ClassLoader classLoader;
 
     /**
-     * @return the classLoader
-     */
-    public ClassLoader getClassLoader() {
-        return classLoader;
-    }
-
-    /**
      * <p>
      * Constructor for RawControlFlowGraph.
      * </p>
@@ -72,6 +65,13 @@ public class RawControlFlowGraph extends ControlFlowGraph<BytecodeInstruction> {
         super(className, methodName, access);
         this.classLoader = classLoader;
         logger.info("Creating new RawCFG for " + className + "." + methodName + ": " + this.vertexCount());
+    }
+
+    /**
+     * @return the classLoader
+     */
+    public ClassLoader getClassLoader() {
+        return classLoader;
     }
 
     // inherited from ControlFlowGraph

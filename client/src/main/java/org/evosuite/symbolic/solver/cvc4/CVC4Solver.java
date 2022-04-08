@@ -34,19 +34,11 @@ import java.util.*;
 
 public final class CVC4Solver extends SmtSolver {
 
-    private boolean reWriteNonLinearConstraints = false;
-
-    /**
-     * If enabled the translation will approximate non-linear constraints with
-     * concrete values
-     *
-     * @param rewrite
-     */
-    public void setRewriteNonLinearConstraints(boolean rewrite) {
-        reWriteNonLinearConstraints = rewrite;
-    }
-
+    private static final String CVC4_LOGIC = "QF_ALL_SUPPORTED"; // previously QF_SLIRA, SLIRA
+    // private final static int ASCII_TABLE_LENGTH = 256;
+    private final static int ASCII_TABLE_LENGTH = 256;
     static Logger logger = LoggerFactory.getLogger(CVC4Solver.class);
+    private boolean reWriteNonLinearConstraints = false;
 
     public CVC4Solver(boolean addMissingValues) {
         super(addMissingValues);
@@ -55,116 +47,6 @@ public final class CVC4Solver extends SmtSolver {
     public CVC4Solver() {
         super();
     }
-
-    @Override
-    public SolverResult executeSolver(Collection<Constraint<?>> constraints) throws SolverTimeoutException,
-            SolverEmptyQueryException, SolverErrorException, SolverParseException, IOException {
-
-        if (Properties.CVC4_PATH == null) {
-            String errMsg = "Property CVC4_PATH should be setted in order to use the CVC4 Solver!";
-            logger.error(errMsg);
-            throw new IllegalStateException(errMsg);
-        }
-
-        // CVC4 has very little support for non-linear arithemtics
-        // In fact, it cannot even produce models for non-linear theories
-        if (!reWriteNonLinearConstraints && hasNonLinearConstraints(constraints)) {
-            logger.debug("Skipping query due to (unsupported) non-linear constraints");
-            throw new SolverEmptyQueryException("Skipping query due to (unsupported) non-linear constraints");
-        }
-
-        long cvcTimeout = Properties.DSE_CONSTRAINT_SOLVER_TIMEOUT_MILLIS;
-
-        Set<Variable<?>> variables = new HashSet<>();
-        for (Constraint<?> c : constraints) {
-            Set<Variable<?>> c_variables = c.getVariables();
-            variables.addAll(c_variables);
-        }
-
-        SmtQuery query = buildSmtQuery(constraints);
-
-        if (query.getFunctionDeclarations().isEmpty()) {
-            logger.debug("No variables found during the creation of the SMT query.");
-            throw new SolverEmptyQueryException("No variables found during the creation of the SMT query.");
-        }
-
-        if (query.getAssertions().isEmpty()) {
-            Map<String, Object> emptySolution = new HashMap<>();
-            SolverResult emptySAT = SolverResult.newSAT(emptySolution);
-            return emptySAT;
-        }
-
-        SmtQueryPrinter printer = new SmtQueryPrinter();
-        String smtQueryStr = printer.print(query);
-
-        if (smtQueryStr == null) {
-            logger.debug("No variables found during constraint solving.");
-            throw new SolverEmptyQueryException("No variables found during constraint solving.");
-        }
-
-        logger.debug("CVC4 Query:");
-        logger.debug(smtQueryStr);
-
-        String cmd = buildCVC4cmd(cvcTimeout);
-
-        ByteArrayOutputStream stdout = new ByteArrayOutputStream();
-        try {
-            launchNewSolvingProcess(cmd, smtQueryStr, (int) cvcTimeout, stdout);
-            String output = stdout.toString("UTF-8");
-
-            if (output.startsWith("unknown")) {
-                logger.debug("timeout reached when using cvc4");
-                throw new SolverTimeoutException();
-            }
-
-            if (output.startsWith("unsat") && output.contains(
-                    "(error \"Cannot get the current model unless immediately preceded by SAT/INVALID or UNKNOWN response.\")")) {
-                // UNSAT
-                SolverResult unsatResult = SolverResult.newUNSAT();
-                return unsatResult;
-            }
-
-            if (output.contains("error")) {
-                String errMsg = "An error occurred while executing CVC4!";
-                logger.error(errMsg);
-                throw new SolverErrorException(errMsg);
-            }
-
-            // parse solution
-            Map<String, Object> initialValues = getConcreteValues(variables);
-            SmtModelParser resultParser;
-            if (addMissingVariables()) {
-                resultParser = new SmtModelParser(initialValues);
-            } else {
-                resultParser = new SmtModelParser();
-            }
-            SolverResult solverResult = resultParser.parse(output);
-
-            if (solverResult.isSAT()) {
-                // check if the found solution is useful
-                boolean check = checkSAT(constraints, solverResult);
-                if (!check) {
-                    logger.debug("CVC4 solution does not solve the original constraint system. ");
-                    SolverResult unsatResult = SolverResult.newUNSAT();
-                    return unsatResult;
-                }
-            }
-
-            return solverResult;
-
-        } catch (IOException e) {
-            if (e.getMessage().contains("Permission denied")) {
-                logger.error("No permissions for running CVC4 binary");
-            } else {
-                logger.error("IO Exception during launching of CVC4 command");
-            }
-            throw e;
-
-        }
-
-    }
-
-    private static final String CVC4_LOGIC = "QF_ALL_SUPPORTED"; // previously QF_SLIRA, SLIRA
 
     private static SmtQuery buildSmtQuery(Collection<Constraint<?>> constraints) {
 
@@ -278,9 +160,6 @@ public final class CVC4Solver extends SmtSolver {
         return false;
     }
 
-    // private final static int ASCII_TABLE_LENGTH = 256;
-    private final static int ASCII_TABLE_LENGTH = 256;
-
     private static String buildIntToCharFunction() {
         StringBuffer buff = new StringBuffer();
         buff.append(SmtOperation.Operator.INT_TO_CHAR + "((!x Int)) String");
@@ -331,6 +210,124 @@ public final class CVC4Solver extends SmtSolver {
             buff.append(")");
         }
         return buff.toString();
+    }
+
+    /**
+     * If enabled the translation will approximate non-linear constraints with
+     * concrete values
+     *
+     * @param rewrite
+     */
+    public void setRewriteNonLinearConstraints(boolean rewrite) {
+        reWriteNonLinearConstraints = rewrite;
+    }
+
+    @Override
+    public SolverResult executeSolver(Collection<Constraint<?>> constraints) throws SolverTimeoutException,
+            SolverEmptyQueryException, SolverErrorException, SolverParseException, IOException {
+
+        if (Properties.CVC4_PATH == null) {
+            String errMsg = "Property CVC4_PATH should be setted in order to use the CVC4 Solver!";
+            logger.error(errMsg);
+            throw new IllegalStateException(errMsg);
+        }
+
+        // CVC4 has very little support for non-linear arithemtics
+        // In fact, it cannot even produce models for non-linear theories
+        if (!reWriteNonLinearConstraints && hasNonLinearConstraints(constraints)) {
+            logger.debug("Skipping query due to (unsupported) non-linear constraints");
+            throw new SolverEmptyQueryException("Skipping query due to (unsupported) non-linear constraints");
+        }
+
+        long cvcTimeout = Properties.DSE_CONSTRAINT_SOLVER_TIMEOUT_MILLIS;
+
+        Set<Variable<?>> variables = new HashSet<>();
+        for (Constraint<?> c : constraints) {
+            Set<Variable<?>> c_variables = c.getVariables();
+            variables.addAll(c_variables);
+        }
+
+        SmtQuery query = buildSmtQuery(constraints);
+
+        if (query.getFunctionDeclarations().isEmpty()) {
+            logger.debug("No variables found during the creation of the SMT query.");
+            throw new SolverEmptyQueryException("No variables found during the creation of the SMT query.");
+        }
+
+        if (query.getAssertions().isEmpty()) {
+            Map<String, Object> emptySolution = new HashMap<>();
+            SolverResult emptySAT = SolverResult.newSAT(emptySolution);
+            return emptySAT;
+        }
+
+        SmtQueryPrinter printer = new SmtQueryPrinter();
+        String smtQueryStr = printer.print(query);
+
+        if (smtQueryStr == null) {
+            logger.debug("No variables found during constraint solving.");
+            throw new SolverEmptyQueryException("No variables found during constraint solving.");
+        }
+
+        logger.debug("CVC4 Query:");
+        logger.debug(smtQueryStr);
+
+        String cmd = buildCVC4cmd(cvcTimeout);
+
+        ByteArrayOutputStream stdout = new ByteArrayOutputStream();
+        try {
+            launchNewSolvingProcess(cmd, smtQueryStr, (int) cvcTimeout, stdout);
+            String output = stdout.toString("UTF-8");
+
+            if (output.startsWith("unknown")) {
+                logger.debug("timeout reached when using cvc4");
+                throw new SolverTimeoutException();
+            }
+
+            if (output.startsWith("unsat") && output.contains(
+                    "(error \"Cannot get the current model unless immediately preceded by SAT/INVALID or UNKNOWN response.\")")) {
+                // UNSAT
+                SolverResult unsatResult = SolverResult.newUNSAT();
+                return unsatResult;
+            }
+
+            if (output.contains("error")) {
+                String errMsg = "An error occurred while executing CVC4!";
+                logger.error(errMsg);
+                throw new SolverErrorException(errMsg);
+            }
+
+            // parse solution
+            Map<String, Object> initialValues = getConcreteValues(variables);
+            SmtModelParser resultParser;
+            if (addMissingVariables()) {
+                resultParser = new SmtModelParser(initialValues);
+            } else {
+                resultParser = new SmtModelParser();
+            }
+            SolverResult solverResult = resultParser.parse(output);
+
+            if (solverResult.isSAT()) {
+                // check if the found solution is useful
+                boolean check = checkSAT(constraints, solverResult);
+                if (!check) {
+                    logger.debug("CVC4 solution does not solve the original constraint system. ");
+                    SolverResult unsatResult = SolverResult.newUNSAT();
+                    return unsatResult;
+                }
+            }
+
+            return solverResult;
+
+        } catch (IOException e) {
+            if (e.getMessage().contains("Permission denied")) {
+                logger.error("No permissions for running CVC4 binary");
+            } else {
+                logger.error("IO Exception during launching of CVC4 command");
+            }
+            throw e;
+
+        }
+
     }
 
 }

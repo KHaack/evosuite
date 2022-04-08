@@ -48,10 +48,8 @@ public class ModuleAction implements Action {
     private final AbstractBuild<?, ?> build;
 
     private final String name;
-
-    private Project project;
-
     private final List<ClassAction> classes;
+    private Project project;
 
     public ModuleAction(AbstractBuild<?, ?> build, String name) {
         this.build = build;

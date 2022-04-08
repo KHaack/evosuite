@@ -26,13 +26,13 @@ package org.evosuite.setup;
  */
 final class StaticFieldReadEntry extends GetStaticGraphEntry {
 
+    private final String targetField;
+
     public StaticFieldReadEntry(String sourceClass, String sourceMethod,
                                 String targetClass, String targetField) {
         super(sourceClass, sourceMethod, targetClass);
         this.targetField = targetField;
     }
-
-    private final String targetField;
 
     public String getTargetField() {
         return targetField;

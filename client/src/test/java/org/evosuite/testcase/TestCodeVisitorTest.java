@@ -57,31 +57,6 @@ public class TestCodeVisitorTest {
         return obj;
     }
 
-    public static class ClassWithGeneric<T extends FakeAbstractClass> {
-        public T hello(T obj) {
-            return obj;
-        }
-    }
-
-    public static class FakeServlet extends FakeAbstractClass {
-        private static final long serialVersionUID = 1L;
-
-        public FakeServlet() {
-        }
-    }
-
-    public abstract static class FakeAbstractClass {
-
-    }
-
-    public static class Country {
-        public String bar = "bar";
-
-        public static class CountryNameCode {
-            public String foo = "foo";
-        }
-    }
-
     @Test
     public void testInnerClassWithNameSubset() {
         TestCodeVisitor visitor = new TestCodeVisitor();
@@ -120,7 +95,7 @@ public class TestCodeVisitorTest {
 
         //Finally, visit the test
         TestCodeVisitor visitor = new TestCodeVisitor();
-        tc.accept(visitor); //should not throw exception        
+        tc.accept(visitor); //should not throw exception
     }
 
     @Test
@@ -321,5 +296,30 @@ public class TestCodeVisitorTest {
         System.out.println(code);
         assertFalse(code.contains("= AbstractEnumInInnerClass.AnEnum.1.FOO"));
         assertTrue(code.contains("= AbstractEnumInInnerClass.AnEnum.FOO"));
+    }
+
+    public static class ClassWithGeneric<T extends FakeAbstractClass> {
+        public T hello(T obj) {
+            return obj;
+        }
+    }
+
+    public static class FakeServlet extends FakeAbstractClass {
+        private static final long serialVersionUID = 1L;
+
+        public FakeServlet() {
+        }
+    }
+
+    public abstract static class FakeAbstractClass {
+
+    }
+
+    public static class Country {
+        public String bar = "bar";
+
+        public static class CountryNameCode {
+            public String foo = "foo";
+        }
     }
 }

@@ -41,10 +41,9 @@ import java.util.*;
 public final class EvoTestCaseCodeGenerator implements ICodeGenerator<TestCase> {
 
     private static final Logger logger = LoggerFactory.getLogger(EvoTestCaseCodeGenerator.class);
+    private final Map<Integer, VariableReference> oidToVarRefMap;
     //--- source generation
     private TestCase testCase;
-
-    private final Map<Integer, VariableReference> oidToVarRefMap;
 
     public EvoTestCaseCodeGenerator() {
         this.oidToVarRefMap = new HashMap<>();

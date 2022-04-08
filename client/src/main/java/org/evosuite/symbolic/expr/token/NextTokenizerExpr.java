@@ -29,7 +29,9 @@ import java.util.Set;
 
 public final class NextTokenizerExpr extends TokenizerExpr {
 
+    private static final long serialVersionUID = -5041244020293557448L;
     private final TokenizerExpr tokenizerExpr;
+
 
     public NextTokenizerExpr(TokenizerExpr expr) {
         super(1 + expr.getSize(), expr.containsSymbolicVariable());
@@ -38,9 +40,6 @@ public final class NextTokenizerExpr extends TokenizerExpr {
         if (getSize() > Properties.DSE_CONSTRAINT_LENGTH)
             throw new ConstraintTooLongException(getSize());
     }
-
-
-    private static final long serialVersionUID = -5041244020293557448L;
 
     @Override
     public Set<Variable<?>> getVariables() {

@@ -51,31 +51,23 @@ public class ExternalProcessGroupHandler {
      * Constant <code>logger</code>
      */
     protected static final Logger logger = LoggerFactory.getLogger(ExternalProcessGroupHandler.class);
-
-    protected Process[] processGroup;
-    protected String[][] last_commands;
-
-    protected Thread[] output_printers;
-    protected Thread[] error_printers;
-    protected Thread[] message_handlers;
-
-    protected ObjectInputStream in;
-
-    protected Object final_result;
     /**
      * Constant <code>WAITING_FOR_DATA</code>
      */
     protected static final Object WAITING_FOR_DATA = "waiting_for_data_"
             + System.currentTimeMillis();
-
+    private final String[] hsErrFiles;
+    protected Process[] processGroup;
+    protected String[][] last_commands;
+    protected Thread[] output_printers;
+    protected Thread[] error_printers;
+    protected Thread[] message_handlers;
+    protected ObjectInputStream in;
+    protected Object final_result;
     protected Thread[] processKillHooks;
     protected Thread clientRunningOnThread;
-
     protected volatile CountDownLatch[] latches;
-
     protected String base_dir = System.getProperty("user.dir");
-
-    private final String[] hsErrFiles;
 
     public ExternalProcessGroupHandler() {
         this(1);

@@ -50,6 +50,13 @@ public interface StoppingCondition<T extends Chromosome<T>> extends SearchListen
     long getLimit();
 
     /**
+     * Set new upper limit of resources
+     *
+     * @param limit a long.
+     */
+    void setLimit(long limit);
+
+    /**
      * <p>isFinished</p>
      *
      * @return a boolean.
@@ -60,11 +67,4 @@ public interface StoppingCondition<T extends Chromosome<T>> extends SearchListen
      * Reset everything
      */
     void reset();
-
-    /**
-     * Set new upper limit of resources
-     *
-     * @param limit a long.
-     */
-    void setLimit(long limit);
 }

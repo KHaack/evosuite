@@ -57,16 +57,11 @@ import java.util.List;
 public class BooleanTestabilityTransformation {
 
     public static final Logger logger = LoggerFactory.getLogger(BooleanTestabilityTransformation.class);
-
-    private final ClassNode cn;
-
     public final String className;
-
+    private final ClassNode cn;
     public Frame[] currentFrames = null;
-
-    private MethodNode currentMethodNode = null;
-
     public ClassLoader classLoader;
+    private MethodNode currentMethodNode = null;
 
     /**
      * <p>
@@ -79,74 +74,6 @@ public class BooleanTestabilityTransformation {
         this.cn = cn;
         this.className = cn.name.replace('/', '.');
         this.classLoader = classLoader;
-    }
-
-    /**
-     * Transform all methods and fields
-     *
-     * @return a {@link org.objectweb.asm.tree.ClassNode} object.
-     */
-    public ClassNode transform() {
-
-        processFields();
-        processMethods();
-        clearIntermediateResults();
-        if (className.equals(Properties.TARGET_CLASS)
-                || className.startsWith(Properties.TARGET_CLASS + "$"))
-            TransformationStatistics.writeStatistics(className);
-
-        return cn;
-    }
-
-    @SuppressWarnings("unchecked")
-    private void clearIntermediateResults() {
-        List<MethodNode> methodNodes = cn.methods;
-        for (MethodNode mn : methodNodes) {
-            if ((mn.access & Opcodes.ACC_NATIVE) == Opcodes.ACC_NATIVE)
-                continue;
-            GraphPool.clearAll(className, mn.name + mn.desc);
-            BytecodeInstructionPool.clearAll(className, mn.name + mn.desc);
-            BranchPool.getInstance(classLoader).clear(className, mn.name + mn.desc);
-        }
-    }
-
-    /**
-     * Handle transformation of fields defined in this class
-     */
-    @SuppressWarnings("unchecked")
-    private void processFields() {
-        List<FieldNode> fields = cn.fields;
-        for (FieldNode field : fields) {
-            if (DescriptorMapping.getInstance().isTransformedField(className, field.name,
-                    field.desc)) {
-                String newDesc = transformFieldDescriptor(className, field.name,
-                        field.desc);
-                logger.info("Transforming field " + field.name + " from " + field.desc
-                        + " to " + newDesc);
-                if (!newDesc.equals(field.desc))
-                    TransformationStatistics.transformBooleanField();
-                field.desc = newDesc;
-            }
-        }
-    }
-
-    /**
-     * Handle transformation of methods defined in this class
-     */
-    @SuppressWarnings("unchecked")
-    private void processMethods() {
-        List<MethodNode> methodNodes = cn.methods;
-        for (MethodNode mn : methodNodes) {
-            if ((mn.access & Opcodes.ACC_NATIVE) == Opcodes.ACC_NATIVE)
-                continue;
-            if (DescriptorMapping.getInstance().isTransformedMethod(className, mn.name,
-                    mn.desc)) {
-                logger.info("Transforming signature of method " + mn.name + mn.desc);
-                transformMethodSignature(mn);
-                logger.info("Transformed signature to " + mn.name + mn.desc);
-            }
-            transformMethod(mn);
-        }
     }
 
     /**
@@ -231,6 +158,74 @@ public class BooleanTestabilityTransformation {
                                              String desc) {
         return DescriptorMapping.getInstance().isTransformedField(className, fieldName,
                 desc);
+    }
+
+    /**
+     * Transform all methods and fields
+     *
+     * @return a {@link org.objectweb.asm.tree.ClassNode} object.
+     */
+    public ClassNode transform() {
+
+        processFields();
+        processMethods();
+        clearIntermediateResults();
+        if (className.equals(Properties.TARGET_CLASS)
+                || className.startsWith(Properties.TARGET_CLASS + "$"))
+            TransformationStatistics.writeStatistics(className);
+
+        return cn;
+    }
+
+    @SuppressWarnings("unchecked")
+    private void clearIntermediateResults() {
+        List<MethodNode> methodNodes = cn.methods;
+        for (MethodNode mn : methodNodes) {
+            if ((mn.access & Opcodes.ACC_NATIVE) == Opcodes.ACC_NATIVE)
+                continue;
+            GraphPool.clearAll(className, mn.name + mn.desc);
+            BytecodeInstructionPool.clearAll(className, mn.name + mn.desc);
+            BranchPool.getInstance(classLoader).clear(className, mn.name + mn.desc);
+        }
+    }
+
+    /**
+     * Handle transformation of fields defined in this class
+     */
+    @SuppressWarnings("unchecked")
+    private void processFields() {
+        List<FieldNode> fields = cn.fields;
+        for (FieldNode field : fields) {
+            if (DescriptorMapping.getInstance().isTransformedField(className, field.name,
+                    field.desc)) {
+                String newDesc = transformFieldDescriptor(className, field.name,
+                        field.desc);
+                logger.info("Transforming field " + field.name + " from " + field.desc
+                        + " to " + newDesc);
+                if (!newDesc.equals(field.desc))
+                    TransformationStatistics.transformBooleanField();
+                field.desc = newDesc;
+            }
+        }
+    }
+
+    /**
+     * Handle transformation of methods defined in this class
+     */
+    @SuppressWarnings("unchecked")
+    private void processMethods() {
+        List<MethodNode> methodNodes = cn.methods;
+        for (MethodNode mn : methodNodes) {
+            if ((mn.access & Opcodes.ACC_NATIVE) == Opcodes.ACC_NATIVE)
+                continue;
+            if (DescriptorMapping.getInstance().isTransformedMethod(className, mn.name,
+                    mn.desc)) {
+                logger.info("Transforming signature of method " + mn.name + mn.desc);
+                transformMethodSignature(mn);
+                logger.info("Transformed signature to " + mn.name + mn.desc);
+            }
+            transformMethod(mn);
+        }
     }
 
     /**

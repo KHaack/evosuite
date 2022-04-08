@@ -33,274 +33,269 @@ import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class MockRandomAccessFile extends RandomAccessFile implements LeakingResource,  OverrideMock{
+public class MockRandomAccessFile extends RandomAccessFile implements LeakingResource, OverrideMock {
 
-	private FileChannel channel = null;
-	private final Object closeLock = new Object();
-	private boolean canRead;
-	private boolean canWrite;
+    private final Object closeLock = new Object();
+    /**
+     * The path to the file
+     */
+    private final String path;
+    /**
+     * The position in the file
+     */
+    private final AtomicInteger position = new AtomicInteger(0);
+    private FileChannel channel = null;
+    private boolean canRead;
+    private boolean canWrite;
+    private volatile boolean closed = false;
 
-	private volatile boolean closed = false;
+    // ----------- constructors  ----------------
 
-
-	/**
-	 * The path to the file
-	 */
-	private final String path;
-	
-	/**
-	 * The position in the file
-	 */
-	private final AtomicInteger position = new AtomicInteger(0);
-	
-	// ----------- constructors  ----------------
-
-	public MockRandomAccessFile(String name, String mode)
-			throws FileNotFoundException{
-		this(name != null ? 
-				(!MockFramework.isEnabled() ? 
-						 new File(name) :
-							 new MockFile(name)): 
-				null, mode);
-	}
+    public MockRandomAccessFile(String name, String mode)
+            throws FileNotFoundException {
+        this(name != null ?
+                (!MockFramework.isEnabled() ?
+                        new File(name) :
+                        new MockFile(name)) :
+                null, mode);
+    }
 
 
-	public MockRandomAccessFile(File file, String mode) throws FileNotFoundException {
-		
-		super((!MockFramework.isEnabled() ?
-				file :
-				VirtualFileSystem.getInstance().getRealTmpFile()),mode); //just to make the compiler happy
+    public MockRandomAccessFile(File file, String mode) throws FileNotFoundException {
 
-		if(!MockFramework.isEnabled()){
-			path = null;
-			return;
-		}
-		
-		VirtualFileSystem.getInstance().addLeakingResource(this);
-		
-		String name = (file != null ? file.getPath() : null);
-		
-		if (mode==null || (!mode.equals("r") && !mode.equals("rw") && !mode.equals("rws") && !mode.equals("rwd")) ){
-			throw new MockIllegalArgumentException("Illegal mode \"" + mode
-					+ "\" must be one of "
-					+ "\"r\", \"rw\", \"rws\","
-					+ " or \"rwd\"");
-		}
-		
-		canRead = mode.contains("r");
-		assert canRead; // should always be readable
-		canWrite = mode.contains("w");
-		
-		if (name == null) {
-			throw new MockNullPointerException();
-		}
-				
-		path = (file != null ? file.getAbsolutePath() : null);
-		
-		//does the file exist?
-		boolean exist = VirtualFileSystem.getInstance().exists(path);
-		if(!exist){
-			if(!canWrite){
-				throw new FileNotFoundException("File does not exist, and RandomAccessFile is not open in write mode");
-			} else {
-				//let's create it
-				boolean created = VirtualFileSystem.getInstance().createFile(path);
-				if(!created){
-					throw new FileNotFoundException("Failed to create file");
-				}
-			}
-		} else {
-			//the file does exist, no need to do anything here
-		}
-		
-		/*
-		 * it is important to instantiate it here, because getChannel is final
-		 */
-		channel = new EvoFileChannel(position,path,canRead,canWrite); 		
-	}
+        super((!MockFramework.isEnabled() ?
+                file :
+                VirtualFileSystem.getInstance().getRealTmpFile()), mode); //just to make the compiler happy
 
-	
-	// ------- mocked native methods ---------- 
-	
-	@Override
-	public int read() throws IOException{
-		if(!MockFramework.isEnabled()){
-			return super.read();
-		}
+        if (!MockFramework.isEnabled()) {
+            path = null;
+            return;
+        }
 
-		if(closed){
-			throw new MockIOException();
-		}
-		
-		//no need to check canRead, as should be always true
-		assert canRead;
-		
-		return NativeMockedIO.read(path, position); 
-	}
+        VirtualFileSystem.getInstance().addLeakingResource(this);
 
-	@Override
-	public void write(int b) throws IOException{
-		if(!MockFramework.isEnabled()){
-			super.write(b);
-			return;
-		}
+        String name = (file != null ? file.getPath() : null);
 
-		writeBytes(new byte[]{(byte)b},0,1);
-	}
+        if (mode == null || (!mode.equals("r") && !mode.equals("rw") && !mode.equals("rws") && !mode.equals("rwd"))) {
+            throw new MockIllegalArgumentException("Illegal mode \"" + mode
+                    + "\" must be one of "
+                    + "\"r\", \"rw\", \"rws\","
+                    + " or \"rwd\"");
+        }
 
-	private void writeBytes(byte[] b, int off, int len) throws IOException{
-		
-		if(closed || !canWrite){
-			throw new IOException();
-		}
+        canRead = mode.contains("r");
+        assert canRead; // should always be readable
+        canWrite = mode.contains("w");
 
-		NativeMockedIO.writeBytes(path, position, b, off, len);
-	}
-	
-	@Override
-	public long getFilePointer() throws IOException{
-		if(!MockFramework.isEnabled()){
-			return super.getFilePointer();
-		}
+        if (name == null) {
+            throw new MockNullPointerException();
+        }
 
-		return position.get();
-	}
+        path = (file != null ? file.getAbsolutePath() : null);
 
-	@Override
-	public void seek(long pos) throws IOException{
-		if(!MockFramework.isEnabled()){
-			super.seek(pos);
-			return;
-		}
+        //does the file exist?
+        boolean exist = VirtualFileSystem.getInstance().exists(path);
+        if (!exist) {
+            if (!canWrite) {
+                throw new FileNotFoundException("File does not exist, and RandomAccessFile is not open in write mode");
+            } else {
+                //let's create it
+                boolean created = VirtualFileSystem.getInstance().createFile(path);
+                if (!created) {
+                    throw new FileNotFoundException("Failed to create file");
+                }
+            }
+        } else {
+            //the file does exist, no need to do anything here
+        }
 
-		if(pos < 0){
-			throw new MockIOException("Negative position: "+pos);
-		}
-		if(pos > Integer.MAX_VALUE){
-			throw new MockIOException("Virtual file system does not handle files larger than  "+Integer.MAX_VALUE+" bytes");
-		}
-		position.set((int)pos);
-	}
+        /*
+         * it is important to instantiate it here, because getChannel is final
+         */
+        channel = new EvoFileChannel(position, path, canRead, canWrite);
+    }
 
-	@Override
-	public long length() throws IOException{
-		if(!MockFramework.isEnabled()){
-			return super.length();
-		}
 
-		if(closed){
-			throw new MockIOException();
-		}
-		return NativeMockedIO.size(path);
-	}
+    // ------- mocked native methods ----------
 
-	@Override
-	public void setLength(long newLength) throws IOException{
-		if(!MockFramework.isEnabled()){
-			super.setLength(newLength);
-			return;
-		}
+    @Override
+    public int read() throws IOException {
+        if (!MockFramework.isEnabled()) {
+            return super.read();
+        }
 
-		if(closed || !canWrite){
-			throw new IOException();
-		}
-		
-		NativeMockedIO.setLength(path, position, newLength);	
-	}
+        if (closed) {
+            throw new MockIOException();
+        }
 
-	
-	
-	// ---------   override methods ----------------
-	
-	private  int readBytes(byte[] b, int off, int len) throws IOException{
-		int counter = 0;
-		for(int i=0; i<len; i++){
-			int v = read();
-			if(v == -1){  
-				//end of stream
-				return -1;
-			}
-			
-			b[off+i] = (byte) v;
-			counter++;
-		}
-		
-		return counter; 
-	}
-	
-	@Override
-	public int read(byte[] b, int off, int len) throws IOException {
-		if(!MockFramework.isEnabled()){
-			return super.read(b, off, len);
-		}
+        //no need to check canRead, as should be always true
+        assert canRead;
 
-		return readBytes(b, off, len); 
-	}
+        return NativeMockedIO.read(path, position);
+    }
 
-	@Override
-	public int read(byte[] b) throws IOException {
-		if(!MockFramework.isEnabled()){
-			return super.read(b);
-		}
+    @Override
+    public void write(int b) throws IOException {
+        if (!MockFramework.isEnabled()) {
+            super.write(b);
+            return;
+        }
 
-		return readBytes(b, 0, b.length); 
-	}
+        writeBytes(new byte[]{(byte) b}, 0, 1);
+    }
 
-	@Override
-	public int skipBytes(int n) throws IOException {
-		if(!MockFramework.isEnabled()){
-			return super.skipBytes(n);
-		}
+    private void writeBytes(byte[] b, int off, int len) throws IOException {
 
-		return super.skipBytes(n);
-	}
+        if (closed || !canWrite) {
+            throw new IOException();
+        }
 
-	@Override
-	public void write(byte[] b) throws IOException {
-		if(!MockFramework.isEnabled()){
-			super.write(b);
-			return;
-		}
+        NativeMockedIO.writeBytes(path, position, b, off, len);
+    }
 
-		writeBytes(b, 0, b.length);
-	}
+    @Override
+    public long getFilePointer() throws IOException {
+        if (!MockFramework.isEnabled()) {
+            return super.getFilePointer();
+        }
 
-	@Override
-	public void write(byte[] b, int off, int len) throws IOException {
-		if(!MockFramework.isEnabled()){
-			super.write(b, off, len);
-			return;
-		}
+        return position.get();
+    }
 
-		writeBytes(b, off, len);
-	}
+    @Override
+    public void seek(long pos) throws IOException {
+        if (!MockFramework.isEnabled()) {
+            super.seek(pos);
+            return;
+        }
 
-	@Override
-	public void close() throws IOException {
-		if(!MockFramework.isEnabled()){
-			super.close();
-			return;
-		}
+        if (pos < 0) {
+            throw new MockIOException("Negative position: " + pos);
+        }
+        if (pos > Integer.MAX_VALUE) {
+            throw new MockIOException("Virtual file system does not handle files larger than  " + Integer.MAX_VALUE + " bytes");
+        }
+        position.set((int) pos);
+    }
 
-		synchronized (closeLock) {
-		
-			super.close();
-			
-			if (closed) {
-				return;
-			}
-			closed = true;
-		}
-		
-		if (channel != null) {
-			channel.close();
-		}
-		
-		VirtualFileSystem.getInstance().throwSimuledIOExceptionIfNeeded(path);
-	}
+    @Override
+    public long length() throws IOException {
+        if (!MockFramework.isEnabled()) {
+            return super.length();
+        }
 
-	@Override
-	public void release() throws Exception {		
-			super.close();
-	}
+        if (closed) {
+            throw new MockIOException();
+        }
+        return NativeMockedIO.size(path);
+    }
+
+    @Override
+    public void setLength(long newLength) throws IOException {
+        if (!MockFramework.isEnabled()) {
+            super.setLength(newLength);
+            return;
+        }
+
+        if (closed || !canWrite) {
+            throw new IOException();
+        }
+
+        NativeMockedIO.setLength(path, position, newLength);
+    }
+
+
+    // ---------   override methods ----------------
+
+    private int readBytes(byte[] b, int off, int len) throws IOException {
+        int counter = 0;
+        for (int i = 0; i < len; i++) {
+            int v = read();
+            if (v == -1) {
+                //end of stream
+                return -1;
+            }
+
+            b[off + i] = (byte) v;
+            counter++;
+        }
+
+        return counter;
+    }
+
+    @Override
+    public int read(byte[] b, int off, int len) throws IOException {
+        if (!MockFramework.isEnabled()) {
+            return super.read(b, off, len);
+        }
+
+        return readBytes(b, off, len);
+    }
+
+    @Override
+    public int read(byte[] b) throws IOException {
+        if (!MockFramework.isEnabled()) {
+            return super.read(b);
+        }
+
+        return readBytes(b, 0, b.length);
+    }
+
+    @Override
+    public int skipBytes(int n) throws IOException {
+        if (!MockFramework.isEnabled()) {
+            return super.skipBytes(n);
+        }
+
+        return super.skipBytes(n);
+    }
+
+    @Override
+    public void write(byte[] b) throws IOException {
+        if (!MockFramework.isEnabled()) {
+            super.write(b);
+            return;
+        }
+
+        writeBytes(b, 0, b.length);
+    }
+
+    @Override
+    public void write(byte[] b, int off, int len) throws IOException {
+        if (!MockFramework.isEnabled()) {
+            super.write(b, off, len);
+            return;
+        }
+
+        writeBytes(b, off, len);
+    }
+
+    @Override
+    public void close() throws IOException {
+        if (!MockFramework.isEnabled()) {
+            super.close();
+            return;
+        }
+
+        synchronized (closeLock) {
+
+            super.close();
+
+            if (closed) {
+                return;
+            }
+            closed = true;
+        }
+
+        if (channel != null) {
+            channel.close();
+        }
+
+        VirtualFileSystem.getInstance().throwSimuledIOExceptionIfNeeded(path);
+    }
+
+    @Override
+    public void release() throws Exception {
+        super.close();
+    }
 }

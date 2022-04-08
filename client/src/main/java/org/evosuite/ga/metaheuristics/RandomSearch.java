@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory;
 public class RandomSearch<T extends Chromosome<T>> extends GeneticAlgorithm<T> {
 
     private static final Logger logger = LoggerFactory.getLogger(RandomSearch.class);
+    private static final long serialVersionUID = -7685015421245920459L;
 
     /**
      * <p>
@@ -45,8 +46,6 @@ public class RandomSearch<T extends Chromosome<T>> extends GeneticAlgorithm<T> {
     public RandomSearch(ChromosomeFactory<T> factory) {
         super(factory);
     }
-
-    private static final long serialVersionUID = -7685015421245920459L;
 
     /* (non-Javadoc)
      * @see org.evosuite.ga.GeneticAlgorithm#evolve()

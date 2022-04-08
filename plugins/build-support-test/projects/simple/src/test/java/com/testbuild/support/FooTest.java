@@ -58,7 +58,7 @@ public class FooTest extends TestCase {
     }
 
     @Test
-    public void testInstrumentation(){
+    public void testInstrumentation() {
         assertTrue(new Foo() instanceof InstrumentedClass);
     }
 }

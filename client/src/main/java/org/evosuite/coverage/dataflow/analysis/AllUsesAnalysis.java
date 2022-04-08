@@ -38,9 +38,8 @@ import java.util.*;
 public class AllUsesAnalysis {
 
     private final static int UPPER_PAIR_SEARCH_INVOCATION_BOUND = 2000000;
-    private boolean warnedAboutAbortion = false;
     private final ClassControlFlowGraph ccfg;
-
+    private boolean warnedAboutAbortion = false;
     // map methods to Sets of definitions that can be active at method
     // return. map according to defined variables name
     private Map<String, Set<Map<String, BytecodeInstruction>>> determinedActiveDefs = new HashMap<>();

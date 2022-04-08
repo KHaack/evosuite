@@ -67,11 +67,195 @@ public class DSELegacyAlgorithm extends GeneticAlgorithm<TestSuiteChromosome> {
     private static final Logger logger = LoggerFactory.getLogger(DSELegacyAlgorithm.class);
 
     private static final DSEStatistics statisticsLogger = DSEStatistics.getInstance();
+    private static final long serialVersionUID = 964984026539409121L;
     /**
      * A cache of previous results from the constraint solver
      */
     private final Map<Set<Constraint<?>>, SolverResult> queryCache =
             new HashMap<>();
+
+    /**
+     * Creates a DSE algorithm for test generation.
+     */
+    public DSELegacyAlgorithm() {
+        super(null);
+    }
+
+    protected static HashSet<Constraint<?>> canonicalize(List<Constraint<?>> query) {
+        return new HashSet<>(query);
+    }
+
+    private static List<Constraint<?>> createVarBounds(List<Constraint<?>> query) {
+
+        Set<Variable<?>> variables = new HashSet<>();
+        for (Constraint<?> constraint : query) {
+            variables.addAll(constraint.getVariables());
+        }
+
+        List<Constraint<?>> boundsForVariables = new ArrayList<>();
+        for (Variable<?> variable : variables) {
+            if (variable instanceof IntegerVariable) {
+                IntegerVariable integerVariable = (IntegerVariable) variable;
+                Long minValue = integerVariable.getMinValue();
+                Long maxValue = integerVariable.getMaxValue();
+                if (maxValue == Long.MAX_VALUE && minValue == Long.MIN_VALUE) {
+                    // skip constraints for Long variables
+                    continue;
+                }
+                IntegerConstant minValueExpr = ExpressionFactory.buildNewIntegerConstant(minValue);
+                IntegerConstant maxValueExpr = ExpressionFactory.buildNewIntegerConstant(maxValue);
+                IntegerConstraint minValueConstraint = ConstraintFactory.gte(integerVariable, minValueExpr);
+                IntegerConstraint maxValueConstraint = ConstraintFactory.lte(integerVariable, maxValueExpr);
+                boundsForVariables.add(minValueConstraint);
+                boundsForVariables.add(maxValueConstraint);
+
+            } else if (variable instanceof RealVariable) {
+                // skip
+            } else if (variable instanceof StringVariable) {
+                // skip
+            } else if (variable instanceof ArrayVariable) {
+                // skip
+            } else {
+                throw new UnsupportedOperationException(
+                        "Unknown variable type " + variable.getClass().getName());
+            }
+        }
+
+        return boundsForVariables;
+    }
+
+    /**
+     * Returns true if the constraints in the query are a subset of any of the constraints in the set
+     * of queries
+     *
+     * @param query
+     * @param queries
+     * @return
+     */
+    private static boolean isSubSetOf(Set<Constraint<?>> query,
+                                      Collection<Set<Constraint<?>>> queries) {
+        for (Set<Constraint<?>> pathCondition : queries) {
+            if (pathCondition.containsAll(query)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Builds a default test case for a static target method
+     *
+     * @param targetStaticMethod
+     * @return
+     */
+    private static DefaultTestCase buildTestCaseWithDefaultValues(Method targetStaticMethod) {
+        TestCaseBuilder testCaseBuilder = new TestCaseBuilder();
+
+        Type[] argumentTypes = Type.getArgumentTypes(targetStaticMethod);
+        Class<?>[] argumentClasses = targetStaticMethod.getParameterTypes();
+
+        ArrayList<VariableReference> arguments = new ArrayList<>();
+        for (int i = 0; i < argumentTypes.length; i++) {
+
+            Type argumentType = argumentTypes[i];
+            Class<?> argumentClass = argumentClasses[i];
+
+            switch (argumentType.getSort()) {
+                case Type.BOOLEAN: {
+                    VariableReference booleanVariable = testCaseBuilder.appendBooleanPrimitive(false);
+                    arguments.add(booleanVariable);
+                    break;
+                }
+                case Type.BYTE: {
+                    VariableReference byteVariable = testCaseBuilder.appendBytePrimitive((byte) 0);
+                    arguments.add(byteVariable);
+                    break;
+                }
+                case Type.CHAR: {
+                    VariableReference charVariable = testCaseBuilder.appendCharPrimitive((char) 0);
+                    arguments.add(charVariable);
+                    break;
+                }
+                case Type.SHORT: {
+                    VariableReference shortVariable = testCaseBuilder.appendShortPrimitive((short) 0);
+                    arguments.add(shortVariable);
+                    break;
+                }
+                case Type.INT: {
+                    VariableReference intVariable = testCaseBuilder.appendIntPrimitive(0);
+                    arguments.add(intVariable);
+                    break;
+                }
+                case Type.LONG: {
+                    VariableReference longVariable = testCaseBuilder.appendLongPrimitive(0L);
+                    arguments.add(longVariable);
+                    break;
+                }
+                case Type.FLOAT: {
+                    VariableReference floatVariable = testCaseBuilder.appendFloatPrimitive((float) 0.0);
+                    arguments.add(floatVariable);
+                    break;
+                }
+                case Type.DOUBLE: {
+                    VariableReference doubleVariable = testCaseBuilder.appendDoublePrimitive(0.0);
+                    arguments.add(doubleVariable);
+                    break;
+                }
+                case Type.ARRAY: {
+                    VariableReference arrayVariable = testCaseBuilder.appendArrayStmt(argumentClass, 0);
+                    arguments.add(arrayVariable);
+                    break;
+                }
+                case Type.OBJECT: {
+                    if (argumentClass.equals(String.class)) {
+                        VariableReference stringVariable = testCaseBuilder.appendStringPrimitive("");
+                        arguments.add(stringVariable);
+                    } else {
+                        VariableReference objectVariable = testCaseBuilder.appendNull(argumentClass);
+                        arguments.add(objectVariable);
+                    }
+                    break;
+                }
+                default: {
+                    throw new UnsupportedOperationException();
+                }
+            }
+        }
+
+        testCaseBuilder.appendMethod(null, targetStaticMethod,
+                arguments.toArray(new VariableReference[]{}));
+        DefaultTestCase testCase = testCaseBuilder.getDefaultTestCase();
+
+        return testCase;
+    }
+
+    /**
+     * Returns a set with the static methods of a class
+     *
+     * @param targetClass a class instance
+     * @return
+     */
+    private static List<Method> getTargetStaticMethods(Class<?> targetClass) {
+        Method[] declaredMethods = targetClass.getDeclaredMethods();
+        List<Method> targetStaticMethods = new LinkedList<>();
+        for (Method m : declaredMethods) {
+
+            if (!Modifier.isStatic(m.getModifiers())) {
+                continue;
+            }
+
+            if (Modifier.isPrivate(m.getModifiers())) {
+                continue;
+            }
+
+            if (m.getName().equals(ClassResetter.STATIC_RESET)) {
+                continue;
+            }
+
+            targetStaticMethods.add(m);
+        }
+        return targetStaticMethods;
+    }
 
     /**
      * Applies DSE test generation on a static non-private method until a stopping condition is met or
@@ -250,164 +434,6 @@ public class DSELegacyAlgorithm extends GeneticAlgorithm<TestSuiteChromosome> {
         return false;
     }
 
-    protected static HashSet<Constraint<?>> canonicalize(List<Constraint<?>> query) {
-        return new HashSet<>(query);
-    }
-
-    private static List<Constraint<?>> createVarBounds(List<Constraint<?>> query) {
-
-        Set<Variable<?>> variables = new HashSet<>();
-        for (Constraint<?> constraint : query) {
-            variables.addAll(constraint.getVariables());
-        }
-
-        List<Constraint<?>> boundsForVariables = new ArrayList<>();
-        for (Variable<?> variable : variables) {
-            if (variable instanceof IntegerVariable) {
-                IntegerVariable integerVariable = (IntegerVariable) variable;
-                Long minValue = integerVariable.getMinValue();
-                Long maxValue = integerVariable.getMaxValue();
-                if (maxValue == Long.MAX_VALUE && minValue == Long.MIN_VALUE) {
-                    // skip constraints for Long variables
-                    continue;
-                }
-                IntegerConstant minValueExpr = ExpressionFactory.buildNewIntegerConstant(minValue);
-                IntegerConstant maxValueExpr = ExpressionFactory.buildNewIntegerConstant(maxValue);
-                IntegerConstraint minValueConstraint = ConstraintFactory.gte(integerVariable, minValueExpr);
-                IntegerConstraint maxValueConstraint = ConstraintFactory.lte(integerVariable, maxValueExpr);
-                boundsForVariables.add(minValueConstraint);
-                boundsForVariables.add(maxValueConstraint);
-
-            } else if (variable instanceof RealVariable) {
-                // skip
-            } else if (variable instanceof StringVariable) {
-                // skip
-            } else if (variable instanceof ArrayVariable) {
-                // skip
-            } else {
-                throw new UnsupportedOperationException(
-                        "Unknown variable type " + variable.getClass().getName());
-            }
-        }
-
-        return boundsForVariables;
-    }
-
-    /**
-     * Returns true if the constraints in the query are a subset of any of the constraints in the set
-     * of queries
-     *
-     * @param query
-     * @param queries
-     * @return
-     */
-    private static boolean isSubSetOf(Set<Constraint<?>> query,
-                                      Collection<Set<Constraint<?>>> queries) {
-        for (Set<Constraint<?>> pathCondition : queries) {
-            if (pathCondition.containsAll(query)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Builds a default test case for a static target method
-     *
-     * @param targetStaticMethod
-     * @return
-     */
-    private static DefaultTestCase buildTestCaseWithDefaultValues(Method targetStaticMethod) {
-        TestCaseBuilder testCaseBuilder = new TestCaseBuilder();
-
-        Type[] argumentTypes = Type.getArgumentTypes(targetStaticMethod);
-        Class<?>[] argumentClasses = targetStaticMethod.getParameterTypes();
-
-        ArrayList<VariableReference> arguments = new ArrayList<>();
-        for (int i = 0; i < argumentTypes.length; i++) {
-
-            Type argumentType = argumentTypes[i];
-            Class<?> argumentClass = argumentClasses[i];
-
-            switch (argumentType.getSort()) {
-                case Type.BOOLEAN: {
-                    VariableReference booleanVariable = testCaseBuilder.appendBooleanPrimitive(false);
-                    arguments.add(booleanVariable);
-                    break;
-                }
-                case Type.BYTE: {
-                    VariableReference byteVariable = testCaseBuilder.appendBytePrimitive((byte) 0);
-                    arguments.add(byteVariable);
-                    break;
-                }
-                case Type.CHAR: {
-                    VariableReference charVariable = testCaseBuilder.appendCharPrimitive((char) 0);
-                    arguments.add(charVariable);
-                    break;
-                }
-                case Type.SHORT: {
-                    VariableReference shortVariable = testCaseBuilder.appendShortPrimitive((short) 0);
-                    arguments.add(shortVariable);
-                    break;
-                }
-                case Type.INT: {
-                    VariableReference intVariable = testCaseBuilder.appendIntPrimitive(0);
-                    arguments.add(intVariable);
-                    break;
-                }
-                case Type.LONG: {
-                    VariableReference longVariable = testCaseBuilder.appendLongPrimitive(0L);
-                    arguments.add(longVariable);
-                    break;
-                }
-                case Type.FLOAT: {
-                    VariableReference floatVariable = testCaseBuilder.appendFloatPrimitive((float) 0.0);
-                    arguments.add(floatVariable);
-                    break;
-                }
-                case Type.DOUBLE: {
-                    VariableReference doubleVariable = testCaseBuilder.appendDoublePrimitive(0.0);
-                    arguments.add(doubleVariable);
-                    break;
-                }
-                case Type.ARRAY: {
-                    VariableReference arrayVariable = testCaseBuilder.appendArrayStmt(argumentClass, 0);
-                    arguments.add(arrayVariable);
-                    break;
-                }
-                case Type.OBJECT: {
-                    if (argumentClass.equals(String.class)) {
-                        VariableReference stringVariable = testCaseBuilder.appendStringPrimitive("");
-                        arguments.add(stringVariable);
-                    } else {
-                        VariableReference objectVariable = testCaseBuilder.appendNull(argumentClass);
-                        arguments.add(objectVariable);
-                    }
-                    break;
-                }
-                default: {
-                    throw new UnsupportedOperationException();
-                }
-            }
-        }
-
-        testCaseBuilder.appendMethod(null, targetStaticMethod,
-                arguments.toArray(new VariableReference[]{}));
-        DefaultTestCase testCase = testCaseBuilder.getDefaultTestCase();
-
-        return testCase;
-    }
-
-    /**
-     * Creates a DSE algorithm for test generation.
-     */
-    public DSELegacyAlgorithm() {
-        super(null);
-    }
-
-
-    private static final long serialVersionUID = 964984026539409121L;
-
     /**
      * This algorithm does not evolve populations
      */
@@ -425,34 +451,6 @@ public class DSELegacyAlgorithm extends GeneticAlgorithm<TestSuiteChromosome> {
         population.clear();
         population.add(individual);
         calculateFitness(individual);
-    }
-
-    /**
-     * Returns a set with the static methods of a class
-     *
-     * @param targetClass a class instance
-     * @return
-     */
-    private static List<Method> getTargetStaticMethods(Class<?> targetClass) {
-        Method[] declaredMethods = targetClass.getDeclaredMethods();
-        List<Method> targetStaticMethods = new LinkedList<>();
-        for (Method m : declaredMethods) {
-
-            if (!Modifier.isStatic(m.getModifiers())) {
-                continue;
-            }
-
-            if (Modifier.isPrivate(m.getModifiers())) {
-                continue;
-            }
-
-            if (m.getName().equals(ClassResetter.STATIC_RESET)) {
-                continue;
-            }
-
-            targetStaticMethods.add(m);
-        }
-        return targetStaticMethods;
     }
 
     /**

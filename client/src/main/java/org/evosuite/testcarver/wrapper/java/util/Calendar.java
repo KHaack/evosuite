@@ -47,21 +47,6 @@ public class Calendar extends java.util.Calendar {
 //		Capturer.enable(Instrumenter.CAPTURE_ID_JAVA_UTIL_CALENDAR, this, CaptureLog.RETURN_TYPE_VOID);		
 //	}
 
-    public java.util.Date getTime_final() {
-        Capturer.capture(Instrumenter.CAPTURE_ID_JAVA_UTIL_CALENDAR, this, "getTime", "()Ljava/util/Date;", new Object[]{});
-        java.util.Date ret = new Date(wrappedCalendar.getTimeInMillis());
-        Capturer.enable(Instrumenter.CAPTURE_ID_JAVA_UTIL_CALENDAR, this, ret);
-        return ret;
-    }
-
-    public final void setTime_final(java.util.Date date) {
-        Capturer.capture(Instrumenter.CAPTURE_ID_JAVA_UTIL_CALENDAR, this, "setTime", "(Ljava/util/Date;)V", new Object[]{date});
-        wrappedCalendar.setTime(date);
-        Capturer.enable(Instrumenter.CAPTURE_ID_JAVA_UTIL_CALENDAR, this, CaptureLog.RETURN_TYPE_VOID);
-
-    }
-
-
     public static java.util.Date getTime(java.util.Calendar cal) {
         Capturer.capture(Instrumenter.CAPTURE_ID_JAVA_UTIL_CALENDAR, cal, "getTime", "()Ljava/util/Date;", new Object[]{});
         Date date = new Date(cal.getTimeInMillis());
@@ -77,15 +62,6 @@ public class Calendar extends java.util.Calendar {
         Capturer.enable(Instrumenter.CAPTURE_ID_JAVA_UTIL_CALENDAR, CaptureUtil.loadClass("java/util/Calendar"), ret);
         return ret;
     }
-
-
-//    protected Calendar(TimeZone zone, Locale aLocale)
-//    {
-//    	super(zone, aLocale);
-//		Capturer.capture(Instrumenter.CAPTURE_ID_JAVA_UTIL_CALENDAR, this, "<init>", "(Ljava/util/TimeZone;Ljava/util/Locale;)V", new Object[] {zone, aLocale});
-//		FieldRegistry.register(this);
-//		Capturer.enable(Instrumenter.CAPTURE_ID_JAVA_UTIL_CALENDAR, this, CaptureLog.RETURN_TYPE_VOID);
-//    }
 
     public static java.util.Calendar getInstance(TimeZone zone) {
         Capturer.capture(Instrumenter.CAPTURE_ID_JAVA_UTIL_CALENDAR, CaptureUtil.loadClass("java/util/Calendar"), "getInstance", "(Ljava/util/TimeZone;)Ljava/util/Calendar;", new Object[]{zone});
@@ -103,6 +79,15 @@ public class Calendar extends java.util.Calendar {
         return ret;
     }
 
+
+//    protected Calendar(TimeZone zone, Locale aLocale)
+//    {
+//    	super(zone, aLocale);
+//		Capturer.capture(Instrumenter.CAPTURE_ID_JAVA_UTIL_CALENDAR, this, "<init>", "(Ljava/util/TimeZone;Ljava/util/Locale;)V", new Object[] {zone, aLocale});
+//		FieldRegistry.register(this);
+//		Capturer.enable(Instrumenter.CAPTURE_ID_JAVA_UTIL_CALENDAR, this, CaptureLog.RETURN_TYPE_VOID);
+//    }
+
     public static java.util.Calendar getInstance(TimeZone zone,
                                                  Locale aLocale) {
         Capturer.capture(Instrumenter.CAPTURE_ID_JAVA_UTIL_CALENDAR, CaptureUtil.loadClass("java/util/Calendar"), "getInstance", "(Ljava/util/TimeZone;Ljava/util/Locale;)Ljava/util/Calendar;", new Object[]{zone, aLocale});
@@ -119,6 +104,19 @@ public class Calendar extends java.util.Calendar {
         return ret;
     }
 
+    public java.util.Date getTime_final() {
+        Capturer.capture(Instrumenter.CAPTURE_ID_JAVA_UTIL_CALENDAR, this, "getTime", "()Ljava/util/Date;", new Object[]{});
+        java.util.Date ret = new Date(wrappedCalendar.getTimeInMillis());
+        Capturer.enable(Instrumenter.CAPTURE_ID_JAVA_UTIL_CALENDAR, this, ret);
+        return ret;
+    }
+
+    public final void setTime_final(java.util.Date date) {
+        Capturer.capture(Instrumenter.CAPTURE_ID_JAVA_UTIL_CALENDAR, this, "setTime", "(Ljava/util/Date;)V", new Object[]{date});
+        wrappedCalendar.setTime(date);
+        Capturer.enable(Instrumenter.CAPTURE_ID_JAVA_UTIL_CALENDAR, this, CaptureLog.RETURN_TYPE_VOID);
+
+    }
 
     public long getTimeInMillis() {
         Capturer.capture(Instrumenter.CAPTURE_ID_JAVA_UTIL_CALENDAR, this, "getTimeInMillis", "()J", new Object[]{});
@@ -239,12 +237,6 @@ public class Calendar extends java.util.Calendar {
         Capturer.enable(Instrumenter.CAPTURE_ID_JAVA_UTIL_CALENDAR, this, CaptureLog.RETURN_TYPE_VOID);
     }
 
-    public void setTimeZone(TimeZone value) {
-        Capturer.capture(Instrumenter.CAPTURE_ID_JAVA_UTIL_CALENDAR, this, "setTimeZone", "(Ljava/util/TimeZone;)V", new Object[]{value});
-        wrappedCalendar.setTimeZone(value);
-        Capturer.enable(Instrumenter.CAPTURE_ID_JAVA_UTIL_CALENDAR, this, CaptureLog.RETURN_TYPE_VOID);
-    }
-
     public TimeZone getTimeZone() {
         Capturer.capture(Instrumenter.CAPTURE_ID_JAVA_UTIL_CALENDAR, this, "getTimeZone", "()Ljava/util/TimeZone;", new Object[]{});
         TimeZone ret = wrappedCalendar.getTimeZone();
@@ -252,9 +244,9 @@ public class Calendar extends java.util.Calendar {
         return ret;
     }
 
-    public void setLenient(boolean lenient) {
-        Capturer.capture(Instrumenter.CAPTURE_ID_JAVA_UTIL_CALENDAR, this, "setLenient", "(Z)V", new Object[]{lenient});
-        wrappedCalendar.setLenient(lenient);
+    public void setTimeZone(TimeZone value) {
+        Capturer.capture(Instrumenter.CAPTURE_ID_JAVA_UTIL_CALENDAR, this, "setTimeZone", "(Ljava/util/TimeZone;)V", new Object[]{value});
+        wrappedCalendar.setTimeZone(value);
         Capturer.enable(Instrumenter.CAPTURE_ID_JAVA_UTIL_CALENDAR, this, CaptureLog.RETURN_TYPE_VOID);
     }
 
@@ -265,9 +257,9 @@ public class Calendar extends java.util.Calendar {
         return ret;
     }
 
-    public void setFirstDayOfWeek(int value) {
-        Capturer.capture(Instrumenter.CAPTURE_ID_JAVA_UTIL_CALENDAR, this, "setFirstDayOfWeek", "(I)V", new Object[]{value});
-        wrappedCalendar.setFirstDayOfWeek(value);
+    public void setLenient(boolean lenient) {
+        Capturer.capture(Instrumenter.CAPTURE_ID_JAVA_UTIL_CALENDAR, this, "setLenient", "(Z)V", new Object[]{lenient});
+        wrappedCalendar.setLenient(lenient);
         Capturer.enable(Instrumenter.CAPTURE_ID_JAVA_UTIL_CALENDAR, this, CaptureLog.RETURN_TYPE_VOID);
     }
 
@@ -278,9 +270,9 @@ public class Calendar extends java.util.Calendar {
         return ret;
     }
 
-    public void setMinimalDaysInFirstWeek(int value) {
-        Capturer.capture(Instrumenter.CAPTURE_ID_JAVA_UTIL_CALENDAR, this, "setMinimalDaysInFirstWeek", "(I)V", new Object[]{value});
-        wrappedCalendar.setMinimalDaysInFirstWeek(value);
+    public void setFirstDayOfWeek(int value) {
+        Capturer.capture(Instrumenter.CAPTURE_ID_JAVA_UTIL_CALENDAR, this, "setFirstDayOfWeek", "(I)V", new Object[]{value});
+        wrappedCalendar.setFirstDayOfWeek(value);
         Capturer.enable(Instrumenter.CAPTURE_ID_JAVA_UTIL_CALENDAR, this, CaptureLog.RETURN_TYPE_VOID);
     }
 
@@ -289,6 +281,12 @@ public class Calendar extends java.util.Calendar {
         int ret = wrappedCalendar.getMinimalDaysInFirstWeek();
         Capturer.enable(Instrumenter.CAPTURE_ID_JAVA_UTIL_CALENDAR, this, ret);
         return ret;
+    }
+
+    public void setMinimalDaysInFirstWeek(int value) {
+        Capturer.capture(Instrumenter.CAPTURE_ID_JAVA_UTIL_CALENDAR, this, "setMinimalDaysInFirstWeek", "(I)V", new Object[]{value});
+        wrappedCalendar.setMinimalDaysInFirstWeek(value);
+        Capturer.enable(Instrumenter.CAPTURE_ID_JAVA_UTIL_CALENDAR, this, CaptureLog.RETURN_TYPE_VOID);
     }
 
     public boolean isWeekDateSupported() {

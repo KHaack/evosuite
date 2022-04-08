@@ -40,6 +40,11 @@ public class TestLongUnderflow {
     private long x;
     private long y;
 
+    public TestLongUnderflow(long x, long y) {
+        this.x = x;
+        this.y = y;
+    }
+
     // Creates the test data
     @Parameters
     public static Collection<Object[]> data() {
@@ -52,12 +57,6 @@ public class TestLongUnderflow {
         }
         return valuePairs;
     }
-
-    public TestLongUnderflow(long x, long y) {
-        this.x = x;
-        this.y = y;
-    }
-
 
     private void assertUnderflow(BigDecimal preciseResult, int distance, long longResult) {
         BigDecimal maxResult = new BigDecimal(Long.MIN_VALUE);

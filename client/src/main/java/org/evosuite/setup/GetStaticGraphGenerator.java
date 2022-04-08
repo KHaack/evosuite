@@ -41,6 +41,9 @@ public class GetStaticGraphGenerator {
 
     private static final Logger logger = LoggerFactory
             .getLogger(GetStaticGraphGenerator.class);
+    private static final String CLINIT = "<clinit>";
+    private static final String CLASS_INIT_NAME = CLINIT
+            + Type.getMethodDescriptor(Type.VOID_TYPE);
 
     public static GetStaticGraph generate(String className) {
         ClassNode targetClass = DependencyAnalysis.getClassNode(className);
@@ -221,10 +224,6 @@ public class GetStaticGraphGenerator {
             }
         }
     }
-
-    private static final String CLINIT = "<clinit>";
-    private static final String CLASS_INIT_NAME = CLINIT
-            + Type.getMethodDescriptor(Type.VOID_TYPE);
 
     /**
      * Descend into a <clinit>

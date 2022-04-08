@@ -28,6 +28,8 @@ import org.evosuite.symbolic.vm.SymbolicFunction;
 
 public abstract class SCALB {
 
+    private static final String SCALB = "scalb";
+
     public static class SCALB_D extends SymbolicFunction {
 
         public SCALB_D(SymbolicEnvironment env) {
@@ -51,8 +53,6 @@ public abstract class SCALB {
         }
 
     }
-
-    private static final String SCALB = "scalb";
 
     public static class SCALB_F extends SymbolicFunction {
 

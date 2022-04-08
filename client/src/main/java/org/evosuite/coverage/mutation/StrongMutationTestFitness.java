@@ -80,14 +80,6 @@ public class StrongMutationTestFitness extends MutationTestFitness {
     /**
      * {@inheritDoc}
      */
-    @Override
-    public ExecutionResult runTest(TestCase test) {
-        return runTest(test, null);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public static ExecutionResult runTest(TestCase test, Mutation mutant) {
 
         ExecutionResult result = new ExecutionResult(test, mutant);
@@ -122,6 +114,14 @@ public class StrongMutationTestFitness extends MutationTestFitness {
         }
 
         return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ExecutionResult runTest(TestCase test) {
+        return runTest(test, null);
     }
 
     private MutationExecutionResult getMutationResult(ExecutionResult originalResult,

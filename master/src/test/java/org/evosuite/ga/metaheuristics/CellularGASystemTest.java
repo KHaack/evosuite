@@ -36,8 +36,8 @@ import java.util.List;
 
 /**
  * CellularGA system test
- * @author Nasser Albunian
  *
+ * @author Nasser Albunian
  */
 public class CellularGASystemTest extends SystemTestBase {
 

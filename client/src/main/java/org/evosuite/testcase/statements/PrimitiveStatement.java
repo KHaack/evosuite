@@ -92,28 +92,6 @@ public abstract class PrimitiveStatement<T> extends AbstractStatement {
         this.value = value;
     }
 
-    /**
-     * Access the value
-     *
-     * @return a T object.
-     */
-    public T getValue() {
-        return value;
-    }
-
-    /**
-     * Set the value
-     *
-     * @param val a T object.
-     */
-    public void setValue(T val) {
-        this.value = val;
-    }
-
-    public boolean hasMoreThanOneValue() {
-        return true;
-    }
-
     public static PrimitiveStatement<?> getPrimitiveStatement(TestCase tc, Class<?> clazz) {
         return getPrimitiveStatement(tc, GenericClassFactory.get(clazz));
     }
@@ -223,6 +201,28 @@ public abstract class PrimitiveStatement<T> extends AbstractStatement {
         statement.randomize();
         return statement;
 
+    }
+
+    /**
+     * Access the value
+     *
+     * @return a T object.
+     */
+    public T getValue() {
+        return value;
+    }
+
+    /**
+     * Set the value
+     *
+     * @param val a T object.
+     */
+    public void setValue(T val) {
+        this.value = val;
+    }
+
+    public boolean hasMoreThanOneValue() {
+        return true;
     }
 
     /**

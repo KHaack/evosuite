@@ -33,12 +33,11 @@ import java.io.Serializable;
  */
 public abstract class SecondaryObjective<T extends Chromosome<T>> implements Serializable {
 
-    private static final long serialVersionUID = -4117187516650844086L;
-
     /**
      * Constant <code>logger</code>
      */
     protected static final Logger logger = LoggerFactory.getLogger(SecondaryObjective.class);
+    private static final long serialVersionUID = -4117187516650844086L;
 
     /**
      * Compare two chromosomes with each other with respect to this objective.

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -50,7 +51,9 @@
 
         <profile>
             <id>Java-8</id>
-            <activation><jdk>1.8</jdk></activation>
+            <activation>
+                <jdk>1.8</jdk>
+            </activation>
             <build>
                 <plugins>
                     <plugin>
@@ -86,14 +89,14 @@
             <version>${project.version}</version>
         </dependency>
 
-<!--        <dependency>
-            <groupId>org.evosuite</groupId>
-            <artifactId>evosuite-standalone-runtime</artifactId>
-            <version>${project.version}</version>
-            <type>test-jar</type>
-            <scope>test</scope>
-        </dependency>
-        -->
+        <!--        <dependency>
+                    <groupId>org.evosuite</groupId>
+                    <artifactId>evosuite-standalone-runtime</artifactId>
+                    <version>${project.version}</version>
+                    <type>test-jar</type>
+                    <scope>test</scope>
+                </dependency>
+                -->
         <dependency> <!--  FIXME this is temporary -->
             <groupId>org.evosuite</groupId>
             <artifactId>evosuite-client</artifactId>
@@ -168,20 +171,18 @@
         <plugins>
 
 
-
-
             <!-- be sure classes get shaded -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-		<configuration>
-		  <artifactSet>
-                    <excludes>
-                      <!-- the eclipse plugin needs this -->
-                      <exclude>*:xml-apis</exclude>
-                    </excludes>
-                  </artifactSet>
-		</configuration>
+                <configuration>
+                    <artifactSet>
+                        <excludes>
+                            <!-- the eclipse plugin needs this -->
+                            <exclude>*:xml-apis</exclude>
+                        </excludes>
+                    </artifactSet>
+                </configuration>
             </plugin>
 
             <!-- create single jar with also shaded classes, eg ASM -->
@@ -257,7 +258,7 @@
                 </executions>
             </plugin>
     -->
-            
+
             <!--
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

@@ -54,6 +54,12 @@ public class InheritanceTreeGenerator {
     private static final String resourceFolder = "client/src/main/resources/";
     private static final String jdkFile = "JDK_inheritance.xml";
     private static final String shadedJdkFile = "JDK_inheritance_shaded.xml";
+    private static final Pattern ANONYMOUS_MATCHER1 = Pattern.compile(".*\\$\\d+.*$");
+    private static final Pattern ANONYMOUS_MATCHER2 = Pattern.compile(".*\\.\\d+.*$");
+    private static final List<String> classExceptions = Arrays.asList("java/lang/Class", "java/lang/Object", "java/lang/String",
+            "java/lang/Comparable", "java/io/Serializable", "com/apple", "apple/",
+            "sun/", "com/sun", "com/oracle", "sun/awt", "jdk/internal",
+            "java/util/prefs/MacOSXPreferences");
 
     /**
      * Iterate over items in classpath and analyze them
@@ -144,7 +150,6 @@ public class InheritanceTreeGenerator {
         ClientServices.getInstance().getClientNode().trackOutputVariable(RuntimeVariable.Classpath_Classes,
                 inheritanceTree.getNumClasses());
     }
-
 
     private static void analyze(InheritanceTree inheritanceTree, File file) {
         if (!file.canRead()) {
@@ -288,9 +293,6 @@ public class InheritanceTreeGenerator {
         }
     }
 
-    private static final Pattern ANONYMOUS_MATCHER1 = Pattern.compile(".*\\$\\d+.*$");
-    private static final Pattern ANONYMOUS_MATCHER2 = Pattern.compile(".*\\.\\d+.*$");
-
     public static boolean canUse(ClassNode cn) {
 
         if ((cn.access & Opcodes.ACC_PRIVATE) == Opcodes.ACC_PRIVATE) {
@@ -353,11 +355,6 @@ public class InheritanceTreeGenerator {
         logger.debug(cn.name + " is accessible");
         return true;
     }
-
-    private static final List<String> classExceptions = Arrays.asList("java/lang/Class", "java/lang/Object", "java/lang/String",
-            "java/lang/Comparable", "java/io/Serializable", "com/apple", "apple/",
-            "sun/", "com/sun", "com/oracle", "sun/awt", "jdk/internal",
-            "java/util/prefs/MacOSXPreferences");
 
     /**
      * During runtime, we do not want to consider standard classes to safe some

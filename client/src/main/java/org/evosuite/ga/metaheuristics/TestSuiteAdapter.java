@@ -75,6 +75,105 @@ public abstract class TestSuiteAdapter<A extends GeneticAlgorithm<TestChromosome
     }
 
     /**
+     * Converts a selection function from either TestSuite or Test case level to the other
+     *
+     * @param function The function to be converted
+     * @param <T>      ToType of the conversion
+     * @param <X>      FromType of the conversion
+     * @return The converted selection function.
+     */
+    private static <T extends Chromosome<T>, X extends Chromosome<X>> SelectionFunction<T> mapSelectionFunction(SelectionFunction<X> function) {
+        if (function instanceof FitnessProportionateSelection) {
+            return new FitnessProportionateSelection<>((FitnessProportionateSelection<?>) function);
+        } else if (function instanceof TournamentSelection) {
+            return new TournamentSelection<>((TournamentSelection<?>) function);
+        } else if (function instanceof BinaryTournamentSelectionCrowdedComparison) {
+            return new BinaryTournamentSelectionCrowdedComparison<>(
+                    (BinaryTournamentSelectionCrowdedComparison<?>) function);
+        } else if (function instanceof TournamentSelectionRankAndCrowdingDistanceComparator) {
+            return new TournamentSelectionRankAndCrowdingDistanceComparator<>(
+                    (TournamentSelectionRankAndCrowdingDistanceComparator<?>) function);
+        } else if (function instanceof BestKSelection) {
+            return new BestKSelection<>((BestKSelection<?>) function);
+        } else if (function instanceof RandomKSelection) {
+            return new RandomKSelection<>((RandomKSelection<?>) function);
+        } else if (function instanceof RankSelection) {
+            return new RankSelection<>((RankSelection<?>) function);
+        } else {
+            throw new IllegalArgumentException("cannot adapt selection function " + function);
+        }
+    }
+
+    private static <T extends Chromosome<T>, X extends Chromosome<X>> RankingFunction<T> mapRankingFunction(RankingFunction<X> function) {
+        if (function instanceof FastNonDominatedSorting) {
+            return new FastNonDominatedSorting<>();
+        } else if (function instanceof RankBasedPreferenceSorting) {
+            return new RankBasedPreferenceSorting<>();
+        } else {
+            throw new IllegalArgumentException("cannot adapt ranking function " + function);
+        }
+    }
+
+    /**
+     * This function converts
+     *
+     * @param limit
+     * @return
+     */
+    private static <T extends Chromosome<T>> PopulationLimit<T> mapPopulationLimit(PopulationLimit<?> limit) {
+        if (limit instanceof IndividualPopulationLimit) {
+            return new IndividualPopulationLimit<>((IndividualPopulationLimit<?>) limit);
+        } else if (limit instanceof StatementsPopulationLimit) {
+            return new StatementsPopulationLimit<>((StatementsPopulationLimit<?>) limit);
+        } else if (limit instanceof SizePopulationLimit) {
+            return new SizePopulationLimit<>((SizePopulationLimit<?>) limit);
+        } else {
+            throw new IllegalArgumentException("cannot adapt population limit " + limit);
+        }
+    }
+
+    /**
+     * Exchanges the generic parameters of a Stopping condition (if possible).
+     *
+     * @param stoppingCondition the stopping condition with "wrong" generic parameters.
+     * @param <T>               the desired target chromosome type
+     * @return
+     */
+    private static <T extends Chromosome<T>> StoppingCondition<T>
+    mapStoppingCondition(StoppingCondition<?> stoppingCondition) {
+        if (stoppingCondition instanceof MaxTimeStoppingCondition) {
+            return new MaxTimeStoppingCondition<>((MaxTimeStoppingCondition<?>) stoppingCondition);
+        } else if (stoppingCondition instanceof TimeDeltaStoppingCondition) {
+            return new TimeDeltaStoppingCondition<>((TimeDeltaStoppingCondition<?>) stoppingCondition);
+        } else if (stoppingCondition instanceof MaxGenerationStoppingCondition) {
+            return new MaxGenerationStoppingCondition<>((MaxGenerationStoppingCondition<?>) stoppingCondition);
+        } else if (stoppingCondition instanceof RMIStoppingCondition) {
+            return RMIStoppingCondition.getInstance();
+        } else if (stoppingCondition instanceof ShutdownTestWriter) {
+            return new ShutdownTestWriter<>((ShutdownTestWriter<?>) stoppingCondition);
+        } else if (stoppingCondition instanceof MaxStatementsStoppingCondition) {
+            return new MaxStatementsStoppingCondition<>((MaxStatementsStoppingCondition<?>) stoppingCondition);
+        } else if (stoppingCondition instanceof GlobalTimeStoppingCondition) {
+            return new GlobalTimeStoppingCondition<>((GlobalTimeStoppingCondition<?>) stoppingCondition);
+        } else if (stoppingCondition instanceof SocketStoppingCondition) {
+            return SocketStoppingCondition.getInstance();
+        } else if (stoppingCondition instanceof ZeroFitnessStoppingCondition) {
+            return new ZeroFitnessStoppingCondition<>((ZeroFitnessStoppingCondition<?>) stoppingCondition);
+        } else {
+            throw new IllegalArgumentException("cannot adapt stopping condition: " + stoppingCondition);
+        }
+    }
+
+    private static FitnessFunction<TestChromosome> mapFitnessFunctionToTestCaseLevel(
+            FitnessFunction<TestSuiteChromosome> fitnessFunction) throws IllegalArgumentException {
+        if (fitnessFunction instanceof TestSuiteFitnessFunctionMock) {
+            return ((TestSuiteFitnessFunctionMock) fitnessFunction).getWrapped();
+        }
+
+        throw new IllegalArgumentException("Unsupported type of fitness function: " + fitnessFunction.getClass());
+    }
+
+    /**
      * This method clears all fields of this wrapper class by setting them to {@code null}.
      * <p>
      * This class may seem harmless and unsuspecting, but it's really not! It can produce obscure,
@@ -245,36 +344,6 @@ public abstract class TestSuiteAdapter<A extends GeneticAlgorithm<TestChromosome
         algorithm.setSelectionFunction(adapteeFunction);
     }
 
-    /**
-     * Converts a selection function from either TestSuite or Test case level to the other
-     *
-     * @param function The function to be converted
-     * @param <T>      ToType of the conversion
-     * @param <X>      FromType of the conversion
-     * @return The converted selection function.
-     */
-    private static <T extends Chromosome<T>, X extends Chromosome<X>> SelectionFunction<T> mapSelectionFunction(SelectionFunction<X> function) {
-        if (function instanceof FitnessProportionateSelection) {
-            return new FitnessProportionateSelection<>((FitnessProportionateSelection<?>) function);
-        } else if (function instanceof TournamentSelection) {
-            return new TournamentSelection<>((TournamentSelection<?>) function);
-        } else if (function instanceof BinaryTournamentSelectionCrowdedComparison) {
-            return new BinaryTournamentSelectionCrowdedComparison<>(
-                    (BinaryTournamentSelectionCrowdedComparison<?>) function);
-        } else if (function instanceof TournamentSelectionRankAndCrowdingDistanceComparator) {
-            return new TournamentSelectionRankAndCrowdingDistanceComparator<>(
-                    (TournamentSelectionRankAndCrowdingDistanceComparator<?>) function);
-        } else if (function instanceof BestKSelection) {
-            return new BestKSelection<>((BestKSelection<?>) function);
-        } else if (function instanceof RandomKSelection) {
-            return new RandomKSelection<>((RandomKSelection<?>) function);
-        } else if (function instanceof RankSelection) {
-            return new RankSelection<>((RankSelection<?>) function);
-        } else {
-            throw new IllegalArgumentException("cannot adapt selection function " + function);
-        }
-    }
-
     @Override
     final public RankingFunction<TestSuiteChromosome> getRankingFunction() {
         return mapRankingFunction(algorithm.getRankingFunction());
@@ -284,16 +353,6 @@ public abstract class TestSuiteAdapter<A extends GeneticAlgorithm<TestChromosome
     public void setRankingFunction(RankingFunction<TestSuiteChromosome> function) {
         final RankingFunction<TestChromosome> adapteeFunction = mapRankingFunction(function);
         algorithm.setRankingFunction(adapteeFunction);
-    }
-
-    private static <T extends Chromosome<T>, X extends Chromosome<X>> RankingFunction<T> mapRankingFunction(RankingFunction<X> function) {
-        if (function instanceof FastNonDominatedSorting) {
-            return new FastNonDominatedSorting<>();
-        } else if (function instanceof RankBasedPreferenceSorting) {
-            return new RankBasedPreferenceSorting<>();
-        } else {
-            throw new IllegalArgumentException("cannot adapt ranking function " + function);
-        }
     }
 
     @Override
@@ -513,24 +572,6 @@ public abstract class TestSuiteAdapter<A extends GeneticAlgorithm<TestChromosome
         }
     }
 
-    /**
-     * This function converts
-     *
-     * @param limit
-     * @return
-     */
-    private static <T extends Chromosome<T>> PopulationLimit<T> mapPopulationLimit(PopulationLimit<?> limit) {
-        if (limit instanceof IndividualPopulationLimit) {
-            return new IndividualPopulationLimit<>((IndividualPopulationLimit<?>) limit);
-        } else if (limit instanceof StatementsPopulationLimit) {
-            return new StatementsPopulationLimit<>((StatementsPopulationLimit<?>) limit);
-        } else if (limit instanceof SizePopulationLimit) {
-            return new SizePopulationLimit<>((SizePopulationLimit<?>) limit);
-        } else {
-            throw new IllegalArgumentException("cannot adapt population limit " + limit);
-        }
-    }
-
     @Override
     final public boolean isFinished() {
         return algorithm.isFinished();
@@ -554,38 +595,6 @@ public abstract class TestSuiteAdapter<A extends GeneticAlgorithm<TestChromosome
         return algorithm.getStoppingConditions().stream()
                 .map(TestSuiteAdapter::<TestSuiteChromosome>mapStoppingCondition)
                 .collect(toSet());
-    }
-
-    /**
-     * Exchanges the generic parameters of a Stopping condition (if possible).
-     *
-     * @param stoppingCondition the stopping condition with "wrong" generic parameters.
-     * @param <T>               the desired target chromosome type
-     * @return
-     */
-    private static <T extends Chromosome<T>> StoppingCondition<T>
-    mapStoppingCondition(StoppingCondition<?> stoppingCondition) {
-        if (stoppingCondition instanceof MaxTimeStoppingCondition) {
-            return new MaxTimeStoppingCondition<>((MaxTimeStoppingCondition<?>) stoppingCondition);
-        } else if (stoppingCondition instanceof TimeDeltaStoppingCondition) {
-            return new TimeDeltaStoppingCondition<>((TimeDeltaStoppingCondition<?>) stoppingCondition);
-        } else if (stoppingCondition instanceof MaxGenerationStoppingCondition) {
-            return new MaxGenerationStoppingCondition<>((MaxGenerationStoppingCondition<?>) stoppingCondition);
-        } else if (stoppingCondition instanceof RMIStoppingCondition) {
-            return RMIStoppingCondition.getInstance();
-        } else if (stoppingCondition instanceof ShutdownTestWriter) {
-            return new ShutdownTestWriter<>((ShutdownTestWriter<?>) stoppingCondition);
-        } else if (stoppingCondition instanceof MaxStatementsStoppingCondition) {
-            return new MaxStatementsStoppingCondition<>((MaxStatementsStoppingCondition<?>) stoppingCondition);
-        } else if (stoppingCondition instanceof GlobalTimeStoppingCondition) {
-            return new GlobalTimeStoppingCondition<>((GlobalTimeStoppingCondition<?>) stoppingCondition);
-        } else if (stoppingCondition instanceof SocketStoppingCondition) {
-            return SocketStoppingCondition.getInstance();
-        } else if (stoppingCondition instanceof ZeroFitnessStoppingCondition) {
-            return new ZeroFitnessStoppingCondition<>((ZeroFitnessStoppingCondition<?>) stoppingCondition);
-        } else {
-            throw new IllegalArgumentException("cannot adapt stopping condition: " + stoppingCondition);
-        }
     }
 
     @Override
@@ -642,15 +651,6 @@ public abstract class TestSuiteAdapter<A extends GeneticAlgorithm<TestChromosome
         return algorithm.getFitnessFunctions();
     }
 
-    private static FitnessFunction<TestChromosome> mapFitnessFunctionToTestCaseLevel(
-            FitnessFunction<TestSuiteChromosome> fitnessFunction) throws IllegalArgumentException {
-        if (fitnessFunction instanceof TestSuiteFitnessFunctionMock) {
-            return ((TestSuiteFitnessFunctionMock) fitnessFunction).getWrapped();
-        }
-
-        throw new IllegalArgumentException("Unsupported type of fitness function: " + fitnessFunction.getClass());
-    }
-
     @Override
     public void addFitnessFunctions(Collection<? extends FitnessFunction<TestSuiteChromosome>> functions) {
         Collection<FitnessFunction<TestChromosome>> fs = functions.stream()
@@ -666,6 +666,11 @@ public abstract class TestSuiteAdapter<A extends GeneticAlgorithm<TestChromosome
         }
 
         return algorithm.toString();
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        throw new CloneNotSupportedException();
     }
 
     /**
@@ -697,10 +702,5 @@ public abstract class TestSuiteAdapter<A extends GeneticAlgorithm<TestChromosome
         public boolean isMaximizationFunction() {
             return maximizationFunction;
         }
-    }
-
-    @Override
-    protected Object clone() throws CloneNotSupportedException {
-        throw new CloneNotSupportedException();
     }
 }

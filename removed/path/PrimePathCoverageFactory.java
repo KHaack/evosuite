@@ -31,38 +31,41 @@ import org.evosuite.testsuite.AbstractFitnessFactory;
  * <p>
  * PrimePathCoverageFactory class.
  * </p>
- * 
+ *
  * @author Gordon Fraser
  */
 public class PrimePathCoverageFactory extends
         AbstractFitnessFactory<PrimePathTestFitness> {
 
-	private static List<PrimePathTestFitness> goals = new ArrayList<PrimePathTestFitness>();
+    private static List<PrimePathTestFitness> goals = new ArrayList<PrimePathTestFitness>();
 
-	/* (non-Javadoc)
-	 * @see org.evosuite.coverage.TestFitnessFactory#getCoverageGoals()
-	 */
-	/** {@inheritDoc} */
-	@Override
-	public List<PrimePathTestFitness> getCoverageGoals() {
-		if (!goals.isEmpty())
-			return goals;
+    /* (non-Javadoc)
+     * @see org.evosuite.coverage.TestFitnessFactory#getCoverageGoals()
+     */
 
-		final MethodNameMatcher matcher = new MethodNameMatcher();
-		
-		for (String className : PrimePathPool.primePathMap.keySet()) {
-			for (String methodName : PrimePathPool.primePathMap.get(className).keySet()) {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<PrimePathTestFitness> getCoverageGoals() {
+        if (!goals.isEmpty())
+            return goals;
 
-				if (!matcher.methodMatches(methodName)) {
-					continue;
-				}
-				for (PrimePath path : PrimePathPool.primePathMap.get(className).get(methodName)) {
-					goals.add(new PrimePathTestFitness(path, className, methodName));
-				}
-			}
-		}
+        final MethodNameMatcher matcher = new MethodNameMatcher();
 
-		return goals;
-	}
+        for (String className : PrimePathPool.primePathMap.keySet()) {
+            for (String methodName : PrimePathPool.primePathMap.get(className).keySet()) {
+
+                if (!matcher.methodMatches(methodName)) {
+                    continue;
+                }
+                for (PrimePath path : PrimePathPool.primePathMap.get(className).get(methodName)) {
+                    goals.add(new PrimePathTestFitness(path, className, methodName));
+                }
+            }
+        }
+
+        return goals;
+    }
 
 }

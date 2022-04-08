@@ -45,91 +45,62 @@ public class EvoSuitePropertyPage extends PropertyPage {
 
     // private Combo criterionCombo;
 
-    private Table criteriaList;
-
-    private Button assertionButton;
-
-    private Button minimizeTestsButton;
-
-    private Button minimizeValuesButton;
+    public static QualifiedName CRITERIA_PROP_KEY = new QualifiedName("EvoSuite",
+            "Coverage criteria");
+    public static QualifiedName ASSERTION_PROP_KEY = new QualifiedName("EvoSuite",
+            "Assertions");
+    public static QualifiedName MINIMIZE_TESTS_PROP_KEY = new QualifiedName("EvoSuite",
+            "Minimize tests");
+    public static QualifiedName MINIMIZE_VALUES_PROP_KEY = new QualifiedName("EvoSuite",
+            "Minimize values");
 
 //	private Button reportButton;
 
 //	private Button plotButton;
-
-    private Button sandboxButton;
-
-    private Button scaffoldingButton;
-
-    private Button deterministicButton;
-
-    private Button errorButton;
-
-    private Button contractsButton;
-
-    private Button dseButton;
-
-    private Button lsButton;
-
-    private Text testSuffix;
-
-    // private Button evosuiteRunnerButton;
-
-    private Spinner time;
-
-    // private Spinner seed;
-
-    private Spinner time2;
-
-    public static QualifiedName CRITERIA_PROP_KEY = new QualifiedName("EvoSuite",
-            "Coverage criteria");
-
-    public static QualifiedName ASSERTION_PROP_KEY = new QualifiedName("EvoSuite",
-            "Assertions");
-
-    public static QualifiedName MINIMIZE_TESTS_PROP_KEY = new QualifiedName("EvoSuite",
-            "Minimize tests");
-
-    public static QualifiedName MINIMIZE_VALUES_PROP_KEY = new QualifiedName("EvoSuite",
-            "Minimize values");
-
     public static QualifiedName TIME_PROP_KEY = new QualifiedName("EvoSuite",
             "TestGenTime");
-
     public static QualifiedName GLOBAL_TIME_PROP_KEY = new QualifiedName("EvoSuite",
             "GlobalGenTime");
-
     public static QualifiedName PLOT_PROP_KEY = new QualifiedName("EvoSuite", "PlotData");
-
-//	public static QualifiedName REPORT_PROP_KEY = new QualifiedName("EvoSuite",
-//	        "ShowReport");
-
     public static QualifiedName SANDBOX_PROP_KEY = new QualifiedName("EvoSuite",
             "Sandbox");
-
     public static QualifiedName SCAFFOLDING_PROP_KEY = new QualifiedName("EvoSuite",
             "Use scaffolding to hide runtime instrumentation");
-
     public static QualifiedName DETERMINISTIC_PROP_KEY = new QualifiedName("EvoSuite",
             "Transform nondeterministic calls");
-
     public static QualifiedName ERROR_BRANCHES_PROP_KEY = new QualifiedName("EvoSuite",
             "Instrument potential error branches");
-
     public static QualifiedName CONTRACTS_PROP_KEY = new QualifiedName("EvoSuite",
             "Check generic object contracts");
 
+    // private Button evosuiteRunnerButton;
     public static QualifiedName DSE_PROP_KEY = new QualifiedName("EvoSuite",
             "Use GA+DSE hybrid search");
 
+    // private Spinner seed;
     public static QualifiedName LS_PROP_KEY = new QualifiedName("EvoSuite",
             "Use memetic algorithm");
-
     public static QualifiedName SEED_PROP_KEY = new QualifiedName("EvoSuite",
             "Use user-provided seed");
-
     public static QualifiedName TEST_SUFFIX_PROP_KEY = new QualifiedName("EvoSuite",
             "Suffix to use for generated tests");
+    private Table criteriaList;
+    private Button assertionButton;
+    private Button minimizeTestsButton;
+    private Button minimizeValuesButton;
+    private Button sandboxButton;
+
+//	public static QualifiedName REPORT_PROP_KEY = new QualifiedName("EvoSuite",
+//	        "ShowReport");
+    private Button scaffoldingButton;
+    private Button deterministicButton;
+    private Button errorButton;
+    private Button contractsButton;
+    private Button dseButton;
+    private Button lsButton;
+    private Text testSuffix;
+    private Spinner time;
+    private Spinner time2;
 
     // public static QualifiedName RUNNER_PROP_KEY = new QualifiedName("EvoSuite",
     //        "Use EvoSuite JUnit runner in generated test suites");

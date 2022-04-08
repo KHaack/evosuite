@@ -42,6 +42,7 @@ public class ExitClassInitMethodAdapter extends MethodVisitor {
     private static final String EXIT_CLASS_INIT = "exitClassInit";
     private final String className;
     private final String methodName;
+    private final List<TryCatchBlock> tryCatchBlocks = new LinkedList<>();
     private Label startingTryLabel;
     private Label endingTryLabel;
 
@@ -116,22 +117,6 @@ public class ExitClassInitMethodAdapter extends MethodVisitor {
         super.visitEnd();
     }
 
-    private static class TryCatchBlock {
-        public TryCatchBlock(Label start, Label end, Label handler, String type) {
-            this.start = start;
-            this.end = end;
-            this.handler = handler;
-            this.type = type;
-        }
-
-        Label start;
-        Label end;
-        Label handler;
-        String type;
-    }
-
-    private final List<TryCatchBlock> tryCatchBlocks = new LinkedList<>();
-
     @Override
     public void visitTryCatchBlock(Label start, Label end, Label handler,
                                    String type) {
@@ -140,6 +125,19 @@ public class ExitClassInitMethodAdapter extends MethodVisitor {
             tryCatchBlocks.add(block);
         }
         super.visitTryCatchBlock(start, end, handler, type);
+    }
+
+    private static class TryCatchBlock {
+        Label start;
+        Label end;
+        Label handler;
+        String type;
+        public TryCatchBlock(Label start, Label end, Label handler, String type) {
+            this.start = start;
+            this.end = end;
+            this.handler = handler;
+            this.type = type;
+        }
     }
 
 }

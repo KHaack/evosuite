@@ -72,6 +72,24 @@ public class ClassPathHandler {
         getInstance().evosuiteClassPath = null;
     }
 
+    public static String writeClasspathToFile(String classpath) {
+
+        try {
+            File file = File.createTempFile("EvoSuite_classpathFile", ".txt");
+            file.deleteOnExit();
+
+            try (BufferedWriter out = new BufferedWriter(new FileWriter(file))) {
+                out.write(classpath);
+                out.newLine();
+            }
+
+            return file.getAbsolutePath();
+
+        } catch (Exception e) {
+            throw new IllegalStateException("Failed to create tmp file for classpath specification: " + e.getMessage());
+        }
+    }
+
     public String getEvoSuiteClassPath() {
         if (evosuiteClassPath == null) {
             evosuiteClassPath = System.getProperty("java.class.path");
@@ -90,7 +108,6 @@ public class ClassPathHandler {
         String cp = getClassPath(elements);
         evosuiteClassPath = cp;
     }
-
 
     /**
      * Replace current CP for target project with the given <code>elements</code>
@@ -154,25 +171,6 @@ public class ClassPathHandler {
 
         return targetClassPath;
     }
-
-    public static String writeClasspathToFile(String classpath) {
-
-        try {
-            File file = File.createTempFile("EvoSuite_classpathFile", ".txt");
-            file.deleteOnExit();
-
-            try (BufferedWriter out = new BufferedWriter(new FileWriter(file))) {
-                out.write(classpath);
-                out.newLine();
-            }
-
-            return file.getAbsolutePath();
-
-        } catch (Exception e) {
-            throw new IllegalStateException("Failed to create tmp file for classpath specification: " + e.getMessage());
-        }
-    }
-
 
     /**
      * Add classpath entry to the classpath of the target project

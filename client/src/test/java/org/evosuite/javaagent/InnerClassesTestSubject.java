@@ -46,13 +46,6 @@ public final class InnerClassesTestSubject {
         return a + b + c + d;
     }
 
-    private class Foo0 {
-        public String toString() {
-            System.out.println("Printing in private class");
-            return "b";
-        }
-    }
-
     private static class Foo1 {
         public String toString() {
             System.out.println("Printing in private static class");
@@ -64,6 +57,13 @@ public final class InnerClassesTestSubject {
         public String toString() {
             System.out.println("Printing in public static final class");
             return "d";
+        }
+    }
+
+    private class Foo0 {
+        public String toString() {
+            System.out.println("Printing in private class");
+            return "b";
         }
     }
 }

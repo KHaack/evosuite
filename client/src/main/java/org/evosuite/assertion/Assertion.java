@@ -42,45 +42,39 @@ import java.util.Set;
  */
 public abstract class Assertion implements Serializable {
 
-    private static final long serialVersionUID = 1617423211706717599L;
-
-    /**
-     * Variable on which the assertion is made.
-     */
-    protected VariableReference source;
-
-    /**
-     * Expected value of the referred to variable {@link Assertion#source}.
-     */
-    protected Object value;
-
-    /**
-     * Statement to which the assertion is added.
-     */
-    protected Statement statement;
-
-    /**
-     * Assertion comment.
-     */
-    protected String comment;
-
-    protected transient Set<Mutation> killedMutants = new LinkedHashSet<>();
-
     /**
      * Constant <code>logger</code>
      */
     protected static final Logger logger = LoggerFactory.getLogger(Assertion.class);
+    private static final long serialVersionUID = 1617423211706717599L;
+    /**
+     * Variable on which the assertion is made.
+     */
+    protected VariableReference source;
+    /**
+     * Expected value of the referred to variable {@link Assertion#source}.
+     */
+    protected Object value;
+    /**
+     * Statement to which the assertion is added.
+     */
+    protected Statement statement;
+    /**
+     * Assertion comment.
+     */
+    protected String comment;
+    protected transient Set<Mutation> killedMutants = new LinkedHashSet<>();
 
     public boolean hasComment() {
         return (this.comment != null);
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
-
     public String getComment() {
         return " " + comment.replace('\n', ' ').replace('\r', ' ');
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
     /**
@@ -126,21 +120,21 @@ public abstract class Assertion implements Serializable {
     }
 
     /**
-     * Setter for statement to which assertion is added
-     *
-     * @param statement a {@link org.evosuite.testcase.statements.Statement} object.
-     */
-    public void setStatement(Statement statement) {
-        this.statement = statement;
-    }
-
-    /**
      * Getter for statement to which assertion is added
      *
      * @return a {@link org.evosuite.testcase.statements.Statement} object.
      */
     public Statement getStatement() {
         return statement;
+    }
+
+    /**
+     * Setter for statement to which assertion is added
+     *
+     * @param statement a {@link org.evosuite.testcase.statements.Statement} object.
+     */
+    public void setStatement(Statement statement) {
+        this.statement = statement;
     }
 
     /**

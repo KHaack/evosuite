@@ -89,6 +89,14 @@ public abstract class Validator implements java.io.Serializable {
 
     }
 
+    /**
+     * The error message for this validator
+     *
+     * @return The error message
+     */
+    public String getErrorText() {
+        return errorText;
+    }
 
     /**
      * Allows the setting of the error text
@@ -102,15 +110,6 @@ public abstract class Validator implements java.io.Serializable {
         propertySupport.firePropertyChange(PROP_ERRORTEXT_PROPERTY,
                 oldValue,
                 str);
-    }
-
-    /**
-     * The error message for this validator
-     *
-     * @return The error message
-     */
-    public String getErrorText() {
-        return errorText;
     }
 
     /**

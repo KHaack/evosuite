@@ -39,6 +39,11 @@ public class TestFloatUnderflow {
     private float x;
     private float y;
 
+    public TestFloatUnderflow(float x, float y) {
+        this.x = x;
+        this.y = y;
+    }
+
     // Creates the test data
     @Parameters
     public static Collection<Object[]> data() {
@@ -51,12 +56,6 @@ public class TestFloatUnderflow {
         }
         return valuePairs;
     }
-
-    public TestFloatUnderflow(float x, float y) {
-        this.x = x;
-        this.y = y;
-    }
-
 
     private void assertUnderflow(double doubleResult, int distance, float floatResult) {
         if (doubleResult < -Float.MAX_VALUE) {

@@ -41,11 +41,11 @@ import org.objectweb.asm.Opcodes;
  */
 public class PurityAnalysisMethodVisitor extends MethodVisitor {
 
-    private boolean updatesField;
     private final CheapPurityAnalyzer purityAnalyzer;
     private final String classNameWithDots;
     private final String methodName;
     private final String descriptor;
+    private boolean updatesField;
 
     /**
      * <p>Constructor for PutStaticMethodAdapter.</p>

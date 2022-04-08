@@ -42,23 +42,19 @@ public class CellularGA<T extends Chromosome<T>> extends GeneticAlgorithm<T> {
     private static final long serialVersionUID = 7846967347821123201L;
 
     private static final Logger logger = LoggerFactory.getLogger(CellularGA.class);
-
-    /**
-     * An object of ReplacementFunction
-     **/
-    protected ReplacementFunction<T> replacementFunction;
-
+    private static final double DELTA = 0.000000001;
     /**
      * Constructing the neighbourhood
      **/
     private final Neighbourhood<T> neighb;
-
+    /**
+     * An object of ReplacementFunction
+     **/
+    protected ReplacementFunction<T> replacementFunction;
     /**
      * Constructing the temporary grid
      */
     private List<T> temp_cells = new ArrayList<>();
-
-    private static final double DELTA = 0.000000001;
 
 
     public CellularGA(Properties.CGA_Models model, ChromosomeFactory<T> factory) {
@@ -323,17 +319,6 @@ public class CellularGA<T extends Chromosome<T>> extends GeneticAlgorithm<T> {
 
     /**
      * <p>
-     * setReplacementFunction
-     * </p>
-     *
-     * @param replacement_function a {@link org.evosuite.ga.ReplacementFunction} object.
-     */
-    public void setReplacementFunction(ReplacementFunction<T> replacement_function) {
-        this.replacementFunction = replacement_function;
-    }
-
-    /**
-     * <p>
      * getReplacementFunction
      * </p>
      *
@@ -341,6 +326,17 @@ public class CellularGA<T extends Chromosome<T>> extends GeneticAlgorithm<T> {
      */
     public ReplacementFunction<T> getReplacementFunction() {
         return replacementFunction;
+    }
+
+    /**
+     * <p>
+     * setReplacementFunction
+     * </p>
+     *
+     * @param replacement_function a {@link org.evosuite.ga.ReplacementFunction} object.
+     */
+    public void setReplacementFunction(ReplacementFunction<T> replacement_function) {
+        this.replacementFunction = replacement_function;
     }
 
 }

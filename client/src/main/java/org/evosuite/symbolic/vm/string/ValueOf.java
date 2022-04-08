@@ -32,6 +32,10 @@ public abstract class ValueOf extends SymbolicFunction {
 
     private static final String VALUE_OF = "valueOf";
 
+    public ValueOf(SymbolicEnvironment env, String desc) {
+        super(env, Types.JAVA_LANG_STRING, VALUE_OF, desc);
+    }
+
     public static abstract class ValueOf_Int extends ValueOf {
 
         public ValueOf_Int(SymbolicEnvironment env, String desc) {
@@ -60,10 +64,6 @@ public abstract class ValueOf extends SymbolicFunction {
 
         }
 
-    }
-
-    public ValueOf(SymbolicEnvironment env, String desc) {
-        super(env, Types.JAVA_LANG_STRING, VALUE_OF, desc);
     }
 
     public static final class ValueOf_O extends ValueOf {

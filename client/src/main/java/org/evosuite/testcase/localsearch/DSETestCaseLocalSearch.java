@@ -45,76 +45,6 @@ import java.util.Set;
  */
 public class DSETestCaseLocalSearch extends TestCaseLocalSearch<TestChromosome> {
 
-    /**
-     * Returns true iff the test reaches a decision (if/while) with an uncovered
-     * branch
-     *
-     * @param test
-     * @param uncoveredBranches
-     * @return
-     */
-    private static boolean hasUncoveredBranch(TestChromosome test, Set<Branch> uncoveredBranches) {
-        Set<Branch> testCoveredBranches = getCoveredBranches(test);
-        for (Branch b : testCoveredBranches) {
-            Branch negate = b.negate();
-            if (uncoveredBranches.contains(negate)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Represents a branch in the target program
-     *
-     * @author galeotti
-     */
-    private static class Branch {
-
-        public Branch(int branchIndex, boolean isTrueBranch) {
-            super();
-            this.branchIndex = branchIndex;
-            this.isTrueBranch = isTrueBranch;
-        }
-
-        private final int branchIndex;
-
-        private final boolean isTrueBranch;
-
-        public Branch negate() {
-            return new Branch(branchIndex, !isTrueBranch);
-        }
-
-        @Override
-        public int hashCode() {
-            final int prime = 31;
-            int result = 1;
-            result = prime * result + branchIndex;
-            result = prime * result + (isTrueBranch ? 1231 : 1237);
-            return result;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj)
-                return true;
-            if (obj == null)
-                return false;
-            if (getClass() != obj.getClass())
-                return false;
-            Branch other = (Branch) obj;
-            if (branchIndex != other.branchIndex)
-                return false;
-            return isTrueBranch == other.isTrueBranch;
-        }
-
-        @Override
-        public String toString() {
-            return "Branch [branchIndex=" + branchIndex + ", isTrueBranch=" + isTrueBranch + "]";
-        }
-
-    }
-
     private final TestSuiteChromosome suite;
 
     /**
@@ -135,6 +65,25 @@ public class DSETestCaseLocalSearch extends TestCaseLocalSearch<TestChromosome> 
     }
 
     /**
+     * Returns true iff the test reaches a decision (if/while) with an uncovered
+     * branch
+     *
+     * @param test
+     * @param uncoveredBranches
+     * @return
+     */
+    private static boolean hasUncoveredBranch(TestChromosome test, Set<Branch> uncoveredBranches) {
+        Set<Branch> testCoveredBranches = getCoveredBranches(test);
+        for (Branch b : testCoveredBranches) {
+            Branch negate = b.negate();
+            if (uncoveredBranches.contains(negate)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Returns those branches that are reached but are not covered
      *
      * @param coveredBranches
@@ -149,75 +98,6 @@ public class DSETestCaseLocalSearch extends TestCaseLocalSearch<TestChromosome> 
             }
         }
         return uncoveredBranches;
-    }
-
-
-    /**
-     * Applies DSE on a test case using the passed local search objective. The
-     * local search <b>modifies</b> the test chromosome, it cannot create a
-     * fresh new test chromosome. If the test case has no symbolic variables, or
-     * it does not reach an uncovered branch, DSE is skipped.
-     *
-     * @param test      the test case chromosome.
-     * @param objective the fitness functions for the test chromosome
-     */
-    @Override
-    public boolean doSearch(TestChromosome test, LocalSearchObjective<TestChromosome> objective) {
-        logger.info("Test before local search: " + test.getTestCase().toCode());
-
-        // gather covered branches true/false branch indexes
-
-        final Set<Branch> coveredBranches;
-        if (suite != null) {
-            coveredBranches = collectCoveredBranches(suite);
-        } else {
-            coveredBranches = getCoveredBranches(test);
-        }
-        final Set<Branch> uncoveredBranches = collectUncoveredBranches(coveredBranches);
-
-        if (uncoveredBranches.isEmpty()) {
-            /*
-             * As there are no branches uncovered (true or false branch missing)
-             * in this suite, there is no point in continuing DSE. Therefore, we
-             * should stop DSE (no DSE improvement)
-             */
-            return false;
-        }
-
-        if (!hasUncoveredBranch(test, uncoveredBranches)) {
-            /*
-             * As there are uncovered branches, but none is reached by this
-             * test, the DSE is skipped and we return false (no DSE improvement)
-             */
-            return false;
-        }
-
-        Set<Integer> targetStatementIndexes = collectStatementIndexesWithSymbolicVariables(test, objective);
-
-        final boolean fitnessHasImproved;
-        if (targetStatementIndexes.isEmpty()) {
-            // Cannot apply DSE because there are no symbolic variables
-            // Therefore, no improvement on objective.
-            fitnessHasImproved = false;
-        } else {
-            logger.info("Yes, now applying the search at positions {}!", targetStatementIndexes);
-            DSETestGenerator dseTestGenerator;
-            if (suite != null) {
-                dseTestGenerator = new DSETestGenerator(suite);
-            } else {
-                dseTestGenerator = new DSETestGenerator();
-            }
-            final TestChromosome newTest = dseTestGenerator.generateNewTest(test, targetStatementIndexes, objective);
-            fitnessHasImproved = newTest != null;
-        }
-
-        LocalSearchBudget.getInstance().countLocalSearchOnTest();
-
-        // Return true iff search was successful
-        return fitnessHasImproved;
-
-        // TODO: Handle arrays in local search
-        // TODO: mutating an int might have an effect on array lengths
     }
 
     /**
@@ -317,6 +197,124 @@ public class DSETestCaseLocalSearch extends TestCaseLocalSearch<TestChromosome> 
             }
         }
         return testCoveredBranches;
+    }
+
+    /**
+     * Applies DSE on a test case using the passed local search objective. The
+     * local search <b>modifies</b> the test chromosome, it cannot create a
+     * fresh new test chromosome. If the test case has no symbolic variables, or
+     * it does not reach an uncovered branch, DSE is skipped.
+     *
+     * @param test      the test case chromosome.
+     * @param objective the fitness functions for the test chromosome
+     */
+    @Override
+    public boolean doSearch(TestChromosome test, LocalSearchObjective<TestChromosome> objective) {
+        logger.info("Test before local search: " + test.getTestCase().toCode());
+
+        // gather covered branches true/false branch indexes
+
+        final Set<Branch> coveredBranches;
+        if (suite != null) {
+            coveredBranches = collectCoveredBranches(suite);
+        } else {
+            coveredBranches = getCoveredBranches(test);
+        }
+        final Set<Branch> uncoveredBranches = collectUncoveredBranches(coveredBranches);
+
+        if (uncoveredBranches.isEmpty()) {
+            /*
+             * As there are no branches uncovered (true or false branch missing)
+             * in this suite, there is no point in continuing DSE. Therefore, we
+             * should stop DSE (no DSE improvement)
+             */
+            return false;
+        }
+
+        if (!hasUncoveredBranch(test, uncoveredBranches)) {
+            /*
+             * As there are uncovered branches, but none is reached by this
+             * test, the DSE is skipped and we return false (no DSE improvement)
+             */
+            return false;
+        }
+
+        Set<Integer> targetStatementIndexes = collectStatementIndexesWithSymbolicVariables(test, objective);
+
+        final boolean fitnessHasImproved;
+        if (targetStatementIndexes.isEmpty()) {
+            // Cannot apply DSE because there are no symbolic variables
+            // Therefore, no improvement on objective.
+            fitnessHasImproved = false;
+        } else {
+            logger.info("Yes, now applying the search at positions {}!", targetStatementIndexes);
+            DSETestGenerator dseTestGenerator;
+            if (suite != null) {
+                dseTestGenerator = new DSETestGenerator(suite);
+            } else {
+                dseTestGenerator = new DSETestGenerator();
+            }
+            final TestChromosome newTest = dseTestGenerator.generateNewTest(test, targetStatementIndexes, objective);
+            fitnessHasImproved = newTest != null;
+        }
+
+        LocalSearchBudget.getInstance().countLocalSearchOnTest();
+
+        // Return true iff search was successful
+        return fitnessHasImproved;
+
+        // TODO: Handle arrays in local search
+        // TODO: mutating an int might have an effect on array lengths
+    }
+
+    /**
+     * Represents a branch in the target program
+     *
+     * @author galeotti
+     */
+    private static class Branch {
+
+        private final int branchIndex;
+        private final boolean isTrueBranch;
+
+        public Branch(int branchIndex, boolean isTrueBranch) {
+            super();
+            this.branchIndex = branchIndex;
+            this.isTrueBranch = isTrueBranch;
+        }
+
+        public Branch negate() {
+            return new Branch(branchIndex, !isTrueBranch);
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + branchIndex;
+            result = prime * result + (isTrueBranch ? 1231 : 1237);
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            Branch other = (Branch) obj;
+            if (branchIndex != other.branchIndex)
+                return false;
+            return isTrueBranch == other.isTrueBranch;
+        }
+
+        @Override
+        public String toString() {
+            return "Branch [branchIndex=" + branchIndex + ", isTrueBranch=" + isTrueBranch + "]";
+        }
+
     }
 
 }

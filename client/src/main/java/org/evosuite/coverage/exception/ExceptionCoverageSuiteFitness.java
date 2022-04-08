@@ -51,55 +51,6 @@ public class ExceptionCoverageSuiteFitness extends TestSuiteFitnessFunction {
         return maxExceptionsCovered;
     }
 
-    @Override
-    public double getFitness(TestSuiteChromosome suite) {
-        logger.trace("Calculating exception fitness");
-
-
-        /*
-         * for each method in the SUT, we keep track of which kind of exceptions were thrown.
-         * we distinguish between "implicit", "explicit" and "declared"
-         */
-        Map<String, Set<Class<?>>> implicitTypesOfExceptions = new HashMap<>();
-        Map<String, Set<Class<?>>> explicitTypesOfExceptions = new HashMap<>();
-        Map<String, Set<Class<?>>> declaredTypesOfExceptions = new HashMap<>();
-
-        List<ExecutionResult> results = runTestSuite(suite);
-
-        calculateExceptionInfo(results, implicitTypesOfExceptions, explicitTypesOfExceptions, declaredTypesOfExceptions, this);
-
-        if (Properties.TEST_ARCHIVE) {
-            // If we are using the archive, then fitness is by definition 0
-            // as all assertions already covered are in the archive
-            suite.setFitness(this, 0.0);
-            suite.setCoverage(this, 1.0);
-            maxExceptionsCovered = ExceptionCoverageFactory.getGoals().size();
-            return 0.0;
-        }
-
-        int nExc = getNumExceptions(implicitTypesOfExceptions) + getNumExceptions(explicitTypesOfExceptions) +
-                getNumExceptions(declaredTypesOfExceptions);
-
-        if (nExc > maxExceptionsCovered) {
-            logger.info("(Exceptions) Best individual covers " + nExc + " exceptions");
-            maxExceptionsCovered = nExc;
-        }
-
-        // We cannot set a coverage here, as it does not make any sense
-        // suite.setCoverage(this, 1.0);
-
-        double exceptionFitness = 1d / (1d + nExc);
-
-        suite.setFitness(this, exceptionFitness);
-        if (maxExceptionsCovered > 0)
-            suite.setCoverage(this, nExc / maxExceptionsCovered);
-        else
-            suite.setCoverage(this, 1.0);
-
-        return exceptionFitness;
-    }
-
-
     /**
      * Given the list of results, fill the 3 given (empty) maps with exception information.
      * Also, add exception coverage goals to mapping in {@link ExceptionCoverageFactory}
@@ -225,5 +176,53 @@ public class ExceptionCoverageSuiteFitness extends TestSuiteFitnessFunction {
             classExceptions.addAll(exceptionSet);
         }
         return classExceptions.size();
+    }
+
+    @Override
+    public double getFitness(TestSuiteChromosome suite) {
+        logger.trace("Calculating exception fitness");
+
+
+        /*
+         * for each method in the SUT, we keep track of which kind of exceptions were thrown.
+         * we distinguish between "implicit", "explicit" and "declared"
+         */
+        Map<String, Set<Class<?>>> implicitTypesOfExceptions = new HashMap<>();
+        Map<String, Set<Class<?>>> explicitTypesOfExceptions = new HashMap<>();
+        Map<String, Set<Class<?>>> declaredTypesOfExceptions = new HashMap<>();
+
+        List<ExecutionResult> results = runTestSuite(suite);
+
+        calculateExceptionInfo(results, implicitTypesOfExceptions, explicitTypesOfExceptions, declaredTypesOfExceptions, this);
+
+        if (Properties.TEST_ARCHIVE) {
+            // If we are using the archive, then fitness is by definition 0
+            // as all assertions already covered are in the archive
+            suite.setFitness(this, 0.0);
+            suite.setCoverage(this, 1.0);
+            maxExceptionsCovered = ExceptionCoverageFactory.getGoals().size();
+            return 0.0;
+        }
+
+        int nExc = getNumExceptions(implicitTypesOfExceptions) + getNumExceptions(explicitTypesOfExceptions) +
+                getNumExceptions(declaredTypesOfExceptions);
+
+        if (nExc > maxExceptionsCovered) {
+            logger.info("(Exceptions) Best individual covers " + nExc + " exceptions");
+            maxExceptionsCovered = nExc;
+        }
+
+        // We cannot set a coverage here, as it does not make any sense
+        // suite.setCoverage(this, 1.0);
+
+        double exceptionFitness = 1d / (1d + nExc);
+
+        suite.setFitness(this, exceptionFitness);
+        if (maxExceptionsCovered > 0)
+            suite.setCoverage(this, nExc / maxExceptionsCovered);
+        else
+            suite.setCoverage(this, 1.0);
+
+        return exceptionFitness;
     }
 }

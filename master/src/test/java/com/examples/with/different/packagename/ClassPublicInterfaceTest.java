@@ -30,6 +30,14 @@ import static org.junit.Assert.assertEquals;
  */
 public class ClassPublicInterfaceTest {
 
+    @Test
+    public void testBindFilteredEventsToMethod() {
+        final MultipleEventSource src = new MultipleEventSource();
+        final EventCounter counter = new EventCounter();
+        ClassPublicInterface.bindEventsToMethod(counter, "eventOccurred", src, MultipleEventListener.class, "event1");
+        assertEquals(0, counter.getCount());
+    }
+
     public interface MultipleEventListener {
         void event1(Object e);
     }
@@ -52,13 +60,5 @@ public class ClassPublicInterfaceTest {
         public void addMultipleEventListener(final MultipleEventListener listener) {
             listeners.addListener(listener);
         }
-    }
-
-    @Test
-    public void testBindFilteredEventsToMethod() {
-        final MultipleEventSource src = new MultipleEventSource();
-        final EventCounter counter = new EventCounter();
-        ClassPublicInterface.bindEventsToMethod(counter, "eventOccurred", src, MultipleEventListener.class, "event1");
-        assertEquals(0, counter.getCount());
     }
 }

@@ -24,12 +24,6 @@ package com.examples.with.different.packagename.otherpackage;
  */
 public class ExampleWithStaticPackagePrivateInnerClass {
 
-    static class Foo {
-        public boolean foo() {
-            return true;
-        }
-    }
-
     public Foo getFoo() {
         return null;
     }
@@ -40,5 +34,11 @@ public class ExampleWithStaticPackagePrivateInnerClass {
 
     public void bar() {
         // ...
+    }
+
+    static class Foo {
+        public boolean foo() {
+            return true;
+        }
     }
 }

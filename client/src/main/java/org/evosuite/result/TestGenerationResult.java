@@ -30,8 +30,6 @@ import java.util.Set;
 
 public interface TestGenerationResult<T extends Chromosome<T>> extends Serializable {
 
-    enum Status {SUCCESS, TIMEOUT, ERROR}
-
     /**
      * Did test generation succeed?
      */
@@ -132,5 +130,7 @@ public interface TestGenerationResult<T extends Chromosome<T>> extends Serializa
      * Comment for that test
      */
     String getComment(String name);
+
+    enum Status {SUCCESS, TIMEOUT, ERROR}
 
 }

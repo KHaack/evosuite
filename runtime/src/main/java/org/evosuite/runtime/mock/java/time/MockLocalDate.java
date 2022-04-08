@@ -34,16 +34,11 @@ import java.time.temporal.TemporalAccessor;
  */
 public class MockLocalDate implements StaticReplacementMock {
 
-    @Override
-    public String getMockedClassName() {
-        return LocalDate.class.getName();
-    }
-
-    // ---- static methods -------
-
     public static LocalDate now() {
         return now(MockClock.systemDefaultZone());
     }
+
+    // ---- static methods -------
 
     public static LocalDate now(ZoneId zone) {
         return now(MockClock.system(zone));
@@ -79,6 +74,11 @@ public class MockLocalDate implements StaticReplacementMock {
 
     public static LocalDate parse(CharSequence text, DateTimeFormatter formatter) {
         return LocalDate.parse(text, formatter);
+    }
+
+    @Override
+    public String getMockedClassName() {
+        return LocalDate.class.getName();
     }
 
 }

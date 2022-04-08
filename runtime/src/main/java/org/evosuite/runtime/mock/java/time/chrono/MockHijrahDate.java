@@ -31,11 +31,6 @@ import java.time.temporal.TemporalAccessor;
  * Created by gordon on 24/01/2016.
  */
 public class MockHijrahDate implements StaticReplacementMock {
-    @Override
-    public String getMockedClassName() {
-        return HijrahDate.class.getName();
-    }
-
     public static HijrahDate now() {
         return now(MockClock.systemDefaultZone());
     }
@@ -54,6 +49,11 @@ public class MockHijrahDate implements StaticReplacementMock {
 
     public static HijrahDate from(TemporalAccessor temporal) {
         return HijrahDate.from(temporal);
+    }
+
+    @Override
+    public String getMockedClassName() {
+        return HijrahDate.class.getName();
     }
 
 }

@@ -27,103 +27,101 @@
 
 <configuration>
 
-	<!-- different appenders for std out and err -->
+    <!-- different appenders for std out and err -->
 
-	<appender name="STDOUT_MASTER" class="ch.qos.logback.core.ConsoleAppender">
-		<target>System.out</target>
-		<filter class="ch.qos.logback.classic.filter.LevelFilter">
-			<level>ERROR</level>
-			<onMatch>DENY</onMatch>
-			<onMismatch>ACCEPT</onMismatch>
-		</filter>
-		<encoder>
-			<pattern>[MASTER] %d{HH:mm:ss.SSS} [%thread] %-5level %logger{0} - %msg%n</pattern>
-		</encoder>
-	</appender>
+    <appender name="STDOUT_MASTER" class="ch.qos.logback.core.ConsoleAppender">
+        <target>System.out</target>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>DENY</onMatch>
+            <onMismatch>ACCEPT</onMismatch>
+        </filter>
+        <encoder>
+            <pattern>[MASTER] %d{HH:mm:ss.SSS} [%thread] %-5level %logger{0} - %msg%n</pattern>
+        </encoder>
+    </appender>
 
-	<appender name="STDERR_MASTER" class="ch.qos.logback.core.ConsoleAppender">
-		<target>System.err</target>
-		<filter class="ch.qos.logback.classic.filter.LevelFilter">
-			<level>ERROR</level>
-			<onMatch>ACCEPT</onMatch>
-			<onMismatch>DENY</onMismatch>
-		</filter>
-		<encoder>
-			<pattern>[MASTER] %d{HH:mm:ss.SSS} [%thread] %-5level %logger{0} - %msg%n</pattern>
-		</encoder>
-	</appender>
+    <appender name="STDERR_MASTER" class="ch.qos.logback.core.ConsoleAppender">
+        <target>System.err</target>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <encoder>
+            <pattern>[MASTER] %d{HH:mm:ss.SSS} [%thread] %-5level %logger{0} - %msg%n</pattern>
+        </encoder>
+    </appender>
 
-	<!-- appenders for client. -->
+    <!-- appenders for client. -->
 
-	<appender name="STDOUT_CLIENT" class="ch.qos.logback.classic.net.SocketAppender">
-		<filter class="ch.qos.logback.classic.filter.LevelFilter">
-			<level>ERROR</level>
-			<onMatch>DENY</onMatch>
-			<onMismatch>ACCEPT</onMismatch>
-		</filter>
-		<remoteHost>${master_host:-localhost}</remoteHost>
-		<port>${master_log_port:-12345}</port>
-		<reconnectionDelay>10000</reconnectionDelay>
-	</appender>
+    <appender name="STDOUT_CLIENT" class="ch.qos.logback.classic.net.SocketAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>DENY</onMatch>
+            <onMismatch>ACCEPT</onMismatch>
+        </filter>
+        <remoteHost>${master_host:-localhost}</remoteHost>
+        <port>${master_log_port:-12345}</port>
+        <reconnectionDelay>10000</reconnectionDelay>
+    </appender>
 
-	<appender name="STDERR_CLIENT" class="ch.qos.logback.classic.net.SocketAppender">
-		<filter class="ch.qos.logback.classic.filter.LevelFilter">
-			<level>ERROR</level>
-			<onMatch>ACCEPT</onMatch>
-			<onMismatch>DENY</onMismatch>
-		</filter>
-		<remoteHost>${master_host:-localhost}</remoteHost>
-		<port>${master_log_port:-12345}</port>
-		<reconnectionDelay>10000</reconnectionDelay>
-	</appender>
-
-
-	<!-- the "EVO" logger is used both by master and client. it is used for 
-		outputting standard information to the user. so, it's level is always ALL. -->
-
-	<appender name="EVO_LOGGER_MASTER" class="ch.qos.logback.core.ConsoleAppender">
-		<encoder>
-			<pattern>%msg%n</pattern>
-		</encoder>
-	</appender>
-
-	<appender name="EVO_LOGGER_CLIENT" class="ch.qos.logback.classic.net.SocketAppender">
-		<remoteHost>${master_host:-localhost}</remoteHost>
-		<port>${master_log_port:-12345}</port>
-		<reconnectionDelay>10000</reconnectionDelay>
-	</appender>
+    <appender name="STDERR_CLIENT" class="ch.qos.logback.classic.net.SocketAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <remoteHost>${master_host:-localhost}</remoteHost>
+        <port>${master_log_port:-12345}</port>
+        <reconnectionDelay>10000</reconnectionDelay>
+    </appender>
 
 
+    <!-- the "EVO" logger is used both by master and client. it is used for
+        outputting standard information to the user. so, it's level is always ALL. -->
 
-	<!-- Loggers  -->
+    <appender name="EVO_LOGGER_MASTER" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%msg%n</pattern>
+        </encoder>
+    </appender>
 
-	<logger name="evo_logger" level="ALL" additivity="false">
-		<appender-ref ref="EVO_LOGGER_${evosuite.log.appender:-MASTER}" />
-	</logger>
+    <appender name="EVO_LOGGER_CLIENT" class="ch.qos.logback.classic.net.SocketAppender">
+        <remoteHost>${master_host:-localhost}</remoteHost>
+        <port>${master_log_port:-12345}</port>
+        <reconnectionDelay>10000</reconnectionDelay>
+    </appender>
 
 
-	<logger name="org.evosuite" level="${log.level:-WARN}">
-		<appender-ref ref="STDOUT_${evosuite.log.appender:-MASTER}" />
-		<appender-ref ref="STDERR_${evosuite.log.appender:-MASTER}" />
-	</logger>
+    <!-- Loggers  -->
 
-	<logger name="shaded.org.evosuite" level="${log.level:-WARN}">
-		<appender-ref ref="STDOUT_${evosuite.log.appender:-MASTER}" />
-		<appender-ref ref="STDERR_${evosuite.log.appender:-MASTER}" />
-	</logger>
+    <logger name="evo_logger" level="ALL" additivity="false">
+        <appender-ref ref="EVO_LOGGER_${evosuite.log.appender:-MASTER}"/>
+    </logger>
 
-	<logger name="org.evosuite.shaded" level="OFF" />
 
-	<!-- for a specific logger, enables all the logging. this is useful when 
-		we are debugging a particular class -->
+    <logger name="org.evosuite" level="${log.level:-WARN}">
+        <appender-ref ref="STDOUT_${evosuite.log.appender:-MASTER}"/>
+        <appender-ref ref="STDERR_${evosuite.log.appender:-MASTER}"/>
+    </logger>
 
-	<logger name="${log.target:-NOTHING}" level="ALL" />
+    <logger name="shaded.org.evosuite" level="${log.level:-WARN}">
+        <appender-ref ref="STDOUT_${evosuite.log.appender:-MASTER}"/>
+        <appender-ref ref="STDERR_${evosuite.log.appender:-MASTER}"/>
+    </logger>
 
-	<!-- main root logger. Note: it is turned OFF to avoid SUT using it-->
+    <logger name="org.evosuite.shaded" level="OFF"/>
 
-	<root level="OFF">
-	</root>
+    <!-- for a specific logger, enables all the logging. this is useful when
+        we are debugging a particular class -->
 
+    <logger name="${log.target:-NOTHING}" level="ALL"/>
+
+    <!-- main root logger. Note: it is turned OFF to avoid SUT using it-->
+
+    <root level="OFF">
+    </root>
 
 
 </configuration>

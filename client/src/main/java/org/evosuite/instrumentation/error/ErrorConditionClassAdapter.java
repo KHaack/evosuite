@@ -37,9 +37,8 @@ import org.slf4j.LoggerFactory;
  */
 public class ErrorConditionClassAdapter extends ClassVisitor {
 
-    private final String className;
-
     private static final Logger logger = LoggerFactory.getLogger(ErrorConditionClassAdapter.class);
+    private final String className;
 
     /**
      * <p>

@@ -49,12 +49,12 @@ public class MavenPluginIT {
 
     @Before
     @After
-    public void clean() throws Exception{
-        Verifier verifier  = getVerifier(projects);
+    public void clean() throws Exception {
+        Verifier verifier = getVerifier(projects);
         verifier.addCliOption("evosuite:clean");
         verifier.executeGoal("clean");
 
-        for(Path p : Arrays.asList(projects,simple,dependency,env,coverage)){
+        for (Path p : Arrays.asList(projects, simple, dependency, env, coverage)) {
             FileUtils.deleteDirectory(p.resolve(srcEvo).toFile());
             FileUtils.deleteQuietly(p.resolve("log.txt").toFile());
             FileUtils.deleteQuietly(p.resolve(InitializingListener.getScaffoldingListFilePath()).toFile());
@@ -64,8 +64,8 @@ public class MavenPluginIT {
 
 
     @Test(timeout = timeoutInMs)
-    public void testCompile() throws Exception{
-        Verifier verifier  = getVerifier(projects);
+    public void testCompile() throws Exception {
+        Verifier verifier = getVerifier(projects);
         verifier.executeGoal("compile");
         verifier.verifyTextInLog("SimpleModule");
         verifier.verifyTextInLog("ModuleWithOneDependency");
@@ -73,8 +73,8 @@ public class MavenPluginIT {
 
 
     @Test(timeout = timeoutInMs)
-    public void testESClean() throws Exception{
-        Verifier verifier  = getVerifier(simple);
+    public void testESClean() throws Exception {
+        Verifier verifier = getVerifier(simple);
         verifier.addCliOption("evosuite:clean");
         verifier.executeGoal("clean");
 
@@ -84,14 +84,14 @@ public class MavenPluginIT {
 
 
     @Test(timeout = timeoutInMs)
-    public void testSimpleClass() throws Exception{
+    public void testSimpleClass() throws Exception {
 
         String cut = "org.maven_test_project.sm.SimpleClass";
 
-        Verifier verifier  = getVerifier(simple);
+        Verifier verifier = getVerifier(simple);
         verifier.addCliOption("evosuite:generate");
         verifier.addCliOption("-DtimeInMinutesPerClass=1");
-        verifier.addCliOption("-Dcuts="+cut);
+        verifier.addCliOption("-Dcuts=" + cut);
         verifier.executeGoal("compile");
 
         Path es = getESFolder(simple);
@@ -100,7 +100,7 @@ public class MavenPluginIT {
         verifier.verifyTextInLog("Going to generate tests with EvoSuite");
         verifier.verifyTextInLog("New test suites: 1");
 
-        verifyLogFilesExist(simple,cut);
+        verifyLogFilesExist(simple, cut);
     }
 
     @Test(timeout = timeoutInMs)
@@ -109,7 +109,7 @@ public class MavenPluginIT {
         String a = "org.maven_test_project.sm.SimpleClass";
         String b = "org.maven_test_project.sm.ThrowException";
 
-        Verifier verifier  = getVerifier(simple);
+        Verifier verifier = getVerifier(simple);
         verifier.addCliOption("evosuite:generate");
         verifier.addCliOption("-DtimeInMinutesPerClass=1");
         verifier.addCliOption("-Dcores=2");
@@ -117,7 +117,7 @@ public class MavenPluginIT {
         try {
             verifier.executeGoal("compile");
             fail();
-        } catch (VerificationException e){
+        } catch (VerificationException e) {
             //expected, because not enough memory
         }
 
@@ -130,11 +130,11 @@ public class MavenPluginIT {
 
 
     @Test(timeout = timeoutInMs)
-    public void testModuleWithDependency() throws Exception{
+    public void testModuleWithDependency() throws Exception {
 
         String cut = "org.maven_test_project.mwod.OneDependencyClass";
 
-        Verifier verifier  = getVerifier(dependency);
+        Verifier verifier = getVerifier(dependency);
         verifier.addCliOption("evosuite:generate");
         verifier.executeGoal("compile");
 
@@ -144,21 +144,21 @@ public class MavenPluginIT {
     @Test(timeout = timeoutInMs)
     public void testExportWithTests() throws Exception {
 
-        Verifier verifier  = getVerifier(dependency);
+        Verifier verifier = getVerifier(dependency);
         verifier.addCliOption("evosuite:generate");
         verifier.addCliOption("evosuite:export");
-        verifier.addCliOption("-DtargetFolder="+srcEvo);
+        verifier.addCliOption("-DtargetFolder=" + srcEvo);
 
         verifier.executeGoal("test");
 
         Files.exists(dependency.resolve(srcEvo));
-        verifyLogFilesExist(dependency,"org.maven_test_project.mwod.OneDependencyClass");
+        verifyLogFilesExist(dependency, "org.maven_test_project.mwod.OneDependencyClass");
     }
 
     @Test(timeout = timeoutInMs)
     public void testExportWithTestsWithAgent() throws Exception {
 
-        Verifier verifier  = getVerifier(dependency);
+        Verifier verifier = getVerifier(dependency);
         addGenerateAndExportOption(verifier);
         verifier.addCliOption("-DforkCount=1");
 
@@ -166,14 +166,14 @@ public class MavenPluginIT {
 
         Files.exists(dependency.resolve(srcEvo));
         String cut = "org.maven_test_project.mwod.OneDependencyClass";
-        verifyLogFilesExist(dependency,cut);
-        verifyESTestsRunFor(verifier,cut);
+        verifyLogFilesExist(dependency, cut);
+        verifyESTestsRunFor(verifier, cut);
     }
 
     @Test(timeout = timeoutInMs)
     public void testExportWithTestsWithAgentNoFork() throws Exception {
 
-        Verifier verifier  = getVerifier(dependency);
+        Verifier verifier = getVerifier(dependency);
         addGenerateAndExportOption(verifier);
         verifier.addCliOption("-DforkCount=0");
 
@@ -181,47 +181,47 @@ public class MavenPluginIT {
 
         Files.exists(dependency.resolve(srcEvo));
         String cut = "org.maven_test_project.mwod.OneDependencyClass";
-        verifyLogFilesExist(dependency,cut);
-        verifyESTestsRunFor(verifier,cut);
+        verifyLogFilesExist(dependency, cut);
+        verifyESTestsRunFor(verifier, cut);
     }
 
 
     @Test(timeout = timeoutInMs)
-    public void testEnv() throws Exception{
-        Verifier verifier  = getVerifier(env);
+    public void testEnv() throws Exception {
+        Verifier verifier = getVerifier(env);
         addGenerateAndExportOption(verifier);
 
         verifier.executeGoal("test");
 
         Files.exists(env.resolve(srcEvo));
         String cut = "org.maven_test_project.em.FileCheck";
-        verifyLogFilesExist(env,cut);
-        verifyESTestsRunFor(verifier,cut);
+        verifyLogFilesExist(env, cut);
+        verifyESTestsRunFor(verifier, cut);
     }
 
     //--- JaCoCo --------------------------------------------------------------
 
 
     @Test(timeout = timeoutInMs)
-    public void testJaCoCoNoEnv() throws Exception{
+    public void testJaCoCoNoEnv() throws Exception {
         testVerifyNoEnv("jacoco");
         verifyJaCoCoFileExists(dependency);
     }
 
     @Test(timeout = timeoutInMs)
-    public void testJaCoCoWithEnv() throws Exception{
+    public void testJaCoCoWithEnv() throws Exception {
         testVerfiyWithEnv("jacoco");
         verifyJaCoCoFileExists(env);
     }
 
     @Test(timeout = timeoutInMs)
-    public void testJaCoCoPass() throws Exception{
+    public void testJaCoCoPass() throws Exception {
         testCoveragePass("jacoco");
         verifyJaCoCoFileExists(coverage);
     }
 
     @Test(timeout = timeoutInMs)
-    public void testJaCoCoFail() throws Exception{
+    public void testJaCoCoFail() throws Exception {
         testCoverageFail("jacoco");
         verifyJaCoCoFileExists(coverage);
     }
@@ -231,25 +231,25 @@ public class MavenPluginIT {
 
 
     @Test(timeout = timeoutInMs)
-    public void testJMockitNoEnv() throws Exception{
+    public void testJMockitNoEnv() throws Exception {
         testVerifyNoEnv("jmockit", 1);
         verifyJMockitFolderExists(dependency);
     }
 
     @Test(timeout = timeoutInMs)
-    public void testJMockitWithEnv() throws Exception{
+    public void testJMockitWithEnv() throws Exception {
         testVerfiyWithEnv("jmockit", 1);
         verifyJMockitFolderExists(env);
     }
 
     @Test(timeout = timeoutInMs)
-    public void testJMockitPass() throws Exception{
+    public void testJMockitPass() throws Exception {
         testCoveragePass("jmockit");
         verifyJMockitFolderExists(coverage);
     }
 
     @Test(timeout = timeoutInMs)
-    public void testJMockitFail() throws Exception{
+    public void testJMockitFail() throws Exception {
         testCoverageFail("jmockit");
         verifyJMockitFolderExists(coverage);
     }
@@ -258,40 +258,39 @@ public class MavenPluginIT {
     //--- PowerMock --------------------------------------------------------------
 
     @Test(timeout = timeoutInMs)
-    public void testPowerMockNoEnv() throws Exception{
-        testVerifyNoEnv("powermock",1);
+    public void testPowerMockNoEnv() throws Exception {
+        testVerifyNoEnv("powermock", 1);
     }
 
 
     @Test(timeout = timeoutInMs)
-    public void testPowerMockWithEnv() throws Exception{
-        testVerfiyWithEnv("powermock",1);
+    public void testPowerMockWithEnv() throws Exception {
+        testVerfiyWithEnv("powermock", 1);
     }
-
 
 
     //--- Cobertura --------------------------------------------------------------
 
     @Test(timeout = timeoutInMs)
-    public void testCoberturaNoEnv() throws Exception{
+    public void testCoberturaNoEnv() throws Exception {
         testVerifyNoEnv("cobertura");
         verifyCoberturaFileExists(dependency);
     }
 
     @Test(timeout = timeoutInMs)
-    public void testCoberturaWithEnv() throws Exception{
+    public void testCoberturaWithEnv() throws Exception {
         testVerfiyWithEnv("cobertura");
         verifyCoberturaFileExists(env);
     }
 
     @Test(timeout = timeoutInMs)
-    public void testCoberturaPass() throws Exception{
+    public void testCoberturaPass() throws Exception {
         testCoveragePass("cobertura");
         verifyCoberturaFileExists(coverage);
     }
 
     @Test(timeout = timeoutInMs)
-    public void testCoberturaFail() throws Exception{
+    public void testCoberturaFail() throws Exception {
         testCoverageFail("cobertura");
         verifyCoberturaFileExists(coverage);
     }
@@ -299,26 +298,26 @@ public class MavenPluginIT {
     //--- PIT --------------------------------------------------------------
 
     @Test(timeout = timeoutInMs)
-    public void testPitNoEnv() throws Exception{
+    public void testPitNoEnv() throws Exception {
         testVerifyNoEnv("pit");
         verifyPitFolderExists(dependency);
     }
 
     @Test(timeout = timeoutInMs)
-    public void testPitWithEnv() throws Exception{
+    public void testPitWithEnv() throws Exception {
         testVerfiyWithEnv("pit");
         verifyPitFolderExists(env);
     }
 
 
     @Test(timeout = timeoutInMs)
-    public void testPitPass() throws Exception{
+    public void testPitPass() throws Exception {
         testCoveragePass("pit");
         verifyPitFolderExists(coverage);
     }
 
     @Test(timeout = timeoutInMs)
-    public void testPitFail() throws Exception{
+    public void testPitFail() throws Exception {
         testCoverageFail("pit,pitOneTest"); //PIT has its filters for test execution
         verifyPitFolderExists(coverage);
     }
@@ -326,100 +325,99 @@ public class MavenPluginIT {
 
     //------------------------------------------------------------------------------------------------------------------
 
-    private void testVerfiyWithEnv(String profile) throws Exception{
+    private void testVerfiyWithEnv(String profile) throws Exception {
         testVerfiyWithEnv(profile, 1);
     }
 
-    private void testVerfiyWithEnv(String profile, int forkCount) throws Exception{
+    private void testVerfiyWithEnv(String profile, int forkCount) throws Exception {
 
-        Verifier verifier  = getVerifier(env);
+        Verifier verifier = getVerifier(env);
         addGenerateAndExportOption(verifier);
-        verifier.addCliOption("-P"+profile);
-        verifier.addCliOption("-DforkCount="+forkCount);
+        verifier.addCliOption("-P" + profile);
+        verifier.addCliOption("-DforkCount=" + forkCount);
 
         verifier.executeGoal("verify");
 
         Files.exists(env.resolve(srcEvo));
         String cut = "org.maven_test_project.em.FileCheck";
-        verifyLogFilesExist(env,cut);
-        verifyESTestsRunFor(verifier,cut);
+        verifyLogFilesExist(env, cut);
+        verifyESTestsRunFor(verifier, cut);
     }
 
     private void testVerifyNoEnv(String profile) throws Exception {
         testVerifyNoEnv(profile, 1);
     }
 
-    private void testVerifyNoEnv(String profile, int forkCount) throws Exception{
+    private void testVerifyNoEnv(String profile, int forkCount) throws Exception {
 
-        Verifier verifier  = getVerifier(dependency);
+        Verifier verifier = getVerifier(dependency);
         addGenerateAndExportOption(verifier);
-        verifier.addCliOption("-P"+profile);
-        verifier.addCliOption("-DforkCount="+forkCount);
+        verifier.addCliOption("-P" + profile);
+        verifier.addCliOption("-DforkCount=" + forkCount);
 
         verifier.executeGoal("verify");
 
         Files.exists(dependency.resolve(srcEvo));
         String cut = "org.maven_test_project.mwod.OneDependencyClass";
-        verifyLogFilesExist(dependency,cut);
-        verifyESTestsRunFor(verifier,cut);
+        verifyLogFilesExist(dependency, cut);
+        verifyESTestsRunFor(verifier, cut);
     }
 
-    private void testCoveragePass(String profile) throws Exception{
+    private void testCoveragePass(String profile) throws Exception {
         Verifier verifier = getVerifier(coverage);
-        verifier.addCliOption("-P"+profile);
+        verifier.addCliOption("-P" + profile);
         verifier.executeGoal("verify");
     }
 
-    private void testCoverageFail(String profile) throws Exception{
+    private void testCoverageFail(String profile) throws Exception {
         Verifier verifier = getVerifier(coverage);
         verifier.addCliOption("-Dtest=SimpleClassPartialTest");
 
         verifier.executeGoal("verify");
 
         verifier.executeGoal("clean");
-        verifier.addCliOption("-P"+profile);
-        try{
+        verifier.addCliOption("-P" + profile);
+        try {
             verifier.executeGoal("verify");
             fail();
-        } catch (Exception e){
+        } catch (Exception e) {
             //expected, as coverage check should had failed
         }
     }
 
 
-
-    private void verifyESTestsRunFor(Verifier verifier, String className) throws Exception{
+    private void verifyESTestsRunFor(Verifier verifier, String className) throws Exception {
         //Note: this depends on Maven / Surefire, so might change in future with new versions
-        verifier.verifyTextInLog("Running "+className);
+        verifier.verifyTextInLog("Running " + className);
     }
 
-    private void addGenerateAndExportOption(Verifier verifier){
+    private void addGenerateAndExportOption(Verifier verifier) {
         verifier.addCliOption("evosuite:generate");
         verifier.addCliOption("evosuite:export");
-        verifier.addCliOption("-DtargetFolder="+srcEvo);
+        verifier.addCliOption("-DtargetFolder=" + srcEvo);
         //TODO remove once off by default
         verifier.addCliOption("-DextraArgs=\"-Duse_separate_classloader=false\"");
     }
 
-    private void verifyJaCoCoFileExists(Path targetProject){
+    private void verifyJaCoCoFileExists(Path targetProject) {
         assertTrue(Files.exists(targetProject.resolve("target").resolve("jacoco.exec")));
     }
 
-    private void verifyJMockitFolderExists(Path targetProject){
+    private void verifyJMockitFolderExists(Path targetProject) {
         assertTrue(Files.exists(targetProject.resolve("target").resolve("jmockit")));
     }
 
-    private void verifyPitFolderExists(Path targetProject){
+    private void verifyPitFolderExists(Path targetProject) {
         assertTrue(Files.exists(targetProject.resolve("target").resolve("pit-reports")));
     }
 
-    private void verifyCoberturaFileExists(Path targetProject){
+    private void verifyCoberturaFileExists(Path targetProject) {
         assertTrue(Files.exists(targetProject.resolve("target").resolve("cobertura").resolve("cobertura.ser")));
     }
 
-    private void verifyLogFilesExist(Path targetProject, String className) throws Exception{
+    private void verifyLogFilesExist(Path targetProject, String className) throws Exception {
         Path dir = getESFolder(targetProject);
-        Path tmp = Files.find(dir,1, (p,a) -> p.getFileName().toString().startsWith("tmp_")).findFirst().get();
+        Path tmp = Files.find(dir, 1, (p, a) -> p.getFileName().toString().startsWith("tmp_")).findFirst().get();
         Path logs = tmp.resolve("logs").resolve(className);
 
         assertTrue(Files.exists(logs.resolve("std_err_CLIENT.log")));
@@ -428,15 +426,15 @@ public class MavenPluginIT {
         assertTrue(Files.exists(logs.resolve("std_out_MASTER.log")));
     }
 
-    private Path getESFolder(Path project){
+    private Path getESFolder(Path project) {
         return project.resolve(".evosuite");
     }
 
-    private Verifier getVerifier(Path targetProject) throws Exception{
-        Verifier verifier  = new Verifier(targetProject.toAbsolutePath().toString());
+    private Verifier getVerifier(Path targetProject) throws Exception {
+        Verifier verifier = new Verifier(targetProject.toAbsolutePath().toString());
         Properties props = new Properties(System.getProperties());
         //update version if run from IDE instead of Maven
-        props.put("evosuiteVersion", System.getProperty("evosuiteVersion","1.2.0"));
+        props.put("evosuiteVersion", System.getProperty("evosuiteVersion", "1.2.0"));
         verifier.setSystemProperties(props);
         return verifier;
     }

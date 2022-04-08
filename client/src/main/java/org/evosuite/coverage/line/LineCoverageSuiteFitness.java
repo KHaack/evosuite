@@ -53,14 +53,12 @@ public class LineCoverageSuiteFitness extends TestSuiteFitnessFunction {
 
     private final Set<Integer> removedLines = new LinkedHashSet<>();
     private final Set<Integer> toRemoveLines = new LinkedHashSet<>();
-
-    // Some stuff for debug output
-    private int maxCoveredLines = 0;
-    private double bestFitness = Double.MAX_VALUE;
-
     private final Set<Integer> branchesToCoverTrue = new LinkedHashSet<>();
     private final Set<Integer> branchesToCoverFalse = new LinkedHashSet<>();
     private final Set<Integer> branchesToCoverBoth = new LinkedHashSet<>();
+    // Some stuff for debug output
+    private int maxCoveredLines = 0;
+    private double bestFitness = Double.MAX_VALUE;
 
     public LineCoverageSuiteFitness() {
         @SuppressWarnings("unused")

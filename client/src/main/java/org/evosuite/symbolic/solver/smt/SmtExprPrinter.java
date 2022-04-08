@@ -29,13 +29,31 @@ import java.util.List;
 
 public final class SmtExprPrinter implements SmtExprVisitor<String, Void> {
 
+    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("################0.0################");
+
+    public static String encodeString(String str) {
+        char[] charArray = str.toCharArray();
+        String ret_val = "";
+        for (char c : charArray) {
+            if (Character.isISOControl(c)) {
+                if (Integer.toHexString(c).length() == 1) {
+                    // padding
+                    ret_val += "_x0" + Integer.toHexString(c);
+                } else {
+                    ret_val += "_x" + Integer.toHexString(c);
+                }
+            } else {
+                ret_val += c;
+            }
+        }
+        return ret_val;
+    }
+
     @Override
     public String visit(SmtIntConstant n, Void arg) {
         long longValue = n.getConstantValue();
         return buildIntegerString(longValue);
     }
-
-    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("################0.0################");
 
     @Override
     public String visit(SmtRealConstant n, Void arg) {
@@ -210,24 +228,6 @@ public final class SmtExprPrinter implements SmtExprVisitor<String, Void> {
         } else {
             return "false";
         }
-    }
-
-    public static String encodeString(String str) {
-        char[] charArray = str.toCharArray();
-        String ret_val = "";
-        for (char c : charArray) {
-            if (Character.isISOControl(c)) {
-                if (Integer.toHexString(c).length() == 1) {
-                    // padding
-                    ret_val += "_x0" + Integer.toHexString(c);
-                } else {
-                    ret_val += "_x" + Integer.toHexString(c);
-                }
-            } else {
-                ret_val += c;
-            }
-        }
-        return ret_val;
     }
 
     /**

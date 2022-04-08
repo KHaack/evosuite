@@ -30,17 +30,17 @@ import java.time.chrono.ThaiBuddhistDate;
  * Created by gordon on 24/01/2016.
  */
 public class MockThaiBuddhistChronology implements StaticReplacementMock {
-    @Override
-    public String getMockedClassName() {
-        return ThaiBuddhistChronology.class.getName();
-    }
-
     public static ThaiBuddhistDate dateNow(ThaiBuddhistChronology instance) {
         return instance.dateNow(MockClock.systemDefaultZone());
     }
 
     public static ThaiBuddhistDate dateNow(ThaiBuddhistChronology instance, ZoneId zone) {
         return instance.dateNow(MockClock.system(zone));
+    }
+
+    @Override
+    public String getMockedClassName() {
+        return ThaiBuddhistChronology.class.getName();
     }
 
 }

@@ -29,6 +29,13 @@ import java.util.concurrent.*;
 public class TimeoutHandler<T> {
 
     /**
+     * Constant <code>logger</code>
+     */
+    protected static final Logger logger = LoggerFactory.getLogger(TimeoutHandler.class);
+    private final ThreadMXBean bean;
+    protected FutureTask<T> task = null;
+
+    /**
      * <p>
      * Constructor for TimeoutHandler.
      * </p>
@@ -39,14 +46,6 @@ public class TimeoutHandler<T> {
         super();
         this.bean = ManagementFactory.getThreadMXBean();
     }
-
-    protected FutureTask<T> task = null;
-    private final ThreadMXBean bean;
-
-    /**
-     * Constant <code>logger</code>
-     */
-    protected static final Logger logger = LoggerFactory.getLogger(TimeoutHandler.class);
 
     /**
      * <p>

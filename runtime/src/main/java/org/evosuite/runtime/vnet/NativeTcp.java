@@ -48,16 +48,14 @@ public class NativeTcp {
      * The TCP buffer used by the EvoSuite tests to simulate a remote connection
      */
     private final Queue<Byte> remoteBuffer;
-
-    /**
-     * Info on local (SUT) address/port
-     */
-    private volatile EndPointInfo localEndPoint;
-
     /**
      * Info on remote (EvoSuite tests) address/port
      */
     private final EndPointInfo remoteEndPoint;
+    /**
+     * Info on local (SUT) address/port
+     */
+    private volatile EndPointInfo localEndPoint;
 
 
     public NativeTcp(EndPointInfo localEndPoint, EndPointInfo remoteEndPoint) {

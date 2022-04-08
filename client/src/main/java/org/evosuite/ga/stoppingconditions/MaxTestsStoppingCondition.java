@@ -49,11 +49,6 @@ public class MaxTestsStoppingCondition<T extends Chromosome<T>> extends Stopping
         this.maxTests = that.maxTests;
     }
 
-    @Override
-    public MaxTestsStoppingCondition<T> clone() {
-        return new MaxTestsStoppingCondition<>(this);
-    }
-
     /**
      * <p>getNumExecutedTests</p>
      *
@@ -68,6 +63,11 @@ public class MaxTestsStoppingCondition<T extends Chromosome<T>> extends Stopping
      */
     public static void testExecuted() {
         numTests++;
+    }
+
+    @Override
+    public MaxTestsStoppingCondition<T> clone() {
+        return new MaxTestsStoppingCondition<>(this);
     }
 
     /**
@@ -106,16 +106,16 @@ public class MaxTestsStoppingCondition<T extends Chromosome<T>> extends Stopping
      * {@inheritDoc}
      */
     @Override
-    public void setLimit(long limit) {
-        maxTests = limit;
+    public long getLimit() {
+        return maxTests;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public long getLimit() {
-        return maxTests;
+    public void setLimit(long limit) {
+        maxTests = limit;
     }
 
     /**

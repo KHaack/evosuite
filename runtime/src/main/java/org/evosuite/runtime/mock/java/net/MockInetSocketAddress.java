@@ -28,32 +28,32 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 
-public class MockInetSocketAddress extends InetSocketAddress implements OverrideMock{
+public class MockInetSocketAddress extends InetSocketAddress implements OverrideMock {
 
-	private static final Logger logger = LoggerFactory.getLogger(MockInetSocketAddress.class);
+    private static final Logger logger = LoggerFactory.getLogger(MockInetSocketAddress.class);
 
-	private static final long serialVersionUID = 5076001401234631237L;
+    private static final long serialVersionUID = 5076001401234631237L;
 
 
-	public MockInetSocketAddress(int port) {
-		this( MockFramework.isEnabled() ?
-                    MockInetAddress.anyLocalAddress() :
-                    NetReflectionUtil.anyLocalAddress()
-                        , port);
-	}
+    public MockInetSocketAddress(int port) {
+        this(MockFramework.isEnabled() ?
+                        MockInetAddress.anyLocalAddress() :
+                        NetReflectionUtil.anyLocalAddress()
+                , port);
+    }
 
-	public MockInetSocketAddress(InetAddress addr, int port) {
-		super(addr == null ?
+    public MockInetSocketAddress(InetAddress addr, int port) {
+        super(addr == null ?
                 (MockFramework.isEnabled() ?
                         MockInetAddress.anyLocalAddress() :
                         NetReflectionUtil.anyLocalAddress())
                 : addr, port);
-	}
+    }
 
-	public MockInetSocketAddress(String hostname, int port) {
-		super(MockFramework.isEnabled() ?
+    public MockInetSocketAddress(String hostname, int port) {
+        super(MockFramework.isEnabled() ?
                         getResolvedAddressed(hostname).getHostAddress() :
-                    hostname
+                        hostname
                 , port);
 		/*
 		 * TODO we are not mocking this constructor properly.
@@ -74,14 +74,14 @@ public class MockInetSocketAddress extends InetSocketAddress implements Override
 		}
 		holder = new InetSocketAddressHolder(host, addr, checkPort(port));
 		*/
-	}
+    }
 
-    private static InetAddress getResolvedAddressed(String hostname){
+    private static InetAddress getResolvedAddressed(String hostname) {
         checkHost(hostname);
         try {
             return MockInetAddress.getByName(hostname);
-        } catch(UnknownHostException e) {
-            logger.warn("EvoSuite limitation: unsupported case of hostname resolution for "+hostname);
+        } catch (UnknownHostException e) {
+            logger.warn("EvoSuite limitation: unsupported case of hostname resolution for " + hostname);
             return null;
         }
     }
@@ -92,14 +92,14 @@ public class MockInetSocketAddress extends InetSocketAddress implements Override
 		holder = new InetSocketAddressHolder(hostname, null, port);
 	}
 	 */
-	
-	//--------------------------------------------------------------
-	
-	public static InetSocketAddress createUnresolved(String host, int port) {
-		//no need to create a mock instance? likely not
-		return InetSocketAddress.createUnresolved(host, port);
-		//return new MockInetSocketAddress(checkPort(port), checkHost(host));
-	}
+
+    //--------------------------------------------------------------
+
+    public static InetSocketAddress createUnresolved(String host, int port) {
+        //no need to create a mock instance? likely not
+        return InetSocketAddress.createUnresolved(host, port);
+        //return new MockInetSocketAddress(checkPort(port), checkHost(host));
+    }
 
     private static String checkHost(String hostname) {
         if (hostname == null)

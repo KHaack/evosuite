@@ -42,21 +42,18 @@ public class MockSimpleDateFormat extends java.text.SimpleDateFormat implements 
         initializeCalendar(Locale.getDefault(Locale.Category.FORMAT));
     }
 
-    public MockSimpleDateFormat(String pattern)
-    {
+    public MockSimpleDateFormat(String pattern) {
         this(pattern, Locale.getDefault(Locale.Category.FORMAT));
     }
 
-    public MockSimpleDateFormat(String pattern, Locale locale)
-    {
+    public MockSimpleDateFormat(String pattern, Locale locale) {
         super(pattern, locale);
         set2DigitYearStart(new MockDate());
         setNumberFormat(locale);
         initializeCalendar(locale);
     }
 
-    public MockSimpleDateFormat(String pattern, DateFormatSymbols formatSymbols)
-    {
+    public MockSimpleDateFormat(String pattern, DateFormatSymbols formatSymbols) {
         super(pattern, formatSymbols);
         set2DigitYearStart(new MockDate());
         setNumberFormat(Locale.getDefault(Locale.Category.FORMAT));

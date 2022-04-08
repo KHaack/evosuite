@@ -23,10 +23,15 @@ import java.util.Arrays;
 
 public class MazeClientArrays {
 
-    private MazeClientArrays() {
-    }
+    // Maze hard-coded dimensions
+    private static final int H_SIZE = 7;
 
     ;
+    private static final int W_SIZE = 11;
+
+
+    private MazeClientArrays() {
+    }
 
     public static int walk(char[] moves, int moveLength) throws IllegalArgumentException {
         if (moveLength < 0) {
@@ -110,11 +115,6 @@ public class MazeClientArrays {
         System.out.print("Treasure not found.\n");
         return 3;
     }
-
-
-    // Maze hard-coded dimensions
-    private static final int H_SIZE = 7;
-    private static final int W_SIZE = 11;
 
     private static void draw(char[][] maze) {
         int k, j;

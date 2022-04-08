@@ -40,6 +40,13 @@ import static org.junit.Assert.*;
 
 public class TestDSETestSuiteCookie {
 
+    private static final long DEFAULT_LOCAL_SEARCH_BUDGET = Properties.LOCAL_SEARCH_BUDGET;
+    private static final Properties.LocalSearchBudgetType DEFAULT_LOCAL_SEARCH_BUDGET_TYPE =
+            Properties.LOCAL_SEARCH_BUDGET_TYPE;
+    private static final Properties.SolverType DEFAULT_DSE_SOLVER = Properties.DSE_SOLVER;
+    private static final Properties.DSEType DEFAULT_LOCAL_SEARCH_DSE = Properties.LOCAL_SEARCH_DSE;
+    private static final double DEFAULT_DSE_PROBABILITY = Properties.DSE_PROBABILITY;
+
     /**
      * Creates the test case:
      *
@@ -67,13 +74,6 @@ public class TestDSETestSuiteCookie {
         builder.appendMethod(null, barMethod, int0, int1, int2);
         return builder.getDefaultTestCase();
     }
-
-    private static final long DEFAULT_LOCAL_SEARCH_BUDGET = Properties.LOCAL_SEARCH_BUDGET;
-    private static final Properties.LocalSearchBudgetType DEFAULT_LOCAL_SEARCH_BUDGET_TYPE =
-            Properties.LOCAL_SEARCH_BUDGET_TYPE;
-    private static final Properties.SolverType DEFAULT_DSE_SOLVER = Properties.DSE_SOLVER;
-    private static final Properties.DSEType DEFAULT_LOCAL_SEARCH_DSE = Properties.LOCAL_SEARCH_DSE;
-    private static final double DEFAULT_DSE_PROBABILITY = Properties.DSE_PROBABILITY;
 
     @Before
     public void init() {

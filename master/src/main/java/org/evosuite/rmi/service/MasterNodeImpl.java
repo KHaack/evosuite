@@ -41,12 +41,9 @@ public class MasterNodeImpl implements MasterNodeRemote, MasterNodeLocal {
     private static final long serialVersionUID = -6329473514791197464L;
 
     private static final Logger logger = LoggerFactory.getLogger(MasterNodeImpl.class);
-
+    protected final Collection<Listener<ClientStateInformation>> listeners = Collections.synchronizedList(new ArrayList<>());
     private final Registry registry;
     private final Map<String, ClientNodeRemote> clients;
-
-    protected final Collection<Listener<ClientStateInformation>> listeners = Collections.synchronizedList(new ArrayList<>());
-
     /**
      * It is important to keep track of client states for debugging reasons. For
      * example, if client crash, could be useful to know in which state it was.

@@ -62,6 +62,18 @@ public final class SymbolicEnvironment {
         this.instrumentingClassLoader = instrumentingClassLoader;
     }
 
+    /**
+     * @return method is instrumented. It is neither native nor declared by an
+     * ignored JDK class, etc.
+     */
+    private static boolean isInstrumented(Method method) {
+        if (Modifier.isNative(method.getModifiers()))
+            return false;
+
+        String declClass = method.getDeclaringClass().getCanonicalName();
+        return !MainConfig.get().isIgnored(declClass);
+    }
+
     public Frame topFrame() {
         return stackFrame.peek();
     }
@@ -164,17 +176,5 @@ public final class SymbolicEnvironment {
             fakeMainCallerFrame.operandStack.pushRef(emptyStringRef);
         }
         this.pushFrame(fakeMainCallerFrame);
-    }
-
-    /**
-     * @return method is instrumented. It is neither native nor declared by an
-     * ignored JDK class, etc.
-     */
-    private static boolean isInstrumented(Method method) {
-        if (Modifier.isNative(method.getModifiers()))
-            return false;
-
-        String declClass = method.getDeclaringClass().getCanonicalName();
-        return !MainConfig.get().isIgnored(declClass);
     }
 }

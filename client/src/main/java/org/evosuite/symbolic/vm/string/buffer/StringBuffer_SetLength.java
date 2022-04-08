@@ -37,13 +37,12 @@ import java.util.Collections;
 public final class StringBuffer_SetLength extends SymbolicFunction {
 
     private static final String SET_LENGTH = "setLength";
+    private String pre_conc_value = null;
 
     public StringBuffer_SetLength(SymbolicEnvironment env) {
         super(env, Types.JAVA_LANG_STRING_BUFFER, SET_LENGTH,
                 Types.INT_TO_VOID_DESCRIPTOR);
     }
-
-    private String pre_conc_value = null;
 
     @Override
     public Object executeFunction() {

@@ -50,8 +50,6 @@ public class ReplaceArithmeticOperator implements MutationOperator {
 
     private static final Set<Integer> opcodesDouble = new HashSet<>();
 
-    private int numVariable = 0;
-
     static {
         opcodesInt.addAll(Arrays.asList(Opcodes.IADD, Opcodes.ISUB,
                 Opcodes.IMUL, Opcodes.IDIV, Opcodes.IREM));
@@ -66,36 +64,7 @@ public class ReplaceArithmeticOperator implements MutationOperator {
                 Opcodes.DMUL, Opcodes.DDIV, Opcodes.DREM));
     }
 
-    private String getOp(int opcode) {
-        switch (opcode) {
-            case Opcodes.IADD:
-            case Opcodes.LADD:
-            case Opcodes.FADD:
-            case Opcodes.DADD:
-                return "+";
-            case Opcodes.ISUB:
-            case Opcodes.LSUB:
-            case Opcodes.FSUB:
-            case Opcodes.DSUB:
-                return "-";
-            case Opcodes.IMUL:
-            case Opcodes.LMUL:
-            case Opcodes.FMUL:
-            case Opcodes.DMUL:
-                return "*";
-            case Opcodes.IDIV:
-            case Opcodes.LDIV:
-            case Opcodes.FDIV:
-            case Opcodes.DDIV:
-                return "/";
-            case Opcodes.IREM:
-            case Opcodes.LREM:
-            case Opcodes.FREM:
-            case Opcodes.DREM:
-                return "%";
-        }
-        throw new RuntimeException("Unknown opcode: " + opcode);
-    }
+    private int numVariable = 0;
 
     /**
      * <p>getNextIndex</p>
@@ -162,112 +131,6 @@ public class ReplaceArithmeticOperator implements MutationOperator {
         return index;
     }
 
-    /* (non-Javadoc)
-     * @see org.evosuite.cfg.instrumentation.MutationOperator#apply(org.objectweb.asm.tree.MethodNode, java.lang.String, java.lang.String, org.evosuite.cfg.BytecodeInstruction)
-     */
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<Mutation> apply(MethodNode mn, String className, String methodName,
-                                BytecodeInstruction instruction, Frame frame) {
-
-        numVariable = getNextIndex(mn);
-        List<Mutation> mutations = new LinkedList<>();
-
-        InsnNode node = (InsnNode) instruction.getASMNode();
-
-        for (int opcode : getMutations(node.getOpcode())) {
-
-            InsnNode mutation = new InsnNode(opcode);
-            // insert mutation into pool
-            Mutation mutationObject = MutationPool.getInstance(TestGenerationContext.getInstance().getClassLoaderForSUT()).addMutation(className,
-                    methodName,
-                    NAME + " "
-                            + getOp(node.getOpcode())
-                            + " -> "
-                            + getOp(opcode),
-                    instruction,
-                    mutation,
-                    getInfectionDistance(node.getOpcode(),
-                            opcode));
-            mutations.add(mutationObject);
-        }
-
-        return mutations;
-    }
-
-    private Set<Integer> getMutations(int opcode) {
-        Set<Integer> replacement = new HashSet<>();
-        if (opcodesInt.contains(opcode))
-            replacement.addAll(opcodesInt);
-        else if (opcodesLong.contains(opcode))
-            replacement.addAll(opcodesLong);
-        else if (opcodesFloat.contains(opcode))
-            replacement.addAll(opcodesFloat);
-        else if (opcodesDouble.contains(opcode))
-            replacement.addAll(opcodesDouble);
-
-        replacement.remove(opcode);
-        return replacement;
-    }
-
-    /**
-     * <p>getInfectionDistance</p>
-     *
-     * @param opcodeOrig a int.
-     * @param opcodeNew  a int.
-     * @return a {@link org.objectweb.asm.tree.InsnList} object.
-     */
-    public InsnList getInfectionDistance(int opcodeOrig, int opcodeNew) {
-        InsnList distance = new InsnList();
-
-        if (opcodesInt.contains(opcodeOrig)) {
-            distance.add(new InsnNode(Opcodes.DUP2));
-            distance.add(new LdcInsnNode(opcodeOrig));
-            distance.add(new LdcInsnNode(opcodeNew));
-            distance.add(new MethodInsnNode(
-                    Opcodes.INVOKESTATIC,
-                    PackageInfo.getNameWithSlash(ReplaceArithmeticOperator.class),
-                    "getInfectionDistanceInt", "(IIII)D", false));
-        } else if (opcodesLong.contains(opcodeOrig)) {
-            distance.add(new VarInsnNode(Opcodes.LSTORE, numVariable));
-            distance.add(new InsnNode(Opcodes.DUP2));
-            distance.add(new VarInsnNode(Opcodes.LLOAD, numVariable));
-            distance.add(new InsnNode(Opcodes.DUP2_X2));
-            distance.add(new LdcInsnNode(opcodeOrig));
-            distance.add(new LdcInsnNode(opcodeNew));
-            distance.add(new MethodInsnNode(
-                    Opcodes.INVOKESTATIC,
-                    PackageInfo.getNameWithSlash(ReplaceArithmeticOperator.class),
-                    "getInfectionDistanceLong", "(JJII)D", false));
-            numVariable += 2;
-        } else if (opcodesFloat.contains(opcodeOrig)) {
-            distance.add(new InsnNode(Opcodes.DUP2));
-            distance.add(new LdcInsnNode(opcodeOrig));
-            distance.add(new LdcInsnNode(opcodeNew));
-            distance.add(new MethodInsnNode(
-                    Opcodes.INVOKESTATIC,
-                    PackageInfo.getNameWithSlash(ReplaceArithmeticOperator.class),
-                    "getInfectionDistanceFloat", "(FFII)D", false));
-        } else if (opcodesDouble.contains(opcodeOrig)) {
-            distance.add(new VarInsnNode(Opcodes.DSTORE, numVariable));
-            distance.add(new InsnNode(Opcodes.DUP2));
-            distance.add(new VarInsnNode(Opcodes.DLOAD, numVariable));
-            distance.add(new InsnNode(Opcodes.DUP2_X2));
-            distance.add(new LdcInsnNode(opcodeOrig));
-            distance.add(new LdcInsnNode(opcodeNew));
-            distance.add(new MethodInsnNode(
-                    Opcodes.INVOKESTATIC,
-                    PackageInfo.getNameWithSlash(ReplaceArithmeticOperator.class),
-                    "getInfectionDistanceDouble", "(DDII)D", false));
-            numVariable += 2;
-        }
-
-        return distance;
-    }
-
     private static boolean hasDivZeroError(int opcode) {
         switch (opcode) {
             case Opcodes.IDIV:
@@ -283,6 +146,10 @@ public class ReplaceArithmeticOperator implements MutationOperator {
                 return false;
         }
     }
+
+    /* (non-Javadoc)
+     * @see org.evosuite.cfg.instrumentation.MutationOperator#apply(org.objectweb.asm.tree.MethodNode, java.lang.String, java.lang.String, org.evosuite.cfg.BytecodeInstruction)
+     */
 
     /**
      * <p>getInfectionDistanceInt</p>
@@ -454,6 +321,139 @@ public class ReplaceArithmeticOperator implements MutationOperator {
                 return x % y;
         }
         throw new RuntimeException("Unknown integer opcode: " + opcode);
+    }
+
+    private String getOp(int opcode) {
+        switch (opcode) {
+            case Opcodes.IADD:
+            case Opcodes.LADD:
+            case Opcodes.FADD:
+            case Opcodes.DADD:
+                return "+";
+            case Opcodes.ISUB:
+            case Opcodes.LSUB:
+            case Opcodes.FSUB:
+            case Opcodes.DSUB:
+                return "-";
+            case Opcodes.IMUL:
+            case Opcodes.LMUL:
+            case Opcodes.FMUL:
+            case Opcodes.DMUL:
+                return "*";
+            case Opcodes.IDIV:
+            case Opcodes.LDIV:
+            case Opcodes.FDIV:
+            case Opcodes.DDIV:
+                return "/";
+            case Opcodes.IREM:
+            case Opcodes.LREM:
+            case Opcodes.FREM:
+            case Opcodes.DREM:
+                return "%";
+        }
+        throw new RuntimeException("Unknown opcode: " + opcode);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Mutation> apply(MethodNode mn, String className, String methodName,
+                                BytecodeInstruction instruction, Frame frame) {
+
+        numVariable = getNextIndex(mn);
+        List<Mutation> mutations = new LinkedList<>();
+
+        InsnNode node = (InsnNode) instruction.getASMNode();
+
+        for (int opcode : getMutations(node.getOpcode())) {
+
+            InsnNode mutation = new InsnNode(opcode);
+            // insert mutation into pool
+            Mutation mutationObject = MutationPool.getInstance(TestGenerationContext.getInstance().getClassLoaderForSUT()).addMutation(className,
+                    methodName,
+                    NAME + " "
+                            + getOp(node.getOpcode())
+                            + " -> "
+                            + getOp(opcode),
+                    instruction,
+                    mutation,
+                    getInfectionDistance(node.getOpcode(),
+                            opcode));
+            mutations.add(mutationObject);
+        }
+
+        return mutations;
+    }
+
+    private Set<Integer> getMutations(int opcode) {
+        Set<Integer> replacement = new HashSet<>();
+        if (opcodesInt.contains(opcode))
+            replacement.addAll(opcodesInt);
+        else if (opcodesLong.contains(opcode))
+            replacement.addAll(opcodesLong);
+        else if (opcodesFloat.contains(opcode))
+            replacement.addAll(opcodesFloat);
+        else if (opcodesDouble.contains(opcode))
+            replacement.addAll(opcodesDouble);
+
+        replacement.remove(opcode);
+        return replacement;
+    }
+
+    /**
+     * <p>getInfectionDistance</p>
+     *
+     * @param opcodeOrig a int.
+     * @param opcodeNew  a int.
+     * @return a {@link org.objectweb.asm.tree.InsnList} object.
+     */
+    public InsnList getInfectionDistance(int opcodeOrig, int opcodeNew) {
+        InsnList distance = new InsnList();
+
+        if (opcodesInt.contains(opcodeOrig)) {
+            distance.add(new InsnNode(Opcodes.DUP2));
+            distance.add(new LdcInsnNode(opcodeOrig));
+            distance.add(new LdcInsnNode(opcodeNew));
+            distance.add(new MethodInsnNode(
+                    Opcodes.INVOKESTATIC,
+                    PackageInfo.getNameWithSlash(ReplaceArithmeticOperator.class),
+                    "getInfectionDistanceInt", "(IIII)D", false));
+        } else if (opcodesLong.contains(opcodeOrig)) {
+            distance.add(new VarInsnNode(Opcodes.LSTORE, numVariable));
+            distance.add(new InsnNode(Opcodes.DUP2));
+            distance.add(new VarInsnNode(Opcodes.LLOAD, numVariable));
+            distance.add(new InsnNode(Opcodes.DUP2_X2));
+            distance.add(new LdcInsnNode(opcodeOrig));
+            distance.add(new LdcInsnNode(opcodeNew));
+            distance.add(new MethodInsnNode(
+                    Opcodes.INVOKESTATIC,
+                    PackageInfo.getNameWithSlash(ReplaceArithmeticOperator.class),
+                    "getInfectionDistanceLong", "(JJII)D", false));
+            numVariable += 2;
+        } else if (opcodesFloat.contains(opcodeOrig)) {
+            distance.add(new InsnNode(Opcodes.DUP2));
+            distance.add(new LdcInsnNode(opcodeOrig));
+            distance.add(new LdcInsnNode(opcodeNew));
+            distance.add(new MethodInsnNode(
+                    Opcodes.INVOKESTATIC,
+                    PackageInfo.getNameWithSlash(ReplaceArithmeticOperator.class),
+                    "getInfectionDistanceFloat", "(FFII)D", false));
+        } else if (opcodesDouble.contains(opcodeOrig)) {
+            distance.add(new VarInsnNode(Opcodes.DSTORE, numVariable));
+            distance.add(new InsnNode(Opcodes.DUP2));
+            distance.add(new VarInsnNode(Opcodes.DLOAD, numVariable));
+            distance.add(new InsnNode(Opcodes.DUP2_X2));
+            distance.add(new LdcInsnNode(opcodeOrig));
+            distance.add(new LdcInsnNode(opcodeNew));
+            distance.add(new MethodInsnNode(
+                    Opcodes.INVOKESTATIC,
+                    PackageInfo.getNameWithSlash(ReplaceArithmeticOperator.class),
+                    "getInfectionDistanceDouble", "(DDII)D", false));
+            numVariable += 2;
+        }
+
+        return distance;
     }
 
     /* (non-Javadoc)

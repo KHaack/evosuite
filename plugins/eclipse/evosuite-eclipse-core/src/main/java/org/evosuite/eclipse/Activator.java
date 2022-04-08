@@ -48,12 +48,9 @@ public class Activator extends AbstractUIPlugin implements
     public static final String JUNIT_IDENTIFIER = Properties.JUNIT_SUFFIX + ".java";
     public static final String SCAFFOLDING_IDENTIFIER = Properties.SCAFFOLDING_SUFFIX + ".java";
     public static final String DATA_FOLDER = "evosuite-qfdata";
-
-    public static IResource CURRENT_WRITING_FILE = null;
-
     // set max running time to 30 seconds
     public static final int MAX_RUNNING_TIME = 30;
-
+    public static IResource CURRENT_WRITING_FILE = null;
     // The shared instance
     private static Activator plugin;
 
@@ -66,6 +63,30 @@ public class Activator extends AbstractUIPlugin implements
     public Activator() {
         EvoSuitePreferencePage page = new EvoSuitePreferencePage();
         page.init(getWorkbench());
+    }
+
+    /**
+     * Returns the shared instance
+     *
+     * @return the shared instance
+     */
+    public static Activator getDefault() {
+        return plugin;
+    }
+
+    /**
+     * Returns an image descriptor for the image file at the given plug-in
+     * relative path
+     *
+     * @param path the path
+     * @return the image descriptor
+     */
+    public static ImageDescriptor getImageDescriptor(String path) {
+        return imageDescriptorFromPlugin(PLUGIN_ID, path);
+    }
+
+    public static boolean organizeImports() {
+        return Activator.getDefault().getPreferenceStore().getBoolean(EvoSuitePreferencePage.ORGANIZE_IMPORTS);
     }
 
     @Override
@@ -100,26 +121,6 @@ public class Activator extends AbstractUIPlugin implements
         super.stop(context);
     }
 
-    /**
-     * Returns the shared instance
-     *
-     * @return the shared instance
-     */
-    public static Activator getDefault() {
-        return plugin;
-    }
-
-    /**
-     * Returns an image descriptor for the image file at the given plug-in
-     * relative path
-     *
-     * @param path the path
-     * @return the image descriptor
-     */
-    public static ImageDescriptor getImageDescriptor(String path) {
-        return imageDescriptorFromPlugin(PLUGIN_ID, path);
-    }
-
     @Override
     public void resourceChanged(IResourceChangeEvent evnt) {
         // this.event = evnt;
@@ -130,10 +131,6 @@ public class Activator extends AbstractUIPlugin implements
                 e.printStackTrace();
             }
         }
-    }
-
-    public static boolean organizeImports() {
-        return Activator.getDefault().getPreferenceStore().getBoolean(EvoSuitePreferencePage.ORGANIZE_IMPORTS);
     }
 
     @Override

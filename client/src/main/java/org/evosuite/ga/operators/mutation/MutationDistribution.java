@@ -27,22 +27,12 @@ import java.io.Serializable;
 
 public abstract class MutationDistribution implements Serializable {
 
-    private static final long serialVersionUID = -5800252656232641574L;
-
     /**
      * Constant <code>logger</code>
      */
     protected static final Logger logger = LoggerFactory.getLogger(MutationDistribution.class);
-
+    private static final long serialVersionUID = -5800252656232641574L;
     protected int sizeOfDistribution;
-
-    /**
-     * Check whether a particular chromosome is allowed to be mutated
-     *
-     * @param index
-     * @return true if mutation is allowed, false otherwise
-     */
-    public abstract boolean toMutate(int index);
 
     /**
      * Get mutation distribution defined in
@@ -62,4 +52,12 @@ public abstract class MutationDistribution implements Serializable {
                 return new BinomialMutation(sizeOfDistribution);
         }
     }
+
+    /**
+     * Check whether a particular chromosome is allowed to be mutated
+     *
+     * @param index
+     * @return true if mutation is allowed, false otherwise
+     */
+    public abstract boolean toMutate(int index);
 }

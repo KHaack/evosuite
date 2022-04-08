@@ -24,6 +24,8 @@ package com.examples.with.different.packagename.test;
  */
 public class ConcreteSubclass extends AbstractSuperclass {
 
+    public boolean fieldInConcreteClass = true;
+
     @Override
     public boolean getFoo() {
         return true;
@@ -32,6 +34,4 @@ public class ConcreteSubclass extends AbstractSuperclass {
     public boolean getBar() {
         return true;
     }
-
-    public boolean fieldInConcreteClass = true;
 }

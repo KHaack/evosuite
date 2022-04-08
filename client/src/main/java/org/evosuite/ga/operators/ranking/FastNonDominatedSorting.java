@@ -51,16 +51,14 @@ import java.util.*;
 public class FastNonDominatedSorting<T extends Chromosome<T>> implements RankingFunction<T> {
 
     private static final long serialVersionUID = -5649595833522859850L;
-
-    /**
-     * An array containing all the fronts found during the search
-     */
-    private List<T>[] ranking_;
-
     /**
      * Set used to store the goals that are covered from a population being sorted
      */
     private final Map<FitnessFunction<T>, T> newCoveredGoals = new LinkedHashMap<>();
+    /**
+     * An array containing all the fronts found during the search
+     */
+    private List<T>[] ranking_;
 
     @SuppressWarnings("unchecked")
     @Override

@@ -480,6 +480,15 @@ public abstract class GeneticAlgorithm<T extends Chromosome<T>> implements Searc
         return str.toString();
     }
 
+    /**
+     * Get currently used fitness function
+     *
+     * @return a {@link org.evosuite.ga.operators.selection.SelectionFunction}
+     * object.
+     */
+    public SelectionFunction<T> getSelectionFunction() {
+        return selectionFunction;
+    }
 
     /**
      * Set new fitness function (i.e., for new mutation)
@@ -493,13 +502,12 @@ public abstract class GeneticAlgorithm<T extends Chromosome<T>> implements Searc
     }
 
     /**
-     * Get currently used fitness function
+     * Get currently used ranking function (only used by MOO algorithms)
      *
-     * @return a {@link org.evosuite.ga.operators.selection.SelectionFunction}
-     * object.
+     * @return a {@link org.evosuite.ga.operators.ranking.RankingFunction} object
      */
-    public SelectionFunction<T> getSelectionFunction() {
-        return selectionFunction;
+    public RankingFunction<T> getRankingFunction() {
+        return this.rankingFunction;
     }
 
     /**
@@ -509,15 +517,6 @@ public abstract class GeneticAlgorithm<T extends Chromosome<T>> implements Searc
      */
     public void setRankingFunction(RankingFunction<T> function) {
         this.rankingFunction = function;
-    }
-
-    /**
-     * Get currently used ranking function (only used by MOO algorithms)
-     *
-     * @return a {@link org.evosuite.ga.operators.ranking.RankingFunction} object
-     */
-    public RankingFunction<T> getRankingFunction() {
-        return this.rankingFunction;
     }
 
     /**

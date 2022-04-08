@@ -42,10 +42,6 @@ public class CollectParameterTypesVisitor extends SignatureVisitor {
 
     private boolean topLevel = true;
 
-    public Set<Type> getClasses() {
-        return classes;
-    }
-
     /**
      * @param className
      */
@@ -53,6 +49,10 @@ public class CollectParameterTypesVisitor extends SignatureVisitor {
         super(Opcodes.ASM9);
         this.className = className;
         logger.debug("Target class name: " + className);
+    }
+
+    public Set<Type> getClasses() {
+        return classes;
     }
 
     @Override

@@ -21,6 +21,897 @@ package com.examples.with.different.packagename.concolic;
 
 public class TP1 implements TPInterface4, TPInterface2 {
 
+    public static int TP1method1(int var0, int var1, int var2, int var3, int var4, int var5, int var6, int var7,
+                                 int var8, int var9) {
+        for (int i = 0; i < 8; i++) {
+            if (((var0 - var5) > (var6 + var3))) {
+                if ((((var3 + var4) - (var5 * var9)) >= (var2 / 485))) {
+                    if (((var1 + var4) > (var1 * var0))) {
+                        TP1method19(var0, var1, var6, var1, var1, var6, var0, var8, var9, var3, var2, var1, var9, var8);
+                    }
+                }
+            }
+        }
+        switch ((var4 + var8)) {
+            case 0:
+                TP1method17(var6, var3, var5, var3, var1, var3, var0);
+                break;
+            case 1:
+                var1 = TP1method10(var7, var9, var4, var8, var0, var2, var4);
+                break;
+            case 2:
+                System.out.println("TP1 - TP1method1- LineInMethod: 17");
+                break;
+            default:
+                TP1method11(var6, var7, var9, var3, var8, var3, var8);
+        }
+        switch ((var3 - 275)) {
+            case 0:
+                TP1method7(var3, var9, var9, var3, var7, var5, var9, var9, var2, var6, var6);
+                break;
+            case 1:
+                var6 = TP1method7(var7, var3, var6, var5, var0, var1, var3, var2, var8, var1, var9);
+                break;
+            case 2:
+                var2 = (((var2 - var8) % 221) * (((var0 + var5) + (var2 / 34)) % 364))
+                        + (var6 - var3);
+                break;
+            case 3:
+                var3 = (var4 + var3) - (((var9 * var2) - (var3 + var4)) * ((var4 - 45) - (var0 * var5)));
+                break;
+            case 4:
+                var9 = TP1method11(var0, var5, var1, var2, var9, var7, var5);
+                break;
+            case 5:
+                var5 = (var1 - var6) + (var5 + var4);
+                break;
+            case 6:
+                TP1method9(var2, var5, var6, var1, var9, var4, var8);
+                break;
+            default:
+                System.out.println("TP1 - TP1method1- LineInMethod: 44");
+        }
+        return var0;
+
+    }
+
+    public static int TP1method3(int var0, int var1, int var2, int var3, int var4, int var5, int var6, int var7,
+                                 int var8, int var9) {
+        for (int i = 0; i < 11; i++) {
+            if ((((var9 + var3) - (var1 - var0)) > (var2 - var7))) {
+                TP1method22(var7, var0, var6, var6, var6, var0, var3, var3, var8);
+            }
+        }
+        if (((var3 + var9) != (var7 * var9))) {
+            if ((((var0 + var9) < ((var5 + var4) - (var6 / 482))) || ((var9 + var4) >= (var8 / 30)))) {
+                TP1method9(var2, var1, var9, var8, var6, var3, var8);
+            }
+        }
+        if (((var7 + var6) >= ((var5 + var0) + ((var8 - var6) - (var6 * var2))))) {
+            if ((((var7 + var0) >= (var8 + var7)) && ((var4 - var5) < (var9 - var1)))) {
+                TP1method24(var3, var7, var5, var9, var5, var2, var5, var4);
+            }
+        }
+        for (int i = 0; i < 12; i++) {
+            var5 = var8 / 170;
+        }
+        if (((var9 - var6) >= (var7 * var3))) {
+            System.out.println("TP1 - TP1method3- LineInMethod: 20");
+        }
+        for (int i = 0; i < 8; i++) {
+            if ((((var1 - var2) > ((var9 % 421) - (var1 * 290))) && ((var6 - var9) >= (var4 + var1)))) {
+                if (((var9 - var8) >= (var4 + var8))) {
+                    var9 = TP1method14(var3, var7, var2, var0, var5, var4, var8);
+                }
+            }
+        }
+        return var8;
+
+    }
+
+    public static int TP1method5(int var0, int var1, int var2, int var3, int var4, int var5, int var6) {
+        if (((((var4 % 183) != (var4 + var1)) && ((var3 - var5) < (var5 / 429)))
+                && ((var3 * 223) >= (((var5 - var2) % 23) + (var1 - var3))))) {
+            if (((var0 - var2) == (var5 - var6))) {
+                var6 = var3 % 262;
+            }
+        }
+        if (((var6 - var5) != (var0 * var4))) {
+            if ((((var6 + var3) >= (var3 + var4))
+                    && (((var0 * var2) < (var0 + var2)) && ((var6 * var1) != (var1 - var6))))) {
+                TP1method16(var2, var6, var4, var6, var5, var4, var5, var4, var2, var3, var6, var5, var5, var5);
+            }
+        }
+        switch ((var0 * 422)) {
+            case 0:
+                var4 = TP1method9(var0, var2, var6, var3, var1, var5, var4);
+                break;
+            case 1:
+                System.out.println("TP1 - TP1method5- LineInMethod: 15");
+                break;
+            case 2:
+                var2 = var1 - var2;
+                break;
+            case 3:
+                TP1method11(var0, var6, var3, var4, var2, var4, var4);
+                break;
+            default:
+                var6 = ((((var1 + var3) * (var3 / 86)) + (var5 * var1))
+                        + ((var0 - 166) / 408)) % 219;
+        }
+        switch ((var6 - var0)) {
+            case 0:
+                System.out.println("TP1 - TP1method5- LineInMethod: 30");
+                break;
+            case 1:
+                var3 = TP1method8(var5, var4, var4, var5, var2, var0, var0);
+                break;
+            case 2:
+                System.out.println("TP1 - TP1method5- LineInMethod: 38");
+                break;
+            case 3:
+                var1 = (var0 + var4) * (var2 / 384);
+                break;
+            default:
+                var0 = 378;
+        }
+        return var3;
+
+    }
+
+    public static int TP1method7(int var0, int var1, int var2, int var3, int var4, int var5, int var6, int var7,
+                                 int var8, int var9, int var10) {
+        for (int i = 0; i < 9; i++) {
+            if (((var7 * var4) == ((var8 - var3) + (((var3 % 79) % 337) * (var8 / 340))))) {
+                if (((var1 / 459) >= (var0 * var2))) {
+                    if (((((((var0 + var2) - ((var1 - var5) / 138)) + ((var1 * var10) - (var7 - var9)))
+                            - (var0 * var5)) - (var6 * var9)) <= (var2 - var0))) {
+                        if (((var3 * var5) <= (var4 % 29))) {
+                            if (((var1 % 22) == (var2 * var9))) {
+                                var2 = TP1method10(var3, var6, var8, var2, var6, var1, var0);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        for (int i = 0; i < 1; i++) {
+            var5 = (var7 % 428) - (var0 / 400);
+        }
+        switch ((var2 % 354)) {
+            case 0:
+                var10 = (var2 / 3) * (var6 + var2);
+                break;
+            case 1:
+                var8 = ((var9 - var1) - (var7 * var8)) % 417;
+                break;
+            case 2:
+                System.out.println("TP1 - TP1method7- LineInMethod: 24");
+                break;
+            case 3:
+                TP1method22(var1, var5, var2, var9, var7, var5, var1, var7, var3);
+                break;
+            case 4:
+                System.out.println("TP1 - TP1method7- LineInMethod: 33");
+                break;
+            case 5:
+                var1 = 120;
+                break;
+            case 6:
+                TP1method25(var8, var7, var6, var6, var4, var4, var4);
+                break;
+            case 7:
+                var6 = (var4 + var7) % 220;
+                break;
+            default:
+                System.out.println("TP1 - TP1method7- LineInMethod: 45");
+        }
+        return var5;
+
+    }
+
+    public static int TP1method8(int var0, int var1, int var2, int var3, int var4, int var5, int var6) {
+        if (((var1 * var5) >= (var2 % 292))) {
+            var2 = TP1method11(var6, var2, var1, var3, var1, var6, var3);
+        } else {
+            TP1method22(var3, var3, var1, var0, var6, var2, var6, var4, var2);
+        }
+        for (int i = 0; i < 7; i++) {
+            System.out.println("TP1 - TP1method8- LineInMethod: 8");
+        }
+        if ((((var2 - var0) != (var4 - 182)) && (((var4 * var2) * (var6 - var3)) >= (var2 * 245)))) {
+            System.out.println("TP1 - TP1method8- LineInMethod: 15");
+        } else {
+            System.out.println("TP1 - TP1method8- LineInMethod: 18");
+        }
+        for (int i = 0; i < 14; i++) {
+            System.out.println("TP1 - TP1method8- LineInMethod: 26");
+        }
+        switch ((var6 - 180)) {
+            case 0:
+                TP1method11(var2, var4, var2, var6, var6, var5, var1);
+                break;
+            case 1:
+                var1 = (var3 + var4)
+                        + ((((((var2 - var4) - (((var1 - var4) % 251) / 365)) + (var0 * var3))
+                        / 270) - (var5 * var2)) + ((var1 + var2) - (var2 / 146)));
+                break;
+            case 2:
+                var2 = (var1 + var2) + (var6 + var5);
+                break;
+            case 3:
+                var1 = var5 % 63;
+                break;
+            case 4:
+                System.out.println("TP1 - TP1method8- LineInMethod: 42");
+                break;
+            case 5:
+                var3 = (var2 * var4) - (var2 * var4);
+                break;
+            case 6:
+                var4 = ((var6 + var5) % 306) + (var0 % 365);
+                break;
+            case 7:
+                TP1method20(var0, var0, var5, var4, var0, var6, var2, var6, var6, var1, var6, var3);
+                break;
+            case 8:
+                System.out.println("TP1 - TP1method8- LineInMethod: 58");
+                break;
+            default:
+                System.out.println("TP1 - TP1method8- LineInMethod: 61");
+        }
+        return var0;
+
+    }
+
+    public static int TP1method9(int var0, int var1, int var2, int var3, int var4, int var5, int var6) {
+        for (int i = 0; i < 11; i++) {
+            if ((((var2 % 495) % 325) < (var5 % 382))) {
+                var0 = ((var1 - 284) / 213) - (var1 * 120);
+            }
+        }
+        if (((var2 - var1) >= ((var3 - var1) + (var1 * var3)))) {
+            if (((var6 + var4) != (var1 - var5))) {
+                if (((var2 - var0) >= ((var1 - var3) % 396))) {
+                    if (((((var2 * var0) > (var4 - var2)) && ((var3 + var4) >= (var2 / 299)))
+                            || ((var1 + var2) != (var2 + var5)))) {
+                        if ((((var6 * var4) * ((var5 * var3) % 12)) >= (var4 + var3))) {
+                            var3 = (var1 / 176) + (var3 + var1);
+                        }
+                    }
+                }
+            }
+        }
+        if (((var4 - 442) < ((var5 / 150) * ((var2 * var0) - (var4 / 130))))) {
+            var1 = (var0 * var3) + (var0 * var6);
+        }
+        if (((var5 + var4) == (var2 * var6))) {
+            var2 = 414;
+        } else {
+            var0 = (var5 - var3) + (var5 + var3);
+        }
+        if (((((var5 % 160) * (var3 + var1)) < (var3 % 433)) && ((var5 + var0) >= (var3 + var1)))) {
+            var4 = (var3 - var6) + (var6 - 453);
+        } else {
+            System.out.println("TP1 - TP1method9- LineInMethod: 29");
+        }
+        return var6;
+
+    }
+
+    public static int TP1method10(int var0, int var1, int var2, int var3, int var4, int var5, int var6) {
+        for (int i = 0; i < 10; i++) {
+            if ((((var3 * var1) - (var3 + var1)) != (var0 * var4))) {
+                if (((var3 * var1) > ((var5 - var4) % 268))) {
+                    if (((var3 - 292) >= (var0 - var5))) {
+                        var5 = (var5 + var6) * (var2 * var1);
+                    }
+                }
+            }
+        }
+        for (int i = 0; i < 6; i++) {
+            if ((((var3 / 155) - (var6 * var5)) == ((var2 % 464) - (var3 * var1)))) {
+                System.out.println("TP1 - TP1method10- LineInMethod: 13");
+            }
+        }
+        if (((((var6 + var3) - (var5 * var1)) + (var1 + var2)) > (var3 / 390))) {
+            if (((var2 % 160) < (var2 * var3))) {
+                var1 = (var4 / 15) + (var1 + var5);
+            }
+        }
+        if ((((var2 % 16) == ((var5 - var6) + (var2 / 308)))
+                && (((((var3 + 433) <= (var0 - 321)) || ((var2 - var5) < (var6 % 203)))
+                && ((var3 - var2) <= (var1 / 46)))
+                && (((var1 % 282) <= (var1 * var3)) && ((var1 * var3) >= (var5 * var0)))))) {
+            System.out.println("TP1 - TP1method10- LineInMethod: 27");
+        } else {
+            var2 = (var5 - var4) - (var0 + var3);
+        }
+        if (((var0 - var5) != (var5 / 207))) {
+            System.out.println("TP1 - TP1method10- LineInMethod: 34");
+        } else {
+            var6 = (var3 / 238) * (var1 + var0);
+        }
+        return var5;
+
+    }
+
+    public static int TP1method11(int var0, int var1, int var2, int var3, int var4, int var5, int var6) {
+        switch ((var4 + 106)) {
+            case 0:
+                System.out.println("TP1 - TP1method11- LineInMethod: 2");
+                break;
+            case 1:
+                var0 = (var2 + 352) * (var6 - var3);
+                break;
+            case 2:
+                var0 = (var5 - var1) * (var3 + var1);
+                break;
+            case 3:
+                System.out.println("TP1 - TP1method11- LineInMethod: 12");
+                break;
+            case 4:
+                var4 = (var1 - var4) * (var3 * var1);
+                break;
+            default:
+                var1 = TP1method12(var6, var2, var5, var1, var6, var5, var3);
+        }
+        switch ((var0 / 238)) {
+            case 0:
+                TP1method24(var0, var2, var2, var3, var1, var4, var3, var4);
+                break;
+            case 1:
+                var3 = var5 * var3;
+                break;
+            case 2:
+                TP1method14(var6, var5, var6, var5, var0, var5, var2);
+                break;
+            case 3:
+                System.out.println("TP1 - TP1method11- LineInMethod: 33");
+                break;
+            case 4:
+                var6 = TP1method18(var0, var4, var0, var4, var0, var5, var6, var6, var3, var5, var1, var4);
+                break;
+            case 5:
+                var1 = 339;
+                break;
+            case 6:
+                var5 = (var1 - var2) - (var6 - var1);
+                break;
+            default:
+                var2 = (var3 - var5) + (var3 - var1);
+        }
+        return var3;
+
+    }
+
+    public static int TP1method12(int var0, int var1, int var2, int var3, int var4, int var5, int var6) {
+        for (int i = 0; i < 4; i++) {
+            System.out.println("TP1 - TP1method12- LineInMethod: 2");
+        }
+        if (((var2 + var6) <= (var6 + var1))) {
+            if (((var5 * var6) != (var0 + var4))) {
+                if (((var3 - var2) <= (var3 % 217))) {
+                    if (((var4 + var1) == ((var0 % 277) * (var3 + var2)))) {
+                        if (((var6 * var4) != (var0 + var5))) {
+                            var5 = (var0 + var4) * (var0 % 265);
+                        }
+                    }
+                }
+            }
+        }
+        for (int i = 0; i < 11; i++) {
+            System.out.println("TP1 - TP1method12- LineInMethod: 20");
+        }
+        if (((var0 + var5) != (var3 + 17))) {
+            if (((var4 - var6) > (var4 % 42))) {
+                if ((((var2 + var4) / 183) < (var6 * var4))) {
+                    var2 = (var0 - var6) / 159;
+                }
+            }
+        }
+        for (int i = 0; i < 1; i++) {
+            var6 = (var1 - var2) * ((var0 - 16) * (var3 + var1));
+        }
+        return var2;
+
+    }
+
+    public static int TP1method14(int var0, int var1, int var2, int var3, int var4, int var5, int var6) {
+        if (((var5 / 39) != (var1 - var2))) {
+            System.out.println("TP1 - TP1method14- LineInMethod: 4");
+        } else {
+            System.out.println("TP1 - TP1method14- LineInMethod: 7");
+        }
+        if (((var1 + var3) > (var6 % 43))) {
+            var3 = (var2 + var4) - (var0 % 480);
+        } else {
+            System.out.println("TP1 - TP1method14- LineInMethod: 13");
+        }
+        for (int i = 0; i < 14; i++) {
+            System.out.println("TP1 - TP1method14- LineInMethod: 19");
+        }
+        if ((((var0 * var2) / 121) < (var4 * 168))) {
+            System.out.println("TP1 - TP1method14- LineInMethod: 26");
+        } else {
+            var6 = (var2 + var4) - (var6 * var4);
+        }
+        for (int i = 0; i < 0; i++) {
+            if (((((var3 / 78) == (var0 * var6))
+                    && (((var1 / 483) - (var5 / 326)) <= (var5 - 9)))
+                    || ((var4 % 440) != (var2 + var1)))) {
+                if ((((var5 - var3) <= (((var0 * var3) * (var5 % 496)) - (var3 * var2)))
+                        && (((var3 * var2) == (var4 - 251)) && ((var3 * var2) > (var2 % 356))))) {
+                    var6 = (var1 * 124) - (var4 / 262);
+                }
+            }
+        }
+        return var4;
+
+    }
+
+    public static int TP1method16(int var0, int var1, int var2, int var3, int var4, int var5, int var6, int var7,
+                                  int var8, int var9, int var10, int var11, int var12, int var13) {
+        for (int i = 0; i < 9; i++) {
+            if (((var1 + var7) != (var11 / 260))) {
+                System.out.println("TP1 - TP1method16- LineInMethod: 4");
+            }
+        }
+        switch ((var13 % 133)) {
+            case 0:
+                var10 = 327;
+                break;
+            case 1:
+                var3 = (var6 - var1) * (var3 % 439);
+                break;
+            case 2:
+                var6 = var10 % 25;
+                break;
+            case 3:
+                var1 = (var12 - var8) % 69;
+                break;
+            case 4:
+                var10 = var0 / 367;
+                break;
+            case 5:
+                var12 = (var13 - var10) * (var3 * var11);
+                break;
+            case 6:
+                TP1method22(var0, var10, var2, var8, var13, var8, var1, var7, var12);
+                break;
+            case 7:
+                var2 = 329;
+                break;
+            default:
+                var0 = (var13 - var0) - (var9 * var1);
+        }
+        return var10;
+
+    }
+
+    public static int TP1method17(int var0, int var1, int var2, int var3, int var4, int var5, int var6) {
+        switch ((var2 / 315)) {
+            case 0:
+                TP1method25(var3, var1, var3, var6, var4, var1, var6);
+                break;
+            case 1:
+                var1 = 210;
+                break;
+            case 2:
+                TP1method25(var6, var5, var1, var2, var6, var2, var5);
+                break;
+            case 3:
+                var0 = (((var2 / 174) + (var3 * var1)) - ((var1 * var0) * (var3 * var4)))
+                        + (var3 + 496);
+                break;
+            case 4:
+                System.out.println("TP1 - TP1method17- LineInMethod: 13");
+                break;
+            case 5:
+                System.out.println("TP1 - TP1method17- LineInMethod: 20");
+                break;
+            case 6:
+                var3 = TP1method19(var4, var4, var1, var0, var3, var0, var6, var2, var6, var5, var1, var4, var2, var0);
+                break;
+            default:
+                var0 = (var6 * var4) - ((var0 / 357) - (var4 + var6));
+        }
+        return var1;
+
+    }
+
+    public static int TP1method18(int var0, int var1, int var2, int var3, int var4, int var5, int var6, int var7,
+                                  int var8, int var9, int var10, int var11) {
+        switch ((var3 * 227)) {
+            case 0:
+                System.out.println("TP1 - TP1method18- LineInMethod: 2");
+                break;
+            case 1:
+                var6 = (var6 - var2) + (var9 + var3);
+                break;
+            case 2:
+                var9 = var2 * 162;
+                break;
+            case 3:
+                var6 = (var7 / 422) * (var3 % 10);
+                break;
+            default:
+                var10 = 14;
+        }
+        if (((var1 * var10) == (var4 - var1))) {
+            var6 = (var4 % 223) / 257;
+        }
+        switch ((var7 + var5)) {
+            case 0:
+                System.out.println("TP1 - TP1method18- LineInMethod: 21");
+                break;
+            case 1:
+                var8 = (var4 * var3) - (var11 / 359);
+                break;
+            case 2:
+                var0 = (var4 / 456) / 71;
+                break;
+            default:
+                TP1method23(var4, var1, var8, var6, var0, var11, var0, var4, var8, var3, var1, var8);
+        }
+        return var6;
+
+    }
+
+    public static int TP1method19(int var0, int var1, int var2, int var3, int var4, int var5, int var6, int var7,
+                                  int var8, int var9, int var10, int var11, int var12, int var13) {
+        for (int i = 0; i < 4; i++) {
+            if (((var7 + var5) <= ((var10 % 472) - ((var0 + 203) * (var2 + var9))))) {
+                var7 = (var5 * var3) + (var9 - 47);
+            }
+        }
+        if (((var5 - var10) > (var2 * var0))) {
+            var11 = (var13 - var10) * (var1 - var7);
+        }
+        if (((((var3 + var7) - (var12 * var13)) - (var8 * var1)) > (var0 + 131))) {
+            if ((((var12 + 131) > (var12 + var6)) && ((var12 / 109) != (var7 - var0)))) {
+                if (((var7 + var0) >= (var0 * var4))) {
+                    if (((var9 / 70) != (var11 - var12))) {
+                        var9 = (var1 * var10) / 278;
+                    }
+                }
+            }
+        }
+        if (((var1 + var8) >= (var7 + var9))) {
+            var8 = (var9 + var6) / 119;
+        } else {
+            System.out.println("TP1 - TP1method19- LineInMethod: 22");
+        }
+        for (int i = 0; i < 12; i++) {
+            if (((var4 + var7) > (var8 - var2))) {
+                if (((var1 / 63) < (var3 * var12))) {
+                    if (((var4 - var5) != (var5 + var2))) {
+                        var9 = (var11 * var0) + (var6 - var7);
+                    }
+                }
+            }
+        }
+        return var10;
+
+    }
+
+    public static int TP1method20(int var0, int var1, int var2, int var3, int var4, int var5, int var6, int var7,
+                                  int var8, int var9, int var10, int var11) {
+        if ((((var8 + var2) - (var9 * var0)) <= ((var9 % 70) + (var1 + var11)))) {
+            System.out.println("TP1 - TP1method20- LineInMethod: 4");
+        } else {
+            var9 = var3 + 303;
+        }
+        switch ((var0 + 55)) {
+            case 0:
+                var10 = (var8 + var3) - (var6 - var0);
+                break;
+            case 1:
+                var3 = ((var1 - var4) % 3) - (var5 * var8);
+                break;
+            case 2:
+                var11 = (var3 + var11) - (var8 / 13);
+                break;
+            case 3:
+                var5 = ((var5 % 194) / 368) / 45;
+                break;
+            case 4:
+                System.out.println("TP1 - TP1method20- LineInMethod: 22");
+                break;
+            case 5:
+                var11 = 93;
+                break;
+            case 6:
+                System.out.println("TP1 - TP1method20- LineInMethod: 28");
+                break;
+            case 7:
+                var2 = (var0 / 487) * (var4 * var11);
+                break;
+            case 8:
+                System.out.println("TP1 - TP1method20- LineInMethod: 36");
+                break;
+            default:
+                System.out.println("TP1 - TP1method20- LineInMethod: 42");
+        }
+        return var3;
+
+    }
+
+    public static int TP1method22(int var0, int var1, int var2, int var3, int var4, int var5, int var6, int var7,
+                                  int var8) {
+        if (((var0 * var4) == ((var7 * var0) / 429))) {
+            var2 = (var7 + var8)
+                    + ((var8 % 392) - ((((var8 * 340) / 156) - (var1 * var4)) % 444));
+        } else {
+            System.out.println("TP1 - TP1method22- LineInMethod: 5");
+        }
+        if ((((var8 + var3) * (var2 + var1)) != (var4 + var6))) {
+            var6 = 224;
+        } else {
+            System.out.println("TP1 - TP1method22- LineInMethod: 11");
+        }
+        if (((var8 + var2) == (var0 * var8))) {
+            var0 = 454;
+        } else {
+            var4 = TP1method25(var8, var8, var8, var2, var4, var2, var3);
+        }
+        for (int i = 0; i < 8; i++) {
+            var6 = 446;
+        }
+        switch ((var8 * 247)) {
+            case 0:
+                var4 = var6 - var1;
+                break;
+            case 1:
+                var7 = (var2 + 319) % 331;
+                break;
+            case 2:
+                System.out.println("TP1 - TP1method22- LineInMethod: 31");
+                break;
+            case 3:
+                System.out.println("TP1 - TP1method22- LineInMethod: 34");
+                break;
+            default:
+                System.out.println("TP1 - TP1method22- LineInMethod: 39");
+        }
+        return var0;
+
+    }
+
+    public static int TP1method23(int var0, int var1, int var2, int var3, int var4, int var5, int var6, int var7,
+                                  int var8, int var9, int var10, int var11) {
+        switch ((var5 * var0)) {
+            case 0:
+                var1 = 94;
+                break;
+            case 1:
+                System.out.println("TP1 - TP1method23- LineInMethod: 4");
+                break;
+            case 2:
+                var9 = 81;
+                break;
+            case 3:
+                System.out.println("TP1 - TP1method23- LineInMethod: 10");
+                break;
+            case 4:
+                System.out.println("TP1 - TP1method23- LineInMethod: 15");
+                break;
+            case 5:
+                System.out.println("TP1 - TP1method23- LineInMethod: 21");
+                break;
+            case 6:
+                var1 = ((var8 - var5) + (var3 + var8)) - ((var5 - var2) / 37);
+                break;
+            case 7:
+                var11 = (var5 + var3) % 218;
+                break;
+            default:
+                System.out.println("TP1 - TP1method23- LineInMethod: 30");
+        }
+        return var8;
+
+    }
+
+    public static int TP1method24(int var0, int var1, int var2, int var3, int var4, int var5, int var6, int var7) {
+        for (int i = 0; i < 5; i++) {
+            System.out.println("TP1 - TP1method24- LineInMethod: 2");
+        }
+        if ((((var0 + var7) + (var0 - var3)) <= (var3 - 377))) {
+            if ((((var2 + var5) + (var6 % 23)) < ((var3 - var2) - (var3 * var6)))) {
+                if (((((((var7 - var6) % 299) + (var4 - var3)) + (var6 % 126)) + (var2 - var3)) >= (var7
+                        - var6))) {
+                    if (((var3 % 366) == (var0 * var7))) {
+                        if (((var5 - 499) != (var7 - var3))) {
+                            if (((var4 * var3) <= (var4 + var7))) {
+                                var4 = 153;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        switch (((var4 * 292) * (var0 - 163))) {
+            case 0:
+                TP1method25(var0, var4, var2, var6, var5, var0, var2);
+                break;
+            case 1:
+                var6 = (var5 / 374) * (var0 / 217);
+                break;
+            case 2:
+                var5 = (var1 - var6) * (var4 - var0);
+                break;
+            case 3:
+                var4 = (var5 / 101) + (var2 % 13);
+                break;
+            case 4:
+                var0 = var1 % 136;
+                break;
+            case 5:
+                System.out.println("TP1 - TP1method24- LineInMethod: 32");
+                break;
+            case 6:
+                System.out.println("TP1 - TP1method24- LineInMethod: 37");
+                break;
+            default:
+                System.out.println("TP1 - TP1method24- LineInMethod: 44");
+        }
+        return var4;
+
+    }
+
+    public static int TP1method25(int var0, int var1, int var2, int var3, int var4, int var5, int var6) {
+        for (int i = 0; i < 12; i++) {
+            if (((var4 / 283) == (var0 + var5))) {
+                System.out.println("TP1 - TP1method25- LineInMethod: 4");
+            }
+        }
+        for (int i = 0; i < 8; i++) {
+            var3 = 240;
+        }
+        for (int i = 0; i < 1; i++) {
+            System.out.println("TP1 - TP1method25- LineInMethod: 9");
+        }
+        if ((((var0 - var3) - (var6 - var4)) >= (var2 - 415))) {
+            System.out.println("TP1 - TP1method25- LineInMethod: 12");
+        }
+        if (((var2 % 141) != (var4 % 258))) {
+            var3 = (var1 + var6) - (var6 % 180);
+        } else {
+            var4 = (var1 % 205)
+                    - ((var5 % 70) - (((var4 * var2) * (var6 * 244)) - (var5 * var3)));
+        }
+        if (((var1 - var0) > (var3 * var0))) {
+            var5 = ((var0 - var5) / 376) - (var5 + var4);
+        } else {
+            var2 = (var6 * var2) + (var6 - var1);
+        }
+        for (int i = 0; i < 13; i++) {
+            var3 = (var5 % 392) % 156;
+        }
+        return var2;
+
+    }
+
+    public static void main(String[] args) {
+        TP1 obj = new TP1();
+        obj.TPInterface4Method0(393, 344, 61, 24, 124, 70, 460);
+        obj.TPInterface4Method1(226, 401, 346, 447, 350, 325,
+                118, 449, 302);
+        obj.TPInterface4Method2(295, 131, 440, 234, 461, 265,
+                26, 373);
+        obj.TPInterface4Method3(187, 189, 148, 58, 265, 425,
+                493, 280, 59, 135);
+        obj.TPInterface4Method4(253, 29, 417, 376, 396, 355,
+                391, 336, 71, 305, 405, 350);
+        obj.TPInterface4Method5(337, 307, 142, 486, 392, 108,
+                294);
+        obj.TPInterface4Method6(15, 13, 395, 306, 100, 27, 145);
+        obj.TPInterface2Method0(183, 210, 466, 185, 412, 357,
+                477, 59);
+        obj.TPInterface2Method1(362, 5, 229, 297, 294, 363, 209,
+                60);
+        obj.TPInterface2Method2(7, 325, 447, 240, 95, 127, 282,
+                210, 110, 479, 488);
+        obj.TPInterface2Method3(214, 228, 173, 118, 465, 56,
+                343);
+        obj.TPInterface2Method4(448, 281, 68, 73, 131, 154, 276,
+                161, 279);
+        obj.TPInterface2Method5(391, 11, 421, 171, 239, 315,
+                109);
+        obj.TPInterface2Method6(333, 151, 126, 89, 39, 484,
+                289);
+        obj.TP1method0(18, 213, 141, 181, 131, 312, 202,
+                378);
+        TP1method1(99, 333, 453, 487, 305, 67, 261, 172,
+                212, 499);
+        obj.TP1method2(91, 487, 359, 128, 87, 226, 126);
+        TP1method3(412, 435, 323, 286, 214, 173, 204,
+                273, 319, 272);
+        obj.TP1method4(472, 118, 28, 346, 210, 427, 26,
+                412, 128, 303, 421, 58, 248, 28);
+        TP1method5(171, 268, 486, 228, 237, 445, 78);
+        obj.TP1method6(95, 307, 400, 284, 219, 315, 296);
+        TP1method7(37, 48, 490, 67, 315, 221, 85, 472,
+                389, 295, 480);
+        TP1method8(373, 37, 132, 360, 475, 161, 4);
+        TP1method9(37, 158, 27, 166, 4, 142, 251);
+        TP1method10(99, 115, 3, 119, 481, 239, 299);
+        TP1method11(461, 394, 486, 348, 239, 403, 146);
+        TP1method12(180, 465, 155, 314, 1, 273, 441);
+        obj.TP1method13(224, 98, 283, 87, 400, 496, 34);
+        TP1method14(150, 25, 103, 289, 407, 196, 129);
+        obj.TP1method15(313, 489, 468, 380, 170, 1, 434,
+                188, 53, 411, 101, 320, 380);
+        TP1method16(332, 269, 54, 51, 71, 467, 63, 376,
+                95, 471, 430, 26, 399, 1);
+        TP1method17(239, 376, 203, 394, 126, 22, 212);
+        TP1method18(496, 415, 129, 315, 56, 75, 166,
+                339, 25, 97, 20, 143);
+        TP1method19(52, 405, 83, 268, 98, 478, 164, 405,
+                406, 444, 23, 446, 67, 204);
+        TP1method20(90, 308, 393, 488, 445, 383, 227,
+                228, 230, 486, 346, 119);
+        obj.TP1method21(40, 162, 6, 254, 445, 36, 103);
+        TP1method22(174, 329, 291, 481, 2, 395, 356,
+                422, 422);
+        TP1method23(447, 352, 119, 139, 268, 417, 454,
+                459, 480, 393, 163, 5);
+        TP1method24(276, 72, 267, 145, 168, 81, 349,
+                62);
+        TP1method25(125, 151, 282, 6, 364, 218, 10);
+        obj.TP1method26(228, 288, 431, 270, 107, 128, 186,
+                363, 200, 364, 201, 477);
+        obj.TP1method27(42, 433, 369, 17, 152, 278, 261,
+                115, 153, 408, 103, 440);
+    }
+
+    public static void singleEntry(int i0, int i1, int i2, int i3, int i4, int i5, int i6, int i7, int i8, int i9,
+                                   int i10, int i11, int i12, int i13, int i14) {
+        TP1 obj = new TP1();
+        obj.TPInterface4Method0(i12, i5, i9, i13, i7, i3, i10);
+        obj.TPInterface4Method1(i9, i1, i6, i14, i5, i10, i8, i7, i3);
+        obj.TPInterface4Method2(i13, i8, i12, i5, i6, i2, i9, i4);
+        obj.TPInterface4Method3(i3, i11, i9, i5, i8, i6, i2, i1, i4, i7);
+        obj.TPInterface4Method4(i13, i11, i0, i8, i2, i9, i14, i1, i6, i4, i7, i5);
+        obj.TPInterface4Method5(i5, i13, i0, i4, i8, i3, i7);
+        obj.TPInterface4Method6(i2, i14, i5, i8, i13, i1, i12);
+        obj.TPInterface2Method0(i2, i6, i14, i7, i3, i11, i8, i10);
+        obj.TPInterface2Method1(i10, i9, i12, i1, i2, i8, i11, i4);
+        obj.TPInterface2Method2(i9, i2, i12, i7, i5, i6, i10, i13, i11, i8, i1);
+        obj.TPInterface2Method3(i6, i2, i4, i13, i0, i3, i14);
+        obj.TPInterface2Method4(i1, i9, i8, i11, i2, i14, i0, i5, i13);
+        obj.TPInterface2Method5(i8, i3, i2, i9, i11, i14, i0);
+        obj.TPInterface2Method6(i8, i9, i13, i4, i5, i2, i6);
+        obj.TP1method0(i2, i8, i6, i13, i3, i12, i9, i11);
+        TP1method1(i3, i0, i8, i13, i9, i4, i5, i6, i7, i14);
+        obj.TP1method2(i1, i8, i11, i2, i0, i7, i10);
+        TP1method3(i12, i1, i4, i5, i13, i7, i10, i11, i0, i14);
+        obj.TP1method4(i9, i5, i11, i10, i14, i0, i13, i6, i4, i1, i12, i8, i3, i2);
+        TP1method5(i3, i7, i13, i9, i0, i6, i4);
+        obj.TP1method6(i5, i9, i13, i2, i1, i14, i12);
+        TP1method7(i2, i6, i12, i4, i10, i7, i13, i14, i9, i8, i11);
+        TP1method8(i9, i4, i6, i8, i11, i0, i5);
+        TP1method9(i8, i9, i7, i4, i12, i13, i1);
+        TP1method10(i5, i4, i9, i14, i12, i13, i3);
+        TP1method11(i1, i4, i2, i6, i14, i5, i11);
+        TP1method12(i14, i3, i1, i13, i8, i11, i7);
+        obj.TP1method13(i10, i2, i14, i3, i4, i1, i13);
+        TP1method14(i14, i3, i13, i10, i0, i8, i6);
+        obj.TP1method15(i4, i11, i3, i9, i6, i2, i1, i7, i8, i14, i10, i13, i5);
+        TP1method16(i6, i9, i8, i12, i5, i3, i2, i7, i13, i14, i10, i11, i1, i0);
+        TP1method17(i1, i4, i0, i2, i5, i11, i6);
+        TP1method18(i12, i5, i2, i6, i9, i3, i14, i8, i11, i0, i4, i7);
+        TP1method19(i1, i0, i14, i5, i7, i10, i8, i4, i3, i11, i12, i13, i6, i2);
+        TP1method20(i3, i5, i4, i14, i9, i6, i11, i2, i1, i12, i13, i8);
+        obj.TP1method21(i1, i5, i12, i8, i6, i13, i2);
+        TP1method22(i11, i9, i10, i4, i7, i1, i0, i3, i13);
+        TP1method23(i5, i1, i9, i13, i10, i3, i6, i14, i2, i12, i0, i8);
+        TP1method24(i11, i7, i13, i5, i1, i12, i6, i10);
+        TP1method25(i10, i5, i7, i12, i8, i13, i14);
+        obj.TP1method26(i14, i0, i11, i9, i8, i2, i6, i5, i1, i4, i7, i3);
+        obj.TP1method27(i11, i2, i9, i4, i6, i12, i10, i8, i14, i7, i1, i5);
+    }
+
     public int TPInterface4Method0(int var0, int var1, int var2, int var3, int var4, int var5, int var6) {
         for (int i = 0; i < 13; i++) {
             var1 = var2 + var1;
@@ -648,60 +1539,6 @@ public class TP1 implements TPInterface4, TPInterface2 {
 
     }
 
-    public static int TP1method1(int var0, int var1, int var2, int var3, int var4, int var5, int var6, int var7,
-                                 int var8, int var9) {
-        for (int i = 0; i < 8; i++) {
-            if (((var0 - var5) > (var6 + var3))) {
-                if ((((var3 + var4) - (var5 * var9)) >= (var2 / 485))) {
-                    if (((var1 + var4) > (var1 * var0))) {
-                        TP1method19(var0, var1, var6, var1, var1, var6, var0, var8, var9, var3, var2, var1, var9, var8);
-                    }
-                }
-            }
-        }
-        switch ((var4 + var8)) {
-            case 0:
-                TP1method17(var6, var3, var5, var3, var1, var3, var0);
-                break;
-            case 1:
-                var1 = TP1method10(var7, var9, var4, var8, var0, var2, var4);
-                break;
-            case 2:
-                System.out.println("TP1 - TP1method1- LineInMethod: 17");
-                break;
-            default:
-                TP1method11(var6, var7, var9, var3, var8, var3, var8);
-        }
-        switch ((var3 - 275)) {
-            case 0:
-                TP1method7(var3, var9, var9, var3, var7, var5, var9, var9, var2, var6, var6);
-                break;
-            case 1:
-                var6 = TP1method7(var7, var3, var6, var5, var0, var1, var3, var2, var8, var1, var9);
-                break;
-            case 2:
-                var2 = (((var2 - var8) % 221) * (((var0 + var5) + (var2 / 34)) % 364))
-                        + (var6 - var3);
-                break;
-            case 3:
-                var3 = (var4 + var3) - (((var9 * var2) - (var3 + var4)) * ((var4 - 45) - (var0 * var5)));
-                break;
-            case 4:
-                var9 = TP1method11(var0, var5, var1, var2, var9, var7, var5);
-                break;
-            case 5:
-                var5 = (var1 - var6) + (var5 + var4);
-                break;
-            case 6:
-                TP1method9(var2, var5, var6, var1, var9, var4, var8);
-                break;
-            default:
-                System.out.println("TP1 - TP1method1- LineInMethod: 44");
-        }
-        return var0;
-
-    }
-
     public int TP1method2(int var0, int var1, int var2, int var3, int var4, int var5, int var6) {
         switch (((var6 - 372) + (var4 - 20))) {
             case 0:
@@ -723,40 +1560,6 @@ public class TP1 implements TPInterface4, TPInterface2 {
                 System.out.println("TP1 - TP1method2- LineInMethod: 27");
         }
         return var1;
-
-    }
-
-    public static int TP1method3(int var0, int var1, int var2, int var3, int var4, int var5, int var6, int var7,
-                                 int var8, int var9) {
-        for (int i = 0; i < 11; i++) {
-            if ((((var9 + var3) - (var1 - var0)) > (var2 - var7))) {
-                TP1method22(var7, var0, var6, var6, var6, var0, var3, var3, var8);
-            }
-        }
-        if (((var3 + var9) != (var7 * var9))) {
-            if ((((var0 + var9) < ((var5 + var4) - (var6 / 482))) || ((var9 + var4) >= (var8 / 30)))) {
-                TP1method9(var2, var1, var9, var8, var6, var3, var8);
-            }
-        }
-        if (((var7 + var6) >= ((var5 + var0) + ((var8 - var6) - (var6 * var2))))) {
-            if ((((var7 + var0) >= (var8 + var7)) && ((var4 - var5) < (var9 - var1)))) {
-                TP1method24(var3, var7, var5, var9, var5, var2, var5, var4);
-            }
-        }
-        for (int i = 0; i < 12; i++) {
-            var5 = var8 / 170;
-        }
-        if (((var9 - var6) >= (var7 * var3))) {
-            System.out.println("TP1 - TP1method3- LineInMethod: 20");
-        }
-        for (int i = 0; i < 8; i++) {
-            if ((((var1 - var2) > ((var9 % 421) - (var1 * 290))) && ((var6 - var9) >= (var4 + var1)))) {
-                if (((var9 - var8) >= (var4 + var8))) {
-                    var9 = TP1method14(var3, var7, var2, var0, var5, var4, var8);
-                }
-            }
-        }
-        return var8;
 
     }
 
@@ -789,56 +1592,6 @@ public class TP1 implements TPInterface4, TPInterface2 {
             }
         }
         return var11;
-
-    }
-
-    public static int TP1method5(int var0, int var1, int var2, int var3, int var4, int var5, int var6) {
-        if (((((var4 % 183) != (var4 + var1)) && ((var3 - var5) < (var5 / 429)))
-                && ((var3 * 223) >= (((var5 - var2) % 23) + (var1 - var3))))) {
-            if (((var0 - var2) == (var5 - var6))) {
-                var6 = var3 % 262;
-            }
-        }
-        if (((var6 - var5) != (var0 * var4))) {
-            if ((((var6 + var3) >= (var3 + var4))
-                    && (((var0 * var2) < (var0 + var2)) && ((var6 * var1) != (var1 - var6))))) {
-                TP1method16(var2, var6, var4, var6, var5, var4, var5, var4, var2, var3, var6, var5, var5, var5);
-            }
-        }
-        switch ((var0 * 422)) {
-            case 0:
-                var4 = TP1method9(var0, var2, var6, var3, var1, var5, var4);
-                break;
-            case 1:
-                System.out.println("TP1 - TP1method5- LineInMethod: 15");
-                break;
-            case 2:
-                var2 = var1 - var2;
-                break;
-            case 3:
-                TP1method11(var0, var6, var3, var4, var2, var4, var4);
-                break;
-            default:
-                var6 = ((((var1 + var3) * (var3 / 86)) + (var5 * var1))
-                        + ((var0 - 166) / 408)) % 219;
-        }
-        switch ((var6 - var0)) {
-            case 0:
-                System.out.println("TP1 - TP1method5- LineInMethod: 30");
-                break;
-            case 1:
-                var3 = TP1method8(var5, var4, var4, var5, var2, var0, var0);
-                break;
-            case 2:
-                System.out.println("TP1 - TP1method5- LineInMethod: 38");
-                break;
-            case 3:
-                var1 = (var0 + var4) * (var2 / 384);
-                break;
-            default:
-                var0 = 378;
-        }
-        return var3;
 
     }
 
@@ -895,264 +1648,6 @@ public class TP1 implements TPInterface4, TPInterface2 {
 
     }
 
-    public static int TP1method7(int var0, int var1, int var2, int var3, int var4, int var5, int var6, int var7,
-                                 int var8, int var9, int var10) {
-        for (int i = 0; i < 9; i++) {
-            if (((var7 * var4) == ((var8 - var3) + (((var3 % 79) % 337) * (var8 / 340))))) {
-                if (((var1 / 459) >= (var0 * var2))) {
-                    if (((((((var0 + var2) - ((var1 - var5) / 138)) + ((var1 * var10) - (var7 - var9)))
-                            - (var0 * var5)) - (var6 * var9)) <= (var2 - var0))) {
-                        if (((var3 * var5) <= (var4 % 29))) {
-                            if (((var1 % 22) == (var2 * var9))) {
-                                var2 = TP1method10(var3, var6, var8, var2, var6, var1, var0);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        for (int i = 0; i < 1; i++) {
-            var5 = (var7 % 428) - (var0 / 400);
-        }
-        switch ((var2 % 354)) {
-            case 0:
-                var10 = (var2 / 3) * (var6 + var2);
-                break;
-            case 1:
-                var8 = ((var9 - var1) - (var7 * var8)) % 417;
-                break;
-            case 2:
-                System.out.println("TP1 - TP1method7- LineInMethod: 24");
-                break;
-            case 3:
-                TP1method22(var1, var5, var2, var9, var7, var5, var1, var7, var3);
-                break;
-            case 4:
-                System.out.println("TP1 - TP1method7- LineInMethod: 33");
-                break;
-            case 5:
-                var1 = 120;
-                break;
-            case 6:
-                TP1method25(var8, var7, var6, var6, var4, var4, var4);
-                break;
-            case 7:
-                var6 = (var4 + var7) % 220;
-                break;
-            default:
-                System.out.println("TP1 - TP1method7- LineInMethod: 45");
-        }
-        return var5;
-
-    }
-
-    public static int TP1method8(int var0, int var1, int var2, int var3, int var4, int var5, int var6) {
-        if (((var1 * var5) >= (var2 % 292))) {
-            var2 = TP1method11(var6, var2, var1, var3, var1, var6, var3);
-        } else {
-            TP1method22(var3, var3, var1, var0, var6, var2, var6, var4, var2);
-        }
-        for (int i = 0; i < 7; i++) {
-            System.out.println("TP1 - TP1method8- LineInMethod: 8");
-        }
-        if ((((var2 - var0) != (var4 - 182)) && (((var4 * var2) * (var6 - var3)) >= (var2 * 245)))) {
-            System.out.println("TP1 - TP1method8- LineInMethod: 15");
-        } else {
-            System.out.println("TP1 - TP1method8- LineInMethod: 18");
-        }
-        for (int i = 0; i < 14; i++) {
-            System.out.println("TP1 - TP1method8- LineInMethod: 26");
-        }
-        switch ((var6 - 180)) {
-            case 0:
-                TP1method11(var2, var4, var2, var6, var6, var5, var1);
-                break;
-            case 1:
-                var1 = (var3 + var4)
-                        + ((((((var2 - var4) - (((var1 - var4) % 251) / 365)) + (var0 * var3))
-                        / 270) - (var5 * var2)) + ((var1 + var2) - (var2 / 146)));
-                break;
-            case 2:
-                var2 = (var1 + var2) + (var6 + var5);
-                break;
-            case 3:
-                var1 = var5 % 63;
-                break;
-            case 4:
-                System.out.println("TP1 - TP1method8- LineInMethod: 42");
-                break;
-            case 5:
-                var3 = (var2 * var4) - (var2 * var4);
-                break;
-            case 6:
-                var4 = ((var6 + var5) % 306) + (var0 % 365);
-                break;
-            case 7:
-                TP1method20(var0, var0, var5, var4, var0, var6, var2, var6, var6, var1, var6, var3);
-                break;
-            case 8:
-                System.out.println("TP1 - TP1method8- LineInMethod: 58");
-                break;
-            default:
-                System.out.println("TP1 - TP1method8- LineInMethod: 61");
-        }
-        return var0;
-
-    }
-
-    public static int TP1method9(int var0, int var1, int var2, int var3, int var4, int var5, int var6) {
-        for (int i = 0; i < 11; i++) {
-            if ((((var2 % 495) % 325) < (var5 % 382))) {
-                var0 = ((var1 - 284) / 213) - (var1 * 120);
-            }
-        }
-        if (((var2 - var1) >= ((var3 - var1) + (var1 * var3)))) {
-            if (((var6 + var4) != (var1 - var5))) {
-                if (((var2 - var0) >= ((var1 - var3) % 396))) {
-                    if (((((var2 * var0) > (var4 - var2)) && ((var3 + var4) >= (var2 / 299)))
-                            || ((var1 + var2) != (var2 + var5)))) {
-                        if ((((var6 * var4) * ((var5 * var3) % 12)) >= (var4 + var3))) {
-                            var3 = (var1 / 176) + (var3 + var1);
-                        }
-                    }
-                }
-            }
-        }
-        if (((var4 - 442) < ((var5 / 150) * ((var2 * var0) - (var4 / 130))))) {
-            var1 = (var0 * var3) + (var0 * var6);
-        }
-        if (((var5 + var4) == (var2 * var6))) {
-            var2 = 414;
-        } else {
-            var0 = (var5 - var3) + (var5 + var3);
-        }
-        if (((((var5 % 160) * (var3 + var1)) < (var3 % 433)) && ((var5 + var0) >= (var3 + var1)))) {
-            var4 = (var3 - var6) + (var6 - 453);
-        } else {
-            System.out.println("TP1 - TP1method9- LineInMethod: 29");
-        }
-        return var6;
-
-    }
-
-    public static int TP1method10(int var0, int var1, int var2, int var3, int var4, int var5, int var6) {
-        for (int i = 0; i < 10; i++) {
-            if ((((var3 * var1) - (var3 + var1)) != (var0 * var4))) {
-                if (((var3 * var1) > ((var5 - var4) % 268))) {
-                    if (((var3 - 292) >= (var0 - var5))) {
-                        var5 = (var5 + var6) * (var2 * var1);
-                    }
-                }
-            }
-        }
-        for (int i = 0; i < 6; i++) {
-            if ((((var3 / 155) - (var6 * var5)) == ((var2 % 464) - (var3 * var1)))) {
-                System.out.println("TP1 - TP1method10- LineInMethod: 13");
-            }
-        }
-        if (((((var6 + var3) - (var5 * var1)) + (var1 + var2)) > (var3 / 390))) {
-            if (((var2 % 160) < (var2 * var3))) {
-                var1 = (var4 / 15) + (var1 + var5);
-            }
-        }
-        if ((((var2 % 16) == ((var5 - var6) + (var2 / 308)))
-                && (((((var3 + 433) <= (var0 - 321)) || ((var2 - var5) < (var6 % 203)))
-                && ((var3 - var2) <= (var1 / 46)))
-                && (((var1 % 282) <= (var1 * var3)) && ((var1 * var3) >= (var5 * var0)))))) {
-            System.out.println("TP1 - TP1method10- LineInMethod: 27");
-        } else {
-            var2 = (var5 - var4) - (var0 + var3);
-        }
-        if (((var0 - var5) != (var5 / 207))) {
-            System.out.println("TP1 - TP1method10- LineInMethod: 34");
-        } else {
-            var6 = (var3 / 238) * (var1 + var0);
-        }
-        return var5;
-
-    }
-
-    public static int TP1method11(int var0, int var1, int var2, int var3, int var4, int var5, int var6) {
-        switch ((var4 + 106)) {
-            case 0:
-                System.out.println("TP1 - TP1method11- LineInMethod: 2");
-                break;
-            case 1:
-                var0 = (var2 + 352) * (var6 - var3);
-                break;
-            case 2:
-                var0 = (var5 - var1) * (var3 + var1);
-                break;
-            case 3:
-                System.out.println("TP1 - TP1method11- LineInMethod: 12");
-                break;
-            case 4:
-                var4 = (var1 - var4) * (var3 * var1);
-                break;
-            default:
-                var1 = TP1method12(var6, var2, var5, var1, var6, var5, var3);
-        }
-        switch ((var0 / 238)) {
-            case 0:
-                TP1method24(var0, var2, var2, var3, var1, var4, var3, var4);
-                break;
-            case 1:
-                var3 = var5 * var3;
-                break;
-            case 2:
-                TP1method14(var6, var5, var6, var5, var0, var5, var2);
-                break;
-            case 3:
-                System.out.println("TP1 - TP1method11- LineInMethod: 33");
-                break;
-            case 4:
-                var6 = TP1method18(var0, var4, var0, var4, var0, var5, var6, var6, var3, var5, var1, var4);
-                break;
-            case 5:
-                var1 = 339;
-                break;
-            case 6:
-                var5 = (var1 - var2) - (var6 - var1);
-                break;
-            default:
-                var2 = (var3 - var5) + (var3 - var1);
-        }
-        return var3;
-
-    }
-
-    public static int TP1method12(int var0, int var1, int var2, int var3, int var4, int var5, int var6) {
-        for (int i = 0; i < 4; i++) {
-            System.out.println("TP1 - TP1method12- LineInMethod: 2");
-        }
-        if (((var2 + var6) <= (var6 + var1))) {
-            if (((var5 * var6) != (var0 + var4))) {
-                if (((var3 - var2) <= (var3 % 217))) {
-                    if (((var4 + var1) == ((var0 % 277) * (var3 + var2)))) {
-                        if (((var6 * var4) != (var0 + var5))) {
-                            var5 = (var0 + var4) * (var0 % 265);
-                        }
-                    }
-                }
-            }
-        }
-        for (int i = 0; i < 11; i++) {
-            System.out.println("TP1 - TP1method12- LineInMethod: 20");
-        }
-        if (((var0 + var5) != (var3 + 17))) {
-            if (((var4 - var6) > (var4 % 42))) {
-                if ((((var2 + var4) / 183) < (var6 * var4))) {
-                    var2 = (var0 - var6) / 159;
-                }
-            }
-        }
-        for (int i = 0; i < 1; i++) {
-            var6 = (var1 - var2) * ((var0 - 16) * (var3 + var1));
-        }
-        return var2;
-
-    }
-
     public int TP1method13(int var0, int var1, int var2, int var3, int var4, int var5, int var6) {
         for (int i = 0; i < 3; i++) {
             var5 = (var6 * var4) + (var6 - var5);
@@ -1182,39 +1677,6 @@ public class TP1 implements TPInterface4, TPInterface2 {
                 System.out.println("TP1 - TP1method13- LineInMethod: 29");
         }
         return var6;
-
-    }
-
-    public static int TP1method14(int var0, int var1, int var2, int var3, int var4, int var5, int var6) {
-        if (((var5 / 39) != (var1 - var2))) {
-            System.out.println("TP1 - TP1method14- LineInMethod: 4");
-        } else {
-            System.out.println("TP1 - TP1method14- LineInMethod: 7");
-        }
-        if (((var1 + var3) > (var6 % 43))) {
-            var3 = (var2 + var4) - (var0 % 480);
-        } else {
-            System.out.println("TP1 - TP1method14- LineInMethod: 13");
-        }
-        for (int i = 0; i < 14; i++) {
-            System.out.println("TP1 - TP1method14- LineInMethod: 19");
-        }
-        if ((((var0 * var2) / 121) < (var4 * 168))) {
-            System.out.println("TP1 - TP1method14- LineInMethod: 26");
-        } else {
-            var6 = (var2 + var4) - (var6 * var4);
-        }
-        for (int i = 0; i < 0; i++) {
-            if (((((var3 / 78) == (var0 * var6))
-                    && (((var1 / 483) - (var5 / 326)) <= (var5 - 9)))
-                    || ((var4 % 440) != (var2 + var1)))) {
-                if ((((var5 - var3) <= (((var0 * var3) * (var5 % 496)) - (var3 * var2)))
-                        && (((var3 * var2) == (var4 - 251)) && ((var3 * var2) > (var2 % 356))))) {
-                    var6 = (var1 * 124) - (var4 / 262);
-                }
-            }
-        }
-        return var4;
 
     }
 
@@ -1253,193 +1715,6 @@ public class TP1 implements TPInterface4, TPInterface2 {
 
     }
 
-    public static int TP1method16(int var0, int var1, int var2, int var3, int var4, int var5, int var6, int var7,
-                                  int var8, int var9, int var10, int var11, int var12, int var13) {
-        for (int i = 0; i < 9; i++) {
-            if (((var1 + var7) != (var11 / 260))) {
-                System.out.println("TP1 - TP1method16- LineInMethod: 4");
-            }
-        }
-        switch ((var13 % 133)) {
-            case 0:
-                var10 = 327;
-                break;
-            case 1:
-                var3 = (var6 - var1) * (var3 % 439);
-                break;
-            case 2:
-                var6 = var10 % 25;
-                break;
-            case 3:
-                var1 = (var12 - var8) % 69;
-                break;
-            case 4:
-                var10 = var0 / 367;
-                break;
-            case 5:
-                var12 = (var13 - var10) * (var3 * var11);
-                break;
-            case 6:
-                TP1method22(var0, var10, var2, var8, var13, var8, var1, var7, var12);
-                break;
-            case 7:
-                var2 = 329;
-                break;
-            default:
-                var0 = (var13 - var0) - (var9 * var1);
-        }
-        return var10;
-
-    }
-
-    public static int TP1method17(int var0, int var1, int var2, int var3, int var4, int var5, int var6) {
-        switch ((var2 / 315)) {
-            case 0:
-                TP1method25(var3, var1, var3, var6, var4, var1, var6);
-                break;
-            case 1:
-                var1 = 210;
-                break;
-            case 2:
-                TP1method25(var6, var5, var1, var2, var6, var2, var5);
-                break;
-            case 3:
-                var0 = (((var2 / 174) + (var3 * var1)) - ((var1 * var0) * (var3 * var4)))
-                        + (var3 + 496);
-                break;
-            case 4:
-                System.out.println("TP1 - TP1method17- LineInMethod: 13");
-                break;
-            case 5:
-                System.out.println("TP1 - TP1method17- LineInMethod: 20");
-                break;
-            case 6:
-                var3 = TP1method19(var4, var4, var1, var0, var3, var0, var6, var2, var6, var5, var1, var4, var2, var0);
-                break;
-            default:
-                var0 = (var6 * var4) - ((var0 / 357) - (var4 + var6));
-        }
-        return var1;
-
-    }
-
-    public static int TP1method18(int var0, int var1, int var2, int var3, int var4, int var5, int var6, int var7,
-                                  int var8, int var9, int var10, int var11) {
-        switch ((var3 * 227)) {
-            case 0:
-                System.out.println("TP1 - TP1method18- LineInMethod: 2");
-                break;
-            case 1:
-                var6 = (var6 - var2) + (var9 + var3);
-                break;
-            case 2:
-                var9 = var2 * 162;
-                break;
-            case 3:
-                var6 = (var7 / 422) * (var3 % 10);
-                break;
-            default:
-                var10 = 14;
-        }
-        if (((var1 * var10) == (var4 - var1))) {
-            var6 = (var4 % 223) / 257;
-        }
-        switch ((var7 + var5)) {
-            case 0:
-                System.out.println("TP1 - TP1method18- LineInMethod: 21");
-                break;
-            case 1:
-                var8 = (var4 * var3) - (var11 / 359);
-                break;
-            case 2:
-                var0 = (var4 / 456) / 71;
-                break;
-            default:
-                TP1method23(var4, var1, var8, var6, var0, var11, var0, var4, var8, var3, var1, var8);
-        }
-        return var6;
-
-    }
-
-    public static int TP1method19(int var0, int var1, int var2, int var3, int var4, int var5, int var6, int var7,
-                                  int var8, int var9, int var10, int var11, int var12, int var13) {
-        for (int i = 0; i < 4; i++) {
-            if (((var7 + var5) <= ((var10 % 472) - ((var0 + 203) * (var2 + var9))))) {
-                var7 = (var5 * var3) + (var9 - 47);
-            }
-        }
-        if (((var5 - var10) > (var2 * var0))) {
-            var11 = (var13 - var10) * (var1 - var7);
-        }
-        if (((((var3 + var7) - (var12 * var13)) - (var8 * var1)) > (var0 + 131))) {
-            if ((((var12 + 131) > (var12 + var6)) && ((var12 / 109) != (var7 - var0)))) {
-                if (((var7 + var0) >= (var0 * var4))) {
-                    if (((var9 / 70) != (var11 - var12))) {
-                        var9 = (var1 * var10) / 278;
-                    }
-                }
-            }
-        }
-        if (((var1 + var8) >= (var7 + var9))) {
-            var8 = (var9 + var6) / 119;
-        } else {
-            System.out.println("TP1 - TP1method19- LineInMethod: 22");
-        }
-        for (int i = 0; i < 12; i++) {
-            if (((var4 + var7) > (var8 - var2))) {
-                if (((var1 / 63) < (var3 * var12))) {
-                    if (((var4 - var5) != (var5 + var2))) {
-                        var9 = (var11 * var0) + (var6 - var7);
-                    }
-                }
-            }
-        }
-        return var10;
-
-    }
-
-    public static int TP1method20(int var0, int var1, int var2, int var3, int var4, int var5, int var6, int var7,
-                                  int var8, int var9, int var10, int var11) {
-        if ((((var8 + var2) - (var9 * var0)) <= ((var9 % 70) + (var1 + var11)))) {
-            System.out.println("TP1 - TP1method20- LineInMethod: 4");
-        } else {
-            var9 = var3 + 303;
-        }
-        switch ((var0 + 55)) {
-            case 0:
-                var10 = (var8 + var3) - (var6 - var0);
-                break;
-            case 1:
-                var3 = ((var1 - var4) % 3) - (var5 * var8);
-                break;
-            case 2:
-                var11 = (var3 + var11) - (var8 / 13);
-                break;
-            case 3:
-                var5 = ((var5 % 194) / 368) / 45;
-                break;
-            case 4:
-                System.out.println("TP1 - TP1method20- LineInMethod: 22");
-                break;
-            case 5:
-                var11 = 93;
-                break;
-            case 6:
-                System.out.println("TP1 - TP1method20- LineInMethod: 28");
-                break;
-            case 7:
-                var2 = (var0 / 487) * (var4 * var11);
-                break;
-            case 8:
-                System.out.println("TP1 - TP1method20- LineInMethod: 36");
-                break;
-            default:
-                System.out.println("TP1 - TP1method20- LineInMethod: 42");
-        }
-        return var3;
-
-    }
-
     public int TP1method21(int var0, int var1, int var2, int var3, int var4, int var5, int var6) {
         if (((((var3 * var2) > (var0 + var2)) && ((var6 + var4) < (var0 - var5)))
                 && ((var6 % 166) <= (var0 + var2)))) {
@@ -1469,161 +1744,6 @@ public class TP1 implements TPInterface4, TPInterface2 {
             System.out.println("TP1 - TP1method21- LineInMethod: 28");
         }
         return var3;
-
-    }
-
-    public static int TP1method22(int var0, int var1, int var2, int var3, int var4, int var5, int var6, int var7,
-                                  int var8) {
-        if (((var0 * var4) == ((var7 * var0) / 429))) {
-            var2 = (var7 + var8)
-                    + ((var8 % 392) - ((((var8 * 340) / 156) - (var1 * var4)) % 444));
-        } else {
-            System.out.println("TP1 - TP1method22- LineInMethod: 5");
-        }
-        if ((((var8 + var3) * (var2 + var1)) != (var4 + var6))) {
-            var6 = 224;
-        } else {
-            System.out.println("TP1 - TP1method22- LineInMethod: 11");
-        }
-        if (((var8 + var2) == (var0 * var8))) {
-            var0 = 454;
-        } else {
-            var4 = TP1method25(var8, var8, var8, var2, var4, var2, var3);
-        }
-        for (int i = 0; i < 8; i++) {
-            var6 = 446;
-        }
-        switch ((var8 * 247)) {
-            case 0:
-                var4 = var6 - var1;
-                break;
-            case 1:
-                var7 = (var2 + 319) % 331;
-                break;
-            case 2:
-                System.out.println("TP1 - TP1method22- LineInMethod: 31");
-                break;
-            case 3:
-                System.out.println("TP1 - TP1method22- LineInMethod: 34");
-                break;
-            default:
-                System.out.println("TP1 - TP1method22- LineInMethod: 39");
-        }
-        return var0;
-
-    }
-
-    public static int TP1method23(int var0, int var1, int var2, int var3, int var4, int var5, int var6, int var7,
-                                  int var8, int var9, int var10, int var11) {
-        switch ((var5 * var0)) {
-            case 0:
-                var1 = 94;
-                break;
-            case 1:
-                System.out.println("TP1 - TP1method23- LineInMethod: 4");
-                break;
-            case 2:
-                var9 = 81;
-                break;
-            case 3:
-                System.out.println("TP1 - TP1method23- LineInMethod: 10");
-                break;
-            case 4:
-                System.out.println("TP1 - TP1method23- LineInMethod: 15");
-                break;
-            case 5:
-                System.out.println("TP1 - TP1method23- LineInMethod: 21");
-                break;
-            case 6:
-                var1 = ((var8 - var5) + (var3 + var8)) - ((var5 - var2) / 37);
-                break;
-            case 7:
-                var11 = (var5 + var3) % 218;
-                break;
-            default:
-                System.out.println("TP1 - TP1method23- LineInMethod: 30");
-        }
-        return var8;
-
-    }
-
-    public static int TP1method24(int var0, int var1, int var2, int var3, int var4, int var5, int var6, int var7) {
-        for (int i = 0; i < 5; i++) {
-            System.out.println("TP1 - TP1method24- LineInMethod: 2");
-        }
-        if ((((var0 + var7) + (var0 - var3)) <= (var3 - 377))) {
-            if ((((var2 + var5) + (var6 % 23)) < ((var3 - var2) - (var3 * var6)))) {
-                if (((((((var7 - var6) % 299) + (var4 - var3)) + (var6 % 126)) + (var2 - var3)) >= (var7
-                        - var6))) {
-                    if (((var3 % 366) == (var0 * var7))) {
-                        if (((var5 - 499) != (var7 - var3))) {
-                            if (((var4 * var3) <= (var4 + var7))) {
-                                var4 = 153;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        switch (((var4 * 292) * (var0 - 163))) {
-            case 0:
-                TP1method25(var0, var4, var2, var6, var5, var0, var2);
-                break;
-            case 1:
-                var6 = (var5 / 374) * (var0 / 217);
-                break;
-            case 2:
-                var5 = (var1 - var6) * (var4 - var0);
-                break;
-            case 3:
-                var4 = (var5 / 101) + (var2 % 13);
-                break;
-            case 4:
-                var0 = var1 % 136;
-                break;
-            case 5:
-                System.out.println("TP1 - TP1method24- LineInMethod: 32");
-                break;
-            case 6:
-                System.out.println("TP1 - TP1method24- LineInMethod: 37");
-                break;
-            default:
-                System.out.println("TP1 - TP1method24- LineInMethod: 44");
-        }
-        return var4;
-
-    }
-
-    public static int TP1method25(int var0, int var1, int var2, int var3, int var4, int var5, int var6) {
-        for (int i = 0; i < 12; i++) {
-            if (((var4 / 283) == (var0 + var5))) {
-                System.out.println("TP1 - TP1method25- LineInMethod: 4");
-            }
-        }
-        for (int i = 0; i < 8; i++) {
-            var3 = 240;
-        }
-        for (int i = 0; i < 1; i++) {
-            System.out.println("TP1 - TP1method25- LineInMethod: 9");
-        }
-        if ((((var0 - var3) - (var6 - var4)) >= (var2 - 415))) {
-            System.out.println("TP1 - TP1method25- LineInMethod: 12");
-        }
-        if (((var2 % 141) != (var4 % 258))) {
-            var3 = (var1 + var6) - (var6 % 180);
-        } else {
-            var4 = (var1 % 205)
-                    - ((var5 % 70) - (((var4 * var2) * (var6 * 244)) - (var5 * var3)));
-        }
-        if (((var1 - var0) > (var3 * var0))) {
-            var5 = ((var0 - var5) / 376) - (var5 + var4);
-        } else {
-            var2 = (var6 * var2) + (var6 - var1);
-        }
-        for (int i = 0; i < 13; i++) {
-            var3 = (var5 % 392) % 156;
-        }
-        return var2;
 
     }
 
@@ -1719,126 +1839,6 @@ public class TP1 implements TPInterface4, TPInterface2 {
         }
         return var1;
 
-    }
-
-    public static void main(String[] args) {
-        TP1 obj = new TP1();
-        obj.TPInterface4Method0(393, 344, 61, 24, 124, 70, 460);
-        obj.TPInterface4Method1(226, 401, 346, 447, 350, 325,
-                118, 449, 302);
-        obj.TPInterface4Method2(295, 131, 440, 234, 461, 265,
-                26, 373);
-        obj.TPInterface4Method3(187, 189, 148, 58, 265, 425,
-                493, 280, 59, 135);
-        obj.TPInterface4Method4(253, 29, 417, 376, 396, 355,
-                391, 336, 71, 305, 405, 350);
-        obj.TPInterface4Method5(337, 307, 142, 486, 392, 108,
-                294);
-        obj.TPInterface4Method6(15, 13, 395, 306, 100, 27, 145);
-        obj.TPInterface2Method0(183, 210, 466, 185, 412, 357,
-                477, 59);
-        obj.TPInterface2Method1(362, 5, 229, 297, 294, 363, 209,
-                60);
-        obj.TPInterface2Method2(7, 325, 447, 240, 95, 127, 282,
-                210, 110, 479, 488);
-        obj.TPInterface2Method3(214, 228, 173, 118, 465, 56,
-                343);
-        obj.TPInterface2Method4(448, 281, 68, 73, 131, 154, 276,
-                161, 279);
-        obj.TPInterface2Method5(391, 11, 421, 171, 239, 315,
-                109);
-        obj.TPInterface2Method6(333, 151, 126, 89, 39, 484,
-                289);
-        obj.TP1method0(18, 213, 141, 181, 131, 312, 202,
-                378);
-        TP1method1(99, 333, 453, 487, 305, 67, 261, 172,
-                212, 499);
-        obj.TP1method2(91, 487, 359, 128, 87, 226, 126);
-        TP1method3(412, 435, 323, 286, 214, 173, 204,
-                273, 319, 272);
-        obj.TP1method4(472, 118, 28, 346, 210, 427, 26,
-                412, 128, 303, 421, 58, 248, 28);
-        TP1method5(171, 268, 486, 228, 237, 445, 78);
-        obj.TP1method6(95, 307, 400, 284, 219, 315, 296);
-        TP1method7(37, 48, 490, 67, 315, 221, 85, 472,
-                389, 295, 480);
-        TP1method8(373, 37, 132, 360, 475, 161, 4);
-        TP1method9(37, 158, 27, 166, 4, 142, 251);
-        TP1method10(99, 115, 3, 119, 481, 239, 299);
-        TP1method11(461, 394, 486, 348, 239, 403, 146);
-        TP1method12(180, 465, 155, 314, 1, 273, 441);
-        obj.TP1method13(224, 98, 283, 87, 400, 496, 34);
-        TP1method14(150, 25, 103, 289, 407, 196, 129);
-        obj.TP1method15(313, 489, 468, 380, 170, 1, 434,
-                188, 53, 411, 101, 320, 380);
-        TP1method16(332, 269, 54, 51, 71, 467, 63, 376,
-                95, 471, 430, 26, 399, 1);
-        TP1method17(239, 376, 203, 394, 126, 22, 212);
-        TP1method18(496, 415, 129, 315, 56, 75, 166,
-                339, 25, 97, 20, 143);
-        TP1method19(52, 405, 83, 268, 98, 478, 164, 405,
-                406, 444, 23, 446, 67, 204);
-        TP1method20(90, 308, 393, 488, 445, 383, 227,
-                228, 230, 486, 346, 119);
-        obj.TP1method21(40, 162, 6, 254, 445, 36, 103);
-        TP1method22(174, 329, 291, 481, 2, 395, 356,
-                422, 422);
-        TP1method23(447, 352, 119, 139, 268, 417, 454,
-                459, 480, 393, 163, 5);
-        TP1method24(276, 72, 267, 145, 168, 81, 349,
-                62);
-        TP1method25(125, 151, 282, 6, 364, 218, 10);
-        obj.TP1method26(228, 288, 431, 270, 107, 128, 186,
-                363, 200, 364, 201, 477);
-        obj.TP1method27(42, 433, 369, 17, 152, 278, 261,
-                115, 153, 408, 103, 440);
-    }
-
-    public static void singleEntry(int i0, int i1, int i2, int i3, int i4, int i5, int i6, int i7, int i8, int i9,
-                                   int i10, int i11, int i12, int i13, int i14) {
-        TP1 obj = new TP1();
-        obj.TPInterface4Method0(i12, i5, i9, i13, i7, i3, i10);
-        obj.TPInterface4Method1(i9, i1, i6, i14, i5, i10, i8, i7, i3);
-        obj.TPInterface4Method2(i13, i8, i12, i5, i6, i2, i9, i4);
-        obj.TPInterface4Method3(i3, i11, i9, i5, i8, i6, i2, i1, i4, i7);
-        obj.TPInterface4Method4(i13, i11, i0, i8, i2, i9, i14, i1, i6, i4, i7, i5);
-        obj.TPInterface4Method5(i5, i13, i0, i4, i8, i3, i7);
-        obj.TPInterface4Method6(i2, i14, i5, i8, i13, i1, i12);
-        obj.TPInterface2Method0(i2, i6, i14, i7, i3, i11, i8, i10);
-        obj.TPInterface2Method1(i10, i9, i12, i1, i2, i8, i11, i4);
-        obj.TPInterface2Method2(i9, i2, i12, i7, i5, i6, i10, i13, i11, i8, i1);
-        obj.TPInterface2Method3(i6, i2, i4, i13, i0, i3, i14);
-        obj.TPInterface2Method4(i1, i9, i8, i11, i2, i14, i0, i5, i13);
-        obj.TPInterface2Method5(i8, i3, i2, i9, i11, i14, i0);
-        obj.TPInterface2Method6(i8, i9, i13, i4, i5, i2, i6);
-        obj.TP1method0(i2, i8, i6, i13, i3, i12, i9, i11);
-        TP1method1(i3, i0, i8, i13, i9, i4, i5, i6, i7, i14);
-        obj.TP1method2(i1, i8, i11, i2, i0, i7, i10);
-        TP1method3(i12, i1, i4, i5, i13, i7, i10, i11, i0, i14);
-        obj.TP1method4(i9, i5, i11, i10, i14, i0, i13, i6, i4, i1, i12, i8, i3, i2);
-        TP1method5(i3, i7, i13, i9, i0, i6, i4);
-        obj.TP1method6(i5, i9, i13, i2, i1, i14, i12);
-        TP1method7(i2, i6, i12, i4, i10, i7, i13, i14, i9, i8, i11);
-        TP1method8(i9, i4, i6, i8, i11, i0, i5);
-        TP1method9(i8, i9, i7, i4, i12, i13, i1);
-        TP1method10(i5, i4, i9, i14, i12, i13, i3);
-        TP1method11(i1, i4, i2, i6, i14, i5, i11);
-        TP1method12(i14, i3, i1, i13, i8, i11, i7);
-        obj.TP1method13(i10, i2, i14, i3, i4, i1, i13);
-        TP1method14(i14, i3, i13, i10, i0, i8, i6);
-        obj.TP1method15(i4, i11, i3, i9, i6, i2, i1, i7, i8, i14, i10, i13, i5);
-        TP1method16(i6, i9, i8, i12, i5, i3, i2, i7, i13, i14, i10, i11, i1, i0);
-        TP1method17(i1, i4, i0, i2, i5, i11, i6);
-        TP1method18(i12, i5, i2, i6, i9, i3, i14, i8, i11, i0, i4, i7);
-        TP1method19(i1, i0, i14, i5, i7, i10, i8, i4, i3, i11, i12, i13, i6, i2);
-        TP1method20(i3, i5, i4, i14, i9, i6, i11, i2, i1, i12, i13, i8);
-        obj.TP1method21(i1, i5, i12, i8, i6, i13, i2);
-        TP1method22(i11, i9, i10, i4, i7, i1, i0, i3, i13);
-        TP1method23(i5, i1, i9, i13, i10, i3, i6, i14, i2, i12, i0, i8);
-        TP1method24(i11, i7, i13, i5, i1, i12, i6, i10);
-        TP1method25(i10, i5, i7, i12, i8, i13, i14);
-        obj.TP1method26(i14, i0, i11, i9, i8, i2, i6, i5, i1, i4, i7, i3);
-        obj.TP1method27(i11, i2, i9, i4, i6, i12, i10, i8, i14, i7, i1, i5);
     }
 
 }

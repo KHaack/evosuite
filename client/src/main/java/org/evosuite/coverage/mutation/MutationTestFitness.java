@@ -47,14 +47,10 @@ import java.util.Set;
 public abstract class MutationTestFitness extends TestFitnessFunction {
 
     private static final long serialVersionUID = 596930765039928708L;
-
-    protected transient Mutation mutation;
-
-    protected int mutantId;
-
     protected final Set<BranchCoverageGoal> controlDependencies = new HashSet<>();
-
     protected final int diameter;
+    protected transient Mutation mutation;
+    protected int mutantId;
 
     /**
      * <p>
@@ -70,25 +66,6 @@ public abstract class MutationTestFitness extends TestFitnessFunction {
         ActualControlFlowGraph cfg = GraphPool.getInstance(TestGenerationContext.getInstance().getClassLoaderForSUT()).getActualCFG(mutation.getClassName(),
                 mutation.getMethodName());
         diameter = cfg.getDiameter();
-    }
-
-    /**
-     * <p>
-     * Getter for the field <code>mutation</code>.
-     * </p>
-     *
-     * @return a {@link org.evosuite.coverage.mutation.Mutation} object.
-     */
-    public Mutation getMutation() {
-        return mutation;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ExecutionResult runTest(TestCase test) {
-        return runTest(test, null);
     }
 
     /**
@@ -130,6 +107,25 @@ public abstract class MutationTestFitness extends TestFitnessFunction {
         }
 
         return result;
+    }
+
+    /**
+     * <p>
+     * Getter for the field <code>mutation</code>.
+     * </p>
+     *
+     * @return a {@link org.evosuite.coverage.mutation.Mutation} object.
+     */
+    public Mutation getMutation() {
+        return mutation;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ExecutionResult runTest(TestCase test) {
+        return runTest(test, null);
     }
 
     /**

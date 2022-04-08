@@ -80,12 +80,12 @@ import java.util.Arrays;
  */
 public class IBranchSystemTest extends SystemTestBase {
 
+    private final boolean oldArchive = Properties.TEST_ARCHIVE;
     private Properties.Criterion[] oldCriteria = Arrays.copyOf(Properties.CRITERION, Properties.CRITERION.length);
     private Properties.StoppingCondition oldStoppingCondition = Properties.STOPPING_CONDITION;
     private double oldPrimitivePool = Properties.PRIMITIVE_POOL;
     private long budget = Properties.SEARCH_BUDGET;
     private SecondaryObjective[] secondary = Properties.SECONDARY_OBJECTIVE;
-    private final boolean oldArchive = Properties.TEST_ARCHIVE;
 
     @Before
     public void beforeTest() {

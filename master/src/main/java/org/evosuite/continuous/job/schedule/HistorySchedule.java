@@ -38,11 +38,9 @@ import java.util.List;
  */
 public class HistorySchedule extends OneTimeSchedule {
 
-    private static final double MODIFIED = 2.0;
-
-    private static final double NOT_MODIFIED = 1.0;
-
     public static final int COMMIT_IMPROVEMENT = 3;
+    private static final double MODIFIED = 2.0;
+    private static final double NOT_MODIFIED = 1.0;
 
     public HistorySchedule(JobScheduler scheduler) {
         super(scheduler);

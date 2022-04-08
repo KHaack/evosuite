@@ -50,10 +50,7 @@ public class CallContext implements Serializable {
     private final List<Call> context;
 
     private final int hcode;
-
-    public boolean isEmpty() {
-        return context.isEmpty();
-    }
+    private String[] excludedPackages = new String[]{"java", "sun", PackageInfo.getEvoSuitePackage()};
 
     /**
      * <p>
@@ -164,12 +161,14 @@ public class CallContext implements Serializable {
         hcode = this.context.hashCode();
     }
 
+    public boolean isEmpty() {
+        return context.isEmpty();
+    }
+
     public int size() {
         return context.size();
 
     }
-
-    private String[] excludedPackages = new String[]{"java", "sun", PackageInfo.getEvoSuitePackage()};
 
     /**
      * If we are using -measureCoverage then we need to also exclude the junit tests

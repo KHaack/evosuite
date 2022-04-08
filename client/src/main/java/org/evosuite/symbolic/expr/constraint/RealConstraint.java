@@ -30,10 +30,11 @@ import org.slf4j.LoggerFactory;
 
 public final class RealConstraint extends Constraint<Double> {
 
-    static Logger log = LoggerFactory.getLogger(RealConstraint.class);
-
     private static final long serialVersionUID = 6021027178547577289L;
-
+    static Logger log = LoggerFactory.getLogger(RealConstraint.class);
+    private final Expression<Double> left;
+    private final Comparator cmp;
+    private final Expression<Double> right;
     /**
      * <p>
      * Constructor for RealConstraint.
@@ -54,10 +55,6 @@ public final class RealConstraint extends Constraint<Double> {
             throw new ConstraintTooLongException(getSize());
         }
     }
-
-    private final Expression<Double> left;
-    private final Comparator cmp;
-    private final Expression<Double> right;
 
     /**
      * {@inheritDoc}

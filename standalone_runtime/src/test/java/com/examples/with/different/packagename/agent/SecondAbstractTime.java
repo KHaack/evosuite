@@ -19,10 +19,10 @@
  */
 package com.examples.with.different.packagename.agent;
 
-public abstract class SecondAbstractTime{
+public abstract class SecondAbstractTime {
 
-	public long getTime(){
-		return System.currentTimeMillis();
-	}
-	
+    public long getTime() {
+        return System.currentTimeMillis();
+    }
+
 }

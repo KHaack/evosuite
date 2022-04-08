@@ -37,14 +37,12 @@ import java.util.Set;
  */
 public class GetStaticGraph {
 
-    GetStaticGraph() {
-    }
-
     private static final Logger logger = LoggerFactory
             .getLogger(GetStaticGraph.class);
-
     private final Set<StaticFieldReadEntry> staticFieldReads = new LinkedHashSet<>();
     private final Set<StaticMethodCallEntry> staticMethodCalls = new LinkedHashSet<>();
+    GetStaticGraph() {
+    }
 
     /**
      * Returns if there is a static method call egde (INVOKESTATIC bytecode

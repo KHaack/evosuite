@@ -34,35 +34,14 @@ public class SystemPathUtil {
      */
     public static final String ELEMENTS_MUST_NOT_BE_NULL_EXCEPTION_MESSAGE = "Elements must not be null.";
     public static final String DELIMITER_MUST_NOT_BE_NULL_EXCEPTION_MESSAGE = "Delimiter must not be null.";
-
-    /**
-     * Different file extensions
-     */
-    public enum FileExtension {
-        TXT("txt"),
-        CSV("csv");
-
-        String name;
-
-        FileExtension(String name) {
-            this.name = name;
-        }
-
-        public String getName() {
-            return this.name;
-        }
-    }
-
     /**
      * Simple Delimiter for file creation
      */
     public static final String FILE_NAME_DELIMITER = "_";
-
     /**
      * Simple Delimiter for file extension
      */
     public static final String FILE_EXTENSION_DELIMITER = ".";
-
 
     /**
      * Creates a file name from a series of given Strings.
@@ -102,5 +81,23 @@ public class SystemPathUtil {
         }
 
         return joiner.toString();
+    }
+
+    /**
+     * Different file extensions
+     */
+    public enum FileExtension {
+        TXT("txt"),
+        CSV("csv");
+
+        String name;
+
+        FileExtension(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return this.name;
+        }
     }
 }

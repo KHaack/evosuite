@@ -54,6 +54,29 @@ public class OutputCoverageFactory extends AbstractFitnessFactory<OutputCoverage
      * org.evosuite.coverage.TestCoverageFactory#getCoverageGoals()
      */
 
+    public static OutputCoverageTestFitness createGoal(String className, String methodName, Type returnType, String suffix) {
+        OutputCoverageGoal goal = new OutputCoverageGoal(className, methodName, returnType, suffix);
+        logger.info("Created output coverage goal: {}", goal);
+        return new OutputCoverageTestFitness(goal);
+    }
+
+    /**
+     * Returns list of inspector methods in a given class.
+     * An inspector is a cheap-pure method with no arguments.
+     *
+     * @param className A class name
+     */
+    public static List<String> getInspectors(String className) {
+        List<String> pureMethods = CheapPurityAnalyzer.getInstance().getPureMethods(className);
+        List<String> inspectors = new ArrayList<>();
+        for (String pm : pureMethods) {
+            if ((Type.getArgumentTypes(pm.substring(pm.indexOf('('))).length == 0) &&
+                    !(pm.substring(0, pm.indexOf("(")).equals("<clinit>")))
+                inspectors.add(pm);
+        }
+        return inspectors;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -145,28 +168,5 @@ public class OutputCoverageFactory extends AbstractFitnessFactory<OutputCoverage
         }
         goalComputationTime = System.currentTimeMillis() - start;
         return goals;
-    }
-
-    public static OutputCoverageTestFitness createGoal(String className, String methodName, Type returnType, String suffix) {
-        OutputCoverageGoal goal = new OutputCoverageGoal(className, methodName, returnType, suffix);
-        logger.info("Created output coverage goal: {}", goal);
-        return new OutputCoverageTestFitness(goal);
-    }
-
-    /**
-     * Returns list of inspector methods in a given class.
-     * An inspector is a cheap-pure method with no arguments.
-     *
-     * @param className A class name
-     */
-    public static List<String> getInspectors(String className) {
-        List<String> pureMethods = CheapPurityAnalyzer.getInstance().getPureMethods(className);
-        List<String> inspectors = new ArrayList<>();
-        for (String pm : pureMethods) {
-            if ((Type.getArgumentTypes(pm.substring(pm.indexOf('('))).length == 0) &&
-                    !(pm.substring(0, pm.indexOf("(")).equals("<clinit>")))
-                inspectors.add(pm);
-        }
-        return inspectors;
     }
 }

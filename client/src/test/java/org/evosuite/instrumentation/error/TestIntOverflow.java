@@ -38,6 +38,11 @@ public class TestIntOverflow {
     private int x;
     private int y;
 
+    public TestIntOverflow(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+
     // Creates the test data
     @Parameters
     public static Collection<Object[]> data() {
@@ -50,12 +55,6 @@ public class TestIntOverflow {
         }
         return valuePairs;
     }
-
-    public TestIntOverflow(int x, int y) {
-        this.x = x;
-        this.y = y;
-    }
-
 
     private void assertOverflow(long longResult, int intResult) {
         if (longResult > Integer.MAX_VALUE) {

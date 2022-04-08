@@ -54,14 +54,6 @@ public class PrivateFieldStatement extends MethodStatement {
 
     private static final Method setVariable;
 
-    private final GenericClass<?> ownerClass;
-
-    private final String className;
-
-    private final String fieldName;
-
-    private boolean isStaticField = false;
-
     static {
         try {
             //Class<T> klass, T instance, String fieldName, Object value
@@ -71,6 +63,11 @@ public class PrivateFieldStatement extends MethodStatement {
             throw new RuntimeException("EvoSuite bug", e);
         }
     }
+
+    private final GenericClass<?> ownerClass;
+    private final String className;
+    private final String fieldName;
+    private boolean isStaticField = false;
 
     public PrivateFieldStatement(TestCase tc, Class<?> klass, String fieldName, VariableReference callee, VariableReference param)
             throws NoSuchFieldException, IllegalArgumentException, ConstructionFailedException {

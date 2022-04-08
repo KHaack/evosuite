@@ -137,6 +137,15 @@ public class RMIStoppingCondition<T extends Chromosome<T>> implements StoppingCo
     }
 
     /* (non-Javadoc)
+     * @see org.evosuite.ga.stoppingconditions.StoppingCondition#setLimit(long)
+     */
+    @Override
+    public void setLimit(long limit) {
+        // TODO Auto-generated method stub
+
+    }
+
+    /* (non-Javadoc)
      * @see org.evosuite.ga.stoppingconditions.StoppingCondition#isFinished()
      */
     @Override
@@ -150,15 +159,6 @@ public class RMIStoppingCondition<T extends Chromosome<T>> implements StoppingCo
     @Override
     public void reset() {
         isStopped = false;
-    }
-
-    /* (non-Javadoc)
-     * @see org.evosuite.ga.stoppingconditions.StoppingCondition#setLimit(long)
-     */
-    @Override
-    public void setLimit(long limit) {
-        // TODO Auto-generated method stub
-
     }
 
     /* (non-Javadoc)

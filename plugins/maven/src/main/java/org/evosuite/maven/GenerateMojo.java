@@ -50,23 +50,24 @@ import java.util.Set;
 public class GenerateMojo extends AbstractMojo {
 
     /**
+     * Defines files in the source directories to include (all .java files by default).
+     */
+    private final String[] includes = {"**/*.java"};
+    /**
      * Total Memory (in MB) that CTG will use
      */
     @Parameter(property = "memoryInMB", defaultValue = "800")
     private int memoryInMB;
-
     /**
      * Number of cores CTG will use
      */
     @Parameter(property = "cores", defaultValue = "1")
     private int numberOfCores;
-
     /**
      * Comma ',' separated list of CUTs to use in CTG. If none specified, then test all classes
      */
     @Parameter(property = "cuts")
     private String cuts;
-
     /**
      * Absolute path to a file having the list of CUTs specified. This is needed for operating
      * systems like Windows that have constraints on the size of input parameters and so could
@@ -74,55 +75,39 @@ public class GenerateMojo extends AbstractMojo {
      */
     @Parameter(property = "cutsFile")
     private String cutsFile;
-
     /**
      * How many minutes to allocate for each class
      */
     @Parameter(property = "timeInMinutesPerClass", defaultValue = "2")
     private int timeInMinutesPerClass;
-
     /**
      * How many minutes to allocate for each project/module. If this parameter is not set, then the total time will be timeInMinutesPerClass x number_of_classes
      */
     @Parameter(property = "timeInMinutesPerProject", defaultValue = "0")
     private int timeInMinutesPerProject;
-
     /**
      * Coverage criterion. Can define more than one criterion by using a ':' separated list
      */
     // FIXME would be nice to have the value of Properties.CRITERION but seems to be not possible
     @Parameter(property = "criterion", defaultValue = "LINE:BRANCH:EXCEPTION:WEAKMUTATION:OUTPUT:METHOD:METHODNOEXCEPTION:CBRANCH")
     private String criterion;
-
     @Parameter(property = "spawnManagerPort", defaultValue = "")
     private Integer spawnManagerPort;
-
     @Parameter(property = "extraArgs", defaultValue = "")
     private String extraArgs;
-
     /**
      * Schedule used to run CTG (SIMPLE, BUDGET, SEEDING, BUDGET_AND_SEEDING, HISTORY)
      */
     @Parameter(property = "schedule", defaultValue = "BUDGET")
     private String schedule;
-
     @Parameter(defaultValue = "${project}", required = true, readonly = true)
     private MavenProject project;
-
     @Parameter(defaultValue = "${plugin.artifacts}", required = true, readonly = true)
     private List<Artifact> artifacts;
-
     @Component
     private ProjectBuilder projectBuilder;
-
     @Parameter(defaultValue = "${repositorySystemSession}", required = true, readonly = true)
     private RepositorySystemSession repoSession;
-
-    /**
-     * Defines files in the source directories to include (all .java files by default).
-     */
-    private final String[] includes = {"**/*.java"};
-
     /**
      * Defines which of the included files in the source directories to exclude (non by default).
      */

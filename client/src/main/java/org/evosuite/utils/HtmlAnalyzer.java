@@ -38,6 +38,33 @@ public class HtmlAnalyzer implements Serializable {
 
     /**
      * <p>
+     * getContainingClassName
+     * </p>
+     *
+     * @param f a {@link java.io.File} object.
+     * @return a {@link java.lang.String} object.
+     */
+    public static String getContainingClassName(File f) {
+        String name = f.getAbsolutePath();
+        String sep = System.getProperty("file.separator");
+        name = name.replace(sep, ".");
+        if (name.endsWith(".java")) {
+            name = name.substring(0, name.length() - 5);
+        }
+        int i = name.lastIndexOf(Properties.PROJECT_PREFIX);
+        int j = name.lastIndexOf(sep);
+        if (i > j) {
+
+        } else if (i < 0) {
+            name = "";
+        } else {
+            name = name.substring(i);
+        }
+        return name;
+    }
+
+    /**
+     * <p>
      * getClassContent
      * </p>
      *
@@ -65,33 +92,6 @@ public class HtmlAnalyzer implements Serializable {
         String msg = "No source found for " + fullClassName;
         logger.debug(msg);
         return Arrays.asList(msg);
-    }
-
-    /**
-     * <p>
-     * getContainingClassName
-     * </p>
-     *
-     * @param f a {@link java.io.File} object.
-     * @return a {@link java.lang.String} object.
-     */
-    public static String getContainingClassName(File f) {
-        String name = f.getAbsolutePath();
-        String sep = System.getProperty("file.separator");
-        name = name.replace(sep, ".");
-        if (name.endsWith(".java")) {
-            name = name.substring(0, name.length() - 5);
-        }
-        int i = name.lastIndexOf(Properties.PROJECT_PREFIX);
-        int j = name.lastIndexOf(sep);
-        if (i > j) {
-
-        } else if (i < 0) {
-            name = "";
-        } else {
-            name = name.substring(i);
-        }
-        return name;
     }
 
     private void initFiles() {

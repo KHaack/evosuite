@@ -134,6 +134,44 @@ public abstract class TestSolverSimpleMath extends TestSolver {
         return tc.getDefaultTestCase();
     }
 
+    private static DefaultTestCase buildTestCaseDiv() throws SecurityException, NoSuchMethodException {
+        TestCaseBuilder tc = new TestCaseBuilder();
+        VariableReference int0 = tc.appendIntPrimitive(4);
+        VariableReference int1 = tc.appendIntPrimitive(20);
+
+        Method method = TestCaseBinaryOp.class.getMethod("testDiv", int.class, int.class);
+        tc.appendMethod(null, method, int0, int1);
+        return tc.getDefaultTestCase();
+    }
+
+    private static DefaultTestCase buildTestCaseMod() throws SecurityException, NoSuchMethodException {
+        TestCaseBuilder tc = new TestCaseBuilder();
+        VariableReference int0 = tc.appendIntPrimitive(0);
+        VariableReference int1 = tc.appendIntPrimitive(6);
+
+        Method method = TestCaseMod.class.getMethod("test", int.class, int.class);
+        tc.appendMethod(null, method, int0, int1);
+        return tc.getDefaultTestCase();
+    }
+
+    private static DefaultTestCase buildTestCaseCastRealToInt() throws SecurityException, NoSuchMethodException {
+        TestCaseBuilder tc = new TestCaseBuilder();
+        VariableReference double0 = tc.appendDoublePrimitive(0.1);
+
+        Method method = TestCaseCastRealToInt.class.getMethod("test", double.class);
+        tc.appendMethod(null, method, double0);
+        return tc.getDefaultTestCase();
+    }
+
+    private static DefaultTestCase buildTestCaseCastIntToReal() throws SecurityException, NoSuchMethodException {
+        TestCaseBuilder tc = new TestCaseBuilder();
+        VariableReference int0 = tc.appendIntPrimitive(1);
+
+        Method method = TestCaseCastIntToReal.class.getMethod("test", int.class);
+        tc.appendMethod(null, method, int0);
+        return tc.getDefaultTestCase();
+    }
+
     @Test
     public void testAdd() throws SecurityException, NoSuchMethodException, SolverTimeoutException {
 
@@ -206,26 +244,6 @@ public abstract class TestSolverSimpleMath extends TestSolver {
         Collection<Constraint<?>> constraints = DefaultTestCaseConcolicExecutor.execute(tc);
         Map<String, Object> solution = solve(getSolver(), constraints);
 
-    }
-
-    private static DefaultTestCase buildTestCaseDiv() throws SecurityException, NoSuchMethodException {
-        TestCaseBuilder tc = new TestCaseBuilder();
-        VariableReference int0 = tc.appendIntPrimitive(4);
-        VariableReference int1 = tc.appendIntPrimitive(20);
-
-        Method method = TestCaseBinaryOp.class.getMethod("testDiv", int.class, int.class);
-        tc.appendMethod(null, method, int0, int1);
-        return tc.getDefaultTestCase();
-    }
-
-    private static DefaultTestCase buildTestCaseMod() throws SecurityException, NoSuchMethodException {
-        TestCaseBuilder tc = new TestCaseBuilder();
-        VariableReference int0 = tc.appendIntPrimitive(0);
-        VariableReference int1 = tc.appendIntPrimitive(6);
-
-        Method method = TestCaseMod.class.getMethod("test", int.class, int.class);
-        tc.appendMethod(null, method, int0, int1);
-        return tc.getDefaultTestCase();
     }
 
     @Test
@@ -306,15 +324,6 @@ public abstract class TestSolverSimpleMath extends TestSolver {
         assertTrue(var0.intValue() >= var1.intValue());
     }
 
-    private static DefaultTestCase buildTestCaseCastRealToInt() throws SecurityException, NoSuchMethodException {
-        TestCaseBuilder tc = new TestCaseBuilder();
-        VariableReference double0 = tc.appendDoublePrimitive(0.1);
-
-        Method method = TestCaseCastRealToInt.class.getMethod("test", double.class);
-        tc.appendMethod(null, method, double0);
-        return tc.getDefaultTestCase();
-    }
-
     @Test
     public void testCastRealToInt() throws SecurityException, NoSuchMethodException, SolverTimeoutException {
 
@@ -338,14 +347,5 @@ public abstract class TestSolverSimpleMath extends TestSolver {
         Long var0 = (Long) solution.get("var0");
 
         assertEquals(var0.intValue(), (int) var0.doubleValue());
-    }
-
-    private static DefaultTestCase buildTestCaseCastIntToReal() throws SecurityException, NoSuchMethodException {
-        TestCaseBuilder tc = new TestCaseBuilder();
-        VariableReference int0 = tc.appendIntPrimitive(1);
-
-        Method method = TestCaseCastIntToReal.class.getMethod("test", int.class);
-        tc.appendMethod(null, method, int0);
-        return tc.getDefaultTestCase();
     }
 }

@@ -42,14 +42,10 @@ import java.util.Set;
 public class JUnitTestSuite {
 
     private static final Logger logger = LoggerFactory.getLogger(JUnitTestSuite.class);
-
-    private Set<String> coveredMethods;
-
-    private Set<Integer> coveredBranchesTrue;
-
-    private Set<Integer> coveredBranchesFalse;
-
     private final TestCaseExecutor executor = TestCaseExecutor.getInstance();
+    private Set<String> coveredMethods;
+    private Set<Integer> coveredBranchesTrue;
+    private Set<Integer> coveredBranchesFalse;
 
     /**
      * <p>runSuite</p>

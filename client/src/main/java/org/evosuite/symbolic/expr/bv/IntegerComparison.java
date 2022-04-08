@@ -35,7 +35,10 @@ import java.util.Set;
 public final class IntegerComparison extends AbstractExpression<Long> implements
         IntegerValue {
 
+    protected static final Logger log = LoggerFactory.getLogger(IntegerComparison.class);
     private static final long serialVersionUID = 8551234172104612736L;
+    private final Expression<Long> left;
+    private final Expression<Long> right;
 
     /**
      * <p>
@@ -57,11 +60,6 @@ public final class IntegerComparison extends AbstractExpression<Long> implements
             throw new ConstraintTooLongException(getSize());
         }
     }
-
-    private final Expression<Long> left;
-    private final Expression<Long> right;
-
-    protected static final Logger log = LoggerFactory.getLogger(IntegerComparison.class);
 
     /**
      * {@inheritDoc}

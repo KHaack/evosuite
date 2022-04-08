@@ -25,20 +25,6 @@ package com.examples.with.different.packagename.fm;
  */
 public class SimpleFM_GenericsReturnWithExtend_Single {
 
-    public interface B {
-    }
-
-    public interface W extends B {
-        boolean isW();
-    }
-
-    public interface A {
-        void setB(B b);
-
-        <C extends B> C getB();
-    }
-
-
     public static boolean foo(A a) {
         W w = a.getB();
 
@@ -49,5 +35,19 @@ public class SimpleFM_GenericsReturnWithExtend_Single {
             return false;
         }
 
+    }
+
+    public interface B {
+    }
+
+    public interface W extends B {
+        boolean isW();
+    }
+
+
+    public interface A {
+        <C extends B> C getB();
+
+        void setB(B b);
     }
 }

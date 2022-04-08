@@ -52,10 +52,8 @@ import static org.evosuite.dse.util.Assertions.notNull;
  */
 public final class HeapVM extends AbstractVM {
 
-    private static final Logger logger = LoggerFactory.getLogger(HeapVM.class);
-
     public static final String ARRAY_LENGTH = "length";
-
+    private static final Logger logger = LoggerFactory.getLogger(HeapVM.class);
     private final SymbolicEnvironment env;
 
     private final ConcolicInstrumentingClassLoader classLoader;

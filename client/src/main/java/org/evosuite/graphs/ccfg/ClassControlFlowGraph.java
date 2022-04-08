@@ -84,10 +84,11 @@ import java.util.*;
  */
 public class ClassControlFlowGraph extends EvoSuiteGraph<CCFGNode, CCFGEdge> {
 
-    public enum FrameNodeType {
-        ENTRY, EXIT, LOOP, CALL, RETURN
-    }
-
+    // auxilary set for purity analysis to keep track of methods that are
+    // currently
+    // being analyzed across several CCFGs. elements are of the form
+    // <className>.<methodName>
+    private static final Set<String> methodsInPurityAnalysis = new HashSet<>();
     private final String className;
     private final ClassCallGraph ccg;
     private final ClassLoader classLoader;
@@ -95,22 +96,12 @@ public class ClassControlFlowGraph extends EvoSuiteGraph<CCFGNode, CCFGEdge> {
 
     private final Map<String, CCFGMethodEntryNode> methodEntries = new HashMap<>();
     private final Map<String, CCFGMethodExitNode> methodExits = new HashMap<>();
-
-    public Set<CCFGMethodEntryNode> publicMethods = new HashSet<>();
-
     private final Map<FrameNodeType, CCFGFrameNode> frameNodes = new HashMap<>();
-
     // cache of already analyzed methods that are known to be pure or impure
     // respectively
     private final Set<String> pureMethods = new HashSet<>();
     private final Set<String> impureMethods = new HashSet<>();
-
-    // auxilary set for purity analysis to keep track of methods that are
-    // currently
-    // being analyzed across several CCFGs. elements are of the form
-    // <className>.<methodName>
-    private static final Set<String> methodsInPurityAnalysis = new HashSet<>();
-
+    public Set<CCFGMethodEntryNode> publicMethods = new HashSet<>();
 
     /**
      * Given the ClassCallGraph of a class this constructor will build up the
@@ -127,9 +118,6 @@ public class ClassControlFlowGraph extends EvoSuiteGraph<CCFGNode, CCFGEdge> {
         compute();
     }
 
-
-    // purity analysis
-
     public boolean isPure(String methodName) {
         if (pureMethods.contains(methodName))
             return true;
@@ -145,6 +133,9 @@ public class ClassControlFlowGraph extends EvoSuiteGraph<CCFGNode, CCFGEdge> {
             return false;
         }
     }
+
+
+    // purity analysis
 
     private boolean analyzePurity(String methodName) {
 
@@ -277,9 +268,6 @@ public class ClassControlFlowGraph extends EvoSuiteGraph<CCFGNode, CCFGEdge> {
         return true;
     }
 
-    // sanity functions
-
-
     public boolean isPublicMethod(String method) {
         if (method == null)
             return false;
@@ -287,14 +275,13 @@ public class ClassControlFlowGraph extends EvoSuiteGraph<CCFGNode, CCFGEdge> {
         return isPublicMethod(entry);
     }
 
+    // sanity functions
+
     public boolean isPublicMethod(CCFGMethodEntryNode node) {
         if (node == null)
             return false;
         return publicMethods.contains(node);
     }
-
-
-    // convenience getters
 
     public CCFGMethodEntryNode getMethodEntryNodeForClassCallNode(
             ClassCallNode ccgNode) {
@@ -305,6 +292,9 @@ public class ClassControlFlowGraph extends EvoSuiteGraph<CCFGNode, CCFGEdge> {
                             + ccgNode.getMethod());
         return r;
     }
+
+
+    // convenience getters
 
     private CCFGMethodEntryNode getMethodEntryOf(String method) {
         CCFGMethodEntryNode r = methodEntries.get(method);
@@ -348,12 +338,12 @@ public class ClassControlFlowGraph extends EvoSuiteGraph<CCFGNode, CCFGEdge> {
         return methodEntries.get(methodExit.getMethod());
     }
 
-    // CCFG computation from CCG and CFGs
-
     private void compute() {
         importCFGs();
         addFrame();
     }
+
+    // CCFG computation from CCG and CFGs
 
     private void importCFGs() {
         Map<RawControlFlowGraph, Map<BytecodeInstruction, CCFGCodeNode>> tempMap = new HashMap<>();
@@ -557,8 +547,6 @@ public class ClassControlFlowGraph extends EvoSuiteGraph<CCFGNode, CCFGEdge> {
         }
     }
 
-    // toDot utilities
-
     /**
      * Makes .dot output pretty by visualizing different types of nodes and
      * edges with different forms and colors
@@ -567,6 +555,8 @@ public class ClassControlFlowGraph extends EvoSuiteGraph<CCFGNode, CCFGEdge> {
         registerVertexAttributeProvider(new CCFGNodeAttributeProvider());
         registerEdgeAttributeProvider(new CCFGEdgeAttributeProvider());
     }
+
+    // toDot utilities
 
     /**
      * {@inheritDoc}
@@ -589,6 +579,10 @@ public class ClassControlFlowGraph extends EvoSuiteGraph<CCFGNode, CCFGEdge> {
      */
     public ClassCallGraph getCcg() {
         return ccg;
+    }
+
+    public enum FrameNodeType {
+        ENTRY, EXIT, LOOP, CALL, RETURN
     }
 
 }

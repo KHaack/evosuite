@@ -50,37 +50,27 @@ import java.util.stream.Collectors;
  */
 public class CoverageGoalTestNameGenerationStrategy implements TestNameGenerationStrategy {
 
-    private final Map<TestCase, String> testToName = new LinkedHashMap<>();
-
-    private final Map<String, Set<String>> methodCount = new LinkedHashMap<>();
-
     public static final String PREFIX = "test";
-
     public static final String STR_CREATE = "Creates";
-
     public static final String STR_CREATE_EXCEPTION = "FailsToCreate";
-
     public static final String STR_THROWS = "Throws";
-
     public static final String STR_WITH = "With";
-
     public static final String STR_WHERE = "Where";
-
     public static final String STR_IS = "Is";
-
     public static final String STR_AND = "And";
-
     public static final String STR_TAKING = "Taking";
-
     public static final String STR_WITHOUT = "TakingNo";
-
     public static final String STR_RETURNS = "Returning";
-
     public static final String STR_ARGUMENTS = "Arguments";
-
     public static final int MAX_SIMILAR_GOALS = 2;
-
     public static final int MAX_CHARS = 70;
+    private final Map<TestCase, String> testToName = new LinkedHashMap<>();
+    private final Map<String, Set<String>> methodCount = new LinkedHashMap<>();
+    /**
+     * We use only a subset of the possible criteria to determine names
+     */
+    private final List<Class<?>> supportedClasses = Arrays.asList(new Class<?>[]{MethodCoverageTestFitness.class, MethodNoExceptionCoverageTestFitness.class,
+            ExceptionCoverageTestFitness.class, OutputCoverageTestFitness.class, InputCoverageTestFitness.class});
 
     public CoverageGoalTestNameGenerationStrategy(List<TestCase> testCases, List<ExecutionResult> results) {
         addGoalsNotIncludedInTargetCriteria(results);
@@ -96,6 +86,68 @@ public class CoverageGoalTestNameGenerationStrategy implements TestNameGeneratio
     public CoverageGoalTestNameGenerationStrategy(List<TestCase> testCases) {
         Map<TestCase, Set<TestFitnessFunction>> testToGoals = initializeCoverageMapFromTests(testCases);
         generateNames(testToGoals);
+    }
+
+    /**
+     * Determine for each test the set of coverage goals uniquely covered by this test
+     *
+     * @param testToGoals
+     */
+    private static <T> void findUniqueGoals(Map<TestCase, Set<T>> testToGoals) {
+        // Could be optimised
+        Map<TestCase, Set<T>> goalMapCopy = new LinkedHashMap<>();
+
+        for (Map.Entry<TestCase, Set<T>> entry : testToGoals.entrySet()) {
+            Set<T> goalSet = new LinkedHashSet<>(entry.getValue());
+            for (Map.Entry<TestCase, Set<T>> otherEntry : testToGoals.entrySet()) {
+                if (entry == otherEntry)
+                    continue;
+                goalSet.removeAll(otherEntry.getValue());
+            }
+            goalMapCopy.put(entry.getKey(), goalSet);
+        }
+        testToGoals.clear();
+        testToGoals.putAll(goalMapCopy);
+    }
+
+    /**
+     * Determine for each test the set of coverage goals that remain if we remove those that are covered by all tests
+     *
+     * @param testToGoals
+     */
+    private static <T> void findNonUbiquitousGoals(Map<TestCase, Set<T>> testToGoals) {
+        // Could be optimised
+        Map<TestCase, Set<T>> goalMapCopy = new LinkedHashMap<>();
+        Set<T> commonGoals = new LinkedHashSet<>();
+
+        // Get the superset of goals
+        for (Map.Entry<TestCase, Set<T>> entry : testToGoals.entrySet()) {
+            commonGoals.addAll(entry.getValue());
+        }
+
+        // Now only keep stuff that every set has
+        for (Map.Entry<TestCase, Set<T>> entry : testToGoals.entrySet()) {
+            commonGoals.retainAll(entry.getValue());
+        }
+
+        for (Map.Entry<TestCase, Set<T>> entry : testToGoals.entrySet()) {
+            Set<T> goalSet = new LinkedHashSet<>(entry.getValue());
+            goalSet.removeAll(commonGoals);
+            goalMapCopy.put(entry.getKey(), goalSet);
+        }
+        testToGoals.putAll(goalMapCopy);
+    }
+
+    /**
+     * Make first letter upper case
+     *
+     * @param input
+     * @return
+     */
+    private static String capitalize(String input) {
+        final char[] buffer = input.toCharArray();
+        buffer[0] = Character.toTitleCase(buffer[0]);
+        return new String(buffer);
     }
 
     /**
@@ -268,7 +320,6 @@ public class CoverageGoalTestNameGenerationStrategy implements TestNameGeneratio
         return added;
     }
 
-
     /**
      * Builds the name map based on coverage goal stored as covered in each of the tests
      *
@@ -353,12 +404,6 @@ public class CoverageGoalTestNameGenerationStrategy implements TestNameGeneratio
     }
 
     /**
-     * We use only a subset of the possible criteria to determine names
-     */
-    private final List<Class<?>> supportedClasses = Arrays.asList(new Class<?>[]{MethodCoverageTestFitness.class, MethodNoExceptionCoverageTestFitness.class,
-            ExceptionCoverageTestFitness.class, OutputCoverageTestFitness.class, InputCoverageTestFitness.class});
-
-    /**
      * Remove any goals that are irrelevant for name generation
      *
      * @param goals
@@ -383,56 +428,6 @@ public class CoverageGoalTestNameGenerationStrategy implements TestNameGeneratio
                 methodCount.get(methodName).add(goal.getTargetMethod());
             }
         }
-    }
-
-    /**
-     * Determine for each test the set of coverage goals uniquely covered by this test
-     *
-     * @param testToGoals
-     */
-    private static <T> void findUniqueGoals(Map<TestCase, Set<T>> testToGoals) {
-        // Could be optimised
-        Map<TestCase, Set<T>> goalMapCopy = new LinkedHashMap<>();
-
-        for (Map.Entry<TestCase, Set<T>> entry : testToGoals.entrySet()) {
-            Set<T> goalSet = new LinkedHashSet<>(entry.getValue());
-            for (Map.Entry<TestCase, Set<T>> otherEntry : testToGoals.entrySet()) {
-                if (entry == otherEntry)
-                    continue;
-                goalSet.removeAll(otherEntry.getValue());
-            }
-            goalMapCopy.put(entry.getKey(), goalSet);
-        }
-        testToGoals.clear();
-        testToGoals.putAll(goalMapCopy);
-    }
-
-    /**
-     * Determine for each test the set of coverage goals that remain if we remove those that are covered by all tests
-     *
-     * @param testToGoals
-     */
-    private static <T> void findNonUbiquitousGoals(Map<TestCase, Set<T>> testToGoals) {
-        // Could be optimised
-        Map<TestCase, Set<T>> goalMapCopy = new LinkedHashMap<>();
-        Set<T> commonGoals = new LinkedHashSet<>();
-
-        // Get the superset of goals
-        for (Map.Entry<TestCase, Set<T>> entry : testToGoals.entrySet()) {
-            commonGoals.addAll(entry.getValue());
-        }
-
-        // Now only keep stuff that every set has
-        for (Map.Entry<TestCase, Set<T>> entry : testToGoals.entrySet()) {
-            commonGoals.retainAll(entry.getValue());
-        }
-
-        for (Map.Entry<TestCase, Set<T>> entry : testToGoals.entrySet()) {
-            Set<T> goalSet = new LinkedHashSet<>(entry.getValue());
-            goalSet.removeAll(commonGoals);
-            goalMapCopy.put(entry.getKey(), goalSet);
-        }
-        testToGoals.putAll(goalMapCopy);
     }
 
     /**
@@ -479,18 +474,6 @@ public class CoverageGoalTestNameGenerationStrategy implements TestNameGeneratio
                 testToName.put(entry.getKey(), entry.getValue() + num);
             }
         }
-    }
-
-    /**
-     * Make first letter upper case
-     *
-     * @param input
-     * @return
-     */
-    private static String capitalize(String input) {
-        final char[] buffer = input.toCharArray();
-        buffer[0] = Character.toTitleCase(buffer[0]);
-        return new String(buffer);
     }
 
     /**

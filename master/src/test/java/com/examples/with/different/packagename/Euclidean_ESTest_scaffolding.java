@@ -43,6 +43,12 @@ public class Euclidean_ESTest_scaffolding {
         org.evosuite.runtime.Runtime.getInstance().resetRuntime();
     }
 
+    private static void initializeClasses() {
+        org.evosuite.runtime.classhandling.ClassStateSupport.initializeClasses(Euclidean_ESTest_scaffolding.class.getClassLoader(),
+                "com.examples.with.different.packagename.Euclidean"
+        );
+    }
+
     @Before
     public void initTestCase() {
         threadStopper.storeCurrentThreads();
@@ -62,12 +68,5 @@ public class Euclidean_ESTest_scaffolding {
         org.evosuite.runtime.sandbox.Sandbox.doneWithExecutingSUTCode();
         org.evosuite.runtime.agent.InstrumentingAgent.deactivate();
         org.evosuite.runtime.GuiSupport.restoreHeadlessMode();
-    }
-
-
-    private static void initializeClasses() {
-        org.evosuite.runtime.classhandling.ClassStateSupport.initializeClasses(Euclidean_ESTest_scaffolding.class.getClassLoader(),
-                "com.examples.with.different.packagename.Euclidean"
-        );
     }
 }

@@ -31,31 +31,6 @@ import java.lang.reflect.Type;
  */
 public class GenericMethodTest {
 
-    private static class A {
-        public static <T> T bar(T obj) {
-            return obj;
-        }
-    }
-
-    public static class B<T> {
-        public T bar(T t) {
-            return t;
-        }
-    }
-
-    public static class C<T extends A> {
-        public T bar(T t) {
-            return t;
-        }
-    }
-
-    public static class D<T extends A> {
-        public <T extends B> T bar(T t) {
-            return t;
-        }
-    }
-
-
     @Test
     public void testGetExactReturnType() throws Exception {
 
@@ -101,7 +76,6 @@ public class GenericMethodTest {
         Assert.assertEquals(B.class, res);
     }
 
-
     @Test
     public void testGetExactReturnType_staticMethod() throws Exception {
 
@@ -135,5 +109,29 @@ public class GenericMethodTest {
 
         Class<?> upper = (Class<?>) wt.getUpperBounds()[0];
         Assert.assertEquals(Object.class, upper);
+    }
+
+    private static class A {
+        public static <T> T bar(T obj) {
+            return obj;
+        }
+    }
+
+    public static class B<T> {
+        public T bar(T t) {
+            return t;
+        }
+    }
+
+    public static class C<T extends A> {
+        public T bar(T t) {
+            return t;
+        }
+    }
+
+    public static class D<T extends A> {
+        public <T extends B> T bar(T t) {
+            return t;
+        }
     }
 }

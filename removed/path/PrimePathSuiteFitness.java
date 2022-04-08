@@ -35,55 +35,58 @@ import org.evosuite.testsuite.TestSuiteFitnessFunction;
  * <p>
  * PrimePathSuiteFitness class.
  * </p>
- * 
+ *
  * @author Gordon Fraser
  */
 public class PrimePathSuiteFitness extends TestSuiteFitnessFunction {
 
-	private static final long serialVersionUID = 8301900778876171653L;
+    private static final long serialVersionUID = 8301900778876171653L;
 
-	List<PrimePathTestFitness> goals;
+    List<PrimePathTestFitness> goals;
 
-	/**
-	 * <p>
-	 * Constructor for PrimePathSuiteFitness.
-	 * </p>
-	 */
-	public PrimePathSuiteFitness() {
-		PrimePathCoverageFactory factory = new PrimePathCoverageFactory();
-		goals = factory.getCoverageGoals();
-		ExecutionTracer.enableTraceCalls();
-	}
+    /**
+     * <p>
+     * Constructor for PrimePathSuiteFitness.
+     * </p>
+     */
+    public PrimePathSuiteFitness() {
+        PrimePathCoverageFactory factory = new PrimePathCoverageFactory();
+        goals = factory.getCoverageGoals();
+        ExecutionTracer.enableTraceCalls();
+    }
 
-	/* (non-Javadoc)
-	 * @see org.evosuite.ga.FitnessFunction#getFitness(org.evosuite.ga.Chromosome)
-	 */
-	/** {@inheritDoc} */
-	@Override
-	public double getFitness(
-	        AbstractTestSuiteChromosome<? extends ExecutableChromosome> suite) {
-		List<ExecutionResult> results = runTestSuite(suite);
-		List<TestFitnessFunction> coveredGoals = new ArrayList<TestFitnessFunction>();
-		double fitness = 0.0;
+    /* (non-Javadoc)
+     * @see org.evosuite.ga.FitnessFunction#getFitness(org.evosuite.ga.Chromosome)
+     */
 
-		for (TestFitnessFunction goal : goals) {
-			double goalFitness = Double.MAX_VALUE;
-			for (ExecutionResult result : results) {
-				TestChromosome tc = new TestChromosome();
-				tc.setTestCase(result.test);
-				double resultFitness = goal.getFitness(tc, result);
-				if (resultFitness < goalFitness)
-					goalFitness = resultFitness;
-				if (goalFitness == 0.0) {
-					result.test.addCoveredGoal(goal);
-					coveredGoals.add(goal);
-					break;
-				}
-			}
-			fitness += goalFitness;
-		}
-		suite.setCoverage(this, coveredGoals.size() / (double) goals.size());
-		updateIndividual(this, suite, fitness);
-		return fitness;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public double getFitness(
+            AbstractTestSuiteChromosome<? extends ExecutableChromosome> suite) {
+        List<ExecutionResult> results = runTestSuite(suite);
+        List<TestFitnessFunction> coveredGoals = new ArrayList<TestFitnessFunction>();
+        double fitness = 0.0;
+
+        for (TestFitnessFunction goal : goals) {
+            double goalFitness = Double.MAX_VALUE;
+            for (ExecutionResult result : results) {
+                TestChromosome tc = new TestChromosome();
+                tc.setTestCase(result.test);
+                double resultFitness = goal.getFitness(tc, result);
+                if (resultFitness < goalFitness)
+                    goalFitness = resultFitness;
+                if (goalFitness == 0.0) {
+                    result.test.addCoveredGoal(goal);
+                    coveredGoals.add(goal);
+                    break;
+                }
+            }
+            fitness += goalFitness;
+        }
+        suite.setCoverage(this, coveredGoals.size() / (double) goals.size());
+        updateIndividual(this, suite, fitness);
+        return fitness;
+    }
 }

@@ -41,13 +41,11 @@ import java.util.List;
  */
 public abstract class TestSuiteFitnessFunction extends FitnessFunction<TestSuiteChromosome> {
 
-    private static final long serialVersionUID = 7243635497292960457L;
-
     /**
      * Constant <code>logger</code>
      */
     protected static final Logger logger = LoggerFactory.getLogger(TestSuiteFitnessFunction.class);
-
+    private static final long serialVersionUID = 7243635497292960457L;
 
     /**
      * Execute a test case

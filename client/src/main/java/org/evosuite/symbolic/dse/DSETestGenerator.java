@@ -49,6 +49,7 @@ import java.util.*;
  */
 public class DSETestGenerator {
 
+    private static final Logger logger = LoggerFactory.getLogger(DSETestGenerator.class);
     private final TestSuiteChromosome suite;
 
     /**
@@ -67,8 +68,6 @@ public class DSETestGenerator {
     public DSETestGenerator(TestSuiteChromosome suite) {
         this.suite = suite;
     }
-
-    private static final Logger logger = LoggerFactory.getLogger(DSETestGenerator.class);
 
     /**
      * Applies DSE to the passed test using as symbolic variables only those that

@@ -45,6 +45,13 @@ public class MethodCall {
         this.calledMethod = calledMethod;
     }
 
+    public static MethodCall constructForCallNode(
+            CCFGMethodCallNode callNode) {
+        if (callNode == null)
+            throw new IllegalArgumentException("given call node was null");
+        return new MethodCall(callNode, callNode.getCalledMethod());
+    }
+
     public boolean isInitialMethodCall() {
         return methodCall == null;
     }
@@ -89,12 +96,5 @@ public class MethodCall {
 
     public String getCalledMethodName() {
         return calledMethod;
-    }
-
-    public static MethodCall constructForCallNode(
-            CCFGMethodCallNode callNode) {
-        if (callNode == null)
-            throw new IllegalArgumentException("given call node was null");
-        return new MethodCall(callNode, callNode.getCalledMethod());
     }
 }
