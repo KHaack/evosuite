@@ -19,14 +19,19 @@
  */
 package com.examples.with.different.packagename.testreader;
 
+import org.evosuite.ga.metaheuristics.SPEA2Test;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.awt.image.BufferedImage;
 
 public class TestExample extends ParentTestExample {
+    private static final Logger logger = LoggerFactory.getLogger(ParentTestExample.class);
+
     protected static Integer otherValue = 10;
 
     static {
@@ -76,7 +81,6 @@ public class TestExample extends ParentTestExample {
         for (String arg : args) {
             result += arg;
         }
-        System.out.println(result);
     }
 
     protected static int doCalc(int x, int y) {
@@ -148,16 +152,9 @@ public class TestExample extends ParentTestExample {
 
         public boolean executeCmd(int x) {
             if (song.equals("killSelf") && (x > 7)) {
-                System.out.println("It's a sin to kill a mockingbird.");
                 return true;
             }
             return false;
-        }
-
-        public void thisIsIt(String... args) {
-            if (args.length > 0) {
-                System.out.println(args);
-            }
         }
     }
 }

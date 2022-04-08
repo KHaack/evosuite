@@ -19,14 +19,19 @@
  */
 package com.examples.with.different.packagename.testcarver;
 
+import org.evosuite.symbolic.TestConstraintSolver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class InnerCalls {
+    private static final Logger logger = LoggerFactory.getLogger(InnerCalls.class);
 
     public void printA() {
-        System.out.println("A");
+        logger.debug("A");
     }
 
     public void printB() {
-        System.out.println("B");
+        logger.debug("B");
     }
 
     public void printAandB() {

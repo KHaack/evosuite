@@ -123,9 +123,6 @@ public class TestGenericAccessibleObject {
                 new Class<?>[]{Object.class});
         GenericMethod genericMethod = new GenericMethod(targetMethod, targetClass);
         Assert.assertTrue(genericMethod.getOwnerClass().hasTypeVariables());
-        System.out.println(genericMethod.toString());
-        System.out.println(genericMethod.getOwnerClass().toString());
-        System.out.println(genericMethod.getGeneratedClass().toString());
 
         List<GenericClass<?>> parameters = genericMethod.getParameterClasses();
         Assert.assertFalse(parameters.get(0).hasTypeVariables());
@@ -145,9 +142,7 @@ public class TestGenericAccessibleObject {
         Method targetMethod = targetClass.getMethod("testMe",
                 new Class<?>[]{List.class});
         GenericMethod genericMethod = new GenericMethod(targetMethod, targetClass);
-        System.out.println(genericMethod.toString());
-        System.out.println(genericMethod.getOwnerClass().toString());
-        System.out.println(genericMethod.getGeneratedClass().toString());
+
         Assert.assertFalse(genericMethod.getOwnerClass().hasTypeVariables());
 
         List<GenericClass<?>> parameters = genericMethod.getParameterClasses();
@@ -158,10 +153,6 @@ public class TestGenericAccessibleObject {
 		/*
 		GenericMethod instantiatedMethod = genericMethod.getGenericInstantiation();
 		parameters = instantiatedMethod.getParameterClasses();
-		System.out.println(instantiatedMethod.toString());
-		System.out.println(instantiatedMethod.getOwnerClass().toString());
-		System.out.println(instantiatedMethod.getGeneratedClass().toString());
-		System.out.println(parameters.toString());
 		Assert.assertFalse(parameters.get(0).hasTypeVariables());
 		Assert.assertFalse(parameters.get(0).hasWildcardTypes());
 		Assert.assertFalse(instantiatedMethod.getGeneratedClass().hasWildcardTypes());
@@ -174,11 +165,9 @@ public class TestGenericAccessibleObject {
         Class<?> targetClass = java.util.LinkedList.class;
         Method targetMethod = targetClass.getMethod("get", new Class<?>[]{int.class});
         GenericMethod genericMethod = new GenericMethod(targetMethod, targetClass);
-        System.out.println(genericMethod.getGeneratedClass().toString());
         Assert.assertTrue(genericMethod.getGeneratedClass().hasWildcardOrTypeVariables());
 
         GenericMethod instantiatedMethod = genericMethod.getGenericInstantiation();
-        System.out.println(instantiatedMethod.getGeneratedClass().toString());
         Assert.assertFalse(instantiatedMethod.getGeneratedClass().hasWildcardOrTypeVariables());
     }
 
@@ -194,12 +183,9 @@ public class TestGenericAccessibleObject {
         Method targetMethod = targetClass.getMethod("create",
                 new Class<?>[]{com.examples.with.different.packagename.generic.GuavaExample3.class});
         GenericMethod genericMethod = new GenericMethod(targetMethod, targetClass);
-        System.out.println(genericMethod.getGeneratedClass().toString());
         Assert.assertTrue(genericMethod.getGeneratedClass().hasWildcardOrTypeVariables());
 
-        System.out.println("------------------");
         GenericMethod instantiatedMethod = genericMethod.getGenericInstantiationFromReturnValue(genericInstantiation);
-        System.out.println(instantiatedMethod.getGeneratedClass().toString());
         Assert.assertFalse(instantiatedMethod.getGeneratedClass().hasWildcardOrTypeVariables());
         Assert.assertEquals(genericInstantiation, instantiatedMethod.getGeneratedClass());
     }
@@ -269,7 +255,7 @@ public class TestGenericAccessibleObject {
                 }.getType());
 
         GenericMethod instantiatedMethod = genericMethod.getGenericInstantiationFromReturnValue(iterableIntegerClass);
-        System.out.println(instantiatedMethod.getGeneratedClass().toString());
+
         Assert.assertEquals(instantiatedMethod.getGeneratedClass().getRawClass(),
                 GuavaExample4.class);
     }
@@ -290,22 +276,18 @@ public class TestGenericAccessibleObject {
                 }.getType());
 
         GenericMethod instantiatedMethod = genericMethod.getGenericInstantiationFromReturnValue(iterableIntegerClass);
-        System.out.println(instantiatedMethod.getGeneratedClass().toString());
         Assert.assertEquals(instantiatedMethod.getGeneratedClass().getRawClass(),
                 com.examples.with.different.packagename.generic.ConcreteGenericClass.class);
 
         instantiatedMethod = genericMethod.copyWithOwnerFromReturnType(iterableIntegerClass);
-        System.out.println(instantiatedMethod.getGeneratedClass().toString());
         Assert.assertEquals(instantiatedMethod.getGeneratedClass().getRawClass(),
                 com.examples.with.different.packagename.generic.ConcreteGenericClass.class);
 
         instantiatedMethod = genericMethod.getGenericInstantiation(iterableIntegerClass);
-        System.out.println(instantiatedMethod.getGeneratedClass().toString());
         Assert.assertEquals(instantiatedMethod.getGeneratedClass().getRawClass(),
                 com.examples.with.different.packagename.generic.ConcreteGenericClass.class);
 
         instantiatedMethod = genericMethod.copyWithNewOwner(iterableIntegerClass);
-        System.out.println(instantiatedMethod.getGeneratedClass().toString());
         Assert.assertEquals(instantiatedMethod.getGeneratedClass().getRawClass(),
                 com.examples.with.different.packagename.generic.ConcreteGenericClass.class);
 
@@ -326,9 +308,7 @@ public class TestGenericAccessibleObject {
                 }.getType());
 
         GenericMethod genericCreatorMethod = new GenericMethod(creatorMethod, targetClass).getGenericInstantiationFromReturnValue(listOfInteger);
-        System.out.println(genericCreatorMethod.getGeneratedClass().toString());
         GenericMethod genericMethod = new GenericMethod(targetMethod, targetClass).copyWithNewOwner(genericCreatorMethod.getGeneratedClass());
-        System.out.println(genericMethod.getGeneratedClass().toString());
 
         DefaultTestCase test = new DefaultTestCase();
         MethodStatement ms1 = new MethodStatement(test, genericCreatorMethod,
@@ -378,6 +358,5 @@ public class TestGenericAccessibleObject {
 
         //test.removeAssertion(assertion);
         test.removeAssertions();
-        System.out.println(test.toCode());
     }
 }

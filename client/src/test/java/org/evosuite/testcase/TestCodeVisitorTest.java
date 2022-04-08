@@ -127,7 +127,6 @@ public class TestCodeVisitorTest {
         //Finally, visit the test
         TestCodeVisitor visitor = new TestCodeVisitor();
         tc.accept(visitor); //should not throw exception
-        System.out.println(visitor.getCode());
     }
 
     @Test
@@ -169,7 +168,7 @@ public class TestCodeVisitorTest {
                 new GenericConstructor(com.examples.with.different.packagename.subpackage.ExampleWithInnerClass.class.getDeclaredConstructor(), com.examples.with.different.packagename.subpackage.ExampleWithInnerClass.class), 1, 0);
         TestCodeVisitor visitor = new TestCodeVisitor();
         tc.accept(visitor);
-        System.out.println(visitor.getCode());
+
         Set<Class<?>> imports = visitor.getImports();
 
         // Imported
@@ -190,7 +189,7 @@ public class TestCodeVisitorTest {
                 new GenericConstructor(com.examples.with.different.packagename.subpackage.ExampleWithInnerClass.Bar.class.getDeclaredConstructor(), com.examples.with.different.packagename.subpackage.ExampleWithInnerClass.Bar.class), 1, 0);
         TestCodeVisitor visitor = new TestCodeVisitor();
         tc.accept(visitor);
-        System.out.println(visitor.getCode());
+
         Set<Class<?>> imports = visitor.getImports();
 
         // Imported
@@ -220,7 +219,7 @@ public class TestCodeVisitorTest {
         AssignmentStatement assignmentStatement = new AssignmentStatement(tc, longIndex, shortIndex);
         tc.addStatement(assignmentStatement);
         String code = tc.toCode();
-        System.out.println(tc);
+
         assertFalse(code.contains("longArray0[0] = (Long) shortArray0[1]"));
     }
 
@@ -240,7 +239,7 @@ public class TestCodeVisitorTest {
         AssignmentStatement assignmentStatement = new AssignmentStatement(tc, intIndex, shortIndex);
         tc.addStatement(assignmentStatement);
         String code = tc.toCode();
-        System.out.println(tc);
+
         assertFalse(code.contains("integerArray0[0] = (Integer) shortArray0[3]"));
     }
 
@@ -293,7 +292,7 @@ public class TestCodeVisitorTest {
         TestCodeVisitor visitor = new TestCodeVisitor();
         tc.accept(visitor); //should not throw exception
         String code = visitor.getCode();
-        System.out.println(code);
+
         assertFalse(code.contains("= AbstractEnumInInnerClass.AnEnum.1.FOO"));
         assertTrue(code.contains("= AbstractEnumInInnerClass.AnEnum.FOO"));
     }

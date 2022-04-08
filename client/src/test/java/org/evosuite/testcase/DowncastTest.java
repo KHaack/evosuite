@@ -88,7 +88,7 @@ public class DowncastTest {
 
         test.getStatement(num0.getStPosition()).addAssertion(assertion);
         test.removeDownCasts();
-        System.out.println(test);
+
         assertEquals(AbstractSuperclass.class, test.getStatement(1).getReturnClass());
     }
 
@@ -106,7 +106,7 @@ public class DowncastTest {
 
         test.getStatement(num0.getStPosition()).addAssertion(assertion);
         test.removeDownCasts();
-        System.out.println(test);
+
         assertEquals(ConcreteSubclass.class, test.getStatement(1).getReturnClass());
     }
 
@@ -126,7 +126,7 @@ public class DowncastTest {
 
         test.getStatement(num0.getStPosition()).addAssertion(assertion);
         test.removeDownCasts();
-        System.out.println(test);
+
         assertEquals(AbstractSuperclass.class, test.getStatement(1).getReturnClass());
     }
 
@@ -146,7 +146,7 @@ public class DowncastTest {
 
         test.getStatement(num0.getStPosition()).addAssertion(assertion);
         test.removeDownCasts();
-        System.out.println(test);
+
         assertEquals(ConcreteSubclass.class, test.getStatement(1).getReturnClass());
     }
 
@@ -164,7 +164,7 @@ public class DowncastTest {
         test.addStatement(statement);
 
         test.removeDownCasts();
-        System.out.println(test);
+
         FieldReference fr2 = (FieldReference) test.getStatement(3).getReturnValue();
         assertEquals(ConcreteSubclass.class, fr2.getSource().getVariableClass());
     }
@@ -183,7 +183,7 @@ public class DowncastTest {
         test.addStatement(statement);
 
         test.removeDownCasts();
-        System.out.println(test);
+
         FieldReference fr2 = (FieldReference) test.getStatement(3).getReturnValue();
         assertEquals(AbstractSuperclass.class, fr2.getSource().getVariableClass());
     }

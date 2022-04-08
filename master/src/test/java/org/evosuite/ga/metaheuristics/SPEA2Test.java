@@ -33,8 +33,11 @@ import org.evosuite.ga.problems.metrics.GenerationalDistance;
 import org.evosuite.ga.problems.metrics.Metrics;
 import org.evosuite.ga.problems.metrics.Spacing;
 import org.evosuite.ga.problems.multiobjective.ZDT4;
+import org.evosuite.ga.problems.singleobjective.TestThreeHump;
 import org.evosuite.testsuite.TestSuiteChromosome;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -49,6 +52,7 @@ import static org.junit.Assert.assertEquals;
  * @author José Campos
  */
 public class SPEA2Test {
+    private static final Logger logger = LoggerFactory.getLogger(SPEA2Test.class);
 
     @Test
     public void testEnvironmentalSelection_FitArchive() {
@@ -314,7 +318,9 @@ public class SPEA2Test {
         double[][] front = new double[Properties.POPULATION][2];
         for (int i = 0; i < chromosomes.size(); i++) {
             NSGAChromosome chromosome = chromosomes.get(i);
-            System.out.printf("%f,%f\n", chromosome.getFitness(f1), chromosome.getFitness(f2));
+
+            logger.debug("{},{}", chromosome.getFitness(f1), chromosome.getFitness(f2));
+
             front[i][0] = chromosome.getFitness(f1);
             front[i][1] = chromosome.getFitness(f2);
         }
@@ -324,12 +330,12 @@ public class SPEA2Test {
 
         GenerationalDistance gd = new GenerationalDistance();
         double gdd = gd.evaluate(front, trueParetoFront);
-        System.out.println("GenerationalDistance: " + gdd);
+        logger.debug("GenerationalDistance: {}", gdd);
         assertEquals(0.00, gdd, 0.01);
 
         Spacing sp = new Spacing();
         double spd = sp.evaluate(front);
-        System.out.println("SpacingFront: " + spd);
+        logger.debug("SpacingFront: {}", spd);
         assertEquals(0.71, spd, 0.01);
     }
 }

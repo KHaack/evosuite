@@ -64,14 +64,6 @@ public class TestConstraintSolver3 extends RandomizedTC {
 
         Collection<Constraint<?>> constraints = buildConstraintSystem();
 
-        System.out.println("Constraints:");
-        for (Constraint<?> c : constraints) {
-            System.out.println(c.toString());
-        }
-
-        System.out.println("");
-        System.out.println("Initial: " + INIT_STRING);
-
         EvoSuiteSolver solver = new EvoSuiteSolver();
         try {
 //			TODO: see f this
@@ -81,8 +73,6 @@ public class TestConstraintSolver3 extends RandomizedTC {
             } else {
                 Map<String, Object> model = result.getModel();
                 Object var0 = model.get("var0");
-                System.out.println("Expected: " + EXPECTED_INTEGER);
-                System.out.println("Found: " + var0);
 
                 assertEquals(String.valueOf(EXPECTED_INTEGER), var0);
             }

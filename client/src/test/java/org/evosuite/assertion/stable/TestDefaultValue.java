@@ -73,7 +73,7 @@ public class TestDefaultValue {
         builder.appendAssignment(float0, floatArray0, 0);
         builder.appendMethod(float0, Float.class.getMethod("toString"));
         DefaultTestCase tc = builder.getDefaultTestCase();
-        System.out.println(tc.toCode());
+
         ExecutionResult ret_val = TestCaseExecutor.runTest(tc);
         assertNotNull(ret_val);
         assertFalse(ret_val.explicitExceptions.isEmpty());

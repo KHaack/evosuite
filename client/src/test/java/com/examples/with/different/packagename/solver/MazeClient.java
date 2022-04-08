@@ -75,11 +75,11 @@ public class MazeClient {
         maze[y][y] = 'X';
 
         // Print some info
-        System.out.print("Maze dimensions: " + W_SIZE + "," + H_SIZE + "\n");
-        System.out.print("Player pos: " + x + "x" + y + "\n");
-        System.out.print("Iteration no. " + i + "\n");
-        System.out.print("The player moves with 'w', 's', 'a' and 'd'\n");
-        System.out.print("Try to reach the price(#)!\n");
+        //System.out.print("Maze dimensions: " + W_SIZE + "," + H_SIZE + "\n");
+        //System.out.print("Player pos: " + x + "x" + y + "\n");
+        //System.out.print("Iteration no. " + i + "\n");
+        //System.out.print("The player moves with 'w', 's', 'a' and 'd'\n");
+        //System.out.print("Try to reach the price(#)!\n");
 
         // Draw the maze
         draw(maze);
@@ -97,13 +97,13 @@ public class MazeClient {
             } else if (moves[i] == 'd') {
                 x++;
             } else {
-                System.out.println("Invalid move " + moves[i]);
+                //System.out.println("Invalid move " + moves[i]);
                 return 0;
             }
 
             if (maze[y][x] == '#') {
-                System.out.print("You win!\n");
-                System.out.print("Your solution \n" + Arrays.toString(moves));
+                //System.out.print("You win!\n");
+                //System.out.print("Your solution \n" + Arrays.toString(moves));
                 return 1;
             }
 
@@ -114,7 +114,7 @@ public class MazeClient {
             }
 
             if (ox == x && oy == y) {
-                System.out.print("You lose\n");
+                //System.out.print("You lose\n");
                 return 2;
             }
 
@@ -124,7 +124,7 @@ public class MazeClient {
             i++;
         }
 
-        System.out.print("Treasure not found.\n");
+        //System.out.print("Treasure not found.\n");
         return 3;
     }
 
@@ -132,10 +132,10 @@ public class MazeClient {
         int k, j;
         for (k = 0; k < H_SIZE; k++) {
             for (j = 0; j < W_SIZE; j++) {
-                System.out.print(maze[k][j]);
+                //System.out.print(maze[k][j]);
             }
-            System.out.print("\n");
+            //System.out.print("\n");
         }
-        System.out.print("\n");
+        //System.out.print("\n");
     }
 }

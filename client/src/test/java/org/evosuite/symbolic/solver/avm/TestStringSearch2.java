@@ -95,7 +95,7 @@ public class TestStringSearch2 extends RandomizedTC {
         try {
             solution = solve(solver, constraints);
             assertNotNull(solution);
-            System.out.println(solution);
+
         } catch (SolverTimeoutException e) {
             fail();
         }
@@ -123,7 +123,7 @@ public class TestStringSearch2 extends RandomizedTC {
         try {
             solution = solve(solver, constraints);
             assertNotNull(solution);
-            System.out.println(solution);
+
         } catch (SolverTimeoutException e) {
             fail();
         }
@@ -143,9 +143,6 @@ public class TestStringSearch2 extends RandomizedTC {
         Properties.PRINT_TO_SYSTEM = true;
         Properties.TIMEOUT = 5000;
         Properties.CONCOLIC_TIMEOUT = 5000000;
-
-        System.out.println("TestCase=");
-        System.out.println(tc.toCode());
 
         PathCondition pc = new ConcolicExecutorImpl().execute(tc);
         List<BranchCondition> branch_conditions = pc.getBranchConditions();

@@ -33,6 +33,8 @@ import org.evosuite.ga.variables.DoubleVariable;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -41,6 +43,8 @@ import java.util.List;
 import static java.util.Comparator.comparingDouble;
 
 public class TestBeales {
+    private static final Logger logger = LoggerFactory.getLogger(TestBeales.class);
+
     @BeforeClass
     public static void setUp() {
         Properties.POPULATION = 100;
@@ -97,7 +101,7 @@ public class TestBeales {
         for (NSGAChromosome chromosome : chromosomes) {
             DoubleVariable x = (DoubleVariable) chromosome.getVariables().get(0);
             DoubleVariable y = (DoubleVariable) chromosome.getVariables().get(1);
-            System.out.printf("%f,%f : %f\n", x.getValue(), y.getValue(), chromosome.getFitness(f1));
+            logger.debug("{},{} : {}", x.getValue(), y.getValue(), chromosome.getFitness(f1));
         }
     }
 }

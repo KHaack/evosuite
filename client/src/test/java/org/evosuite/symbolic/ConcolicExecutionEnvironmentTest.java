@@ -198,10 +198,6 @@ public class ConcolicExecutionEnvironmentTest {
     }
 
     private List<BranchCondition> executeTest(DefaultTestCase tc) {
-
-        System.out.println("TestCase=");
-        System.out.println(tc.toCode());
-
         // ConcolicExecution concolicExecutor = new ConcolicExecution();
         PathCondition pc = new ConcolicExecutorImpl().execute(tc);
         List<BranchCondition> branch_conditions = pc.getBranchConditions();

@@ -21,6 +21,7 @@ package org.evosuite.symbolic;
 
 import com.examples.with.different.packagename.concolic.TestInput1;
 import com.examples.with.different.packagename.concolic.TestInput2;
+import org.evosuite.ClientProcess;
 import org.evosuite.Properties;
 import org.evosuite.symbolic.dse.ConcolicExecutorImpl;
 import org.evosuite.symbolic.expr.Constraint;
@@ -29,6 +30,8 @@ import org.evosuite.symbolic.solver.avm.EvoSuiteSolver;
 import org.evosuite.testcase.DefaultTestCase;
 import org.evosuite.testcase.variable.VariableReference;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -42,9 +45,11 @@ import static org.junit.Assert.*;
 
 public class TestConstraintSolver {
 
+    private static final Logger logger = LoggerFactory.getLogger(TestConstraintSolver.class);
+
     private static void printConstraints(List<Constraint<?>> constraints) {
         for (Constraint<?> constraint : constraints) {
-            System.out.println(constraint);
+            logger.debug(constraint.toString());
         }
 
     }
@@ -54,9 +59,6 @@ public class TestConstraintSolver {
         Properties.PRINT_TO_SYSTEM = true;
         Properties.TIMEOUT = 5000000;
         Properties.CONCOLIC_TIMEOUT = 5000000;
-
-        System.out.println("TestCase=");
-        System.out.println(tc.toCode());
 
         PathCondition pc = new ConcolicExecutorImpl().execute(tc);
         List<BranchCondition> branch_conditions = pc.getBranchConditions();
@@ -114,7 +116,6 @@ public class TestConstraintSolver {
 
         constraints.add(targetConstraint);
 
-        System.out.println("Target constraints");
         printConstraints(constraints);
 
         EvoSuiteSolver solver = new EvoSuiteSolver();
@@ -126,10 +127,10 @@ public class TestConstraintSolver {
         }
 
         if (solverResult.isUNSAT())
-            System.out.println("No new model was found");
+            logger.debug("No new model was found");
         else {
             Map<String, Object> model = solverResult.getModel();
-            System.out.println(model.toString());
+            logger.debug(model.toString());
         }
 
         return solverResult;

@@ -68,7 +68,6 @@ public class TestConstantInliner {
         parameters = new ArrayList<>();
         parameters.add(ai2);
         test.addStatement(new MethodStatement(test, new GenericMethod(ObjectParameter.class.getMethods()[0], ObjectParameter.class), sut, parameters));
-        System.out.println(test.toCode());
 
         ConstantInliner inliner = new ConstantInliner();
         inliner.inline(test);

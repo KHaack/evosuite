@@ -61,14 +61,6 @@ public class TestRealConstraint extends RandomizedTC {
 
         Collection<Constraint<?>> constraints = buildConstraintSystem();
 
-        System.out.println("Constraints:");
-        for (Constraint<?> c : constraints) {
-            System.out.println(c.toString());
-        }
-
-        System.out.println("");
-        System.out.println("Initial: " + String.valueOf(INIT_DOUBLE));
-
         EvoSuiteSolver seeker = new EvoSuiteSolver();
         try {
             SolverResult result = seeker.solve(constraints);
@@ -78,8 +70,6 @@ public class TestRealConstraint extends RandomizedTC {
                 Map<String, Object> model = result.getModel();
 
                 Object var0 = model.get("var0");
-                System.out.println("Expected: " + EXPECTED_DOUBLE);
-                System.out.println("Found: " + var0);
 
                 assertEquals(EXPECTED_DOUBLE, var0);
             }

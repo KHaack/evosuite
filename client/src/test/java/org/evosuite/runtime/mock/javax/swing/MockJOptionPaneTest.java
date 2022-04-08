@@ -163,15 +163,11 @@ public class MockJOptionPaneTest {
         suite.addTest(t0);
         suite.addTest(t1);
 
-        System.out.println(suite.toString());
-
         BranchCoverageSuiteFitness ff = new BranchCoverageSuiteFitness(cl);
         ff.getFitness(suite);
 
         ConstantInliner inliner = new ConstantInliner();
         inliner.inline(suite);
-
-        System.out.println(suite.toString());
 
         List<ExecutionResult> execResults = suite.getLastExecutionResults();
         assertEquals(2, execResults.size());

@@ -567,7 +567,7 @@ public class TestGenericClassImpl {
 
         GenericClass<?> instantiatedClass = hashMapClass.getWithParametersFromSuperclass(mapOfStringAndWildcard);
         //GenericClass instantiatedClass = linkedlistOfTypeVariable.getGenericInstantiation(listOfInteger.getTypeVariableMap());
-        System.out.println(instantiatedClass.toString());
+
         Assert.assertEquals(String.class, instantiatedClass.getParameterTypes().get(0));
     }
 
@@ -578,7 +578,7 @@ public class TestGenericClassImpl {
                 com.examples.with.different.packagename.generic.GenericParameterExtendingGenericBounds.class);
         GenericClass<?> instantiatedClass = genericClass.getGenericInstantiation();
         //GenericClass instantiatedClass = linkedlistOfTypeVariable.getGenericInstantiation(listOfInteger.getTypeVariableMap());
-        System.out.println(instantiatedClass.toString());
+
         Type parameterType = instantiatedClass.getParameterTypes().get(0);
         Assert.assertTrue(TypeUtils.isAssignable(parameterType, Map.class));
         Assert.assertTrue(parameterType instanceof ParameterizedType);
@@ -788,7 +788,7 @@ public class TestGenericClassImpl {
         Assert.assertTrue(numberWildcardListClass.isAssignableFrom(objectListClass));
 
         GenericClass<?> integerWildcardListInstantiation = numberWildcardListClass.getGenericInstantiation();
-        System.out.println(integerWildcardListInstantiation.toString());
+
         Assert.assertTrue(numberWildcardListClass.isAssignableFrom(integerWildcardListInstantiation));
     }
 
