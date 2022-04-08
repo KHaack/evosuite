@@ -21,10 +21,6 @@ package com.examples.with.different.packagename.concolic;
 
 public class TestCase46 {
 
-    /**
-     * @param args
-     */
-
     public static void test(String string0, String string1, String string2,
                             String string3, String string4, String string5, String string6,
                             String string7, String string8, String string9, String string10,
