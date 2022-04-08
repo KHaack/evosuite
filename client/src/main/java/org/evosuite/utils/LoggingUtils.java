@@ -223,9 +223,7 @@ public class LoggingUtils {
                 f = ClassLoader.getSystemClassLoader().getResourceAsStream(xmlFileName);
             }
             if (f == null) {
-                String msg = xmlFileName + " not found on classpath";
-                System.err.println(msg);
-                logger.error(msg);
+                logger.error("{} not found on classpath", xmlFileName);
                 return false;
             } else {
                 context.reset();

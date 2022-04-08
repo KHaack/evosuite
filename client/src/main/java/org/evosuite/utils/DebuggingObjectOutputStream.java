@@ -82,7 +82,6 @@ public class DebuggingObjectOutputStream extends ObjectOutputStream {
         }
         if (!broken) {
             truncate(currentDepth);
-            //System.out.println("Current object: " + o.getClass().getName());
             stack.add(o);
         }
         return o;

@@ -323,39 +323,14 @@ public class CoverageAnalysis {
 
             } catch (IllegalAccessError e) {
                 LoggingUtils.restorePreviousOutAndErrStream();
-
-                System.out.println("  Cannot access class "
-                        + directory.getName().substring(0,
-                        directory.getName().length() - 6)
-                        + ": " + e);
             } catch (NoClassDefFoundError e) {
                 LoggingUtils.restorePreviousOutAndErrStream();
-
-                System.out.println("  Error while loading "
-                        + directory.getName().substring(0,
-                        directory.getName().length() - 6)
-                        + ": Cannot find " + e.getMessage());
-                //e.printStackTrace();
             } catch (ExceptionInInitializerError e) {
                 LoggingUtils.restorePreviousOutAndErrStream();
-
-                System.out.println("  Exception in initializer of "
-                        + directory.getName().substring(0,
-                        directory.getName().length() - 6));
             } catch (ClassNotFoundException e) {
                 LoggingUtils.restorePreviousOutAndErrStream();
-
-                System.out.println("  Class not found in classpath: "
-                        + directory.getName().substring(0,
-                        directory.getName().length() - 6)
-                        + ": " + e);
             } catch (Throwable e) {
                 LoggingUtils.restorePreviousOutAndErrStream();
-
-                System.out.println("  Unexpected error: "
-                        + directory.getName().substring(0,
-                        directory.getName().length() - 6)
-                        + ": " + e);
             }
         } else if (directory.isDirectory()) {
             for (File file : directory.listFiles()) {

@@ -204,7 +204,7 @@ public abstract class AbstractInstructionLogger implements IInstructionLogger {
             writer.write(o.toString());
             writer.close();
         } catch (Exception e) { //Catch exception if any
-            System.err.println("File error: " + e.getMessage());
+            logger.error("File error: {}", e.getMessage());
         }
     }
 

@@ -209,7 +209,7 @@ public class ValueMinimizer extends TestVisitor {
                     min = increment((T) constantValue.getValue(), -1);
                 }
                 constantValue.setValue(max);
-                System.out.println("Setting value back to " + max);
+                logger.debug("Setting value back to {}", max);
                 constantValue.getTestCase().clearCoveredGoals();
             }
         }

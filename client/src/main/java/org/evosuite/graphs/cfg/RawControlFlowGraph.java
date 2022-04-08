@@ -769,8 +769,6 @@ public class RawControlFlowGraph extends ControlFlowGraph<BytecodeInstruction> {
                         ins.getCalledMethod()) != null)
                     calls.add(ins);
                 // TODO logger.warn or logger.debug
-                // else
-                // System.out.println("false positive call to own classes method: "+ins.toString());
             }
 
         return calls;

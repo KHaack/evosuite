@@ -508,7 +508,7 @@ public final class SmtModelParser extends ResultParser {
             String stringToken;
             do {
                 if (!tokenizer.hasMoreTokens()) {
-                    System.out.println("Error!");
+                    logger.error("Error!");
                 }
                 stringToken = tokenizer.nextToken();
                 strBuilder.append(stringToken);

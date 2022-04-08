@@ -33,7 +33,6 @@ public class PrintingThatShouldBeMuted {
 	
 	/*
 	public void doPrint() { //throws RuntimeException{
-		System.err.println("This should not be printed.");
 		
 		Thread t  = new Thread(){
 			@Override
@@ -52,12 +51,9 @@ public class PrintingThatShouldBeMuted {
 		Thread k = new Thread(){
 			@Override
 			public void run(){
-				System.err.println("Going to sleep for a bit. EvoSuite should throw a timeout");
-				System.err.println("We enter in infinite loop, even if EvoSuite try to interrupt");
 				while(true){
 					try {
 						long time = 200;
-						System.err.println("Going to sleep for "+time+" ms");
 						Thread.sleep(time);
 					} catch (InterruptedException e) {
 						e.printStackTrace();

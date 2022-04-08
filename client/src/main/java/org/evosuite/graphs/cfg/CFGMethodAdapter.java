@@ -317,8 +317,6 @@ public class CFGMethodAdapter extends MethodVisitor {
             logger.info("Analyzing method " + methodName + " in class " + className);
 
             // MethodNode mn = new CFGMethodNode((MethodNode)mv);
-            // System.out.println("Generating CFG for "+ className+"."+mn.name +
-            // " ("+mn.desc +")");
 
             BytecodeAnalyzer bytecodeAnalyzer = new BytecodeAnalyzer();
             logger.info("Generating CFG for method " + methodName);

@@ -511,7 +511,7 @@ public class ExternalProcessGroupHandler {
                         while (data != -1 && !isInterrupted()) {
                             data = proc_in.read();
                             if (data != -1 && Properties.PRINT_TO_SYSTEM) {
-                                System.err.print((char) data);
+                                logger.error("{}", (char) data);
 
                                 errorLine += (char) data;
                                 if ((char) data == '\n') {

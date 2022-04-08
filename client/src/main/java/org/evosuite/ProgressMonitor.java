@@ -137,7 +137,6 @@ public class ProgressMonitor<T extends Chromosome<T>> implements SearchListener<
         if (currentCoverage > lastCoverage) {
             updateStatus((int) (100 * stoppingCondition.getCurrentValue() / max));
         }
-        // System.out.println("");
     }
 
     /* (non-Javadoc)

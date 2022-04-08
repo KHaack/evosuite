@@ -19,9 +19,12 @@
  */
 package org.evosuite.testcase.execution;
 
+import org.evosuite.lm.LangModel;
 import org.evosuite.setup.TestUsageChecker;
 import org.evosuite.testcase.variable.ArrayReference;
 import org.evosuite.testcase.variable.VariableReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Proxy;
@@ -35,6 +38,8 @@ import java.util.Map.Entry;
  * @author Gordon Fraser
  */
 public class Scope {
+
+    private final static Logger logger = LoggerFactory.getLogger(Scope.class);
 
     private final Map<VariableReference, Object> pool;
 
@@ -56,8 +61,7 @@ public class Scope {
         if (reference instanceof ArrayReference) {
             ArrayReference arrayRef = (ArrayReference) reference;
             if (o != null && !o.getClass().isArray())
-                System.out.println("Trying to access object of class " + o.getClass()
-                        + " as array: " + o);
+                logger.debug("Trying to access object of class {} as array: {}", o.getClass(), o);
             else if (o != null) {
                 Object value = o;
                 List<Integer> lengths = new ArrayList<>();
@@ -120,8 +124,7 @@ public class Scope {
      */
     public void printPool() {
         for (Entry<VariableReference, Object> entry : pool.entrySet()) {
-            System.out.println("Pool: " + entry.getKey().getName() + ", "
-                    + entry.getKey().getType() + " : " + entry.getValue());
+            logger.debug("Pool: {}, {} : {}", entry.getKey().getName(), entry.getKey().getType(), entry.getValue());
         }
     }
 

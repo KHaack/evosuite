@@ -69,9 +69,7 @@ public abstract class ExtendSuiteAction extends TestGenerationAction {
 //							});
 //						}
 //					} catch (JavaModelException e) {
-//						System.err.println("Error while traversing resources!" + e);
 //					} catch (CoreException e) {
-//						System.err.println("Error while traversing resources!" + e);
 //					}
 //				}
 //			}

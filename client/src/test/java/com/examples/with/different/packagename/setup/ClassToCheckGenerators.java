@@ -19,39 +19,45 @@
  */
 package com.examples.with.different.packagename.setup;
 
+import org.evosuite.lm.LangModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Created by Andrea Arcuri on 13/09/15.
  */
 public class ClassToCheckGenerators {
 
+    private final static Logger logger = LoggerFactory.getLogger(ClassToCheckGenerators.class);
+
 
     public void bar(WithGenerator foo) {
-        System.out.println("WithGenerator");
+        logger.debug("WithGenerator");
     }
 
 
     public void gi(IGeneratorForItself foo) {
-        System.out.println("IGeneratorForItself");
+        logger.debug("IGeneratorForItself");
     }
 
     public void xi(IX foo) {
-        System.out.println("IX");
+        logger.debug("IX");
     }
 
     public void ga(AGeneratorForItself foo) {
-        System.out.println("AGeneratorForItself");
+        logger.debug("AGeneratorForItself");
     }
 
     public void xa(AX foo) {
-        System.out.println("AX");
+        logger.debug("AX");
     }
 
     public void g(GeneratorForItself foo) {
-        System.out.println("GeneratorForItself");
+        logger.debug("GeneratorForItself");
     }
 
     public void x(X foo) {
-        System.out.println("X");
+        logger.debug("X");
     }
 
     public void forceAnalysis(GeneratorForX gx) {

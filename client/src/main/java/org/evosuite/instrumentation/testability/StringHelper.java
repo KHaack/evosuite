@@ -159,9 +159,6 @@ public class StringHelper {
         if (first.equals(second)) {
             return BooleanHelper.K; // Identical
         } else {
-            //System.out.println("Edit distance between " + first + " and " + second
-            //       + " is " + -editDistance(first, second.toString()) + " / "
-            //      + getLevenshteinDistance(first, (String) second));
             //return -editDistance(first, second.toString());
             //return -getLevenshteinDistance(first, (String) second);
             return -getDistanceBasedOnLeftAlignmentCharacterDistance(first,

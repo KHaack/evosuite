@@ -20,7 +20,10 @@
 package org.evosuite.utils;
 
 import org.evosuite.graphs.cfg.BytecodeInstruction;
+import org.evosuite.lm.LangModel;
 import org.objectweb.asm.Type;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.lang.reflect.Method;
@@ -42,6 +45,8 @@ import java.util.Set;
 public enum JdkPureMethodsList {
 
     instance;
+
+    private final static Logger logger = LoggerFactory.getLogger(JdkPureMethodsList.class);
 
     private final Set<String> pureMethods;
 
@@ -69,8 +74,7 @@ public enum JdkPureMethodsList {
                 set.add(strLine);
             }
         } catch (IOException e) {
-            System.err.println("Wrong filename/path/file is missing");
-            e.printStackTrace();
+            logger.error("Wrong filename/path/file is missing");
         }
         if (set.isEmpty())
             throw new IllegalStateException(
@@ -138,7 +142,6 @@ public enum JdkPureMethodsList {
             newParams = newParams.substring(1);
         }
         toAnalyze += "(" + newParams + ")";
-        //System.out.println(toAnalyze);
 
         return checkPurity(toAnalyze);
     }

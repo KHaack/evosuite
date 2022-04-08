@@ -19,9 +19,14 @@
  */
 package org.evosuite.junit.rules;
 
+import org.evosuite.lm.LangModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Arrays;
 
 public class InitializeClasses extends BaseRule {
+    private final static Logger logger = LoggerFactory.getLogger(InitializeClasses.class);
 
     private final String[] classNames;
 
@@ -38,7 +43,7 @@ public class InitializeClasses extends BaseRule {
             try {
                 Class.forName(className, true, classLoader);
             } catch (ExceptionInInitializerError ex) {
-                System.err.println("Could not initialize " + className);
+                logger.error("Could not initialize {}", className);
             } catch (Throwable t) {
             }
         }

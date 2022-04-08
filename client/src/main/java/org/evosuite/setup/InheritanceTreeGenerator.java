@@ -498,7 +498,7 @@ public class InheritanceTreeGenerator {
                 retval.addAll(ResourceList.getInstance(
                         TestGenerationContext.getInstance().getClassLoaderForSUT()).getAllClasses(element, "", true, true));
             } catch (IllegalArgumentException e) {
-                System.err.println("Does not exist: " + element);
+                logger.error("Does not exist: {}", element);
             }
         }
 

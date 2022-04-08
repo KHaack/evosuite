@@ -20,12 +20,16 @@
 package com.examples.with.different.packagename;
 
 
-public class StatInitIssue {
+import org.evosuite.lm.LangModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+public class StatInitIssue {
+    private final static Logger logger = LoggerFactory.getLogger(StatInitIssue.class);
     private static final String name = StatInitIssue.class.getPackage().getName();
 
     public static void foo() {
-        System.out.println(name);
+        logger.debug(name);
     }
 
     public static void main(String[] args) {

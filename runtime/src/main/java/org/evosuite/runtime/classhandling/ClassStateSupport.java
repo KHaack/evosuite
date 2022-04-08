@@ -191,7 +191,7 @@ public class ClassStateSupport {
             try {
                 classes.add(classLoader.loadClass(name));
             } catch (ClassNotFoundException e) {
-                java.lang.System.err.println("Could not load: " + name);
+                logger.error("Could not load: {}", name);
             }
         }
         retransformIfNeeded(classes);
@@ -226,7 +226,6 @@ public class ClassStateSupport {
 				classToReInstument.add(cl);
 			} catch(Exception | Error e){
 				//this shouldn't really happen
-				java.lang.System.err.println("Could not instrument "+cl.getName()+". Exception "+e.toString());
 			}
 
 		}
@@ -249,7 +248,7 @@ public class ClassStateSupport {
             }
         } catch (UnmodifiableClassException e) {
             //this shouldn't really happen, as already checked in previous loop
-            java.lang.System.err.println("Could not re-instrument classes");
+            logger.error("Could not re-instrument classes");
         } catch (UnsupportedOperationException e) {
             //if this happens, then it is a bug in EvoSuite :(
             logger.error("EvoSuite wrong re-instrumentation: " + e.getMessage());

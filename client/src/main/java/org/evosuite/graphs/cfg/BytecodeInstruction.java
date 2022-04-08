@@ -24,9 +24,12 @@ import org.evosuite.coverage.branch.BranchPool;
 import org.evosuite.coverage.dataflow.DefUsePool;
 import org.evosuite.graphs.GraphPool;
 import org.evosuite.graphs.cdg.ControlDependenceGraph;
+import org.evosuite.lm.LangModel;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.*;
 import org.objectweb.asm.tree.analysis.SourceValue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.util.Set;
@@ -45,6 +48,8 @@ import java.util.Set;
  */
 public class BytecodeInstruction extends ASMWrapper implements Serializable,
         Comparable<BytecodeInstruction> {
+
+    private final static Logger logger = LoggerFactory.getLogger(BytecodeInstruction.class);
 
     private static final long serialVersionUID = 3630449183355518857L;
 
@@ -784,32 +789,32 @@ public class BytecodeInstruction extends ASMWrapper implements Serializable,
      * </p>
      */
     public void printFrameInformation() {
-        System.out.println("Frame STACK:");
+        logger.debug("Frame STACK:");
         for (int i = 0; i < frame.getStackSize(); i++) {
             SourceValue v = (SourceValue) frame.getStack(i);
-            System.out.print(" " + i + "(" + v.insns.size() + "): ");
+            logger.debug(" {} ({}):", i, v.insns.size());
+
             for (Object n : v.insns) {
                 AbstractInsnNode node = (AbstractInsnNode) n;
                 BytecodeInstruction ins = BytecodeInstructionPool.getInstance(classLoader).getInstruction(className,
                         methodName,
                         node);
-                System.out.print(ins.toString() + ", ");
+                logger.debug("{}, ", ins.toString());
             }
-            System.out.println();
         }
 
-        System.out.println("Frame LOCALS:");
+        logger.debug("Frame LOCALS:");
         for (int i = 1; i < frame.getLocals(); i++) {
             SourceValue v = (SourceValue) frame.getLocal(i);
-            System.out.print(" " + i + "(" + v.insns.size() + "): ");
+            logger.debug(" {} ({}):", i, v.insns.size());
+
             for (Object n : v.insns) {
                 AbstractInsnNode node = (AbstractInsnNode) n;
                 BytecodeInstruction ins = BytecodeInstructionPool.getInstance(classLoader).getInstruction(className,
                         methodName,
                         node);
-                System.out.print(ins.toString() + ", ");
+                logger.debug("{}, ", ins.toString());
             }
-            System.out.println();
         }
     }
 
@@ -1067,9 +1072,9 @@ public class BytecodeInstruction extends ASMWrapper implements Serializable,
         if (stackPos < 0) {
             StackTraceElement[] se = new Throwable().getStackTrace();
             int t = 0;
-            System.out.println("Stack trace: ");
+            logger.debug("Stack trace: ");
             while (t < se.length) {
-                System.out.println(se[t]);
+                logger.debug("{}", se[t]);
                 t++;
             }
             return null;
@@ -1168,7 +1173,6 @@ public class BytecodeInstruction extends ASMWrapper implements Serializable,
      * @return a boolean.
      */
     public boolean canBeInstrumented() {
-        // System.out.println("i cant be instrumented "+toString());
         return !isWithinConstructor() || !proceedsOwnConstructorInvocation();
     }
 

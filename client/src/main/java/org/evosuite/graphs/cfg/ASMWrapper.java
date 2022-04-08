@@ -372,7 +372,6 @@ public abstract class ASMWrapper {
      */
     public boolean isMethodCallForClass(String className) {
         if (isMethodCall()) {
-            // System.out.println("in isMethodCallForClass of "+toString()+" for arg "+className+" calledMethodsClass: "+getCalledMethodsClass()+" calledMethod "+getCalledMethod());
             return getCalledMethodsClass().equals(className);
         }
         return false;

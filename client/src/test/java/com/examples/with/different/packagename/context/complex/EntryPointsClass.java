@@ -19,7 +19,14 @@
  */
 package com.examples.with.different.packagename.context.complex;
 
+import org.evosuite.lm.LangModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class EntryPointsClass {
+
+    private final static Logger logger = LoggerFactory.getLogger(LangModel.class);
+
     ISubClass sub;
 
     public EntryPointsClass() {
@@ -29,13 +36,13 @@ public class EntryPointsClass {
     public void dosmt(int i, String string, double d) {
         boolean b = sub.checkFiftneen(i);
         if (b) {
-            System.out.println("ciao");
+            logger.debug("ciao");
         }
     }
 
     public void doObj(AParameterObject o) {
         if (o.isEnabled())
-            System.out.println("covered");
-        System.out.println("not covered");
+            logger.debug("covered");
+        logger.debug("not covered");
     }
 }

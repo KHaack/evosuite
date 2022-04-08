@@ -19,13 +19,18 @@
  */
 package com.examples.with.different.packagename.setup;
 
+import org.evosuite.lm.LangModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Created by Andrea Arcuri on 13/09/15.
  */
 public class ClassToCheckGetterOfInput {
+    private final static Logger logger = LoggerFactory.getLogger(ClassToCheckGetterOfInput.class);
 
     public void foo(GetterOfInput bar) {
-        System.out.println("GetterOfInput");
+        logger.debug("GetterOfInput");
     }
 
 }

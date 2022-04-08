@@ -25,6 +25,8 @@ import org.evosuite.graphs.cfg.BytecodeInstruction;
 import org.evosuite.testcase.execution.ExecutionResult;
 import org.evosuite.testcase.execution.ExecutionTrace;
 import org.evosuite.testcase.execution.MethodCall;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -35,6 +37,8 @@ import java.util.*;
  * @author Andre Mis
  */
 public abstract class DefUseExecutionTraceAnalyzer {
+
+    private final static Logger logger = LoggerFactory.getLogger(DefUseExecutionTraceAnalyzer.class);
 
     /**
      * Constant <code>timeGetCoveredGoals=0l</code>
@@ -348,15 +352,10 @@ public abstract class DefUseExecutionTraceAnalyzer {
      */
     public static void printFinishCalls(ExecutionTrace trace) {
         for (MethodCall call : trace.getMethodCalls()) {
-            System.out.println("Found MethodCall for: " + call.methodName + " on object "
-                    + call.callingObjectID);
-            System.out.println("#passed branches: " + call.branchTrace.size());
+            logger.debug("Found MethodCall for: {} on object {}", call.methodName, call.callingObjectID);
+            logger.debug("#passed branches: {}", call.branchTrace.size());
             for (int i = 0; i < call.defuseCounterTrace.size(); i++) {
-                System.out.println(i + ". at Branch " + call.branchTrace.get(i)
-                        + " true_dist: " + call.trueDistanceTrace.get(i)
-                        + " false_dist: " + call.falseDistanceTrace.get(i)
-                        + " duCounter: " + call.defuseCounterTrace.get(i));
-                System.out.println();
+                logger.debug("{}. at Branch {} true_dist: {} false_dist: {} duCounter: {}", i, call.branchTrace.get(i), call.trueDistanceTrace.get(i), call.falseDistanceTrace.get(i), call.defuseCounterTrace.get(i));
             }
         }
     }
@@ -420,7 +419,6 @@ public abstract class DefUseExecutionTraceAnalyzer {
         // so we have 25% more executed statements, which means this will stay
         // enabled
 
-        //		System.out.println("start");
         long start = System.currentTimeMillis();
 
         Set<DefUseCoverageTestFitness> r = new HashSet<>();
@@ -431,7 +429,6 @@ public abstract class DefUseExecutionTraceAnalyzer {
         }
 
         timeGetCoveredGoals += System.currentTimeMillis() - start;
-        //		System.out.println("end");
 
         return r;
     }
@@ -466,7 +463,7 @@ public abstract class DefUseExecutionTraceAnalyzer {
                 List<Integer> duCounterTrace = new ArrayList<>(
                         currentDefMap.keySet());
                 duCounterTrace.addAll(currentUseMap.keySet());
-                //				System.out.println(duCounterTrace.size()); oO for ncs.Bessj these can be up to 50k entries big
+
                 Collections.sort(duCounterTrace);
                 int traceLength = duCounterTrace.size();
                 Integer[] sortedDefDUTrace = duCounterTrace.toArray(new Integer[traceLength]);

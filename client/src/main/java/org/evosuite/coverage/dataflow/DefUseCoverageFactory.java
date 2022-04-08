@@ -193,7 +193,6 @@ public class DefUseCoverageFactory extends
                     toAnalyze = fieldMethodCall.getCalledMethodsClass() + "."
                             + fieldMethodCall.getCalledMethodName() + "(" + newParams
                             + ")";
-                    //System.out.println(toAnalyze);
 
                     if (JdkPureMethodsList.instance.checkPurity(toAnalyze)) {
                         if (!DefUsePool.addAsUse(fieldMethodCall))
@@ -243,7 +242,6 @@ public class DefUseCoverageFactory extends
         if (registerGoal(goal))
             return goal;
         else {
-            // System.out.println("Discarding goal: "+goal.toString());
             return null;
         }
     }
@@ -500,7 +498,7 @@ public class DefUseCoverageFactory extends
                                     List<Integer> duCounterTrace = new ArrayList<>(
                                             currentDefMap.keySet());
                                     duCounterTrace.addAll(currentUseMap.keySet());
-                                    //				System.out.println(duCounterTrace.size()); oO for ncs.Bessj these can be up to 50k entries big
+
                                     Collections.sort(duCounterTrace);
                                     int traceLength = duCounterTrace.size();
                                     Integer[] sortedDefDUTrace = duCounterTrace.toArray(new Integer[traceLength]);

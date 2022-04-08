@@ -19,6 +19,9 @@
  */
 package org.evosuite.lm;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.*;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -32,6 +35,8 @@ import java.util.regex.Pattern;
  * log-probabilities.
  */
 public class LangModel {
+
+    private final static Logger logger = LoggerFactory.getLogger(LangModel.class);
 
     // class variables
     // Hashes storing various Language Model probabilities
@@ -104,8 +109,7 @@ public class LangModel {
 
             } else if (ngram_len == 1) {
                 //We're looking at unigrams;
-                Pattern unigram_p = Pattern
-                        .compile("([-0-9\\.]+)\\s*(\\S+)\\s*([-0-9\\.]+)");
+                Pattern unigram_p = Pattern.compile("([-0-9\\.]+)\\s*(\\S+)\\s*([-0-9\\.]+)");
                 // Match with <floating point number> <one or more chars> <floating point number>
                 //                        |                   |                 +------ backoff probability
                 //                        |                   +------------------------ unigram
@@ -113,11 +117,9 @@ public class LangModel {
                 Matcher match_unigram = unigram_p.matcher(strLine);
                 if (match_unigram.find()) {
 
-                    double unigram_prob = Double.parseDouble(match_unigram
-                            .group(1));
+                    double unigram_prob = Double.parseDouble(match_unigram.group(1));
                     String unigram = match_unigram.group(2);
-                    double unigram_backoff_prob = Double
-                            .parseDouble(match_unigram.group(3));
+                    double unigram_backoff_prob = Double.parseDouble(match_unigram.group(3));
 
                     unigram_probs.put(unigram, unigram_prob);
                     unigram_backoff_probs.put(unigram, unigram_backoff_prob);
@@ -139,8 +141,7 @@ public class LangModel {
                 //                            +--------------------------------------------- bigram probability
                 Matcher match_bigram = bigram_p.matcher(strLine);
                 if (match_bigram.find()) {
-                    double bigram_prob = Double.parseDouble(match_bigram
-                            .group(1));
+                    double bigram_prob = Double.parseDouble(match_bigram.group(1));
                     String bigram_start = match_bigram.group(2);
                     String bigram_end = match_bigram.group(3);
                     String bigram = bigram_start + " " + bigram_end;
@@ -155,8 +156,7 @@ public class LangModel {
         in.close();
 
         ValueComparator bvc = new ValueComparator(bigram_probs);
-        TreeMap<String, Double> sorted_bigram_probs = new TreeMap<>(
-                bvc);
+        TreeMap<String, Double> sorted_bigram_probs = new TreeMap<>(bvc);
 
         //Store bigrams sorted by probability:
         sorted_bigram_probs.putAll(bigram_probs);
@@ -190,7 +190,6 @@ public class LangModel {
 
         // Print out as sanity check
         //for (Map.Entry<String, String> entry : context_char.entrySet()) {
-        // System.out.println("Key = " + entry.getKey() + ", Value = " +
         // entry.getValue());
         //}
 
@@ -203,6 +202,7 @@ public class LangModel {
     // computed, verbose is flag indicating whether to print out
     // details about how this score is computed
 
+
     /**
      * Splits a string into bigrams and calculates the language model score.
      * For each bigram, it looks up the probability. The score is the geometric mean
@@ -211,15 +211,11 @@ public class LangModel {
      * If a given bigram isn't in the model, unigrams are used to estimate the probability
      * of the bigram instead
      *
-     * @param str     String for which to compute the score
-     * @param verbose whether to print information
+     * @param str String for which to compute the score
      * @return
      */
-    public double score(String str, boolean verbose) {
-
-        if (verbose == true) {
-            System.out.println("String is " + str);
-        } // if
+    public double score(String str) {
+        logger.info("String is {}", str);
 
         double log_prob = 0;
 
@@ -246,9 +242,7 @@ public class LangModel {
             } // if
             String bigram = first_char + " " + second_char;
 
-            if (verbose == true) {
-                System.out.println("Bigram is " + bigram);
-            } // if
+            logger.info("Bigram is is {}", bigram);
 
             // Get negative log likelihood for each bigram
             // (Either get directly or estimate using backoff)
@@ -256,31 +250,19 @@ public class LangModel {
                 // Get direct bigram probabilities
                 double bigram_prob = bigram_probs.get(bigram);
                 log_prob = log_prob + bigram_prob;
-                if (verbose == true) {
-                    System.out.println("Direct bigram prob: "
-                            + Math.pow(10, bigram_prob) + "\n");
-                } // if
+
+                logger.info("Direct bigram prob: {}", Math.pow(10, bigram_prob));
             } else if (unigram_probs.containsKey(second_char) && unigram_backoff_probs.containsKey(first_char)) {
 
                 // Otherwise split into unigrams and do backoff
-                double unigram_backoff_prob = unigram_backoff_probs
-                        .get(first_char);
+                double unigram_backoff_prob = unigram_backoff_probs.get(first_char);
                 log_prob = log_prob + unigram_backoff_prob;
-                // System.out.println("Unigram ("+first_char+") backoff prob: "+unigram_backoff_prob);
-
 
                 double unigram_prob = unigram_probs.get(second_char);
                 log_prob = log_prob + unigram_prob;
 
-                if (verbose == true) {
-                    double bigram_prob = unigram_backoff_prob + unigram_prob;
-                    System.out.println("Inferred bigram prob: "
-                            + Math.pow(10, bigram_prob)
-                            + " (formed from unigram probs " + first_char
-                            + ": " + Math.pow(10, unigram_backoff_prob)
-                            + " and " + second_char + ": "
-                            + Math.pow(10, unigram_prob) + ")\n");
-                } // if
+                double bigram_prob = unigram_backoff_prob + unigram_prob;
+                logger.info("Inferred bigram prob: {} (formed from unigram probs {}: {} and {}: {})", Math.pow(10, bigram_prob), first_char, Math.pow(10, unigram_backoff_prob), second_char, Math.pow(10, unigram_prob));
             } else {
                 //Note: we don't penalise strings containing weird (non-printable) characters.
                 //If we hit one (this block), just do nothing.
@@ -298,16 +280,6 @@ public class LangModel {
         double avg_prob = Math.pow(10, log_prob / ((double) no_chars));
 
         return avg_prob;
-
-    } // score
-
-    /**
-     * Convenience method for {@link #score(String, boolean)} with verbose flag set to false.
-     */
-    public double score(String str) {
-
-        return score(str, false);
-
     } // score
 
     /**

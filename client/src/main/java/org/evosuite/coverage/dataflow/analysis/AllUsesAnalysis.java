@@ -26,7 +26,10 @@ import org.evosuite.graphs.ccfg.*;
 import org.evosuite.graphs.ccfg.ClassControlFlowGraph.FrameNodeType;
 import org.evosuite.graphs.ccg.ClassCallNode;
 import org.evosuite.graphs.cfg.BytecodeInstruction;
+import org.evosuite.lm.LangModel;
 import org.evosuite.utils.LoggingUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -36,6 +39,8 @@ import java.util.*;
  * @author Andre Mis, Alessandra Gorla
  */
 public class AllUsesAnalysis {
+
+    private final static Logger logger = LoggerFactory.getLogger(AllUsesAnalysis.class);
 
     private final static int UPPER_PAIR_SEARCH_INVOCATION_BOUND = 2000000;
     private final ClassControlFlowGraph ccfg;
@@ -231,8 +236,6 @@ public class AllUsesAnalysis {
         long start = System.currentTimeMillis();
         long mingled = timeSpentMingling;
 
-        // TODO get a logger and replace System.outs with logger.debug
-
         LoggingUtils.getEvoLogger().debug("* Searching for pairs in " + methodEntry.getMethod()
                 + " ... ");
 
@@ -255,13 +258,7 @@ public class AllUsesAnalysis {
         // check if search was aborted
         Integer rerunCalls = 0;
         // if (calls >= UPPER_PAIR_SEARCH_INVOCATION_BOUND) {
-        // System.out.println();
-        // System.out.println("* ABORTED pairSearch for method"
-        // + methodEntry.getMethod());
-        //
-        // System.out.print("* Re-Searching for pairs without concidering loops in "
-        // + methodEntry.getMethod()
-        // + " ... ");
+
         // // if we previously tried to analyze this method but had to abort
         // // try to rerun without handling loops
         // activeDefs = createInitialActiveDefs();
@@ -279,10 +276,7 @@ public class AllUsesAnalysis {
 
         mingled = timeSpentMingling - mingled;
 
-        System.out.println("  invocations: " + (calls + rerunCalls) + " took "
-                + spentTime + "ms (" + mingled + ") found " + foundPairs.size()
-                + " pairs");
-
+        logger.debug("  invocations: {} took {} ms ({}) found {} pairs", (calls + rerunCalls), spentTime, mingled, foundPairs.size());
         analyzedMethods.add(methodEntry);
 
         return foundPairs;
@@ -333,9 +327,7 @@ public class AllUsesAnalysis {
                         handleLoops))
                     continue;
 
-                // System.out.println("  nextChild of "+node.toString()+" is "+child.toString());
                 // for(MethodCall mc : callStack)
-                // System.out.println("    "+mc.toString());
 
                 // we don't want to take every child into account all the time
                 // for example if we previously found a methodCallNode and then
@@ -371,8 +363,6 @@ public class AllUsesAnalysis {
                 }
 
                 // if (children.size() > 1)
-                // System.out.println("  found branching point: "
-                // + node.toString());
 
                 // only have to copy stuff if current node has more than one
                 // child
@@ -556,7 +546,6 @@ public class AllUsesAnalysis {
         VariableDefinition def = new VariableDefinition(code, callStack.peek());
         for (Map<String, VariableDefinition> activeDefMap : activeDefMaps) {
             activeDefMap.put(code.getVariableName(), def);
-            // System.out.println("  setting activeDef:" + def.toString());
         }
     }
 
@@ -597,8 +586,6 @@ public class AllUsesAnalysis {
                 // use has a definition-free path from method start
                 if (code.isFieldUse()) {
                     freeUses.add(code);
-                    // System.out.println("  adding free use: " +
-                    // code.toString());
                 }
             }
         }
@@ -623,7 +610,6 @@ public class AllUsesAnalysis {
                 CCFGEdge currentEdge = ccfg.getEdge(node, child);
                 if (handledBackEdges.contains(currentEdge)) {
                     skipChildren = true;
-                    // System.out.println("Skipping nodes. Found already handled backEdge between "+node.toString()+" and "+child.toString());
                     break;
                 }
             }
@@ -764,14 +750,11 @@ public class AllUsesAnalysis {
                     }
                 }
 
-                // System.out.println("mingled map:");
                 // printVDDefMap(activeDefMapAfterCurrentCall);
 
                 activeDefMapsAfterCurrentCall.add(activeDefMapAfterCurrentCall);
             }
         }
-
-        // System.out.println("Finished mingling. #Resulting-Maps: "+activeDefMapsAfterCurrentCall.size());
 
         timeSpentMingling += System.currentTimeMillis() - start;
 
@@ -833,8 +816,6 @@ public class AllUsesAnalysis {
                 activeDef, freeUse, type);
         if (goal != null) {
             foundPairs.add(goal);
-//			System.out.println();
-//			System.out.println("  created goal: " + goal.toString());
         }
     }
 
@@ -929,16 +910,12 @@ public class AllUsesAnalysis {
         if (invocationCount % (UPPER_PAIR_SEARCH_INVOCATION_BOUND / 10) == 0) {
             int percent = invocationCount
                     / (UPPER_PAIR_SEARCH_INVOCATION_BOUND / 10);
-            System.out.print(percent + "0% .. ");
+            logger.debug("{}0% ..", percent);
         }
 
         if (invocationCount >= UPPER_PAIR_SEARCH_INVOCATION_BOUND) {
             if (!warnedAboutAbortion) {
-                System.out.println();
-                System.out.println("* ABORTED inter method pair search in "
-                        + callStack.peek()
-                        + "! Reached maximum invocation limit: "
-                        + UPPER_PAIR_SEARCH_INVOCATION_BOUND);
+                logger.warn("* ABORTED inter method pair search in {}! Reached maximum invocation limit: {}", callStack.peek(), UPPER_PAIR_SEARCH_INVOCATION_BOUND);
                 warnedAboutAbortion = true;
             }
             return true;
@@ -955,10 +932,6 @@ public class AllUsesAnalysis {
 
         if (!callStack.peek().getCalledMethodName()
                 .equals(code.getMethodName())) {
-
-            for (MethodCall mc : callStack) {
-                System.out.println("  " + mc.toString());
-            }
 
             throw new IllegalStateException(
                     "insane callStack: peek is in method "

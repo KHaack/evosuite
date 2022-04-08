@@ -23,6 +23,9 @@ import org.evosuite.graphs.EvoSuiteGraph;
 import org.evosuite.graphs.GraphPool;
 import org.evosuite.graphs.cfg.BytecodeInstruction;
 import org.evosuite.graphs.cfg.RawControlFlowGraph;
+import org.evosuite.lm.LangModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
@@ -38,6 +41,8 @@ import java.util.Map;
  * @author Andre Mis
  */
 public class ClassCallGraph extends EvoSuiteGraph<ClassCallNode, ClassCallEdge> {
+
+    private final static Logger logger = LoggerFactory.getLogger(ClassCallGraph.class);
 
     private final String className;
 
@@ -77,15 +82,13 @@ public class ClassCallGraph extends EvoSuiteGraph<ClassCallNode, ClassCallEdge> 
         for (String method : cfgs.keySet())
             addVertex(new ClassCallNode(method));
 
-        //		System.out.println("generating class call graph for "+className);
-
         // add vertices
         for (ClassCallNode methodNode : graph.vertexSet()) {
             RawControlFlowGraph rcfg = cfgs.get(methodNode.getMethod());
             List<BytecodeInstruction> calls = rcfg.determineMethodCallsToOwnClass();
-            //			System.out.println(calls.size()+" method calls from "+methodNode);
+
             for (BytecodeInstruction call : calls) {
-                //				System.out.println("  to "+call.getCalledMethod()+" in "+call.getCalledMethodsClass());
+
                 ClassCallNode calledMethod = getNodeByMethodName(call.getCalledMethod());
                 if (calledMethod != null) {
                     ClassCallEdge e = new ClassCallEdge(call);
@@ -105,7 +108,7 @@ public class ClassCallGraph extends EvoSuiteGraph<ClassCallNode, ClassCallEdge> 
      */
     public ClassCallNode getNodeByMethodName(String methodName) {
         ClassCallNode r = null;
-        //		System.out.println("getting node by methodName "+methodName);
+
         for (ClassCallNode node : graph.vertexSet()) {
             if (node.getMethod().equals(methodName)) {
                 if (r == null) {
@@ -116,9 +119,11 @@ public class ClassCallGraph extends EvoSuiteGraph<ClassCallNode, ClassCallEdge> 
                 }
             }
         }
-        // TODO logger.warn
-        //		if(r==null)
-        //			System.out.println("didn't find node by methodName "+methodName);
+
+        if(r==null) {
+            logger.warn("didn't find node by methodName {}", methodName);
+        }
+
         return r;
     }
 

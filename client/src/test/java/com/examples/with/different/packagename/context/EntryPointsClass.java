@@ -19,7 +19,12 @@
  */
 package com.examples.with.different.packagename.context;
 
+import org.evosuite.lm.LangModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class EntryPointsClass {
+    private final static Logger logger = LoggerFactory.getLogger(EntryPointsClass.class);
     ISubClass sub;
 
     public EntryPointsClass() {
@@ -29,7 +34,7 @@ public class EntryPointsClass {
     public void dosmt(int i) {
         boolean b = sub.checkFiftneen(i);
         if (b) {
-            System.out.println("ciao");
+            logger.debug("ciao");
         }
     }
 

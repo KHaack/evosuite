@@ -340,8 +340,6 @@ public class TestGenerationJob extends Job {
                             System.out.println("* Shut down progress monitor");
                         }
                         //} catch (Exception e) {
-                        //	System.err.println(this.getClass().getCanonicalName() + ": Exception while reading output of client process " + e);
-                        //	System.err.println(e.getStackTrace().toString());
                         //}
                     }
                 }

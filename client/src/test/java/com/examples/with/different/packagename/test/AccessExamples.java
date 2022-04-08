@@ -19,16 +19,21 @@
  */
 package com.examples.with.different.packagename.test;
 
+import org.evosuite.lm.LangModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * used by {@link com.examples.with.different.packagename.AccessExamples}
  */
 public class AccessExamples {
+    private final static Logger logger = LoggerFactory.getLogger(AccessExamples.class);
 
     /**
      * package visible method in super class in a different package
      */
     void defaultMethodInSuperClass() {
-        System.out.println("");
+        logger.debug("defaultMethodInSuperClass");
     }
 
 }

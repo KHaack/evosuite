@@ -413,10 +413,7 @@ public class DefUseCoverageTestFitness extends TestFitnessFunction {
 
     private void preFitnessDebugInfo(ExecutionResult result, boolean respectPrintFlag) {
         if (PRINT_DEBUG || !respectPrintFlag) {
-            System.out.println("==============================================================");
-            System.out.println("current goal: " + this);
-            System.out.println("current test:");
-            System.out.println(result.test.toCode());
+            logger.debug("current goal: {} current test: {}", this, result.test.toCode());
         }
     }
 
@@ -425,8 +422,7 @@ public class DefUseCoverageTestFitness extends TestFitnessFunction {
         if (DEBUG) {
             if (fitness != 0) {
                 if (PRINT_DEBUG) {
-                    System.out.println("goal NOT COVERED. fitness: " + fitness);
-                    System.out.println("==============================================================");
+                    logger.debug("goal NOT COVERED. fitness: {}", fitness);
                 }
                 if (DefUseFitnessCalculator.traceCoversGoal(this, individual,
                         result.getTrace()))

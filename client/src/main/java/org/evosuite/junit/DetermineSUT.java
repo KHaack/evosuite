@@ -71,15 +71,15 @@ public class DetermineSUT {
      */
     public static void main(String[] args) {
         if (args.length != 2) {
-            System.err.println("Expected parameters: <TestCase> <Target Classpath>");
+            logger.error("Expected parameters: <TestCase> <Target Classpath>");
             return;
         }
         Properties.getInstanceSilent();
         DetermineSUT det = new DetermineSUT();
         try {
-            System.out.println(det.getSUTName(args[0], args[1]));
+            logger.info(det.getSUTName(args[0], args[1]));
         } catch (NoJUnitClassException e) {
-            System.err.println("Found no JUnit test case");
+            logger.error("Found no JUnit test case");
         }
     }
 
@@ -116,7 +116,6 @@ public class DetermineSUT {
         List<String> sortedNames = new ArrayList<>(candidateClasses);
         sortedNames.sort(new TargetClassSorter(fullyQualifiedTargetClass));
 
-        //System.out.println("Sorted candidate classes: " + sortedNames);
         return sortedNames.get(0);
     }
 

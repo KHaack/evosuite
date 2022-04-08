@@ -19,7 +19,13 @@
  */
 package com.examples.with.different.packagename;
 
+import org.evosuite.lm.LangModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class AccessExamples extends com.examples.with.different.packagename.test.AccessExamples {
+
+    private final static Logger logger = LoggerFactory.getLogger(AccessExamples.class);
 
     public String publicField = "";
     protected String protectedField = "";
@@ -28,20 +34,20 @@ public class AccessExamples extends com.examples.with.different.packagename.test
     private String privateField = "";
 
     public void publicMethod() {
-        System.out.println("");
+        logger.debug("publicMethod()");
     }
 
     void defaultMethod() {
-        System.out.println("");
+        logger.debug("defaultMethod()");
     }
 
     protected void protectedMethod() {
-        System.out.println("");
+        logger.debug("protectedMethod()");
     }
 
     @SuppressWarnings("unused")
     private void privateMethod() {
-        System.out.println("");
+        logger.debug("privateMethod()");
     }
 
 }

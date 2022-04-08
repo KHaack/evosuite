@@ -86,7 +86,6 @@ public class AccessibleClassAdapter extends ClassVisitor {
                 && (access & Opcodes.ACC_PROTECTED) != Opcodes.ACC_PROTECTED) {
             access = access | Opcodes.ACC_PUBLIC;
             // access = access & ~Opcodes.ACC_PROTECTED;
-            //System.out.println("Setting field to public: "+name);
         }
 
         return super.visitField(access, name, desc, signature, value);
