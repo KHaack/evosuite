@@ -19,6 +19,8 @@
  */
 package org.evosuite.setup;
 
+import com.examples.with.different.packagename.staticusage.Class1;
+import com.examples.with.different.packagename.staticusage.DirectAccessStaticField;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
 import org.evosuite.SystemTestBase;
@@ -28,9 +30,6 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.examples.with.different.packagename.staticusage.Class1;
-import com.examples.with.different.packagename.staticusage.DirectAccessStaticField;
 
 public class AddMethodsInitStaticFieldsSystemTest extends SystemTestBase {
 

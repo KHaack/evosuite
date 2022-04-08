@@ -19,13 +19,13 @@
  */
 package org.evosuite.runtime.mock.java.util;
 
+import org.evosuite.runtime.mock.OverrideMock;
+
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoField;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.TimeZone;
-
-import org.evosuite.runtime.mock.OverrideMock;
 
 public class MockGregorianCalendar extends GregorianCalendar  implements OverrideMock{
 

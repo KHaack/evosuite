@@ -19,11 +19,7 @@
  */
 package org.evosuite.continuous.project;
 
-import org.evosuite.xsd.CUT;
-import org.evosuite.xsd.Generation;
-import org.evosuite.xsd.Project;
-import org.evosuite.xsd.TestSuite;
-import org.evosuite.xsd.XSDUtils;
+import org.evosuite.xsd.*;
 import org.junit.Assert;
 import org.junit.Test;
 

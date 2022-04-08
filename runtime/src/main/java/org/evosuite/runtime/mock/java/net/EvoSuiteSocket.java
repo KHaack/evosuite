@@ -19,24 +19,17 @@
  */
 package org.evosuite.runtime.mock.java.net;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.Proxy;
-import java.net.SocketAddress;
-import java.net.SocketException;
-import java.net.SocketImpl;
-import java.net.SocketOptions;
-import java.net.UnknownHostException;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.evosuite.runtime.vnet.EndPointInfo;
 import org.evosuite.runtime.vnet.NativeTcp;
 import org.evosuite.runtime.vnet.VirtualNetwork;
 import org.evosuite.runtime.vnet.VirtualNetwork.ConnectionType;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.*;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 /*

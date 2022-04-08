@@ -19,6 +19,7 @@
  */
 package org.evosuite.testcase;
 
+import com.examples.with.different.packagename.staticfield.NoClassInit;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
 import org.evosuite.SystemTestBase;
@@ -28,8 +29,6 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.examples.with.different.packagename.staticfield.NoClassInit;
 
 public class NoClassInitSystemTest extends SystemTestBase {
 

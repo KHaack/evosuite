@@ -19,13 +19,13 @@
  */
 package org.evosuite.runtime.mock;
 
+import org.objectweb.asm.Type;
+
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-
-import org.objectweb.asm.Type;
 
 /**
  * 

@@ -19,12 +19,9 @@
  */
 package com.examples.with.different.packagename;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Test;
 
-import com.examples.with.different.packagename.Calculator;
+import static org.junit.Assert.assertEquals;
 
 public class CalculatorTest {
 

@@ -21,8 +21,6 @@ package com.examples.with.different.packagename.testcarver;
 
 import junit.framework.TestSuite;
 
-import com.examples.with.different.packagename.testcarver.Converter;
-
 
 /**
  * Test Case for the IntegerConverter class.

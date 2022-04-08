@@ -19,21 +19,20 @@
  */
 package org.evosuite.ga.metaheuristics;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.examples.with.different.packagename.ClassHierarchyIncludingInterfaces;
+import com.examples.with.different.packagename.XMLElement2;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
-import org.evosuite.SystemTestBase;
 import org.evosuite.Properties.Algorithm;
 import org.evosuite.Properties.Criterion;
 import org.evosuite.Properties.StoppingCondition;
+import org.evosuite.SystemTestBase;
 import org.evosuite.ga.Chromosome;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.examples.with.different.packagename.ClassHierarchyIncludingInterfaces;
-import com.examples.with.different.packagename.XMLElement2;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * CellularGA system test

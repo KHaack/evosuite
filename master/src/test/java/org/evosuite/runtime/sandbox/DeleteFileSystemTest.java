@@ -20,11 +20,11 @@
 
 package org.evosuite.runtime.sandbox;
 
-import static org.junit.Assert.assertTrue;
-
-import java.io.File;
-import java.io.IOException;
-
+import com.examples.with.different.packagename.DeleteFileCommonsIO;
+import com.examples.with.different.packagename.DeleteFileExample;
+import com.examples.with.different.packagename.DeleteFileProcess;
+import com.examples.with.different.packagename.DeleteFileThread;
+import com.examples.with.different.packagename.sandbox.DeleteInStaticInitializer;
 import org.apache.commons.io.FileUtils;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
@@ -35,11 +35,10 @@ import org.junit.After;
 import org.junit.Assume;
 import org.junit.Test;
 
-import com.examples.with.different.packagename.DeleteFileCommonsIO;
-import com.examples.with.different.packagename.DeleteFileExample;
-import com.examples.with.different.packagename.DeleteFileProcess;
-import com.examples.with.different.packagename.DeleteFileThread;
-import com.examples.with.different.packagename.sandbox.DeleteInStaticInitializer;
+import java.io.File;
+import java.io.IOException;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Gordon Fraser

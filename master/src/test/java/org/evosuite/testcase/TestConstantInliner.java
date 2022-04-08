@@ -19,12 +19,8 @@
  */
 package org.evosuite.testcase;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.util.ArrayList;
-import java.util.List;
-
+import com.examples.with.different.packagename.ObjectParameter;
+import com.examples.with.different.packagename.StringConstantInliningExample;
 import com.examples.with.different.packagename.TrivialInt;
 import org.evosuite.testcase.statements.*;
 import org.evosuite.testcase.variable.ArrayIndex;
@@ -34,8 +30,11 @@ import org.evosuite.utils.generic.GenericConstructor;
 import org.evosuite.utils.generic.GenericMethod;
 import org.junit.Test;
 
-import com.examples.with.different.packagename.ObjectParameter;
-import com.examples.with.different.packagename.StringConstantInliningExample;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class TestConstantInliner {
 

@@ -19,11 +19,11 @@
  */
 package com.examples.with.different.packagename;
 
-import static org.junit.Assert.assertTrue;
+import org.junit.Test;
 
 import java.lang.reflect.Modifier;
 
-import org.junit.Test;
+import static org.junit.Assert.assertTrue;
 
 public class FinalClassTest {
 

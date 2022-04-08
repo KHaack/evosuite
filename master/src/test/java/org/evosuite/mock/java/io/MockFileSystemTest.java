@@ -19,6 +19,10 @@
  */
 package org.evosuite.mock.java.io;
 
+import com.examples.with.different.packagename.mock.java.io.CreateNewTmpFile;
+import com.examples.with.different.packagename.mock.java.io.FileAsInputExist;
+import com.examples.with.different.packagename.mock.java.io.FileExist;
+import com.examples.with.different.packagename.mock.java.io.ReadHelloWorldFromFileWithNameAsInput;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
 import org.evosuite.SystemTestBase;
@@ -28,11 +32,6 @@ import org.evosuite.testsuite.TestSuiteChromosome;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
-
-import com.examples.with.different.packagename.mock.java.io.CreateNewTmpFile;
-import com.examples.with.different.packagename.mock.java.io.FileAsInputExist;
-import com.examples.with.different.packagename.mock.java.io.FileExist;
-import com.examples.with.different.packagename.mock.java.io.ReadHelloWorldFromFileWithNameAsInput;
 
 public class MockFileSystemTest extends SystemTestBase {
 

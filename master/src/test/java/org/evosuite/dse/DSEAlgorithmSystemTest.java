@@ -19,28 +19,8 @@
  */
 package org.evosuite.dse;
 
-import com.examples.with.different.packagename.dse.Add;
-import com.examples.with.different.packagename.dse.BooleanExample;
-import com.examples.with.different.packagename.dse.ByteExample;
-import com.examples.with.different.packagename.dse.CharExample;
-import com.examples.with.different.packagename.dse.DoubleExample;
-import com.examples.with.different.packagename.dse.FloatExample;
-import com.examples.with.different.packagename.dse.LocalClassExample;
-import com.examples.with.different.packagename.dse.LongExample;
-import com.examples.with.different.packagename.dse.Max;
-import com.examples.with.different.packagename.dse.Min;
-import com.examples.with.different.packagename.dse.MinUnreachableCode;
-import com.examples.with.different.packagename.dse.NoStaticMethod;
-import com.examples.with.different.packagename.dse.ObjectExample;
-import com.examples.with.different.packagename.dse.PathDivergeUsingHashExample;
-import com.examples.with.different.packagename.dse.ShortExample;
-import com.examples.with.different.packagename.dse.StringExample;
-import com.examples.with.different.packagename.dse.array.ArrayLengthExample;
-import com.examples.with.different.packagename.dse.array.IntegerArrayAssignmentExample;
-import com.examples.with.different.packagename.dse.array.IntegerArrayAssignmentExample2;
-import com.examples.with.different.packagename.dse.array.RealArrayAssignmentExample;
-import com.examples.with.different.packagename.dse.array.RealArrayAssignmentExample2;
-import com.examples.with.different.packagename.dse.array.StringArrayAssignmentExample;
+import com.examples.with.different.packagename.dse.*;
+import com.examples.with.different.packagename.dse.array.*;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
 import org.evosuite.Properties.StoppingCondition;
@@ -51,9 +31,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class DSEAlgorithmSystemTest extends DSESystemTestBase {
 

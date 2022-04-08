@@ -19,15 +19,13 @@
  */
 package com.examples.with.different.packagename.testcarver;
 
+import junit.framework.TestCase;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-
-import junit.framework.TestCase;
-
-import com.examples.with.different.packagename.testcarver.ConversionException;
 
 
 /**

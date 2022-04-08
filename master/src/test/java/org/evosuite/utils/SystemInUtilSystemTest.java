@@ -19,6 +19,7 @@
  */
 package org.evosuite.utils;
 
+import com.examples.with.different.packagename.ReadFromSystemIn;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
 import org.evosuite.SystemTestBase;
@@ -28,8 +29,6 @@ import org.evosuite.testsuite.TestSuiteChromosome;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
-
-import com.examples.with.different.packagename.ReadFromSystemIn;
 
 public class SystemInUtilSystemTest extends SystemTestBase {
 

@@ -19,8 +19,7 @@
  */
 package org.evosuite.testcase;
 
-import java.util.Map;
-
+import com.examples.with.different.packagename.staticfield.UnstableAssertion;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
 import org.evosuite.SystemTestBase;
@@ -28,15 +27,13 @@ import org.evosuite.ga.metaheuristics.GeneticAlgorithm;
 import org.evosuite.statistics.OutputVariable;
 import org.evosuite.statistics.RuntimeVariable;
 import org.evosuite.statistics.backend.DebugStatisticsBackend;
-//import org.evosuite.testsuite.SearchStatistics;
 import org.evosuite.testsuite.TestSuiteChromosome;
-//import org.evosuite.utils.ReportGenerator.StatisticEntry;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.examples.with.different.packagename.staticfield.UnstableAssertion;
+import java.util.Map;
 
 public class UnstableAssertionSystemTest extends SystemTestBase {
 

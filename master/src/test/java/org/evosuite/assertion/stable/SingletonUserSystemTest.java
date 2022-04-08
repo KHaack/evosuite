@@ -19,8 +19,7 @@
  */
 package org.evosuite.assertion.stable;
 
-import java.util.Map;
-
+import com.examples.with.different.packagename.stable.SingletonUser;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
 import org.evosuite.SystemTestBase;
@@ -34,7 +33,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.examples.with.different.packagename.stable.SingletonUser;
+import java.util.Map;
 
 public class SingletonUserSystemTest extends SystemTestBase {
 

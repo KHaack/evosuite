@@ -19,6 +19,10 @@
  */
 package org.evosuite.seeding;
 
+import com.examples.with.different.packagename.seeding.NumericDynamicDoubleSeeding;
+import com.examples.with.different.packagename.seeding.NumericDynamicFloatSeeding;
+import com.examples.with.different.packagename.seeding.NumericDynamicIntSeeding;
+import com.examples.with.different.packagename.seeding.NumericDynamicLongSeeding;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
 import org.evosuite.SystemTestBase;
@@ -26,11 +30,6 @@ import org.evosuite.ga.metaheuristics.GeneticAlgorithm;
 import org.evosuite.testsuite.TestSuiteChromosome;
 import org.junit.Assert;
 import org.junit.Test;
-
-import com.examples.with.different.packagename.seeding.NumericDynamicDoubleSeeding;
-import com.examples.with.different.packagename.seeding.NumericDynamicFloatSeeding;
-import com.examples.with.different.packagename.seeding.NumericDynamicIntSeeding;
-import com.examples.with.different.packagename.seeding.NumericDynamicLongSeeding;
 
 /**
  * @author jmr

@@ -20,6 +20,7 @@
 
 package org.evosuite.basic;
 
+import com.examples.with.different.packagename.generic.*;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
 import org.evosuite.SystemTestBase;
@@ -28,56 +29,6 @@ import org.evosuite.strategy.TestGenerationStrategy;
 import org.evosuite.testsuite.TestSuiteChromosome;
 import org.junit.Assert;
 import org.junit.Test;
-
-import com.examples.with.different.packagename.generic.AbstractGenericClass;
-import com.examples.with.different.packagename.generic.AbstractGuavaExample;
-import com.examples.with.different.packagename.generic.DelayedQueueExample;
-import com.examples.with.different.packagename.generic.GenericArray;
-import com.examples.with.different.packagename.generic.GenericArrayWithGenericType;
-import com.examples.with.different.packagename.generic.GenericArrayWithGenericTypeVariable;
-import com.examples.with.different.packagename.generic.GenericClassWithGenericMethod;
-import com.examples.with.different.packagename.generic.GenericClassWithGenericMethodAndSubclass;
-import com.examples.with.different.packagename.generic.GenericCollectionUtil;
-import com.examples.with.different.packagename.generic.GenericConstructorParameterOnRawList;
-import com.examples.with.different.packagename.generic.GenericGenericParameter;
-import com.examples.with.different.packagename.generic.GenericMemberclass;
-import com.examples.with.different.packagename.generic.GenericMethod;
-import com.examples.with.different.packagename.generic.GenericMethodAlternativeBounds;
-import com.examples.with.different.packagename.generic.GenericMethodReturningTypeVariable;
-import com.examples.with.different.packagename.generic.GenericMethodWithBounds;
-import com.examples.with.different.packagename.generic.GenericOnlyInMemberclass;
-import com.examples.with.different.packagename.generic.GenericParameterExtendingGenericBounds;
-import com.examples.with.different.packagename.generic.GenericParameterWithBound;
-import com.examples.with.different.packagename.generic.GenericParameterWithGenericBound;
-import com.examples.with.different.packagename.generic.GenericParameters1;
-import com.examples.with.different.packagename.generic.GenericParameters2;
-import com.examples.with.different.packagename.generic.GenericParameters3;
-import com.examples.with.different.packagename.generic.GenericParameters4;
-import com.examples.with.different.packagename.generic.GenericParameters5;
-import com.examples.with.different.packagename.generic.GenericParameters6;
-import com.examples.with.different.packagename.generic.GenericParameters7;
-import com.examples.with.different.packagename.generic.GenericParameters8;
-import com.examples.with.different.packagename.generic.GenericSUT;
-import com.examples.with.different.packagename.generic.GenericSUTString;
-import com.examples.with.different.packagename.generic.GenericSUTTwoParameters;
-import com.examples.with.different.packagename.generic.GenericStaticMemberclass;
-import com.examples.with.different.packagename.generic.GenericStaticMethod1;
-import com.examples.with.different.packagename.generic.GenericStaticMethod2;
-import com.examples.with.different.packagename.generic.GenericStaticMethod3;
-import com.examples.with.different.packagename.generic.GenericStaticMethod4;
-import com.examples.with.different.packagename.generic.GenericSuperclassOmittingTypeParameters;
-import com.examples.with.different.packagename.generic.GenericTripleParameter;
-import com.examples.with.different.packagename.generic.GenericTwoDimensionalArray;
-import com.examples.with.different.packagename.generic.GenericVarArgMethod;
-import com.examples.with.different.packagename.generic.GenericWildcardParameter;
-import com.examples.with.different.packagename.generic.GenericWithPartialParameters;
-import com.examples.with.different.packagename.generic.GenericWithWildcardParameter;
-import com.examples.with.different.packagename.generic.GuavaExample;
-import com.examples.with.different.packagename.generic.GuavaExample2;
-import com.examples.with.different.packagename.generic.GuavaExample3;
-import com.examples.with.different.packagename.generic.GuavaExample5;
-import com.examples.with.different.packagename.generic.PartiallyGenericReturnType;
-import com.examples.with.different.packagename.generic.ReallyCaselessMap;
 
 /**
  * @author Gordon Fraser

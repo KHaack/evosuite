@@ -19,13 +19,12 @@
  */
 package org.evosuite.runtime.mock.java.net;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Constructor;
-import java.net.Inet4Address;
-
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.net.Inet4Address;
 
 
 /**

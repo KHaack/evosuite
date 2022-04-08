@@ -19,15 +19,15 @@
  */
 package org.evosuite.runtime.mock.java.net;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 

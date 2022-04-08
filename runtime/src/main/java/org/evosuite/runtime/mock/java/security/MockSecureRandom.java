@@ -19,10 +19,10 @@
  */
 package org.evosuite.runtime.mock.java.security;
 
+import org.evosuite.runtime.mock.OverrideMock;
+
 import java.nio.ByteBuffer;
 import java.security.SecureRandom;
-
-import org.evosuite.runtime.mock.OverrideMock;
 
 public class MockSecureRandom extends SecureRandom implements OverrideMock {
 

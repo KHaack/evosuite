@@ -21,9 +21,6 @@ package com.examples.with.different.packagename.testcarver;
 
 import java.lang.reflect.Array;
 import java.util.Collection;
-//import org.apache.commons.beanutils.BeanUtils;
-import com.examples.with.different.packagename.testcarver.ConversionException;
-import com.examples.with.different.packagename.testcarver.Converter;
 
 /**
  * Base {@link Converter} implementation that provides the structure

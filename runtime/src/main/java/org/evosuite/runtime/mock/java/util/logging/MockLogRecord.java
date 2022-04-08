@@ -19,10 +19,10 @@
  */
 package org.evosuite.runtime.mock.java.util.logging;
 
+import org.evosuite.runtime.mock.OverrideMock;
+
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
-
-import org.evosuite.runtime.mock.OverrideMock;
 
 public class MockLogRecord extends LogRecord  implements OverrideMock{
 

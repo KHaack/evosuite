@@ -19,20 +19,16 @@
  */
 package org.evosuite.runtime.mock.java.io;
 
-import java.io.File;
-import java.io.FileDescriptor;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.nio.channels.FileChannel;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import org.evosuite.runtime.LeakingResource;
 import org.evosuite.runtime.mock.MockFramework;
 import org.evosuite.runtime.mock.OverrideMock;
 import org.evosuite.runtime.mock.java.lang.MockNullPointerException;
 import org.evosuite.runtime.vfs.VFile;
 import org.evosuite.runtime.vfs.VirtualFileSystem;
+
+import java.io.*;
+import java.nio.channels.FileChannel;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class MockFileInputStream extends FileInputStream implements LeakingResource, OverrideMock{
 

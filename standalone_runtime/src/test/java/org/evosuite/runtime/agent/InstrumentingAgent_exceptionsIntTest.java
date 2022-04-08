@@ -19,19 +19,14 @@
  */
 package org.evosuite.runtime.agent;
 
+import com.examples.with.different.packagename.agent.ExceptionHolder;
 import org.evosuite.runtime.Runtime;
 import org.evosuite.runtime.RuntimeSettings;
 import org.evosuite.runtime.instrumentation.MethodCallReplacementCache;
 import org.evosuite.runtime.mock.EvoSuiteMock;
 import org.evosuite.runtime.mock.MockFramework;
 import org.evosuite.runtime.mock.java.lang.MockThrowable;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import com.examples.with.different.packagename.agent.ExceptionHolder;
+import org.junit.*;
 
 public class InstrumentingAgent_exceptionsIntTest {
 

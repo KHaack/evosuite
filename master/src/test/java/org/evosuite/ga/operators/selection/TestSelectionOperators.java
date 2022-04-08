@@ -19,15 +19,13 @@
  */
 package org.evosuite.ga.operators.selection;
 
-import org.evosuite.ga.Chromosome;
-import org.evosuite.ga.operators.selection.FitnessProportionateSelection;
-import org.evosuite.ga.operators.selection.RankSelection;
-import org.evosuite.ga.operators.selection.SelectionFunction;
-import org.evosuite.ga.operators.selection.TournamentSelection;
-import org.evosuite.testcase.*;
-import org.junit.*;
+import org.evosuite.testcase.TestChromosome;
+import org.junit.Assert;
+import org.junit.Ignore;
+import org.junit.Test;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
 
 
 /**

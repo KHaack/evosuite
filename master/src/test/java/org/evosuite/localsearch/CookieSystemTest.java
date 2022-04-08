@@ -19,6 +19,7 @@
  */
 package org.evosuite.localsearch;
 
+import com.examples.with.different.packagename.strings.Cookie;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
 import org.evosuite.Properties.Criterion;
@@ -29,8 +30,6 @@ import org.evosuite.ga.metaheuristics.GeneticAlgorithm;
 import org.evosuite.testsuite.TestSuiteChromosome;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.examples.with.different.packagename.strings.Cookie;
 
 /**
  * Created by Andrea Arcuri on 19/03/15.

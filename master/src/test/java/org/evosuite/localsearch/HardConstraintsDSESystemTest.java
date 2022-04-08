@@ -19,6 +19,7 @@
  */
 package org.evosuite.localsearch;
 
+import com.examples.with.different.packagename.concolic.HardConstraints;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
 import org.evosuite.Properties.Criterion;
@@ -30,8 +31,6 @@ import org.junit.Assert;
 import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.examples.with.different.packagename.concolic.HardConstraints;
 
 /**
  * Created by Andrea Arcuri on 19/03/15.

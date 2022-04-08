@@ -19,8 +19,6 @@
  */
 package org.evosuite.ga.metaheuristics;
 
-import static org.junit.Assert.assertEquals;
-
 import org.evosuite.Properties;
 import org.evosuite.Properties.StoppingCondition;
 import org.evosuite.coverage.branch.BranchCoverageSuiteFitness;
@@ -42,6 +40,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Unit tests for SPEA2's functions.

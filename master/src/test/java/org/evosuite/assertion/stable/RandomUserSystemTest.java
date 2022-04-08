@@ -19,10 +19,7 @@
  */
 package org.evosuite.assertion.stable;
 
-import static org.junit.Assert.assertFalse;
-
-import java.util.Map;
-
+import com.examples.with.different.packagename.stable.RandomUser;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
 import org.evosuite.SystemTestBase;
@@ -38,7 +35,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.objectweb.asm.Type;
 
-import com.examples.with.different.packagename.stable.RandomUser;
+import java.util.Map;
+
+import static org.junit.Assert.assertFalse;
 
 public class RandomUserSystemTest extends SystemTestBase {
     private final boolean DEFAULT_JUNIT_CHECK_ON_SEPARATE_PROCESS = Properties.JUNIT_CHECK_ON_SEPARATE_PROCESS;

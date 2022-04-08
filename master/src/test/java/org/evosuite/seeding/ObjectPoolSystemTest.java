@@ -19,22 +19,17 @@
  */
 package org.evosuite.seeding;
 
+import com.examples.with.different.packagename.testcarver.ArrayConverterTestCase;
+import com.examples.with.different.packagename.testcarver.DifficultClassTest;
+import com.examples.with.different.packagename.testcarver.DifficultClassWithoutCarving;
+import com.examples.with.different.packagename.testcarver.DifficultClassWithoutCarvingTest;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
 import org.evosuite.Properties.TestFactory;
 import org.evosuite.SystemTestBase;
 import org.evosuite.ga.metaheuristics.GeneticAlgorithm;
 import org.evosuite.testsuite.TestSuiteChromosome;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-
-import com.examples.with.different.packagename.testcarver.ArrayConverterTestCase;
-import com.examples.with.different.packagename.testcarver.DifficultClassTest;
-import com.examples.with.different.packagename.testcarver.DifficultClassWithoutCarving;
-import com.examples.with.different.packagename.testcarver.DifficultClassWithoutCarvingTest;
+import org.junit.*;
 
 public class ObjectPoolSystemTest extends SystemTestBase {
 

@@ -19,11 +19,7 @@
  */
 package org.evosuite.localsearch;
 
-import static org.junit.Assert.assertEquals;
-
-import java.lang.reflect.Method;
-import java.util.Arrays;
-
+import com.examples.with.different.packagename.localsearch.*;
 import org.evosuite.Properties;
 import org.evosuite.Properties.LocalSearchBudgetType;
 import org.evosuite.SystemTestBase;
@@ -43,16 +39,17 @@ import org.evosuite.testcase.statements.numeric.IntPrimitiveStatement;
 import org.evosuite.testcase.variable.VariableReference;
 import org.evosuite.testsuite.TestSuiteChromosome;
 import org.evosuite.testsuite.localsearch.TestSuiteLocalSearch;
-import org.evosuite.utils.generic.*;
+import org.evosuite.utils.generic.GenericClass;
+import org.evosuite.utils.generic.GenericClassFactory;
+import org.evosuite.utils.generic.GenericConstructor;
+import org.evosuite.utils.generic.GenericMethod;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.examples.with.different.packagename.localsearch.BasicDoubleExample;
-import com.examples.with.different.packagename.localsearch.BasicFloatExample;
-import com.examples.with.different.packagename.localsearch.BasicIntegerExample;
-import com.examples.with.different.packagename.localsearch.DoubleLocalSearchExample;
-import com.examples.with.different.packagename.localsearch.FloatLocalSearchExample;
-import com.examples.with.different.packagename.localsearch.IntegerLocalSearchExample;
+import java.lang.reflect.Method;
+import java.util.Arrays;
+
+import static org.junit.Assert.assertEquals;
 
 public class LocalSearchNumericSystemTest extends SystemTestBase {
 

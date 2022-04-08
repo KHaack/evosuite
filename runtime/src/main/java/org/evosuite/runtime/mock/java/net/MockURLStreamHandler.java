@@ -19,16 +19,11 @@
  */
 package org.evosuite.runtime.mock.java.net;
 
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.Proxy;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLStreamHandler;
-import java.net.UnknownHostException;
-
 import org.evosuite.runtime.mock.MockFramework;
 import org.evosuite.runtime.mock.OverrideMock;
+
+import java.io.IOException;
+import java.net.*;
 
 
 public abstract class MockURLStreamHandler extends URLStreamHandler implements OverrideMock{

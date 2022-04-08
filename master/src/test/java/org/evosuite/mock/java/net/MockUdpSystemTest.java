@@ -20,7 +20,6 @@
 package org.evosuite.mock.java.net;
 
 import com.examples.with.different.packagename.mock.java.net.ReceiveUdp;
-
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
 import org.evosuite.SystemTestBase;

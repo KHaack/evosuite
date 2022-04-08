@@ -19,10 +19,10 @@
  */
 package com.examples.with.different.packagename.testcarver;
 
+import junit.framework.TestSuite;
+
 import java.util.Calendar;
 import java.util.Date;
-
-import junit.framework.TestSuite;
 
 /**
  * Test Case for the DateConverter class.

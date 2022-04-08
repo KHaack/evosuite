@@ -19,14 +19,13 @@
  */
 package org.evosuite.continuous.project;
 
+import com.examples.with.different.packagename.continuous.Simple;
+import com.examples.with.different.packagename.continuous.Trivial;
 import org.evosuite.classpath.ClassPathHandler;
 import org.evosuite.continuous.project.ProjectStaticData.ClassInfo;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import com.examples.with.different.packagename.continuous.Simple;
-import com.examples.with.different.packagename.continuous.Trivial;
 
 public class ProjectAnalyzerIntTest {
 

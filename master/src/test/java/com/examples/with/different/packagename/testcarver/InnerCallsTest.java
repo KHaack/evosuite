@@ -19,7 +19,7 @@
  */
 package com.examples.with.different.packagename.testcarver;
 
-import org.junit.*;
+import org.junit.Test;
 
 public class InnerCallsTest {
 

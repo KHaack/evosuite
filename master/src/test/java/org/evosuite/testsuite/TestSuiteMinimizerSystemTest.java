@@ -19,6 +19,7 @@
  */
 package org.evosuite.testsuite;
 
+import com.examples.with.different.packagename.coverage.MethodReturnsPrimitive;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
 import org.evosuite.Properties.Criterion;
@@ -28,8 +29,6 @@ import org.evosuite.ga.metaheuristics.GeneticAlgorithm;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
-
-import com.examples.with.different.packagename.coverage.MethodReturnsPrimitive;
 
 public class TestSuiteMinimizerSystemTest extends SystemTestBase {
 

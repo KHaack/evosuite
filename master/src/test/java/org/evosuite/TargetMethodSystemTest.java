@@ -19,14 +19,14 @@
  */
 package org.evosuite;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
+import com.examples.with.different.packagename.TargetMethod;
 import org.evosuite.Properties.Criterion;
 import org.evosuite.ga.metaheuristics.GeneticAlgorithm;
 import org.evosuite.testsuite.TestSuiteChromosome;
 import org.junit.Test;
-import com.examples.with.different.packagename.TargetMethod;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class TargetMethodSystemTest extends SystemTestBase {
 

@@ -19,11 +19,10 @@
  */
 package org.evosuite.instrumentation.error;
 
-import org.evosuite.Properties;
-import org.junit.Test;
-
 import com.examples.with.different.packagename.errorbranch.Fieldaccess;
 import com.examples.with.different.packagename.errorbranch.Methodcall;
+import org.evosuite.Properties;
+import org.junit.Test;
 
 public class NullPointerInstrumentationSystemTest extends AbstractErrorBranchTest {
 

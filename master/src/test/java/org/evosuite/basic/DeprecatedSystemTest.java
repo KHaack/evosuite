@@ -20,7 +20,6 @@
 package org.evosuite.basic;
 
 import com.examples.with.different.packagename.DeprecatedMethods;
-
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
 import org.evosuite.SystemTestBase;

@@ -20,11 +20,11 @@
 
 package com.examples.with.different.packagename.testcarver;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Gordon Fraser

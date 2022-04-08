@@ -19,10 +19,7 @@
  */
 package org.evosuite.assertion.purity;
 
-import static org.junit.Assert.assertTrue;
-
-import java.util.Map;
-
+import com.examples.with.different.packagename.purity.PureEquals;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
 import org.evosuite.SystemTestBase;
@@ -38,7 +35,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.objectweb.asm.Type;
 
-import com.examples.with.different.packagename.purity.PureEquals;
+import java.util.Map;
+
+import static org.junit.Assert.assertTrue;
 
 public class PureEqualsSystemTest extends SystemTestBase {
     private final boolean DEFAULT_RESET_STATIC_FIELDS = Properties.RESET_STATIC_FIELDS;

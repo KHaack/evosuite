@@ -20,7 +20,6 @@
 package org.evosuite.basic;
 
 import com.examples.with.different.packagename.MainMethod;
-
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
 import org.evosuite.SystemTestBase;

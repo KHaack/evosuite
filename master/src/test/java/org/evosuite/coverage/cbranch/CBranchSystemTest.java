@@ -19,19 +19,18 @@
  */
 package org.evosuite.coverage.cbranch;
 
+import com.examples.with.different.packagename.coverage.IndirectlyCoverableBranches;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
 import org.evosuite.Properties.Criterion;
+import org.evosuite.SystemTestBase;
 import org.evosuite.ga.metaheuristics.GeneticAlgorithm;
 import org.evosuite.strategy.TestGenerationStrategy;
 import org.evosuite.testsuite.TestSuiteChromosome;
-import org.evosuite.SystemTestBase;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.examples.with.different.packagename.coverage.IndirectlyCoverableBranches;
 
 public class CBranchSystemTest extends SystemTestBase {
 

@@ -19,19 +19,18 @@
  */
 package org.evosuite.runtime.classhandling;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
+import com.examples.with.different.packagename.staticfield.FailingStaticInitializer;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
 import org.evosuite.SystemTestBase;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.examples.with.different.packagename.staticfield.FailingStaticInitializer;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class FailingStaticInitializerSystemTest extends SystemTestBase {
 

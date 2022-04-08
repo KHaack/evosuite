@@ -19,22 +19,14 @@
  */
 package org.evosuite.runtime.mock.java.io;
 
+import org.evosuite.runtime.mock.java.lang.MockIllegalArgumentException;
+import org.evosuite.runtime.vfs.VirtualFileSystem;
+
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
-import java.nio.channels.AsynchronousCloseException;
-import java.nio.channels.ClosedByInterruptException;
-import java.nio.channels.ClosedChannelException;
-import java.nio.channels.FileChannel;
-import java.nio.channels.FileLock;
-import java.nio.channels.NonReadableChannelException;
-import java.nio.channels.NonWritableChannelException;
-import java.nio.channels.ReadableByteChannel;
-import java.nio.channels.WritableByteChannel;
+import java.nio.channels.*;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import org.evosuite.runtime.mock.java.lang.MockIllegalArgumentException;
-import org.evosuite.runtime.vfs.VirtualFileSystem;
 
 
 /**

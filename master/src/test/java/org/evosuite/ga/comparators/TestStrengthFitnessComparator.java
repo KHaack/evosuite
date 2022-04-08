@@ -19,10 +19,10 @@
  */
 package org.evosuite.ga.comparators;
 
-import static org.junit.Assert.assertEquals;
-
 import org.evosuite.ga.NSGAChromosome;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author José Campos

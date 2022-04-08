@@ -19,6 +19,7 @@
  */
 package org.evosuite.runtime.mock.javax.swing;
 
+import com.examples.with.different.packagename.mock.javax.swing.*;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
 import org.evosuite.SystemTestBase;
@@ -26,19 +27,6 @@ import org.evosuite.ga.metaheuristics.GeneticAlgorithm;
 import org.evosuite.testsuite.TestSuiteChromosome;
 import org.junit.Assert;
 import org.junit.Test;
-
-import com.examples.with.different.packagename.mock.javax.swing.AskUser;
-import com.examples.with.different.packagename.mock.javax.swing.AskUserShowConfirmDialogs0;
-import com.examples.with.different.packagename.mock.javax.swing.AskUserShowConfirmDialogs1;
-import com.examples.with.different.packagename.mock.javax.swing.AskUserShowConfirmDialogs2;
-import com.examples.with.different.packagename.mock.javax.swing.AskUserShowConfirmDialogs3;
-import com.examples.with.different.packagename.mock.javax.swing.AskUserShowInputDailogs;
-import com.examples.with.different.packagename.mock.javax.swing.AskUserShowInternalConfirmDialogs0;
-import com.examples.with.different.packagename.mock.javax.swing.AskUserShowInternalConfirmDialogs1;
-import com.examples.with.different.packagename.mock.javax.swing.AskUserShowInternalConfirmDialogs2;
-import com.examples.with.different.packagename.mock.javax.swing.AskUserShowInternalConfirmDialogs3;
-import com.examples.with.different.packagename.mock.javax.swing.AskUserShowOptionDialog;
-import com.examples.with.different.packagename.mock.javax.swing.ShowMessageDialogExample;
 
 /**
  * Created by galeotti on 11/05/2016.

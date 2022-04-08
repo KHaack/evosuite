@@ -19,10 +19,7 @@
  */
 package org.evosuite.assertion.stable;
 
-import static org.junit.Assert.assertTrue;
-
-import java.util.List;
-
+import com.examples.with.different.packagename.stable.CloneMe;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
 import org.evosuite.SystemTestBase;
@@ -33,7 +30,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.examples.with.different.packagename.stable.CloneMe;
+import java.util.List;
+
+import static org.junit.Assert.assertTrue;
 
 public class CloneMeSystemTest extends SystemTestBase {
     private final boolean DEFAULT_JUNIT_CHECK_ON_SEPARATE_PROCESS = Properties.JUNIT_CHECK_ON_SEPARATE_PROCESS;

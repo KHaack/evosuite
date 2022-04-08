@@ -19,25 +19,11 @@
  */
 package org.evosuite.contracts;
 
+import com.examples.with.different.packagename.contracts.*;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
 import org.evosuite.SystemTestBase;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-
-import com.examples.with.different.packagename.contracts.AssertionException;
-import com.examples.with.different.packagename.contracts.EqualsHashCode;
-import com.examples.with.different.packagename.contracts.EqualsNull;
-import com.examples.with.different.packagename.contracts.EqualsSelf;
-import com.examples.with.different.packagename.contracts.EqualsSymmetric;
-import com.examples.with.different.packagename.contracts.Foo;
-import com.examples.with.different.packagename.contracts.FooTheories;
-import com.examples.with.different.packagename.contracts.HashcodeException;
-import com.examples.with.different.packagename.contracts.RaiseNullPointerException;
-import com.examples.with.different.packagename.contracts.ToStringException;
+import org.junit.*;
 
 public class ContractGenerationSystemTest extends SystemTestBase {
 

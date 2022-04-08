@@ -19,18 +19,13 @@
  */
 package org.evosuite.runtime.mock.java.util.logging;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.logging.ErrorManager;
-import java.util.logging.FileHandler;
-import java.util.logging.Filter;
-import java.util.logging.Formatter;
-import java.util.logging.Level;
-import java.util.logging.LogRecord;
-
 import org.evosuite.runtime.mock.OverrideMock;
 import org.evosuite.runtime.sandbox.MSecurityManager;
 import org.evosuite.runtime.vfs.VirtualFileSystem;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.logging.*;
 
 /**
  * Mock class for FileHandler.

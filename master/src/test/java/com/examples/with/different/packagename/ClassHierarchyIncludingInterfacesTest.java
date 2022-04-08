@@ -19,14 +19,13 @@
  */
 package com.examples.with.different.packagename;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import com.examples.with.different.packagename.ClassHierarchyIncludingInterfaces.Interfaces;
+import org.junit.Test;
 
 import java.util.Iterator;
 
-import org.junit.Test;
-
-import com.examples.with.different.packagename.ClassHierarchyIncludingInterfaces.Interfaces;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 /**
  * Snippet from Lang project

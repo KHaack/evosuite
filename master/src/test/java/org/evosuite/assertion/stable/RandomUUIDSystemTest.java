@@ -19,8 +19,7 @@
  */
 package org.evosuite.assertion.stable;
 
-import java.util.Map;
-
+import com.examples.with.different.packagename.stable.RandomUUIDUser;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
 import org.evosuite.SystemTestBase;
@@ -34,7 +33,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.examples.with.different.packagename.stable.RandomUUIDUser;
+import java.util.Map;
 
 public class RandomUUIDSystemTest extends SystemTestBase {
     private final boolean DEFAULT_REPLACE_CALLS = Properties.REPLACE_CALLS;

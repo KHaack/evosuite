@@ -20,16 +20,16 @@
 package org.evosuite.runtime.mock.java.lang;
 
 
+import org.evosuite.runtime.System.SystemExitException;
+import org.evosuite.runtime.jvm.ShutdownHookHandler;
+import org.evosuite.runtime.mock.StaticReplacementMock;
+import org.evosuite.runtime.mock.java.io.MockIOException;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.StringTokenizer;
-
-import org.evosuite.runtime.System.SystemExitException;
-import org.evosuite.runtime.jvm.ShutdownHookHandler;
-import org.evosuite.runtime.mock.StaticReplacementMock;
-import org.evosuite.runtime.mock.java.io.MockIOException;
 
 
 public class MockRuntime implements StaticReplacementMock{

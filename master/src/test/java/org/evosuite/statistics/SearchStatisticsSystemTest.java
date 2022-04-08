@@ -19,10 +19,10 @@
  */
 package org.evosuite.statistics;
 
-import java.util.Map;
-
 import com.examples.with.different.packagename.Calculator;
 import com.examples.with.different.packagename.ExampleGradientBranches;
+import com.examples.with.different.packagename.statistics.MultiThreads;
+import com.examples.with.different.packagename.statistics.NoThreads;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
 import org.evosuite.SystemTestBase;
@@ -31,8 +31,7 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.examples.with.different.packagename.statistics.MultiThreads;
-import com.examples.with.different.packagename.statistics.NoThreads;
+import java.util.Map;
 
 public class SearchStatisticsSystemTest extends SystemTestBase {
 

@@ -19,18 +19,10 @@
  */
 package org.evosuite.junit;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.util.Collections;
-import java.util.List;
-
+import com.examples.with.different.packagename.*;
+import com.examples.with.different.packagename.coverage.MethodWithSeveralInputArguments;
+import com.examples.with.different.packagename.coverage.TestMethodWithSeveralInputArguments;
+import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
 import org.apache.commons.io.FileUtils;
 import org.evosuite.EvoSuite;
@@ -44,22 +36,17 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.examples.with.different.packagename.Calculator;
-import com.examples.with.different.packagename.CalculatorTest;
-import com.examples.with.different.packagename.ClassNumberUtils;
-import com.examples.with.different.packagename.ClassNumberUtilsTest;
-import com.examples.with.different.packagename.ClassWithPrivateInterfaces;
-import com.examples.with.different.packagename.ClassWithPrivateInterfacesTest;
-import com.examples.with.different.packagename.FinalClass;
-import com.examples.with.different.packagename.FinalClassTest;
-import com.examples.with.different.packagename.StringUtils;
-import com.examples.with.different.packagename.StringUtilsEqualsIndexOfTest;
-import com.examples.with.different.packagename.WordUtils;
-import com.examples.with.different.packagename.WordUtilsTest;
-import com.examples.with.different.packagename.coverage.MethodWithSeveralInputArguments;
-import com.examples.with.different.packagename.coverage.TestMethodWithSeveralInputArguments;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.Collections;
+import java.util.List;
 
-import com.opencsv.CSVReader;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class CoverageAnalysisOfProjectSystemTest extends SystemTestBase {
 

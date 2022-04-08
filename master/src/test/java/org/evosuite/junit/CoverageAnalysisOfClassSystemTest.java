@@ -19,21 +19,17 @@
  */
 package org.evosuite.junit;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-
+import com.examples.with.different.packagename.Calculator;
+import com.examples.with.different.packagename.CalculatorTest;
+import com.examples.with.different.packagename.coverage.MethodWithSeveralInputArguments;
+import com.examples.with.different.packagename.coverage.TestMethodWithSeveralInputArguments;
+import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
 import org.apache.commons.io.FileUtils;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
-import org.evosuite.SystemTestBase;
 import org.evosuite.Properties.StatisticsBackend;
+import org.evosuite.SystemTestBase;
 import org.evosuite.continuous.persistency.CsvJUnitData;
 import org.evosuite.statistics.OutputVariable;
 import org.evosuite.statistics.RuntimeVariable;
@@ -42,12 +38,13 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.examples.with.different.packagename.Calculator;
-import com.examples.with.different.packagename.CalculatorTest;
-import com.examples.with.different.packagename.coverage.MethodWithSeveralInputArguments;
-import com.examples.with.different.packagename.coverage.TestMethodWithSeveralInputArguments;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
-import com.opencsv.CSVReader;
+import static org.junit.Assert.assertEquals;
 
 public class CoverageAnalysisOfClassSystemTest extends SystemTestBase {
 

@@ -19,10 +19,10 @@
  */
 package org.evosuite.ga.problems;
 
-import java.util.List;
-
 import org.evosuite.ga.Chromosome;
 import org.evosuite.ga.FitnessFunction;
+
+import java.util.List;
 
 /**
  * @author José Campos

@@ -19,15 +19,15 @@
  */
 package org.evosuite.ga.operators.selection;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.evosuite.Properties;
 import org.evosuite.ga.NSGAChromosome;
 import org.evosuite.ga.metaheuristics.NSGAII;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Test Binary Tournament Selection using Crowded Comparison

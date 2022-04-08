@@ -28,9 +28,8 @@ import org.evosuite.strategy.TestGenerationStrategy;
 import org.evosuite.testcase.TestCase;
 import org.evosuite.testsuite.TestSuiteChromosome;
 import org.junit.Assert;
-import org.junit.Test;
-
 import org.junit.Ignore;
+import org.junit.Test;
 
 /**
  * @author fraser

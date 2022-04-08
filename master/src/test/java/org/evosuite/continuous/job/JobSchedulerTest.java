@@ -19,29 +19,18 @@
  */
 package org.evosuite.continuous.job;
 
-import java.util.List;
-import java.util.Set;
-
+import com.examples.with.different.packagename.continuous.*;
+import org.evosuite.Properties.AvailableSchedule;
 import org.evosuite.classpath.ClassPathHandler;
 import org.evosuite.continuous.CtgConfiguration;
-import org.evosuite.Properties.AvailableSchedule;
 import org.evosuite.continuous.project.ProjectAnalyzer;
 import org.evosuite.continuous.project.ProjectStaticData;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.examples.with.different.packagename.continuous.BaseForSeeding;
-import com.examples.with.different.packagename.continuous.MoreBranches;
-import com.examples.with.different.packagename.continuous.NoBranches;
-import com.examples.with.different.packagename.continuous.OnlyAbstract;
-import com.examples.with.different.packagename.continuous.OnlyAbstractImpl;
-import com.examples.with.different.packagename.continuous.Simple;
-import com.examples.with.different.packagename.continuous.SomeBranches;
-import com.examples.with.different.packagename.continuous.SomeInterface;
-import com.examples.with.different.packagename.continuous.SomeInterfaceImpl;
-import com.examples.with.different.packagename.continuous.Trivial;
-import com.examples.with.different.packagename.continuous.UsingSimpleAndTrivial;
+import java.util.List;
+import java.util.Set;
 
 public class JobSchedulerTest {
 

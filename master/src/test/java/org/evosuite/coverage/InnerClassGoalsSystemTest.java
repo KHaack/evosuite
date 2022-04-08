@@ -19,6 +19,9 @@
  */
 package org.evosuite.coverage;
 
+import com.examples.with.different.packagename.ClassWithInnerClass;
+import com.examples.with.different.packagename.ClassWithPrivateInnerClass;
+import com.examples.with.different.packagename.ClassWithPrivateNonStaticInnerClass;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
 import org.evosuite.SystemTestBase;
@@ -28,10 +31,6 @@ import org.evosuite.testsuite.TestSuiteChromosome;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.examples.with.different.packagename.ClassWithInnerClass;
-import com.examples.with.different.packagename.ClassWithPrivateInnerClass;
-import com.examples.with.different.packagename.ClassWithPrivateNonStaticInnerClass;
 
 public class InnerClassGoalsSystemTest extends SystemTestBase {
 

@@ -19,12 +19,12 @@
  */
 package org.evosuite.ga.problems.metrics;
 
+import org.evosuite.Properties;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-
-import org.evosuite.Properties;
 
 /**
  * @author José Campos

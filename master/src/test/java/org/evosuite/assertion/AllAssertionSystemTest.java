@@ -20,20 +20,18 @@
 
 package org.evosuite.assertion;
 
+import com.examples.with.different.packagename.ExampleFieldClass;
+import com.examples.with.different.packagename.ExampleInheritedClass;
+import com.examples.with.different.packagename.ExampleObserverClass;
+import com.examples.with.different.packagename.ExampleStaticVoidSetterClass;
 import org.evosuite.EvoSuite;
 import org.evosuite.SystemTestBase;
 import org.evosuite.ga.metaheuristics.GeneticAlgorithm;
 import org.evosuite.testcase.TestCase;
 import org.evosuite.testsuite.TestSuiteChromosome;
 import org.junit.Assert;
-import org.junit.Test;
-
-import com.examples.with.different.packagename.ExampleFieldClass;
-import com.examples.with.different.packagename.ExampleInheritedClass;
-import com.examples.with.different.packagename.ExampleObserverClass;
-import com.examples.with.different.packagename.ExampleStaticVoidSetterClass;
-
 import org.junit.Ignore;
+import org.junit.Test;
 
 /**
  * @author fraser

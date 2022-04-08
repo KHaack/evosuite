@@ -19,12 +19,12 @@
  */
 package org.evosuite.runtime.mock.java.io;
 
-import java.io.IOException;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import org.evosuite.runtime.vfs.FSObject;
 import org.evosuite.runtime.vfs.VFile;
 import org.evosuite.runtime.vfs.VirtualFileSystem;
+
+import java.io.IOException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * This class is used to mock native methods regarding I/O, and 

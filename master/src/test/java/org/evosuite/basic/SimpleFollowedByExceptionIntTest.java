@@ -21,8 +21,8 @@ package org.evosuite.basic;
 
 import org.evosuite.coverage.exception.ImplicitExplicitExceptionsSystemTest;
 import org.junit.runner.RunWith;
-import org.junit.runners.Suite.SuiteClasses;
 import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({SUTWithSimpleSingleMethod_v2SystemTest.class, ImplicitExplicitExceptionsSystemTest.class})

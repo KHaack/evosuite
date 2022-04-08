@@ -19,6 +19,7 @@
  */
 package org.evosuite.basic;
 
+import com.examples.with.different.packagename.IntExample;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
 import org.evosuite.SystemTestBase;
@@ -27,8 +28,6 @@ import org.evosuite.testsuite.TestSuiteChromosome;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
-
-import com.examples.with.different.packagename.IntExample;
 
 public class IntOptimisationSystemTest extends SystemTestBase {
 

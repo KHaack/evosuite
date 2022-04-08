@@ -22,7 +22,9 @@ package org.evosuite.runtime.mock.java.util;
 import org.evosuite.runtime.mock.OverrideMock;
 
 import java.text.DateFormat;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * Created by arcuri on 1/25/15.

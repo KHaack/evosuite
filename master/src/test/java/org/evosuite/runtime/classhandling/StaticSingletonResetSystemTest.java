@@ -19,8 +19,7 @@
  */
 package org.evosuite.runtime.classhandling;
 
-import java.util.Map;
-
+import com.examples.with.different.packagename.reset.SingletonObjectReset;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
 import org.evosuite.SystemTestBase;
@@ -32,7 +31,7 @@ import org.evosuite.testsuite.TestSuiteChromosome;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.examples.with.different.packagename.reset.SingletonObjectReset;
+import java.util.Map;
 
 public class StaticSingletonResetSystemTest extends SystemTestBase {
 

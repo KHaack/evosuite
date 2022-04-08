@@ -19,13 +19,12 @@
  */
 package org.evosuite.instrumentation.error;
 
-import org.evosuite.Properties;
-import org.junit.Test;
-
 import com.examples.with.different.packagename.errorbranch.IntAddOverflow;
 import com.examples.with.different.packagename.errorbranch.IntDivOverflow;
 import com.examples.with.different.packagename.errorbranch.IntMulOverflow;
 import com.examples.with.different.packagename.errorbranch.IntSubOverflow;
+import org.evosuite.Properties;
+import org.junit.Test;
 
 public class OverflowInstrumentationSystemTest extends AbstractErrorBranchTest {
 

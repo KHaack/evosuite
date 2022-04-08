@@ -19,9 +19,8 @@
  */
 package com.examples.with.different.packagename.testreader;
 
-import org.junit.Test;
-
 import com.examples.with.different.packagename.testreader.TestExample.MockingBird;
+import org.junit.Test;
 
 
 public class SimpleTestExample04 {

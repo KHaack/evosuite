@@ -19,13 +19,13 @@
  */
 package org.evosuite.runtime.mock.java.io;
 
-import java.io.IOException;
-import java.io.PrintStream;
-import java.io.PrintWriter;
-
 import org.evosuite.runtime.mock.MockFramework;
 import org.evosuite.runtime.mock.OverrideMock;
 import org.evosuite.runtime.mock.java.lang.MockThrowable;
+
+import java.io.IOException;
+import java.io.PrintStream;
+import java.io.PrintWriter;
 
 public class MockIOException extends IOException  implements OverrideMock{
 

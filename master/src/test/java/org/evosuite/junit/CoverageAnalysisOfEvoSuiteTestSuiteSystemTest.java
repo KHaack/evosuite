@@ -19,20 +19,19 @@
  */
 package org.evosuite.junit;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.Map;
-
+import com.examples.with.different.packagename.Euclidean;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
-import org.evosuite.SystemTestBase;
 import org.evosuite.Properties.Criterion;
+import org.evosuite.SystemTestBase;
 import org.evosuite.statistics.OutputVariable;
 import org.evosuite.statistics.SearchStatistics;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.examples.with.different.packagename.Euclidean;
+import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author José Campos

@@ -19,7 +19,7 @@
  */
 package com.examples.with.different.packagename.gui;
 
-import java.awt.Font;
+import java.awt.*;
 
 
 public class FontCUT {

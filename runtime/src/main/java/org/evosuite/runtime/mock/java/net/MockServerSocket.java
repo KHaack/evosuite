@@ -25,14 +25,7 @@ import org.evosuite.runtime.mock.OverrideMock;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.SocketAddress;
-import java.net.SocketException;
-import java.net.SocketImplFactory;
-import java.net.SocketOptions;
+import java.net.*;
 import java.nio.channels.ServerSocketChannel;
 
 /**

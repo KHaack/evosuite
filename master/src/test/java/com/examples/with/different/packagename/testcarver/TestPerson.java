@@ -24,11 +24,8 @@
 package com.examples.with.different.packagename.testcarver;
 
 import org.junit.Test;
-//import org.junit.runner.RunWith;
-//import org.evosuite.junit.EvoSuiteRunner;
-import static org.junit.Assert.*;
 
-import com.examples.with.different.packagename.testcarver.Person;
+import static org.junit.Assert.assertEquals;
 
 //@RunWith(EvoSuiteRunner.class)
 public class TestPerson {

@@ -19,13 +19,14 @@
  */
 package org.evosuite.basic;
 
+import com.examples.with.different.packagename.SingleMethod;
 import org.evosuite.EvoSuite;
 import org.evosuite.SystemTestBase;
 import org.evosuite.ga.metaheuristics.GeneticAlgorithm;
 import org.evosuite.testsuite.TestSuiteChromosome;
-import org.junit.*;
-
-import com.examples.with.different.packagename.SingleMethod;
+import org.junit.Assert;
+import org.junit.Ignore;
+import org.junit.Test;
 
 
 /**

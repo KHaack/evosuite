@@ -19,6 +19,7 @@
  */
 package org.evosuite.runtime;
 
+import com.examples.with.different.packagename.CallExit;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
 import org.evosuite.SystemTestBase;
@@ -26,9 +27,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.examples.with.different.packagename.CallExit;
-
-import java.lang.*;
 import java.security.Permission;
 
 import static org.junit.Assert.assertFalse;

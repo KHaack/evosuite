@@ -19,22 +19,17 @@
  */
 package org.evosuite.runtime.mock.javax.swing;
 
-import java.awt.AWTEvent;
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dialog;
-import java.awt.EventQueue;
-import java.awt.Frame;
-import java.awt.GraphicsEnvironment;
-import java.awt.HeadlessException;
-import java.awt.Toolkit;
-import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import org.evosuite.runtime.mock.OverrideMock;
+import org.evosuite.runtime.mock.javax.swing.filechooser.MockFileSystemView;
+
+import javax.accessibility.AccessibleContext;
+import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileSystemView;
+import javax.swing.filechooser.FileView;
+import javax.swing.plaf.FileChooserUI;
+import java.awt.*;
+import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -44,22 +39,6 @@ import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
 import java.util.Objects;
 import java.util.Vector;
-
-import javax.accessibility.AccessibleContext;
-import javax.swing.Icon;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
-import javax.swing.JRootPane;
-import javax.swing.UIManager;
-import javax.swing.filechooser.FileFilter;
-import javax.swing.filechooser.FileSystemView;
-import javax.swing.filechooser.FileView;
-import javax.swing.plaf.FileChooserUI;
-
-import org.evosuite.runtime.mock.OverrideMock;
-import org.evosuite.runtime.mock.javax.swing.filechooser.MockFileSystemView;
 
 public class MockJFileChooser extends  javax.swing.JFileChooser  implements OverrideMock{
 

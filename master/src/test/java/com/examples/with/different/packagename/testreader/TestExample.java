@@ -19,12 +19,12 @@
  */
 package com.examples.with.different.packagename.testreader;
 
-import java.awt.image.BufferedImage;
-
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import java.awt.image.BufferedImage;
 
 public class TestExample extends ParentTestExample {
     public static class MockingBird {

@@ -20,9 +20,9 @@
 
 package org.evosuite.basic;
 
-import static org.junit.Assert.assertEquals;
-
 import com.examples.with.different.packagename.Compositional;
+import com.examples.with.different.packagename.defuse.DefUseExample1;
+import com.examples.with.different.packagename.defuse.GCD;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
 import org.evosuite.Properties.Algorithm;
@@ -30,10 +30,10 @@ import org.evosuite.Properties.Criterion;
 import org.evosuite.SystemTestBase;
 import org.evosuite.coverage.branch.BranchCoverageSuiteFitness;
 import org.evosuite.coverage.exception.ExceptionCoverageSuiteFitness;
-import org.evosuite.coverage.method.MethodTraceCoverageSuiteFitness;
-import org.evosuite.coverage.method.MethodNoExceptionCoverageSuiteFitness;
 import org.evosuite.coverage.io.output.OutputCoverageSuiteFitness;
 import org.evosuite.coverage.line.LineCoverageSuiteFitness;
+import org.evosuite.coverage.method.MethodNoExceptionCoverageSuiteFitness;
+import org.evosuite.coverage.method.MethodTraceCoverageSuiteFitness;
 import org.evosuite.ga.FitnessFunction;
 import org.evosuite.ga.metaheuristics.GeneticAlgorithm;
 import org.evosuite.testsuite.TestSuiteChromosome;
@@ -42,10 +42,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.examples.with.different.packagename.defuse.DefUseExample1;
-import com.examples.with.different.packagename.defuse.GCD;
-
 import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author Jose Miguel Rojas

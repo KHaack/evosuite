@@ -21,7 +21,6 @@ package org.evosuite.mock.java.net;
 
 import com.examples.with.different.packagename.mock.java.net.ReadFromInputURL;
 import com.examples.with.different.packagename.mock.java.net.ReadFromURL;
-
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
 import org.evosuite.SystemTestBase;

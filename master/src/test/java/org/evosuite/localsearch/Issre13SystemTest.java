@@ -19,11 +19,8 @@
  */
 package org.evosuite.localsearch;
 
-import static org.junit.Assert.assertEquals;
-
-import java.lang.reflect.Method;
-import java.util.Arrays;
-
+import com.examples.with.different.packagename.localsearch.DseBar;
+import com.examples.with.different.packagename.localsearch.DseFoo;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
 import org.evosuite.Properties.Criterion;
@@ -45,13 +42,18 @@ import org.evosuite.testcase.variable.VariableReference;
 import org.evosuite.testsuite.TestSuiteChromosome;
 import org.evosuite.testsuite.localsearch.TestSuiteLocalSearch;
 import org.evosuite.utils.Randomness;
-import org.evosuite.utils.generic.*;
+import org.evosuite.utils.generic.GenericClass;
+import org.evosuite.utils.generic.GenericClassFactory;
+import org.evosuite.utils.generic.GenericConstructor;
+import org.evosuite.utils.generic.GenericMethod;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.examples.with.different.packagename.localsearch.DseBar;
-import com.examples.with.different.packagename.localsearch.DseFoo;
+import java.lang.reflect.Method;
+import java.util.Arrays;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Created by Andrea Arcuri on 19/03/15.

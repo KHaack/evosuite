@@ -19,10 +19,8 @@
  */
 package org.evosuite.junit;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.Map;
-
+import com.examples.with.different.packagename.BMICalculator;
+import com.examples.with.different.packagename.TestBMICalculator;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
 import org.evosuite.Properties.Criterion;
@@ -32,8 +30,9 @@ import org.evosuite.statistics.SearchStatistics;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.examples.with.different.packagename.BMICalculator;
-import com.examples.with.different.packagename.TestBMICalculator;
+import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
 
 public class CoverageAnalysisSystemTest extends SystemTestBase {
 

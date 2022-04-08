@@ -19,13 +19,9 @@
  */
 package com.examples.with.different.packagename;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.Set;
-
 import org.apache.commons.lang3.mutable.MutableObject;
+
+import java.util.*;
 
 /**
  * Snippet from Lang project

@@ -19,21 +19,14 @@
  */
 package org.evosuite.runtime.mock.java.net;
 
-import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.net.MalformedURLException;
-import java.net.Proxy;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLStreamHandler;
-import java.net.URLStreamHandlerFactory;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.evosuite.runtime.mock.StaticReplacementMock;
 import org.evosuite.runtime.mock.java.io.MockIOException;
+
+import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.net.*;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 public class MockURL implements StaticReplacementMock{

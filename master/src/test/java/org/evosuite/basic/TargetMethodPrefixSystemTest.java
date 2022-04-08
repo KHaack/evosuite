@@ -19,8 +19,7 @@
  */
 package org.evosuite.basic;
 
-import static org.junit.Assert.assertEquals;
-
+import com.examples.with.different.packagename.TargetMethodPrefix;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
 import org.evosuite.SystemTestBase;
@@ -31,7 +30,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.examples.with.different.packagename.TargetMethodPrefix;
+import static org.junit.Assert.assertEquals;
 
 public class TargetMethodPrefixSystemTest extends SystemTestBase {
 

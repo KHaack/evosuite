@@ -19,6 +19,9 @@
  */
 package org.evosuite.seeding;
 
+import com.examples.with.different.packagename.seeding.ObjectCastExample;
+import com.examples.with.different.packagename.seeding.ObjectInheritanceExample;
+import com.examples.with.different.packagename.seeding.TypeExample;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
 import org.evosuite.SystemTestBase;
@@ -27,10 +30,6 @@ import org.evosuite.ga.metaheuristics.GeneticAlgorithm;
 import org.evosuite.testsuite.TestSuiteChromosome;
 import org.junit.Assert;
 import org.junit.Test;
-
-import com.examples.with.different.packagename.seeding.ObjectCastExample;
-import com.examples.with.different.packagename.seeding.ObjectInheritanceExample;
-import com.examples.with.different.packagename.seeding.TypeExample;
 
 public class TypeSeedingSystemTest extends SystemTestBase {
 

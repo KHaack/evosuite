@@ -19,16 +19,15 @@
  */
 package org.evosuite.runtime.mock.java.net;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.net.InetAddress;
-import java.net.URL;
-import java.net.URLStreamHandler;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.InetAddress;
+import java.net.URL;
+import java.net.URLStreamHandler;
 
 /**
  * Class used to operate on URL state by reflection

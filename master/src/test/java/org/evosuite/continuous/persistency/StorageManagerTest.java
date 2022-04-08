@@ -19,12 +19,11 @@
  */
 package org.evosuite.continuous.persistency;
 
-import java.io.File;
-
 import org.evosuite.xsd.Project;
 import org.junit.Assert;
-
 import org.junit.Test;
+
+import java.io.File;
 
 public class StorageManagerTest {
 

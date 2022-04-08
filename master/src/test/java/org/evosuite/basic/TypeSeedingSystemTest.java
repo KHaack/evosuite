@@ -19,6 +19,9 @@
  */
 package org.evosuite.basic;
 
+import com.examples.with.different.packagename.TypeSeedingExampleGeneric;
+import com.examples.with.different.packagename.TypeSeedingExampleLocale;
+import com.examples.with.different.packagename.TypeSeedingExampleString;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
 import org.evosuite.SystemTestBase;
@@ -27,10 +30,6 @@ import org.evosuite.strategy.TestGenerationStrategy;
 import org.evosuite.testsuite.TestSuiteChromosome;
 import org.junit.Assert;
 import org.junit.Test;
-
-import com.examples.with.different.packagename.TypeSeedingExampleGeneric;
-import com.examples.with.different.packagename.TypeSeedingExampleLocale;
-import com.examples.with.different.packagename.TypeSeedingExampleString;
 
 public class TypeSeedingSystemTest extends SystemTestBase {
 

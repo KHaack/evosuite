@@ -19,10 +19,10 @@
  */
 package com.examples.with.different.packagename.testcarver;
 
-import java.util.List;
-
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.util.List;
 
 public class GenericObjectWrapperWithListTest {
     public static class Foo {

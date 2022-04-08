@@ -19,9 +19,7 @@
  */
 package org.evosuite.seeding.factories;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
+import com.examples.with.different.packagename.staticusage.Class1;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
 import org.evosuite.SystemTestBase;
@@ -30,7 +28,8 @@ import org.evosuite.testsuite.TestSuiteChromosome;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.examples.with.different.packagename.staticusage.Class1;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class RandomIndividualTestSuiteChromosomeFactorySystemTest extends SystemTestBase {
 

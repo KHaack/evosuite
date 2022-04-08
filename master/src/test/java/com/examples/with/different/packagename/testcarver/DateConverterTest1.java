@@ -19,11 +19,11 @@
  */
 package com.examples.with.different.packagename.testcarver;
 
-import static org.junit.Assert.*;
+import org.junit.Test;
 
 import java.util.Date;
 
-import org.junit.Test;
+import static org.junit.Assert.fail;
 
 public class DateConverterTest1 {
 

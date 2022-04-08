@@ -19,12 +19,11 @@
  */
 package org.evosuite.assertion;
 
+import com.examples.with.different.packagename.ExampleEnum;
 import org.evosuite.SystemTestBase;
 import org.evosuite.TestGenerationContext;
 import org.junit.Assert;
 import org.junit.Test;
-
-import com.examples.with.different.packagename.ExampleEnum;
 
 public class AssertionClassLoaderSystemTest extends SystemTestBase {
 

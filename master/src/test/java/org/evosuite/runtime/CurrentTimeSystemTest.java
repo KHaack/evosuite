@@ -19,6 +19,7 @@
  */
 package org.evosuite.runtime;
 
+import com.examples.with.different.packagename.*;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
 import org.evosuite.SystemTestBase;
@@ -29,18 +30,6 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.examples.with.different.packagename.CurrentTime;
-import com.examples.with.different.packagename.CurrentTimeViaCalendar;
-import com.examples.with.different.packagename.CurrentTimeViaCalendar1;
-import com.examples.with.different.packagename.CurrentTimeViaCalendar2;
-import com.examples.with.different.packagename.CurrentTimeViaCalendar3;
-import com.examples.with.different.packagename.CurrentTimeViaCalendarParameter;
-import com.examples.with.different.packagename.CurrentTimeViaDate;
-import com.examples.with.different.packagename.CurrentTimeViaDateParameter;
-import com.examples.with.different.packagename.CurrentTimeViaGregorianCalendar;
-import com.examples.with.different.packagename.CurrentTimeViaGregorianCalendarParameter;
-import com.examples.with.different.packagename.TimeOperation;
 
 public class CurrentTimeSystemTest extends SystemTestBase {
 

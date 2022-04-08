@@ -19,17 +19,16 @@
  */
 package org.evosuite.runtime.classhandling;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.util.List;
-
+import com.examples.with.different.packagename.reset.StaticInitThrowsNullPointer;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
 import org.evosuite.SystemTestBase;
 import org.junit.Test;
 
-import com.examples.with.different.packagename.reset.StaticInitThrowsNullPointer;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class StaticInitThrowsNullPointerSystemTest extends SystemTestBase {
 

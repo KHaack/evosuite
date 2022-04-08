@@ -20,15 +20,16 @@
 package org.evosuite.basic;
 
 
-import static org.junit.Assert.*;
-
-import java.util.List;
-
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
 import org.evosuite.SystemTestBase;
 import org.evosuite.result.TestGenerationResult;
 import org.junit.Test;
+
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 
 public class TestShouldNotWorkSystemTest extends SystemTestBase {

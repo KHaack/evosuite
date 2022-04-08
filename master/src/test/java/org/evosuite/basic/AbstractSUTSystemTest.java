@@ -19,6 +19,8 @@
  */
 package org.evosuite.basic;
 
+import com.examples.with.different.packagename.AbstractClassWithStaticFactory;
+import com.examples.with.different.packagename.AbstractSuperClass;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
 import org.evosuite.SystemTestBase;
@@ -26,9 +28,6 @@ import org.evosuite.ga.metaheuristics.GeneticAlgorithm;
 import org.evosuite.testsuite.TestSuiteChromosome;
 import org.junit.Assert;
 import org.junit.Test;
-
-import com.examples.with.different.packagename.AbstractClassWithStaticFactory;
-import com.examples.with.different.packagename.AbstractSuperClass;
 
 import java.util.ArrayList;
 import java.util.List;

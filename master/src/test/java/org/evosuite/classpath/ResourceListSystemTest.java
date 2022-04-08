@@ -19,19 +19,18 @@
  */
 package org.evosuite.classpath;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.io.IOException;
-
-import org.evosuite.SystemTestBase;
-import org.evosuite.TestGenerationContext;
-import org.junit.Test;
-
 import com.examples.with.different.packagename.listclasses.AbstractClass;
 import com.examples.with.different.packagename.listclasses.ClassWithDefaultMethods;
 import com.examples.with.different.packagename.listclasses.ClassWithProtectedMethods;
 import com.examples.with.different.packagename.listclasses.ClassWithoutPublicMethods;
+import org.evosuite.SystemTestBase;
+import org.evosuite.TestGenerationContext;
+import org.junit.Test;
+
+import java.io.IOException;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class ResourceListSystemTest extends SystemTestBase {
 

@@ -19,17 +19,15 @@
  */
 package org.evosuite.ga.metaheuristics;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-
+import com.examples.with.different.packagename.BMICalculator;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
 import org.evosuite.Properties.Algorithm;
 import org.evosuite.Properties.Criterion;
 import org.evosuite.Properties.StoppingCondition;
+import org.evosuite.SystemTestBase;
 import org.evosuite.coverage.ambiguity.AmbiguityCoverageFactory;
 import org.evosuite.coverage.rho.RhoCoverageFactory;
-import org.evosuite.SystemTestBase;
 import org.evosuite.ga.Chromosome;
 import org.evosuite.ga.FitnessFunction;
 import org.evosuite.ga.problems.metrics.Spacing;
@@ -38,10 +36,11 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.examples.with.different.packagename.BMICalculator;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 /**
  * SPEA2SystemTest.

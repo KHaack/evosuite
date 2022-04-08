@@ -19,6 +19,10 @@
  */
 package org.evosuite.assertion;
 
+import com.examples.with.different.packagename.assertion.ArrayObjects;
+import com.examples.with.different.packagename.assertion.ArrayPrimitiveWrapper;
+import com.examples.with.different.packagename.assertion.WrapperCreatingCopy;
+import com.examples.with.different.packagename.assertion.WrapperExample;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
 import org.evosuite.Properties.AssertionStrategy;
@@ -27,11 +31,6 @@ import org.evosuite.ga.metaheuristics.GeneticAlgorithm;
 import org.evosuite.testcase.TestChromosome;
 import org.evosuite.testsuite.TestSuiteChromosome;
 import org.junit.*;
-
-import com.examples.with.different.packagename.assertion.ArrayObjects;
-import com.examples.with.different.packagename.assertion.ArrayPrimitiveWrapper;
-import com.examples.with.different.packagename.assertion.WrapperCreatingCopy;
-import com.examples.with.different.packagename.assertion.WrapperExample;
 
 public class SameAssertionSystemTest extends SystemTestBase {
 

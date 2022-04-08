@@ -19,8 +19,7 @@
  */
 package org.evosuite.mock.java.io;
 
-import java.util.Map;
-
+import com.examples.with.different.packagename.mock.java.util.RandomUser;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
 import org.evosuite.SystemTestBase;
@@ -34,7 +33,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.examples.with.different.packagename.mock.java.util.RandomUser;
+import java.util.Map;
 //import org.evosuite.testsuite.SearchStatistics;
 
 public class MockRandomSystemTest extends SystemTestBase {

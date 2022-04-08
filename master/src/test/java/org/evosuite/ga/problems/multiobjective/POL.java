@@ -19,13 +19,13 @@
  */
 package org.evosuite.ga.problems.multiobjective;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.evosuite.ga.FitnessFunction;
 import org.evosuite.ga.NSGAChromosome;
 import org.evosuite.ga.problems.Problem;
 import org.evosuite.ga.variables.DoubleVariable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * POL Problem

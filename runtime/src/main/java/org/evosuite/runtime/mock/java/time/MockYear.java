@@ -21,7 +21,9 @@ package org.evosuite.runtime.mock.java.time;
 
 import org.evosuite.runtime.mock.StaticReplacementMock;
 
-import java.time.*;
+import java.time.Clock;
+import java.time.Year;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
 

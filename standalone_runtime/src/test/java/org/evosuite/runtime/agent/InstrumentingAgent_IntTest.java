@@ -19,25 +19,23 @@
  */
 package org.evosuite.runtime.agent;
 
+import com.examples.with.different.packagename.agent.*;
+import org.evosuite.runtime.Runtime;
+import org.evosuite.runtime.RuntimeSettings;
+import org.evosuite.runtime.instrumentation.InstrumentedClass;
+import org.evosuite.runtime.instrumentation.MethodCallReplacementCache;
+import org.evosuite.runtime.mock.MockFramework;
+import org.evosuite.runtime.mock.java.io.MockFile;
+import org.evosuite.runtime.mock.java.net.EvoURLStreamHandler;
+import org.evosuite.runtime.mock.java.net.URLUtil;
+import org.junit.*;
+
 import java.io.File;
 import java.lang.instrument.Instrumentation;
 import java.lang.instrument.UnmodifiableClassException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLStreamHandler;
-
-import com.examples.with.different.packagename.agent.*;
-import org.evosuite.runtime.instrumentation.InstrumentedClass;
-import org.evosuite.runtime.instrumentation.MethodCallReplacementCache;
-import org.evosuite.runtime.mock.java.net.EvoURLStreamHandler;
-import org.evosuite.runtime.mock.java.net.URLUtil;
-import org.junit.*;
-
-import org.evosuite.runtime.Runtime;
-import org.evosuite.runtime.RuntimeSettings;
-import org.evosuite.runtime.agent.InstrumentingAgent;
-import org.evosuite.runtime.mock.MockFramework;
-import org.evosuite.runtime.mock.java.io.MockFile;
 
 /**
  * Note: this needs be run as an integration test (IT), as it requires

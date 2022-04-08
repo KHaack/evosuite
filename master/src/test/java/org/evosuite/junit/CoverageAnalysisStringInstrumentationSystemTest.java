@@ -19,15 +19,8 @@
  */
 package org.evosuite.junit;
 
-import static org.junit.Assert.assertEquals;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.Map;
-
+import com.examples.with.different.packagename.ClassNumberUtils;
+import com.examples.with.different.packagename.ClassNumberUtilsTest;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
 import org.evosuite.Properties.StatisticsBackend;
@@ -38,8 +31,14 @@ import org.evosuite.statistics.SearchStatistics;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.examples.with.different.packagename.ClassNumberUtils;
-import com.examples.with.different.packagename.ClassNumberUtilsTest;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
 
 public class CoverageAnalysisStringInstrumentationSystemTest extends SystemTestBase {
 

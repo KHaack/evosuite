@@ -19,6 +19,7 @@
  */
 package org.evosuite.runtime.classhandling;
 
+import com.examples.with.different.packagename.reset.StaticInitCatchNullPointer;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
 import org.evosuite.SystemTestBase;
@@ -26,8 +27,6 @@ import org.evosuite.ga.metaheuristics.GeneticAlgorithm;
 import org.evosuite.testsuite.TestSuiteChromosome;
 import org.junit.Assert;
 import org.junit.Test;
-
-import com.examples.with.different.packagename.reset.StaticInitCatchNullPointer;
 
 public class StaticInitCatchNullPointerSystemTest extends SystemTestBase {
 

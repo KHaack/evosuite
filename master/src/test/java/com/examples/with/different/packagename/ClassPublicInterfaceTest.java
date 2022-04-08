@@ -19,10 +19,10 @@
  */
 package com.examples.with.different.packagename;
 
-import static org.junit.Assert.assertEquals;
-
 import org.apache.commons.lang3.event.EventListenerSupport;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Snippet from Lang project

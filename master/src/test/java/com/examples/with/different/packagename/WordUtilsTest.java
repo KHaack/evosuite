@@ -19,10 +19,10 @@
  */
 package com.examples.with.different.packagename;
 
+import org.junit.Test;
+
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-
-import org.junit.Test;
 
 /**
  * Snippet from Lang project

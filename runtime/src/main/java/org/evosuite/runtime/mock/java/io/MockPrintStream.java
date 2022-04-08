@@ -19,15 +19,10 @@
  */
 package org.evosuite.runtime.mock.java.io;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
-
 import org.evosuite.runtime.mock.MockFramework;
 import org.evosuite.runtime.mock.OverrideMock;
+
+import java.io.*;
 
 public class MockPrintStream extends PrintStream  implements OverrideMock{
 

@@ -19,10 +19,10 @@
  */
 package org.evosuite.ga.variables;
 
-import java.text.MessageFormat;
-
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+
+import java.text.MessageFormat;
 
 /**
  * Variable for double values

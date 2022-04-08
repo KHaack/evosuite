@@ -19,16 +19,14 @@
  */
 package com.examples.with.different.packagename.testcarver;
 
+import junit.framework.TestCase;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
-
-import junit.framework.TestCase;
-import com.examples.with.different.packagename.testcarver.Converter;
-import com.examples.with.different.packagename.testcarver.ConversionException;
 
 /**
  * Abstract base for &lt;Date&gt;Converter classes.

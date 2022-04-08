@@ -21,7 +21,6 @@ package com.examples.with.different.packagename.dse;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * This will make more sense when we add complex object support to the Symbolic Engine.

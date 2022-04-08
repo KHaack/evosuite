@@ -19,19 +19,14 @@
  */
 package org.evosuite.runtime.mock.java.net;
 
-import java.net.Inet4Address;
-import java.net.Inet6Address;
-import java.net.InetAddress;
-import java.net.InterfaceAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.NoSuchElementException;
-
 import org.evosuite.runtime.mock.StaticReplacementMock;
 import org.evosuite.runtime.vnet.NetworkInterfaceState;
 import org.evosuite.runtime.vnet.VirtualNetwork;
+
+import java.net.*;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.NoSuchElementException;
 
 public class MockNetworkInterface implements StaticReplacementMock{
 

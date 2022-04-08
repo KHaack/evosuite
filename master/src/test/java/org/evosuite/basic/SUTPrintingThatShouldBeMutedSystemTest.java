@@ -19,19 +19,18 @@
  */
 package org.evosuite.basic;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-
+import com.examples.with.different.packagename.InfiniteLoops;
+import com.examples.with.different.packagename.PrintingThatShouldBeMuted;
+import com.examples.with.different.packagename.StaticPrinting;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
 import org.evosuite.SystemTestBase;
 import org.evosuite.utils.LoggingUtils;
 import org.junit.*;
 
-import com.examples.with.different.packagename.InfiniteLoops;
-import com.examples.with.different.packagename.PrintingThatShouldBeMuted;
-import com.examples.with.different.packagename.StaticPrinting;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
 
 
 public class SUTPrintingThatShouldBeMutedSystemTest extends SystemTestBase {

@@ -19,6 +19,7 @@
  */
 package org.evosuite.coverage.statement;
 
+import com.examples.with.different.packagename.IntExample;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
 import org.evosuite.Properties.Criterion;
@@ -28,7 +29,6 @@ import org.evosuite.strategy.TestGenerationStrategy;
 import org.evosuite.testsuite.TestSuiteChromosome;
 import org.junit.Assert;
 import org.junit.Test;
-import com.examples.with.different.packagename.IntExample;
 
 public class StatementCoverageFitnessFunctionSystemTest extends SystemTestBase {
 

@@ -19,11 +19,11 @@
  */
 package org.evosuite.coverage.dataflow;
 
-import java.util.Arrays;
-
 import com.examples.with.different.packagename.DataUtils;
+import com.examples.with.different.packagename.defuse.DefUseExample1;
 import com.examples.with.different.packagename.defuse.DefUseExample2;
 import com.examples.with.different.packagename.defuse.DefUseExample3;
+import com.examples.with.different.packagename.defuse.GCD;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
 import org.evosuite.Properties.Criterion;
@@ -35,8 +35,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.examples.with.different.packagename.defuse.DefUseExample1;
-import com.examples.with.different.packagename.defuse.GCD;
+import java.util.Arrays;
 
 public class DefUseAnalysisSystemTest extends SystemTestBase {
 

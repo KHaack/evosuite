@@ -19,8 +19,9 @@
  */
 package org.evosuite.runtime.sandbox;
 
-import java.io.File;
-
+import com.examples.with.different.packagename.sandbox.OpenStream;
+import com.examples.with.different.packagename.sandbox.OpenStreamInATryCatch;
+import com.examples.with.different.packagename.sandbox.OpenStreamInSpecificTryCatch;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
 import org.evosuite.SystemTestBase;
@@ -32,9 +33,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.examples.with.different.packagename.sandbox.OpenStream;
-import com.examples.with.different.packagename.sandbox.OpenStreamInATryCatch;
-import com.examples.with.different.packagename.sandbox.OpenStreamInSpecificTryCatch;
+import java.io.File;
 
 public class GeneratedFilesEvenWithSandboxSystemTest extends SystemTestBase {
 

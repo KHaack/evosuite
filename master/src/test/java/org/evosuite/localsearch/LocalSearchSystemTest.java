@@ -20,6 +20,7 @@
 package org.evosuite.localsearch;
 
 
+import com.examples.with.different.packagename.localsearch.*;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
 import org.evosuite.Properties.LocalSearchBudgetType;
@@ -30,12 +31,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-
-import com.examples.with.different.packagename.localsearch.ArrayLocalSearchExample;
-import com.examples.with.different.packagename.localsearch.DoubleLocalSearchExample;
-import com.examples.with.different.packagename.localsearch.FloatLocalSearchExample;
-import com.examples.with.different.packagename.localsearch.IntegerLocalSearchExample;
-import com.examples.with.different.packagename.localsearch.StringLocalSearchExample;
 
 public class LocalSearchSystemTest extends SystemTestBase {
 

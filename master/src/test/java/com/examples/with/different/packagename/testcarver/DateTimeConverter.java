@@ -19,15 +19,13 @@
  */
 package com.examples.with.different.packagename.testcarver;
 
+import java.text.DateFormat;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-import java.util.Calendar;
 import java.util.TimeZone;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.text.ParsePosition;
-
-import com.examples.with.different.packagename.testcarver.ConversionException;
 
 /**
  * {@link org.apache.commons.beanutils.Converter} implementaion

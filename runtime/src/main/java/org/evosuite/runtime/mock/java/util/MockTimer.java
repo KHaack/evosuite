@@ -19,15 +19,11 @@
  */
 package org.evosuite.runtime.mock.java.util;
 
-import java.util.Date;
-import java.util.LinkedHashSet;
-import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
-
 import org.evosuite.runtime.mock.MockFramework;
 import org.evosuite.runtime.mock.OverrideMock;
 import org.evosuite.runtime.thread.ThreadCounter;
+
+import java.util.*;
 
 public class MockTimer extends Timer implements OverrideMock{
 

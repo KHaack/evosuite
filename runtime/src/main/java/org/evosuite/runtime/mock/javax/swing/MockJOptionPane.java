@@ -19,15 +19,12 @@
  */
 package org.evosuite.runtime.mock.javax.swing;
 
-import java.awt.Component;
-import java.awt.HeadlessException;
-
-import javax.swing.Icon;
-import javax.swing.JOptionPane;
-
 import org.evosuite.runtime.mock.OverrideMock;
 import org.evosuite.runtime.util.JOptionPaneInputs;
 import org.evosuite.runtime.util.JOptionPaneInputs.GUIAction;
+
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * These methods replace those from javax.swing.JOptionPane. This class is used

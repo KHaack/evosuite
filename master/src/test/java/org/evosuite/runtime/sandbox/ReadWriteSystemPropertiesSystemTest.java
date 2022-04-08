@@ -19,12 +19,8 @@
  */
 package org.evosuite.runtime.sandbox;
 
-import java.util.List;
-
 import com.examples.with.different.packagename.sandbox.ReadTimezone;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.BeforeClass;
+import com.examples.with.different.packagename.sandbox.ReadWriteSystemProperties;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
 import org.evosuite.SystemTestBase;
@@ -35,9 +31,12 @@ import org.evosuite.result.TestGenerationResultBuilder;
 import org.evosuite.testcase.TestCase;
 import org.evosuite.testcase.execution.TestCaseExecutor;
 import org.evosuite.testsuite.TestSuiteChromosome;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.examples.with.different.packagename.sandbox.ReadWriteSystemProperties;
+import java.util.List;
 
 public class ReadWriteSystemPropertiesSystemTest extends SystemTestBase {
 

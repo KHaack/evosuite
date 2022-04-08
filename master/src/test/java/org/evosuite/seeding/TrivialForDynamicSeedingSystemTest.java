@@ -19,6 +19,7 @@
  */
 package org.evosuite.seeding;
 
+import com.examples.with.different.packagename.*;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
 import org.evosuite.SystemTestBase;
@@ -28,13 +29,6 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
-
-import com.examples.with.different.packagename.TrivialForDynamicSeeding;
-import com.examples.with.different.packagename.TrivialForDynamicSeedingEndsWith;
-import com.examples.with.different.packagename.TrivialForDynamicSeedingRegex;
-import com.examples.with.different.packagename.TrivialForDynamicSeedingRegionMatches;
-import com.examples.with.different.packagename.TrivialForDynamicSeedingRegionMatchesCase;
-import com.examples.with.different.packagename.TrivialForDynamicSeedingStartsWith;
 
 public class TrivialForDynamicSeedingSystemTest extends SystemTestBase {
 

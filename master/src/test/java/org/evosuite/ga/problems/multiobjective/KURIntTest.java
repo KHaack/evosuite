@@ -19,10 +19,6 @@
  */
 package org.evosuite.ga.problems.multiobjective;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.evosuite.Properties;
 import org.evosuite.ga.ChromosomeFactory;
 import org.evosuite.ga.FitnessFunction;
@@ -41,7 +37,11 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import static java.util.Comparator.*;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import static java.util.Comparator.comparingDouble;
 
 /**
  * @author José Campos

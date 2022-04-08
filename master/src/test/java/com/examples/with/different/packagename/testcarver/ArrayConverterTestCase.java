@@ -19,12 +19,12 @@
  */
 package com.examples.with.different.packagename.testcarver;
 
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Locale;
-
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 /**
  * Test Case for the ArrayConverter class.

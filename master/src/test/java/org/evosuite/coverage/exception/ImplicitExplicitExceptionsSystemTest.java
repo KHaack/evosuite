@@ -19,6 +19,7 @@
  */
 package org.evosuite.coverage.exception;
 
+import com.examples.with.different.packagename.ImplicitExplicitException;
 import com.examples.with.different.packagename.coverage.ImplicitAndExplicitExceptionInSameMethod;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
@@ -32,8 +33,6 @@ import org.evosuite.testsuite.TestSuiteChromosome;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
-
-import com.examples.with.different.packagename.ImplicitExplicitException;
 
 import java.util.Map;
 

@@ -21,7 +21,6 @@ package org.evosuite.basic;
 
 import org.evosuite.SystemTestBase;
 import org.junit.Assert;
-
 import org.junit.Test;
 
 public class CheckPropertiesInSystemTest extends SystemTestBase {

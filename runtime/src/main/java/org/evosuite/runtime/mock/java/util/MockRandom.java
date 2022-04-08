@@ -19,9 +19,9 @@
  */
 package org.evosuite.runtime.mock.java.util;
 
-import java.util.Random;
-
 import org.evosuite.runtime.mock.OverrideMock;
+
+import java.util.Random;
 
 public class MockRandom extends Random  implements OverrideMock{
 

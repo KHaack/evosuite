@@ -19,13 +19,12 @@
  */
 package org.evosuite.ga.comparators;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import org.evosuite.ga.NSGAChromosome;
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author José Campos

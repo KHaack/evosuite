@@ -19,10 +19,7 @@
  */
 package org.evosuite.dse;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assume.assumeTrue;
-
+import com.examples.with.different.packagename.solver.MazeClient;
 import com.examples.with.different.packagename.solver.MazeClientArrays;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
@@ -36,7 +33,9 @@ import org.evosuite.testsuite.TestSuiteChromosome;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.examples.with.different.packagename.solver.MazeClient;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assume.assumeTrue;
 
 public class DSEMazeSystemTest extends SystemTestBase {
 

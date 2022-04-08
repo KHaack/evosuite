@@ -19,13 +19,13 @@
  */
 package org.evosuite.ga.metaheuristics;
 
+import com.examples.with.different.packagename.BMICalculator;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
 import org.evosuite.SystemTestBase;
 import org.evosuite.testsuite.TestSuiteChromosome;
 import org.junit.Assert;
 import org.junit.Test;
-import com.examples.with.different.packagename.BMICalculator;
 
 /**
  * <p>StandardChemicalReactionSystemTest</p>

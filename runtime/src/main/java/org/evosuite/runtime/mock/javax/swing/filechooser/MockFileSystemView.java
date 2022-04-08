@@ -19,6 +19,14 @@
  */
 package org.evosuite.runtime.mock.javax.swing.filechooser;
 
+import org.evosuite.runtime.mock.OverrideMock;
+import org.evosuite.runtime.mock.java.io.MockFile;
+import org.evosuite.runtime.vfs.FSObject;
+import org.evosuite.runtime.vfs.VFolder;
+import org.evosuite.runtime.vfs.VirtualFileSystem;
+
+import javax.swing.*;
+import javax.swing.filechooser.FileSystemView;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -27,16 +35,6 @@ import java.lang.ref.WeakReference;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.swing.Icon;
-import javax.swing.UIManager;
-import javax.swing.filechooser.FileSystemView;
-
-import org.evosuite.runtime.mock.OverrideMock;
-import org.evosuite.runtime.mock.java.io.MockFile;
-import org.evosuite.runtime.vfs.FSObject;
-import org.evosuite.runtime.vfs.VFolder;
-import org.evosuite.runtime.vfs.VirtualFileSystem;
 
 
 public abstract class MockFileSystemView extends FileSystemView  implements OverrideMock{

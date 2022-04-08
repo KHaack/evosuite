@@ -19,19 +19,19 @@
  */
 package org.evosuite.runtime.mock.java.io;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.nio.channels.FileChannel;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import org.evosuite.runtime.LeakingResource;
 import org.evosuite.runtime.mock.MockFramework;
 import org.evosuite.runtime.mock.OverrideMock;
 import org.evosuite.runtime.mock.java.lang.MockIllegalArgumentException;
 import org.evosuite.runtime.mock.java.lang.MockNullPointerException;
 import org.evosuite.runtime.vfs.VirtualFileSystem;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.nio.channels.FileChannel;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class MockRandomAccessFile extends RandomAccessFile implements LeakingResource,  OverrideMock{
 

@@ -19,11 +19,8 @@
  */
 package org.evosuite.testcase;
 
-import static org.junit.Assert.assertEquals;
-
-import java.lang.reflect.Method;
-import java.util.Arrays;
-
+import com.examples.with.different.packagename.TrivialInt;
+import com.examples.with.different.packagename.coverage.IntExampleWithNoElse;
 import org.evosuite.Properties;
 import org.evosuite.SystemTestBase;
 import org.evosuite.TestGenerationContext;
@@ -41,8 +38,10 @@ import org.evosuite.utils.generic.GenericMethod;
 import org.junit.After;
 import org.junit.Test;
 
-import com.examples.with.different.packagename.TrivialInt;
-import com.examples.with.different.packagename.coverage.IntExampleWithNoElse;
+import java.lang.reflect.Method;
+import java.util.Arrays;
+
+import static org.junit.Assert.assertEquals;
 
 public class DeleteMutationSystemTest extends SystemTestBase {
     private double oldPInsert = Properties.P_TEST_INSERT;

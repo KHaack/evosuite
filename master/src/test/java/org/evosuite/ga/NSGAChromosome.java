@@ -19,16 +19,14 @@
  */
 package org.evosuite.ga;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Arrays;
-
-import org.evosuite.ga.Chromosome;
-import org.evosuite.ga.ConstructionFailedException;
 import org.evosuite.ga.localsearch.LocalSearchObjective;
 import org.evosuite.ga.variables.DoubleVariable;
 import org.evosuite.ga.variables.Variable;
 import org.evosuite.utils.Randomness;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author José Campos

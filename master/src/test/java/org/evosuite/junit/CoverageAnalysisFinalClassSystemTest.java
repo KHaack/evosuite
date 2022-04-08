@@ -19,16 +19,8 @@
  */
 package org.evosuite.junit;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.Map;
-
+import com.examples.with.different.packagename.FinalClass;
+import com.examples.with.different.packagename.FinalClassTest;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
 import org.evosuite.Properties.StatisticsBackend;
@@ -39,8 +31,15 @@ import org.evosuite.statistics.SearchStatistics;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.examples.with.different.packagename.FinalClass;
-import com.examples.with.different.packagename.FinalClassTest;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class CoverageAnalysisFinalClassSystemTest extends SystemTestBase {
 

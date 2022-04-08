@@ -19,12 +19,12 @@
  */
 package com.examples.with.different.packagename.testreader;
 
+import org.junit.Test;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-
-import org.junit.Test;
 
 public class SimpleTestExample03 {
 

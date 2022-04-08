@@ -19,18 +19,11 @@
  */
 package com.examples.with.different.packagename.testcarver;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Collection;
+import java.io.IOException;
 import java.io.StreamTokenizer;
 import java.io.StringReader;
-import java.io.IOException;
 import java.lang.reflect.Array;
-
-import com.examples.with.different.packagename.testcarver.ConversionException;
-import com.examples.with.different.packagename.testcarver.Converter;
+import java.util.*;
 
 /**
  * Generic {@link Converter} implementaion that handles conversion

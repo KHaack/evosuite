@@ -19,6 +19,7 @@
  */
 package org.evosuite.symbolic;
 
+import com.examples.with.different.packagename.symbolic.Max;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
 import org.evosuite.Properties.Strategy;
@@ -27,8 +28,6 @@ import org.junit.Assert;
 import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.examples.with.different.packagename.symbolic.Max;
 
 public class MaxSystemTest extends SystemTestBase {
 

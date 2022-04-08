@@ -19,11 +19,10 @@
  */
 package org.evosuite.runtime.mock.javax.swing;
 
-import java.awt.Dimension;
-
-import javax.swing.JComponent;
-
 import org.evosuite.runtime.mock.OverrideMock;
+
+import javax.swing.*;
+import java.awt.*;
 
 public class MockJComponent extends JComponent implements OverrideMock {
 

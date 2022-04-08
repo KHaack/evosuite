@@ -19,10 +19,10 @@
  */
 package org.evosuite.runtime.mock.java.net;
 
+import org.evosuite.runtime.vnet.NativeTcp;
+
 import java.io.IOException;
 import java.io.InputStream;
-
-import org.evosuite.runtime.vnet.NativeTcp;
 
 /**
  * Class used to create an InputStream for a virtual socket connection

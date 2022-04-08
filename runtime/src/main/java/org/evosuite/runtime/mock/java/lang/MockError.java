@@ -19,11 +19,11 @@
  */
 package org.evosuite.runtime.mock.java.lang;
 
-import java.io.PrintStream;
-import java.io.PrintWriter;
-
 import org.evosuite.runtime.mock.MockFramework;
 import org.evosuite.runtime.mock.OverrideMock;
+
+import java.io.PrintStream;
+import java.io.PrintWriter;
 
 public class MockError extends Error  implements OverrideMock{
 

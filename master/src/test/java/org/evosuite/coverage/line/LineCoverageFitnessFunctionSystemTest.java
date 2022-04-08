@@ -19,11 +19,12 @@
  */
 package org.evosuite.coverage.line;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.Arrays;
-import java.util.List;
-
+import com.examples.with.different.packagename.ClassWithAnonymousClass;
+import com.examples.with.different.packagename.IntExample;
+import com.examples.with.different.packagename.SingleMethod;
+import com.examples.with.different.packagename.coverage.IntExampleWithNoElse;
+import com.examples.with.different.packagename.instrumentation.testability.FlagExample3;
+import com.examples.with.different.packagename.staticfield.StaticFoo;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
 import org.evosuite.Properties.Criterion;
@@ -37,12 +38,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.examples.with.different.packagename.ClassWithAnonymousClass;
-import com.examples.with.different.packagename.instrumentation.testability.FlagExample3;
-import com.examples.with.different.packagename.IntExample;
-import com.examples.with.different.packagename.SingleMethod;
-import com.examples.with.different.packagename.coverage.IntExampleWithNoElse;
-import com.examples.with.different.packagename.staticfield.StaticFoo;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author Jose Miguel Rojas

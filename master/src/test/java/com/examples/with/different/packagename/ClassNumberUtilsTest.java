@@ -19,11 +19,12 @@
  */
 package com.examples.with.different.packagename;
 
-import static org.junit.Assert.*;
+import org.junit.Test;
 
 import java.math.BigInteger;
 
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 /**
  * Snippet from Lang project

@@ -19,16 +19,15 @@
  */
 package org.evosuite.localsearch;
 
+import com.examples.with.different.packagename.concolic.TP118;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
-import org.evosuite.SystemTestBase;
 import org.evosuite.Properties.Criterion;
+import org.evosuite.SystemTestBase;
 import org.evosuite.ga.metaheuristics.GeneticAlgorithm;
 import org.evosuite.testsuite.TestSuiteChromosome;
 import org.junit.Assume;
 import org.junit.Test;
-
-import com.examples.with.different.packagename.concolic.TP118;
 
 /**
  * Created by Andrea Arcuri on 19/03/15.

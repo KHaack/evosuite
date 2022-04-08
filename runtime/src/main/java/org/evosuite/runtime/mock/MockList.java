@@ -19,19 +19,8 @@
  */
 package org.evosuite.runtime.mock;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.evosuite.runtime.RuntimeSettings;
-import org.evosuite.runtime.mock.java.io.MockFile;
-import org.evosuite.runtime.mock.java.io.MockFileInputStream;
-import org.evosuite.runtime.mock.java.io.MockFileOutputStream;
-import org.evosuite.runtime.mock.java.io.MockFileReader;
-import org.evosuite.runtime.mock.java.io.MockFileWriter;
-import org.evosuite.runtime.mock.java.io.MockIOException;
-import org.evosuite.runtime.mock.java.io.MockPrintStream;
-import org.evosuite.runtime.mock.java.io.MockPrintWriter;
-import org.evosuite.runtime.mock.java.io.MockRandomAccessFile;
+import org.evosuite.runtime.mock.java.io.*;
 import org.evosuite.runtime.mock.java.lang.*;
 import org.evosuite.runtime.mock.java.net.*;
 import org.evosuite.runtime.mock.java.security.MockSecureRandom;
@@ -50,6 +39,9 @@ import org.evosuite.runtime.mock.javax.swing.MockSpinnerDateModel;
 import org.evosuite.runtime.mock.javax.swing.filechooser.MockFileSystemView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Class used to handle all the mock objects. When a new mock is defined, it has

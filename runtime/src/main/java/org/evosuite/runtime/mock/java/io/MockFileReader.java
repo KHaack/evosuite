@@ -19,16 +19,11 @@
  */
 package org.evosuite.runtime.mock.java.io;
 
-import java.io.File;
-import java.io.FileDescriptor;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-
 import org.evosuite.runtime.mock.MockFramework;
 import org.evosuite.runtime.mock.OverrideMock;
 import org.evosuite.runtime.vfs.VirtualFileSystem;
+
+import java.io.*;
 
 public class MockFileReader extends FileReader  implements OverrideMock{
 

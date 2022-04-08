@@ -19,10 +19,10 @@
  */
 package com.examples.with.different.packagename.testcarver;
 
-import java.util.Locale;
-
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.util.Locale;
 
 public class ClassWithPublicFieldReadingTestCase {
 

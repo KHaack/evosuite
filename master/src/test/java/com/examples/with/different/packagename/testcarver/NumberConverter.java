@@ -19,17 +19,15 @@
  */
 package com.examples.with.different.packagename.testcarver;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
+import java.text.ParsePosition;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.text.NumberFormat;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.text.ParsePosition;
-
-import com.examples.with.different.packagename.testcarver.ConversionException;
 
 /**
  * {@link org.apache.commons.beanutils.Converter} implementaion that handles conversion

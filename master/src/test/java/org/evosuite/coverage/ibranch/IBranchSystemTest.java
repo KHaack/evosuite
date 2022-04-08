@@ -20,8 +20,7 @@
 package org.evosuite.coverage.ibranch;
 
 
-import java.util.Arrays;
-
+import com.examples.with.different.packagename.context.complex.EntryPointsClass;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
 import org.evosuite.Properties.Criterion;
@@ -35,7 +34,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.examples.with.different.packagename.context.complex.EntryPointsClass;
+import java.util.Arrays;
 
 /**
  * Ibranch Goals of provacomplex.EntryPointsClass.

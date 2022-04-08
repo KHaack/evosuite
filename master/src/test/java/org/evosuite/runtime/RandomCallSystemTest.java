@@ -19,6 +19,8 @@
  */
 package org.evosuite.runtime;
 
+import com.examples.with.different.packagename.ClassUsingRandomParameter;
+import com.examples.with.different.packagename.RandomBranch;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
 import org.evosuite.SystemTestBase;
@@ -29,9 +31,6 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.examples.with.different.packagename.ClassUsingRandomParameter;
-import com.examples.with.different.packagename.RandomBranch;
 
 public class RandomCallSystemTest extends SystemTestBase {
 

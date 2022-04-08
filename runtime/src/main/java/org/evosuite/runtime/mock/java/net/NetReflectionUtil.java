@@ -19,11 +19,11 @@
  */
 package org.evosuite.runtime.mock.java.net;
 
-import java.lang.reflect.Method;
-import java.net.InetAddress;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.lang.reflect.Method;
+import java.net.InetAddress;
 
 /**
  * Helper class used to call package level methods in java.net

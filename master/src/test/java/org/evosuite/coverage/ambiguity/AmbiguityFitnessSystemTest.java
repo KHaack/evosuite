@@ -19,15 +19,8 @@
  */
 package org.evosuite.coverage.ambiguity;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.List;
-
+import com.examples.with.different.packagename.Compositional;
+import com.examples.with.different.packagename.coverage.IndirectlyCoverableBranches;
 import org.apache.commons.io.FileUtils;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
@@ -41,8 +34,14 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.examples.with.different.packagename.Compositional;
-import com.examples.with.different.packagename.coverage.IndirectlyCoverableBranches;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 
 public class AmbiguityFitnessSystemTest extends SystemTestBase {

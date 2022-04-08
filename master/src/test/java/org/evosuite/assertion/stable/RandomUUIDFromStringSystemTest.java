@@ -19,19 +19,18 @@
  */
 package org.evosuite.assertion.stable;
 
-import static org.junit.Assert.assertEquals;
-
+import com.examples.with.different.packagename.stable.RandomUUIDFromStringUser;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
-import org.evosuite.SystemTestBase;
 import org.evosuite.Properties.Criterion;
+import org.evosuite.SystemTestBase;
 import org.evosuite.ga.metaheuristics.GeneticAlgorithm;
 import org.evosuite.testsuite.TestSuiteChromosome;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.examples.with.different.packagename.stable.RandomUUIDFromStringUser;
+import static org.junit.Assert.assertEquals;
 
 public class RandomUUIDFromStringSystemTest extends SystemTestBase {
     private final boolean DEFAULT_REPLACE_CALLS = Properties.REPLACE_CALLS;

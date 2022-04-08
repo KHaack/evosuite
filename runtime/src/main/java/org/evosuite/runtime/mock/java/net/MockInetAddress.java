@@ -19,17 +19,17 @@
  */
 package org.evosuite.runtime.mock.java.net;
 
+import org.evosuite.runtime.mock.StaticReplacementMock;
+import org.evosuite.runtime.vnet.EvoIPAddressUtil;
+import org.evosuite.runtime.vnet.NetworkInterfaceState;
+import org.evosuite.runtime.vnet.VirtualNetwork;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.List;
-
-import org.evosuite.runtime.mock.StaticReplacementMock;
-import org.evosuite.runtime.vnet.EvoIPAddressUtil;
-import org.evosuite.runtime.vnet.NetworkInterfaceState;
-import org.evosuite.runtime.vnet.VirtualNetwork;
 
 /**
  * We need to mock this class mainly to handle hostnames resolutions,

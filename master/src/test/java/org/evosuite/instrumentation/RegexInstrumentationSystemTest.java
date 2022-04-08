@@ -20,16 +20,15 @@
 package org.evosuite.instrumentation;
 
 
-import java.lang.reflect.Method;
-
 import com.examples.with.different.packagename.RegexNullExample;
+import com.examples.with.different.packagename.TrivialForDynamicSeedingRegex;
 import org.evosuite.Properties;
 import org.evosuite.SystemTestBase;
 import org.evosuite.instrumentation.testability.StringHelper;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.examples.with.different.packagename.TrivialForDynamicSeedingRegex;
+import java.lang.reflect.Method;
 
 public class RegexInstrumentationSystemTest extends SystemTestBase {
 

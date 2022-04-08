@@ -19,8 +19,7 @@
  */
 package org.evosuite.assertion.stable;
 
-import java.util.Map;
-
+import com.examples.with.different.packagename.stable.ResourceLoaderUser;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
 import org.evosuite.SystemTestBase;
@@ -34,7 +33,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.examples.with.different.packagename.stable.ResourceLoaderUser;
+import java.util.Map;
 
 public class ResourceLoaderUserSystemTest extends SystemTestBase {
     private final boolean DEFAULT_JUNIT_CHECK_ON_SEPARATE_PROCESS = Properties.JUNIT_CHECK_ON_SEPARATE_PROCESS;

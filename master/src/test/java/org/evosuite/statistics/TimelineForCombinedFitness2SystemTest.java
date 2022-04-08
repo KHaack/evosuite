@@ -20,11 +20,10 @@
 package org.evosuite.statistics;
 
 import com.examples.with.different.packagename.Compositional;
-
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
-import org.evosuite.SystemTestBase;
 import org.evosuite.Properties.Criterion;
+import org.evosuite.SystemTestBase;
 import org.evosuite.statistics.backend.DebugStatisticsBackend;
 import org.junit.After;
 import org.junit.Assert;

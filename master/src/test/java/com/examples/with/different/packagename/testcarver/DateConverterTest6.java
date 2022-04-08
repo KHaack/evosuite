@@ -19,15 +19,16 @@
  */
 package com.examples.with.different.packagename.testcarver;
 
+import org.junit.Test;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import org.junit.Test;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class DateConverterTest6 {
 

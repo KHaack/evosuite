@@ -24,8 +24,8 @@ import com.examples.with.different.packagename.coverage.TestMethodWithSeveralInp
 import com.examples.with.different.packagename.testcarver.*;
 import org.evosuite.EvoSuite;
 import org.evosuite.Properties;
-import org.evosuite.SystemTestBase;
 import org.evosuite.Properties.TestFactory;
+import org.evosuite.SystemTestBase;
 import org.evosuite.ga.metaheuristics.GeneticAlgorithm;
 import org.evosuite.testcarver.testcase.CarvedTestCase;
 import org.evosuite.testcase.factories.JUnitTestCarvedChromosomeFactory;

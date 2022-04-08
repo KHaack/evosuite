@@ -19,10 +19,10 @@
  */
 package org.evosuite.coverage;
 
-import com.opencsv.CSVReader;
 import com.examples.with.different.packagename.Calculator;
 import com.examples.with.different.packagename.PureEnum;
 import com.examples.with.different.packagename.mutation.MutationPropagation;
+import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
 import org.apache.commons.io.FileUtils;
 import org.evosuite.EvoSuite;
@@ -39,7 +39,6 @@ import java.io.IOException;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Created by jrojas

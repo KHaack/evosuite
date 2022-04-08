@@ -19,9 +19,9 @@
  */
 package org.evosuite.runtime.mock.java.util;
 
-import java.util.UUID;
-
 import org.evosuite.runtime.mock.StaticReplacementMock;
+
+import java.util.UUID;
 
 public class MockUUID implements StaticReplacementMock {
 
