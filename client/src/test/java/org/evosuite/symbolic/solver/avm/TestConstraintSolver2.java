@@ -67,14 +67,6 @@ public class TestConstraintSolver2 extends RandomizedTC {
 
         Collection<Constraint<?>> constraints = buildConstraintSystem();
 
-        System.out.println("Constraints:");
-        for (Constraint<?> c : constraints) {
-            System.out.println(c.toString());
-        }
-
-        System.out.println("");
-        System.out.println("Initial: " + INIT_STRING);
-
         EvoSuiteSolver solver = new EvoSuiteSolver();
         try {
             SolverResult solverResult = solver.solve(constraints);
@@ -83,22 +75,12 @@ public class TestConstraintSolver2 extends RandomizedTC {
             assertNotNull(model);
 
             Object var0 = model.get("var0");
-            System.out.println("Expected: " + EXPECTED_STRING);
-            System.out.println("Found: " + var0);
 
             assertEquals(EXPECTED_STRING, var0);
         } catch (SolverTimeoutException | SolverParseException | SolverErrorException | IOException e) {
             fail();
         }
 
-    }
-
-    public void test2() {
-        String l1 = "hello";
-        String l2 = "world";
-        if (l1.equals(l2)) {
-            System.out.println("xx");
-        }
     }
 
 }

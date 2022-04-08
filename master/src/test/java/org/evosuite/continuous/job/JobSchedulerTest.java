@@ -205,7 +205,7 @@ public class JobSchedulerTest {
 
         Set<String> in = seeding.inputClasses;
         Assert.assertNotNull(in);
-        System.out.println(in.toString());
+
         Assert.assertTrue(in.contains(NoBranches.class.getName()));
         Assert.assertTrue(in.contains(SomeBranches.class.getName()));
         Assert.assertTrue(in.contains(SomeInterfaceImpl.class.getName()));
@@ -244,7 +244,7 @@ public class JobSchedulerTest {
 
         Set<String> in = seeding.inputClasses;
         Assert.assertNotNull(in);
-        System.out.println(in.toString());
+
         Assert.assertTrue(in.contains(Simple.class.getName()));
         Assert.assertTrue(in.contains(Trivial.class.getName()));
         Assert.assertEquals(2, in.size());
@@ -282,7 +282,7 @@ public class JobSchedulerTest {
 
         Set<String> in = seeding.inputClasses;
         Assert.assertNotNull(in);
-        System.out.println(in.toString());
+
         Assert.assertTrue(in.contains(Simple.class.getName()));
         Assert.assertTrue(in.contains(Trivial.class.getName()));
         Assert.assertEquals(2, in.size());
@@ -295,8 +295,6 @@ public class JobSchedulerTest {
         int simpleTime = jobs.get(0).seconds;
         int trivialTime = jobs.get(1).seconds;
         int seedingTime = jobs.get(2).seconds;
-
-        System.out.println("Ordered times: " + simpleTime + ", " + trivialTime + ", " + seedingTime);
 
         Assert.assertTrue(simpleTime > trivialTime);
         Assert.assertTrue(simpleTime < seedingTime);  //seeding, even if last, it should have more time, as it has most branches

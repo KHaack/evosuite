@@ -106,13 +106,11 @@ public class TestConstantInliner {
         parameters = new ArrayList<>();
         parameters.add(ai2);
         test.addStatement(new MethodStatement(test, new GenericMethod(TrivialInt.class.getMethods()[0], TrivialInt.class), sut, parameters));
-        System.out.println(test.toCode());
 
         ConstantInliner inliner = new ConstantInliner();
         inliner.inline(test);
 
         String code = test.toCode();
-        System.out.println(test.toCode());
         assertFalse(code.contains("trivialInt0.testMe(int"));
     }
 
@@ -129,13 +127,11 @@ public class TestConstantInliner {
         List<VariableReference> parameters = new ArrayList<>();
         parameters.add(stringParam);
         test.addStatement(new MethodStatement(test, new GenericMethod(StringConstantInliningExample.class.getMethods()[0], StringConstantInliningExample.class), objectVar, parameters));
-        System.out.println(test.toCode());
 
         ConstantInliner inliner = new ConstantInliner();
         inliner.inline(test);
 
         String code = test.toCode();
-        System.out.println(code);
         assertFalse(code.contains("foo(EXAMPLE)"));
         assertTrue(code.contains("foo(\"EXAMPLE\")"));
     }
@@ -152,13 +148,11 @@ public class TestConstantInliner {
         List<VariableReference> parameters = new ArrayList<>();
         parameters.add(stringParam);
         test.addStatement(new MethodStatement(test, new GenericMethod(StringConstantInliningExample.class.getMethods()[0], StringConstantInliningExample.class), objectVar, parameters));
-        System.out.println(test.toCode());
 
         ConstantInliner inliner = new ConstantInliner();
         inliner.inline(test);
 
         String code = test.toCode();
-        System.out.println(code);
         assertFalse(code.contains("foo(test.class)"));
         assertTrue(code.contains("foo(\"test.class\")"));
     }

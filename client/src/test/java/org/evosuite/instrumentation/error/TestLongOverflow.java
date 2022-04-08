@@ -90,7 +90,6 @@ public class TestLongOverflow {
     @Test
     public void testDivOverflow() {
         Assume.assumeTrue(y != 0L);
-        System.out.println("x: " + x + ", y: " + y);
         int result = ErrorConditionChecker.overflowDistance(x, y, Opcodes.LDIV);
         assertOverflow(new BigDecimal(x).divide(new BigDecimal(y), 10, RoundingMode.HALF_UP), result, x / y);
     }

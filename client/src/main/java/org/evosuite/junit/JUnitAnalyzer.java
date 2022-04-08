@@ -207,13 +207,8 @@ public abstract class JUnitAnalyzer {
                      * this can happen if there is a failure in the scaffolding (eg @AfterClass/@BeforeClass).
                      * in such case, everything need to be deleted
                      */
-                    StringBuilder sb = new StringBuilder();
-                    sb.append("Issue in scaffolding of the test suite: ").append(failure.getMessage()).append("\n");
-                    sb.append("Stack trace:\n");
-                    for (String elem : failure.getExceptionStackTrace()) {
-                        sb.append(elem).append("\n");
-                    }
-                    logger.error(sb.toString());
+                    logger.error("Issue in scaffolding of the test suite", failure);
+
                     numUnstable = tests.size();
                     tests.clear();
                     return numUnstable;
@@ -231,7 +226,7 @@ public abstract class JUnitAnalyzer {
                         + failure.getExceptionClassName() + ": " + failure.getMessage());
 
                 for (String elem : failure.getExceptionStackTrace()) {
-                    logger.info("Exception trace: {}", elem);
+                    logger.debug("Exception trace: {}", elem);
                 }
 
                 boolean toRemove = !(failure.isAssertionError());

@@ -70,12 +70,6 @@ public class TestConstraintSolver1 extends RandomizedTC {
         return Arrays.<Constraint<?>>asList(constr1, constr2, constr3);
     }
 
-    public void testMe(String x) {
-        if (x.length() == 5 && x.charAt(4) == '_') {
-            System.out.println("Juhu");
-        }
-    }
-
     @Test
     public void test() throws SolverEmptyQueryException {
         Properties.LOCAL_SEARCH_BUDGET = 100; // 5000000000000L; TODO - ??
@@ -83,22 +77,15 @@ public class TestConstraintSolver1 extends RandomizedTC {
 
         Collection<Constraint<?>> constraints = buildConstraintSystem();
 
-        System.out.println("Constraints:");
-        for (Constraint<?> c : constraints) {
-            System.out.println(c.toString());
-        }
-
         EvoSuiteSolver seeker = new EvoSuiteSolver();
         try {
             SolverResult solverResult = seeker.solve(constraints);
             assertTrue(solverResult.isSAT());
 
             Map<String, Object> model = solverResult.getModel();
-            System.out.println(model);
+
 
             Object var0 = model.get("var0");
-            System.out.println("Expected: " + EXPECTED_STRING);
-            System.out.println("Found: " + var0);
 
             assertEquals(EXPECTED_STRING, var0);
         } catch (SolverTimeoutException | SolverParseException | SolverErrorException | IOException e) {

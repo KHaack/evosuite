@@ -67,9 +67,6 @@ public abstract class DefaultTestCaseConcolicExecutor {
         Properties.TIMEOUT = 5000;
         Properties.CONCOLIC_TIMEOUT = 5000000;
 
-        System.out.println("TestCase=");
-        System.out.println(tc.toCode());
-
         PathCondition pc = new ConcolicExecutorImpl().execute(tc);
         List<BranchCondition> branch_conditions = pc.getBranchConditions();
 
