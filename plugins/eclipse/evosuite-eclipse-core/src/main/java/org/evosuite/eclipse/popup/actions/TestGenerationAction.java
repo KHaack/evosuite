@@ -72,6 +72,7 @@ import org.osgi.framework.Bundle;
  * @author Gordon Fraser
  */
 public abstract class TestGenerationAction extends AbstractHandler {
+    private static final Logger logger = LoggerFactory.getLogger(ClientProcess.class);
 
     private static String EVOSUITE_CP = null;
 
@@ -109,7 +110,7 @@ public abstract class TestGenerationAction extends AbstractHandler {
                 EVOSUITE_CP = evosuiteLib.getFile();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("getEvoSuiteJar", e);
         }
 
         return EVOSUITE_CP;
@@ -152,7 +153,7 @@ public abstract class TestGenerationAction extends AbstractHandler {
             }
             in.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("writeFile", e);
         }
     }
 
@@ -191,7 +192,7 @@ public abstract class TestGenerationAction extends AbstractHandler {
                 jProject.setRawClasspath(newEntries, null);
 
             } catch (Throwable t) {
-                t.printStackTrace();
+                logger.error("generateTests", t);
             }
         }
         addTestJob(target);
@@ -333,17 +334,15 @@ public abstract class TestGenerationAction extends AbstractHandler {
                                 Change change = refactoring.createChange(monitor);
                                 change.perform(monitor);
 
-                            } catch (CoreException e) {
-                                e.printStackTrace();
-                            } catch (Exception e) {
-                                e.printStackTrace();
+                            } catch (CoreException | Exception e) {
+                                logger.error("renameSuite", e);
                             }
                         }
                     }
                 }
             }
         } catch (JavaModelException e1) {
-            e1.printStackTrace();
+            logger.error("renameSuite", e1);
         }
     }
 

@@ -87,14 +87,14 @@ public class AmbiguityCoverageFactory extends
             ClientServices.getInstance().getClientNode().trackOutputVariable(RuntimeVariable.AmbiguityScore_T0, ag);
             ClientServices.getInstance().getClientNode().trackOutputVariable(RuntimeVariable.Size_T0, matrix.size());
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("loadCoverage", e);
         } finally {
             try {
                 if (br != null) {
                     br.close();
                 }
-            } catch (IOException ex) {
-                ex.printStackTrace();
+            } catch (IOException e) {
+                logger.error("loadCoverage", e);
             }
         }
     }

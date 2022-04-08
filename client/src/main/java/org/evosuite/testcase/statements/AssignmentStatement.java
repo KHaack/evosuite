@@ -122,7 +122,6 @@ public class AssignmentStatement extends AbstractStatement {
             logger.info("Error cloning statement " + getCode());
             logger.info("In test: " + this.tc.toCode());
             logger.info("New test: " + newTestCase.toCode());
-            e.printStackTrace();
             assert (false) : e.toString();
         }
         return null;

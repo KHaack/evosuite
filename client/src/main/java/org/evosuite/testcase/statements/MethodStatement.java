@@ -249,7 +249,7 @@ public class MethodStatement extends EntityWithParametersStatement {
                         throw e;
                         // throw CodeUnderTestException.throwException(e.getCause());
                     } catch (Throwable e) {
-                        e.printStackTrace();
+                        logger.error("execute", e);
                         throw new EvosuiteError(e);
                     }
 

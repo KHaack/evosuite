@@ -19,6 +19,9 @@
  */
 package org.evosuite.utils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -37,6 +40,8 @@ import java.security.NoSuchAlgorithmException;
  */
 public class MD5 {
 
+    private static final Logger logger = LoggerFactory.getLogger(MD5.class);
+
     /**
      * Return the md5-hash of a string
      * based on Heshan Perera @ http://stackoverflow.com/a/10530959/998816
@@ -52,7 +57,7 @@ public class MD5 {
             BigInteger i = new BigInteger(1, m.digest());
             return String.format("%1$032x", i);
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            logger.error("hash", e);
         }
 
         return null;
@@ -61,7 +66,7 @@ public class MD5 {
     /**
      * Return the md5-hash of a file
      *
-     * @param s
+     * @param f
      * @return
      */
     public static String hash(File f) {
@@ -71,7 +76,7 @@ public class MD5 {
 
             return MD5.hash(content);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("hash", e);
         }
 
         return null;

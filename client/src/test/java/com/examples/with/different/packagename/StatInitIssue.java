@@ -20,7 +20,6 @@
 package com.examples.with.different.packagename;
 
 
-import org.evosuite.lm.LangModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

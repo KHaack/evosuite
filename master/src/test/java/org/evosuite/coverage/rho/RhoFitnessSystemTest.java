@@ -34,6 +34,8 @@ import org.evosuite.statistics.RuntimeVariable;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.List;
@@ -41,6 +43,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 
 public class RhoFitnessSystemTest extends SystemTestBase {
+    private static final Logger logger = LoggerFactory.getLogger(RhoFitnessSystemTest.class);
 
     private void writeMatrix(String MATRIX_CONTENT) {
         String path = Properties.REPORT_DIR + File.separator;
@@ -58,7 +61,7 @@ public class RhoFitnessSystemTest extends SystemTestBase {
             bw.write(MATRIX_CONTENT);
             bw.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("writeMatrix", e);
         }
     }
 
@@ -68,7 +71,7 @@ public class RhoFitnessSystemTest extends SystemTestBase {
         try {
             FileUtils.deleteDirectory(new File("evosuite-report"));
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("prepare", e);
         }
 
         Properties.CRITERION = new Properties.Criterion[]{

@@ -26,7 +26,6 @@ import org.evosuite.graphs.ccfg.*;
 import org.evosuite.graphs.ccfg.ClassControlFlowGraph.FrameNodeType;
 import org.evosuite.graphs.ccg.ClassCallNode;
 import org.evosuite.graphs.cfg.BytecodeInstruction;
-import org.evosuite.lm.LangModel;
 import org.evosuite.utils.LoggingUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

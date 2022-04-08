@@ -44,7 +44,6 @@ public class PrintingThatShouldBeMuted {
 		try {
 			t.join(50);
 		} catch (InterruptedException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		
@@ -65,7 +64,6 @@ public class PrintingThatShouldBeMuted {
 		try {
 			k.join(2000);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	} */

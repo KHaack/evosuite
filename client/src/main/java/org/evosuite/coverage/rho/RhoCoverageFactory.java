@@ -91,13 +91,13 @@ public class RhoCoverageFactory extends
             rho = Math.abs(0.5 - rho);
             logger.debug("(RhoScore - 0.5) of an existing test suite: " + rho);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("loadCoverage", e);
         } finally {
             try {
                 if (br != null)
                     br.close();
             } catch (IOException ex) {
-                ex.printStackTrace();
+                logger.error("loadCoverage", ex);
             }
         }
     }

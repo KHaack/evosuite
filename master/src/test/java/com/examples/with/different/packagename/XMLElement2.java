@@ -256,6 +256,7 @@ public class XMLElement2 {
      * </dl>
      */
     private int parserLineNr;
+
     /**
      * Creates and initializes a new XML element. Calling the construction is
      * equivalent to:

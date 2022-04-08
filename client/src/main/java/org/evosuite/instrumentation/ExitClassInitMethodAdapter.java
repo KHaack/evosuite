@@ -132,6 +132,7 @@ public class ExitClassInitMethodAdapter extends MethodVisitor {
         Label end;
         Label handler;
         String type;
+
         public TryCatchBlock(Label start, Label end, Label handler, String type) {
             this.start = start;
             this.end = end;

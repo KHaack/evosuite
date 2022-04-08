@@ -591,7 +591,6 @@ public class BooleanTestabilityTransformation {
         } catch (AnalyzerException e) {
             logger.error("Analyzer exception while analyzing " + className + "."
                     + mn.name + ": " + e);
-            e.printStackTrace();
         }
 
         // compute Raw and ActualCFG and put both into GraphPool

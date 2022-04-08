@@ -38,6 +38,7 @@ public final class RealComparison extends AbstractExpression<Long> implements
     private static final long serialVersionUID = 1L;
     private final Expression<Double> left;
     private final Expression<Double> right;
+
     /**
      * <p>
      * Constructor for RealComparison.

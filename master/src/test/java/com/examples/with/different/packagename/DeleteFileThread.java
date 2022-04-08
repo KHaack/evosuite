@@ -20,12 +20,16 @@
 
 package com.examples.with.different.packagename;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 
 /**
  * @author Gordon Fraser
  */
 public class DeleteFileThread {
+    private static final Logger logger = LoggerFactory.getLogger(DeleteFileThread.class);
 
     public void testMe(String x) {
         Thread t = new Thread() {
@@ -41,7 +45,7 @@ public class DeleteFileThread {
                         sleep(500);
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
-                        e.printStackTrace();
+                        logger.error("testMe", e);
                     }
                 }
             }

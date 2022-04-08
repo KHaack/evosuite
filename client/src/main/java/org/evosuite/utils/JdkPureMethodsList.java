@@ -20,7 +20,6 @@
 package org.evosuite.utils;
 
 import org.evosuite.graphs.cfg.BytecodeInstruction;
-import org.evosuite.lm.LangModel;
 import org.objectweb.asm.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

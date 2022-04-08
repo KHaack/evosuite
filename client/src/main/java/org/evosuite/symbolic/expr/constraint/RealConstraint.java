@@ -35,6 +35,7 @@ public final class RealConstraint extends Constraint<Double> {
     private final Expression<Double> left;
     private final Comparator cmp;
     private final Expression<Double> right;
+
     /**
      * <p>
      * Constructor for RealConstraint.

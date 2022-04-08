@@ -735,6 +735,7 @@ public final class SymbolicFunctionVM extends AbstractVM {
         public String owner;
         public String name;
         public String desc;
+
         public FunctionKey(String owner, String name, String desc) {
             super();
             this.owner = owner;

@@ -42,6 +42,7 @@ import org.evosuite.junit.DetermineSUT.NoJUnitClassException;
 
 @SuppressWarnings("restriction")
 public abstract class ExtendSuiteAction extends TestGenerationAction {
+    private static final Logger logger = LoggerFactory.getLogger(ExtendSuiteAction.class);
 
     HashSet<IResource> currentSelection = new HashSet<IResource>();
 
@@ -148,7 +149,7 @@ public abstract class ExtendSuiteAction extends TestGenerationAction {
             job.schedule(); // start as soon as possible
 
         } catch (JavaModelException e) {
-            e.printStackTrace();
+            logger.error("addTestJob", e);
         } catch (NoJUnitClassException e) {
             MessageDialog.openError(shell, "Evosuite", "Cannot find JUnit tests in " + suiteClass);
         }

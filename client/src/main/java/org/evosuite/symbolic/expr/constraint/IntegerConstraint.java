@@ -35,6 +35,7 @@ public final class IntegerConstraint extends Constraint<Long> {
     private final Expression<Long> left;
     private final Comparator cmp;
     private final Expression<Long> right;
+
     /**
      * <p>
      * Constructor for IntegerConstraint.

@@ -70,7 +70,7 @@ public class JUnitTestSuite {
             }
 
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            logger.error("runSuite", e);
         }
     }
 

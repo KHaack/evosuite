@@ -120,7 +120,7 @@ public class ProjectStaticData {
                 if (br != null)
                     br.close();
             } catch (IOException ex) {
-                ex.printStackTrace();
+                logger.error("initializeLocalHistory", ex);
             }
         }
 

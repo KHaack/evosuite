@@ -56,7 +56,7 @@ public class EvoSuitePropertyPage extends PropertyPage {
 
 //	private Button reportButton;
 
-//	private Button plotButton;
+    //	private Button plotButton;
     public static QualifiedName TIME_PROP_KEY = new QualifiedName("EvoSuite",
             "TestGenTime");
     public static QualifiedName GLOBAL_TIME_PROP_KEY = new QualifiedName("EvoSuite",
@@ -90,7 +90,7 @@ public class EvoSuitePropertyPage extends PropertyPage {
     private Button minimizeValuesButton;
     private Button sandboxButton;
 
-//	public static QualifiedName REPORT_PROP_KEY = new QualifiedName("EvoSuite",
+    //	public static QualifiedName REPORT_PROP_KEY = new QualifiedName("EvoSuite",
 //	        "ShowReport");
     private Button scaffoldingButton;
     private Button deterministicButton;

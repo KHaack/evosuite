@@ -578,7 +578,7 @@ public class CoverageAnalysis {
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                logger.error("printReport", e);
             }
 
             // last element will be flush by master process

@@ -71,6 +71,8 @@ import java.nio.charset.Charset;
 
 public class TestExtensionJob extends TestGenerationJob {
 
+    private final static Logger logger = LoggerFactory.getLogger(Properties.class);
+
     private File tempDir;
     private ArrayList<String> newTests;
     private List<MethodDeclaration> newMethods = null;
@@ -83,7 +85,7 @@ public class TestExtensionJob extends TestGenerationJob {
         try {
             tempDir = setupTempDir();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("TestExtensionJob", e);
             tempDir = new File("/tmp");
         }
 
@@ -252,10 +254,8 @@ public class TestExtensionJob extends TestGenerationJob {
                 }
                 classType.getCompilationUnit().commitWorkingCopy(false, null);
 
-            } catch (JavaModelException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (JavaModelException | IOExceptione e) {
+                logger.error("run", e);
             }
         }
         return status;

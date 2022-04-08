@@ -19,7 +19,6 @@
  */
 package org.evosuite.testcase.execution;
 
-import org.evosuite.lm.LangModel;
 import org.evosuite.setup.TestUsageChecker;
 import org.evosuite.testcase.variable.ArrayReference;
 import org.evosuite.testcase.variable.VariableReference;

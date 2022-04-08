@@ -72,11 +72,13 @@ public class MockThread extends Thread implements OverrideMock {
         super();
         mockSetup(null);
     }
+
     public MockThread(Runnable target) {
         super(target);
         this.target = target;
         mockSetup(null);
     }
+
     public MockThread(ThreadGroup group, Runnable target) {
         super(group, target);
         this.target = target;

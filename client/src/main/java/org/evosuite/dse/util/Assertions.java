@@ -39,7 +39,6 @@ public class Assertions {
     public static <T> T notNull(final T t) {
         if (t == null) {
             NullPointerException npe = new NullPointerException();
-            npe.printStackTrace();
             throw npe;
         }
 
@@ -64,7 +63,6 @@ public class Assertions {
     public static int notNegative(final int i) {
         if (i < 0) {
             IndexOutOfBoundsException e = new IndexOutOfBoundsException();
-            e.printStackTrace();
             throw e;
         }
 

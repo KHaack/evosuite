@@ -162,12 +162,8 @@ public class PrimitiveFieldAssertion extends Assertion {
 
         try {
             field = methodClass.getField(fieldName);
-        } catch (SecurityException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (NoSuchFieldException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        } catch (SecurityException | NoSuchFieldException e) {
+            logger.error("readObject", e);
         }
     }
 }

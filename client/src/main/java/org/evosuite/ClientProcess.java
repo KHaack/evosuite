@@ -122,7 +122,6 @@ public class ClientProcess {
         } catch (Throwable t) {
             logger.error(getPrettyPrintIdentifier() + "Error when generating tests for: " + Properties.TARGET_CLASS
                     + " with seed " + Randomness.getSeed() + ". Configuration id : " + Properties.CONFIGURATION_ID, t);
-            t.printStackTrace();
 
             //sleep 1 sec to be more sure that the above log is recorded
             try {

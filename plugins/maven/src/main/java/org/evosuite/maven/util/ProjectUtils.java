@@ -21,7 +21,10 @@ package org.evosuite.maven.util;
 
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.project.MavenProject;
+import org.evosuite.ClientProcess;
 import org.evosuite.PackageInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -32,6 +35,7 @@ import java.util.List;
  * @author José Campos
  */
 public class ProjectUtils {
+    private static final Logger logger = LoggerFactory.getLogger(ClientProcess.class);
 
     /**
      * Get compile elements (i.e., classes under /target/classes)
@@ -50,7 +54,7 @@ public class ProjectUtils {
                     .filter(element -> new File(element).exists())
                     .forEach(element -> compileClassPath.add(element));
         } catch (DependencyResolutionRequiredException e) {
-            e.printStackTrace();
+            logger.error("getCompileClasspathElements", e);
         }
 
         return compileClassPath;
@@ -74,7 +78,7 @@ public class ProjectUtils {
                     .filter(element -> new File(element).exists())
                     .forEach(element -> testClassPath.add(element));
         } catch (DependencyResolutionRequiredException e) {
-            e.printStackTrace();
+            logger.error("getTestClasspathElements", e);
         }
 
         return testClassPath;
@@ -95,7 +99,7 @@ public class ProjectUtils {
                     .filter(element -> new File(element).exists())
                     .forEach(element -> runtimeClassPath.add(element));
         } catch (DependencyResolutionRequiredException e) {
-            e.printStackTrace();
+            logger.error("getRuntimeClasspathElements", e);
         }
 
         return runtimeClassPath;

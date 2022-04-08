@@ -289,6 +289,7 @@ public class RegexDistanceUtils {
         public final int fromRow;
         public final State fromState;
         public final TransitionType type;
+
         public GraphTransition(double cost, int fromRow, State fromState, TransitionType type) {
             this.cost = cost;
             this.fromRow = fromRow;

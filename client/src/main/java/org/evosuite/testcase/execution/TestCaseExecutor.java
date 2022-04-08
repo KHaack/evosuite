@@ -408,8 +408,7 @@ public class TestCaseExecutor implements ThreadFactory {
                     try {
                         executor.awaitTermination(Properties.SHUTDOWN_TIMEOUT, TimeUnit.MILLISECONDS);
                     } catch (InterruptedException e) {
-                        logger.info("Interrupted");
-                        e.printStackTrace();
+                        logger.error("Interrupted", e);
                     }
                 }
                 LoopCounter.getInstance().setActive(loopCounter);
@@ -421,8 +420,7 @@ public class TestCaseExecutor implements ThreadFactory {
                     try {
                         executor.awaitTermination(Properties.SHUTDOWN_TIMEOUT, TimeUnit.MILLISECONDS);
                     } catch (InterruptedException e) {
-                        logger.info("Interrupted");
-                        e.printStackTrace();
+                        logger.error("Interrupted", e);
                     }
                 }
 

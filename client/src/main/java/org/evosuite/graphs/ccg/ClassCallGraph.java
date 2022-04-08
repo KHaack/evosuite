@@ -23,7 +23,6 @@ import org.evosuite.graphs.EvoSuiteGraph;
 import org.evosuite.graphs.GraphPool;
 import org.evosuite.graphs.cfg.BytecodeInstruction;
 import org.evosuite.graphs.cfg.RawControlFlowGraph;
-import org.evosuite.lm.LangModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -120,7 +119,7 @@ public class ClassCallGraph extends EvoSuiteGraph<ClassCallNode, ClassCallEdge> 
             }
         }
 
-        if(r==null) {
+        if (r == null) {
             logger.warn("didn't find node by methodName {}", methodName);
         }
 

@@ -33,6 +33,8 @@ import org.evosuite.testsuite.TestSuiteChromosome;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -45,6 +47,7 @@ import static org.junit.Assert.assertNotNull;
 
 
 public class AmbiguityFitnessSystemTest extends SystemTestBase {
+    private static final Logger logger = LoggerFactory.getLogger(AmbiguityFitnessSystemTest.class);
 
     private static String MATRIX_CONTENT =
             "1 0 0 1 +\n" +
@@ -67,7 +70,7 @@ public class AmbiguityFitnessSystemTest extends SystemTestBase {
             bw.write(MATRIX_CONTENT);
             bw.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("writeMatrix", e);
         }
     }
 
@@ -77,7 +80,7 @@ public class AmbiguityFitnessSystemTest extends SystemTestBase {
         try {
             FileUtils.deleteDirectory(new File("evosuite-report"));
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("prepare", e);
         }
 
         Properties.CRITERION = new Properties.Criterion[]{

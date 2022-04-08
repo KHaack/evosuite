@@ -119,8 +119,9 @@ public class MethodTraceCoverageFactory extends
         try {
             clazz = Class.forName(className);
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            logger.error("getCoverageGoals", e);
         }
+
         if (clazz != null) {
             goals.addAll(getCoverageGoals(clazz, className));
             Class<?>[] innerClasses = clazz.getDeclaredClasses();

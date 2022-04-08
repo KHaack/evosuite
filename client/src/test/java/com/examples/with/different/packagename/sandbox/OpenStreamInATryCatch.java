@@ -19,10 +19,15 @@
  */
 package com.examples.with.different.packagename.sandbox;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class OpenStreamInATryCatch {
+
+    private static final Logger logger = LoggerFactory.getLogger(OpenStreamInATryCatch.class);
 
     public boolean open(int x) {
 
@@ -31,14 +36,14 @@ public class OpenStreamInATryCatch {
             stream = new FileOutputStream(OpenStream.FILE_NAME);
             System.out.println("This should never be executed without a VFS");
         } catch (Exception e) {
-            System.out.println("Denied permission: " + e.getMessage());
+            logger.error("Denied permission", e);
         }
 
         if (stream != null) {
             try {
                 stream.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error("open", e);
             }
         }
 

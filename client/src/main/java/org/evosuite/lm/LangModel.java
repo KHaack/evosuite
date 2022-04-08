@@ -36,14 +36,13 @@ import java.util.regex.Pattern;
  */
 public class LangModel {
 
-    private final static Logger logger = LoggerFactory.getLogger(LangModel.class);
-
     // class variables
     // Hashes storing various Language Model probabilities
     //Sentinel unigram values:
     public static final String START_OF_STRING = "<s>";
     public static final String END_OF_STRING = "</s>";
     public static final String START_NEW_WORD = "<w>";
+    private final static Logger logger = LoggerFactory.getLogger(LangModel.class);
     /**
      * Probability of a unigram occurring.
      */

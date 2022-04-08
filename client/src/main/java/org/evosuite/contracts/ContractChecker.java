@@ -135,24 +135,16 @@ public class ContractChecker extends ExecutionObserver {
                             GenericMethod gm = new GenericMethod(method, theory);
                             JUnitTheoryContract contract = new JUnitTheoryContract(gm);
                             contracts.add(contract);
-                        } catch (InstantiationException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        } catch (IllegalAccessException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
+                        } catch (InstantiationException | IllegalAccessException e) {
+                            logger.error("loadJUnitTheories", e);
                         }
 
                     }
                 }
             } catch (ClassNotFoundException e) {
-                logger.warn("Could not load theory " + theoryName + ": " + e);
-            } catch (NoSuchMethodException e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
-            } catch (SecurityException e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
+                logger.warn("Could not load theory {}: {}", theoryName, e);
+            } catch (NoSuchMethodException | SecurityException e1) {
+                logger.error("loadJUnitTheories", e1);
             }
         }
 

@@ -80,7 +80,7 @@ public class InputObserver extends ExecutionObserver {
                         parObject = parRef.getObject(scope);
                     }
                 } catch (CodeUnderTestException e) {
-                    e.printStackTrace();
+                    logger.error("afterStatement", e);
                 }
                 argObjects.add(parObject);
             }

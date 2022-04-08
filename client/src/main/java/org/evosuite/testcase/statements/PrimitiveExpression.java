@@ -45,6 +45,7 @@ public class PrimitiveExpression extends AbstractStatement {
     private final Operator operator;
     private VariableReference leftOperand;
     private VariableReference rightOperand;
+
     /**
      * <p>
      * Constructor for PrimitiveExpression.

@@ -46,6 +46,7 @@ public abstract class SymbolicFunction {
     private ReferenceExpression symb_receiver;
     private Object conc_ret_val;
     private Object symb_ret_val;
+
     public SymbolicFunction(SymbolicEnvironment env, String owner,
                             String name, String desc) {
         super();

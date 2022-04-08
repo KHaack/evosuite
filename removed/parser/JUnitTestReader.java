@@ -55,6 +55,7 @@ public class JUnitTestReader implements TestReader {
     private final String ENCODING = "UTF-8";
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(JUnitTestReader.class);
     protected CompilationUnit compilationUnit;
+
     /**
      * <p>
      * Constructor for JUnitTestReader.

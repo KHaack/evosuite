@@ -198,7 +198,10 @@ public class ExceptionTransformationMethodAdapter extends GeneratorAdapter {
     /* (non-Javadoc)
      * @see org.objectweb.asm.MethodVisitor#visitEnd()
      */
-    /** {@inheritDoc} */
+
+    /**
+     * {@inheritDoc}
+     */
 //    @Override
 //    public void visitEnd() {
 //        MethodNode mn = (MethodNode) mv;
@@ -208,7 +211,6 @@ public class ExceptionTransformationMethodAdapter extends GeneratorAdapter {
     /* (non-Javadoc)
      * @see org.objectweb.asm.commons.LocalVariablesSorter#visitMaxs(int, int)
      */
-
     public void tagBranch() {
         Label dummyTag = new AnnotatedLabel(false, true);
         // dummyTag.info = Boolean.TRUE;
@@ -226,6 +228,7 @@ public class ExceptionTransformationMethodAdapter extends GeneratorAdapter {
         Label end;
         Label handler;
         String type;
+
         public TryCatchBlock(Label start, Label end, Label handler, String type) {
             this.start = start;
             this.end = end;

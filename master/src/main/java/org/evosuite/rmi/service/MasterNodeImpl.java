@@ -149,8 +149,7 @@ public class MasterNodeImpl implements MasterNodeRemote, MasterNodeLocal {
                 LoggingUtils.getEvoLogger().info("Trying to kill client " + client);
                 client.cancelCurrentSearch();
             } catch (RemoteException e) {
-                logger.warn("Error while trying to cancel client: " + e);
-                e.printStackTrace();
+                logger.error("Error while trying to cancel client", e);
             }
         }
     }

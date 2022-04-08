@@ -354,9 +354,7 @@ public class CFGMethodAdapter extends MethodVisitor {
                     }
                 }
             } catch (AnalyzerException e) {
-                logger.error("Analyzer exception while analyzing " + className + "."
-                        + methodName + ": " + e);
-                e.printStackTrace();
+                logger.error("Analyzer exception while analyzing {}.{}: {}", className, methodName, e);
             }
 
         } else {

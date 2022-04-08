@@ -51,7 +51,7 @@ public class JUnitTheoryContract extends Contract {
     public ContractViolation check(Statement statement, Scope scope,
                                    Throwable exception) {
         for (VariableReference var : getAllVariables(scope)) {
-            logger.debug("Current variable: " + var);
+            logger.debug("Current variable: {}", var);
             Object object = scope.getObject(var);
 
             if (object == null) {
@@ -61,18 +61,12 @@ public class JUnitTheoryContract extends Contract {
 
             try {
                 theoryMethod.getMethod().invoke(theoryReceiver, object);
-            } catch (IllegalAccessException e) {
-                // TODO Auto-generated catch block
-                logger.warn("Error while checking contract: " + e);
-                e.printStackTrace();
-            } catch (IllegalArgumentException e) {
-                // TODO Auto-generated catch block
-                logger.warn("Error while checking contract: " + e);
-                e.printStackTrace();
+            } catch (IllegalAccessException | IllegalArgumentException e) {
+                logger.error("Error while checking contract", e);
             } catch (InvocationTargetException e) {
                 return new ContractViolation(this, statement, e.getCause(), var);
             } catch (Throwable t) {
-                logger.warn("New contract violation found: " + t);
+                logger.error("New contract violation found", t);
                 return new ContractViolation(this, statement, t, var);
             }
         }
@@ -98,15 +92,8 @@ public class JUnitTheoryContract extends Contract {
             test.addStatement(st2, position + 2);
             st2.addComment("Violates theory: " + theoryMethod.getName());
 
-        } catch (NoSuchMethodException e) {
-            // TODO Auto-generated catch block
-            logger.warn("Error while creating contract violation: " + e);
-
-            e.printStackTrace();
-        } catch (SecurityException e) {
-            // TODO Auto-generated catch block
-            logger.warn("Error while creating contract violation: " + e);
-            e.printStackTrace();
+        } catch (NoSuchMethodException | SecurityException e) {
+            logger.error("Error while creating contract violation", e);
         }
 
     }
@@ -117,12 +104,8 @@ public class JUnitTheoryContract extends Contract {
 
         try {
             theoryReceiver = theoryMethod.getDeclaringClass().newInstance();
-        } catch (InstantiationException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        } catch (InstantiationException | IllegalAccessException e) {
+            logger.error("changeClassLoader", e);
         }
     }
 

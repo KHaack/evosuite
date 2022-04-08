@@ -22,6 +22,8 @@ package org.evosuite.instrumentation.testability;
 import org.evosuite.Properties;
 import org.evosuite.instrumentation.RegexDistance;
 import org.evosuite.seeding.ConstantPoolManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.util.regex.Matcher;
@@ -31,6 +33,8 @@ import java.util.regex.Pattern;
  * Created by Andrea Arcuri on 26/03/15.
  */
 public class StringHelper {
+
+    public static final Logger logger = LoggerFactory.getLogger(StringHelper.class);
 
     /**
      * <p>
@@ -228,8 +232,8 @@ public class StringHelper {
                 return -distance;
             else
                 return BooleanHelper.K;
-        } catch (Throwable t) {
-            t.printStackTrace();
+        } catch (Throwable e) {
+            logger.error("StringMatchRegex", e);
             return matcher.matches() ? 1 : -1;
         }
     }

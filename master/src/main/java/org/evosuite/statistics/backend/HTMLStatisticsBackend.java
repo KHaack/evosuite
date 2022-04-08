@@ -59,7 +59,7 @@ public class HTMLStatisticsBackend implements StatisticsBackend {
             in.close();
             out.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("copyFile", e);
         }
     }
 

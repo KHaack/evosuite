@@ -180,6 +180,7 @@ public class DefUseCoverageTestFitness extends TestFitnessFunction {
     // coverage information
     private Integer coveringObjectId = -1;
     private boolean covered = false;
+
     /**
      * Creates a Definition-Use-Coverage goal for the given Definition and Use
      *

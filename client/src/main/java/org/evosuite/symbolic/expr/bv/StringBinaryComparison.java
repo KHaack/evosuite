@@ -45,6 +45,7 @@ public final class StringBinaryComparison extends AbstractExpression<Long> imple
     private final Expression<String> left;
     private final Operator op;
     private final Expression<?> right;
+
     /**
      * <p>
      * Constructor for StringComparison.

@@ -96,12 +96,8 @@ public class HashCodeReturnsNormallyContract extends Contract {
             test.addStatement(st1, position + 1);
             st1.addComment("Throws exception: " + exception.getMessage());
 
-        } catch (NoSuchMethodException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (SecurityException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        } catch (NoSuchMethodException | SecurityException e) {
+            logger.error("addAssertionAndComments", e);
         }
     }
 

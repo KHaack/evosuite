@@ -84,6 +84,7 @@ public class SymbolicObserver extends ExecutionObserver {
     private final Map<String, IntegerVariable> integerVariables = new HashMap<>();
     private final Map<String, RealVariable> realVariables = new HashMap<>();
     private final Map<String, StringVariable> stringVariables = new HashMap<>();
+
     public SymbolicObserver(SymbolicEnvironment env) {
         this.env = env;
     }

@@ -89,8 +89,7 @@ public class DetermineSUT {
         try {
             ClassPathHacker.addFile(targetClassPath);
         } catch (IOException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
+            logger.error("getSUTName", e1);
         }
         Set<String> targetClasses = ResourceList.getInstance(TestGenerationContext.getInstance().getClassLoaderForSUT()).getAllClasses(targetClassPath, false);
         Set<String> candidateClasses = new HashSet<>();
@@ -104,7 +103,7 @@ public class DetermineSUT {
             logger.error("Class not found: " + e, e);
             return "";
         } catch (NoJUnitClassException e) {
-
+            logger.error("getSUTName", e);
         }
 
         if (!hasJUnit)
@@ -143,7 +142,7 @@ public class DetermineSUT {
                 throw new NoJUnitClassException();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("determineCalledClasses", e);
         }
 
         calledClasses.remove("java.lang.Object");

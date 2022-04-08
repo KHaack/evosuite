@@ -109,6 +109,7 @@ public class DSEStatistics {
     private int minConstraintSize = 0;
     private int constraintTooLongCounter = 0;
     private double avgConstraintSize = 0;
+
     /**
      * This class cannot be built directly
      */

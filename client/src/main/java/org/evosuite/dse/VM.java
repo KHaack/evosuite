@@ -19,6 +19,9 @@
  */
 package org.evosuite.dse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -40,6 +43,8 @@ import java.util.function.Consumer;
  * @author csallner@uta.edu (Christoph Csallner)
  */
 public final class VM {
+
+    private static final Logger logger = LoggerFactory.getLogger(VM.class);
 
     /**
      * Single VM instance
@@ -3713,8 +3718,8 @@ public final class VM {
 
         try {
             for (IVM ivm : vm.listeners) lambda.accept(ivm);
-        } catch (Throwable t) {
-            t.printStackTrace();
+        } catch (Throwable e) {
+            logger.error("interpret", e);
         } finally {
             enableCallBacks();
         }

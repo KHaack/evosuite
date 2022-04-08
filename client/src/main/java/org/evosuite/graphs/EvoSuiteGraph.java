@@ -869,8 +869,7 @@ public abstract class EvoSuiteGraph<V, E extends DefaultEdge> {
                 logger.info("exportet " + getName());
             }
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            logger.error("toDot", e);
         }
     }
 }

@@ -36,6 +36,7 @@ public class JUnitFailure {
     private final boolean isAssertionError;
     private final String trace;
     private final ArrayList<String> exceptionStackTrace = new ArrayList<>();
+
     public JUnitFailure(String message, String exceptionClassName,
                         String descriptionMethodName, boolean isAssertionError, String trace) {
         super();

@@ -128,7 +128,7 @@ public class Activator extends AbstractUIPlugin implements
             try {
                 evnt.getDelta().accept(this);
             } catch (CoreException e) {
-                e.printStackTrace();
+                logger.error("resourceChanged", e);
             }
         }
     }

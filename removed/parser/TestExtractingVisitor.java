@@ -188,6 +188,7 @@ public class TestExtractingVisitor extends ASTVisitor {
     // TODO This is bad practice: here we rely on a global variable
     // for something that should be parameters to the methods!
     private Integer lineNumber = null;
+
     /**
      * <p>
      * Constructor for TestExtractingVisitor.

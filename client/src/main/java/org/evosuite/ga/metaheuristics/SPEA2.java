@@ -84,7 +84,6 @@ public class SPEA2<T extends Chromosome<T>> extends GeneticAlgorithm<T> {
                     this.crossoverFunction.crossOver(offspring1, offspring2);
                 } catch (ConstructionFailedException e) {
                     logger.error("Crossover failed: " + e.getMessage());
-                    e.printStackTrace();
                 }
             }
 

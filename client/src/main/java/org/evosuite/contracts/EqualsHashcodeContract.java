@@ -142,12 +142,8 @@ public class EqualsHashcodeContract extends Contract {
             newStatement.addAssertion(assertion);
             newStatement.addComment("Violates contract equals - hashcode");
 
-        } catch (NoSuchMethodException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (SecurityException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        } catch (NoSuchMethodException | SecurityException e) {
+            logger.error("addAssertionAndComments", e);
         }
     }
 

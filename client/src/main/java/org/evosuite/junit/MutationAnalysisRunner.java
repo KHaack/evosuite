@@ -100,14 +100,12 @@ public class MutationAnalysisRunner extends BlockJUnit4ClassRunner {
                 try {
                     liveMutants.remove(m);
                 } catch (Throwable t) {
-                    logger.info("Error: " + t);
-                    t.printStackTrace();
+                    logger.error("Error: " + t);
                 }
                 try {
                     killedMutants.add(m);
                 } catch (Throwable t) {
-                    logger.info("Error: " + t);
-                    t.printStackTrace();
+                    logger.error("Error: " + t);
                 }
 
                 //} else {

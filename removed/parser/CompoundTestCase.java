@@ -79,6 +79,7 @@ public class CompoundTestCase implements Serializable {
     private CompoundTestCase parent;
     private TestScope currentScope = TestScope.FIELDS;
     private MethodDef currentMethod = null;
+
     /**
      * <p>
      * Constructor for CompoundTestCase.
@@ -94,6 +95,7 @@ public class CompoundTestCase implements Serializable {
         this.testMethod = null;
         this.className = className;
     }
+
     /**
      * <p>
      * Constructor for CompoundTestCase.

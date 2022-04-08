@@ -44,6 +44,7 @@ public class EndOfClassInitializerVisitor extends ClassVisitor {
     private boolean isInterface = false;
     private boolean clinitFound = false;
     private boolean hasStaticFields = false;
+
     public EndOfClassInitializerVisitor(ClassVisitor visitor, String className) {
         super(Opcodes.ASM9, visitor);
         this.className = className;
@@ -208,6 +209,7 @@ public class EndOfClassInitializerVisitor extends ClassVisitor {
             Label end;
             Label handler;
             String type;
+
             public TryCatchBlock(Label start, Label end, Label handler, String type) {
                 this.start = start;
                 this.end = end;

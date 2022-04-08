@@ -41,6 +41,7 @@ public class GetStaticGraph {
             .getLogger(GetStaticGraph.class);
     private final Set<StaticFieldReadEntry> staticFieldReads = new LinkedHashSet<>();
     private final Set<StaticMethodCallEntry> staticMethodCalls = new LinkedHashSet<>();
+
     GetStaticGraph() {
     }
 

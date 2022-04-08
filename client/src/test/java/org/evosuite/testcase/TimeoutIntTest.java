@@ -22,10 +22,13 @@ package org.evosuite.testcase;
 import org.evosuite.testcase.execution.TimeoutHandler;
 import org.junit.Assert;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.*;
 
 public class TimeoutIntTest {
+    private static final Logger logger = LoggerFactory.getLogger(TimeoutIntTest.class);
     protected static int RESULT = -1;
 
     @Test
@@ -45,17 +48,14 @@ public class TimeoutIntTest {
                 boolean terminated = executor.awaitTermination(2000, TimeUnit.MILLISECONDS);
                 Assert.assertTrue(terminated);
             } catch (InterruptedException e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
+                logger.error("testNormalTimeout", e1);
             }
 
             Assert.assertEquals(1, RESULT);
         } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            logger.error("testNormalTimeout", e);
         } catch (ExecutionException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            logger.error("testNormalTimeout", e);
         }
     }
 
@@ -77,17 +77,14 @@ public class TimeoutIntTest {
                 boolean terminated = executor.awaitTermination(1000, TimeUnit.MILLISECONDS);
                 Assert.assertTrue(terminated);
             } catch (InterruptedException e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
+                logger.error("testCPUTimeout", e1);
             }
 
             Assert.assertEquals(2, RESULT);
         } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            logger.error("testCPUTimeout", e);
         } catch (ExecutionException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            logger.error("testCPUTimeout", e);
         }
     }
 
