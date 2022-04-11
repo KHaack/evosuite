@@ -34,7 +34,7 @@ public class OpenStreamInATryCatch {
         FileOutputStream stream = null;
         try {
             stream = new FileOutputStream(OpenStream.FILE_NAME);
-            System.out.println("This should never be executed without a VFS");
+            logger.error("This should never be executed without a VFS");
         } catch (Exception e) {
             logger.error("Denied permission", e);
         }

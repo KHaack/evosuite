@@ -73,7 +73,7 @@ public class CarvingClassLoader extends ClassLoader {
         if (result != null) {
             return result;
         } else {
-            logger.info("Seeing class for first time: " + name);
+            logger.info("Seeing class for first time: {}", name);
             return instrumentClass(name);
         }
     }
@@ -81,7 +81,7 @@ public class CarvingClassLoader extends ClassLoader {
 
     private Class<?> instrumentClass(String fullyQualifiedTargetClass)
             throws ClassNotFoundException {
-        logger.warn("Instrumenting class '" + fullyQualifiedTargetClass + "'.");
+        logger.info("Instrumenting class '{}'.", fullyQualifiedTargetClass);
 
         try {
             String className = fullyQualifiedTargetClass.replace('.', '/');
@@ -103,16 +103,16 @@ public class CarvingClassLoader extends ClassLoader {
             Class<?> result = defineClass(fullyQualifiedTargetClass, byteBuffer, 0,
                     byteBuffer.length);
             if (Modifier.isPrivate(result.getModifiers())) {
-                logger.info("REPLACING PRIVATE CLASS " + fullyQualifiedTargetClass);
+                logger.info("REPLACING PRIVATE CLASS {}", fullyQualifiedTargetClass);
                 result = super.loadClass(fullyQualifiedTargetClass);
             }
             classes.put(fullyQualifiedTargetClass, result);
-            logger.info("Keeping class: " + fullyQualifiedTargetClass);
+            logger.info("Keeping class: {}", fullyQualifiedTargetClass);
             return result;
         } catch (Throwable t) {
-            logger.info("Error: " + t);
+            logger.error("instrumentClass", fullyQualifiedTargetClass);
             for (StackTraceElement e : t.getStackTrace()) {
-                logger.info(e.toString());
+                logger.error(e.toString());
             }
             throw new ClassNotFoundException(t.getMessage(), t);
         }

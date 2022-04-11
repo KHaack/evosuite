@@ -172,7 +172,7 @@ public class TestabilityTransformationClassLoader extends ClassLoader {
                     classNode, this);
             // cv = new TraceClassVisitor(writer, new
             // PrintWriter(System.out));
-            //cv = new TraceClassVisitor(cv, new PrintWriter(System.out));
+            //cv = new TraceClassVisitor(cv, new PrintWriter(new LogWriter(logger, Level.INFO)));
             //cv = new CheckClassAdapter(cv);
             try {
                 //tt.transform().accept(cv);

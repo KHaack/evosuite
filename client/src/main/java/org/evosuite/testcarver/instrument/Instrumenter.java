@@ -21,6 +21,7 @@ package org.evosuite.testcarver.instrument;
 
 import org.evosuite.PackageInfo;
 import org.evosuite.Properties;
+import org.evosuite.runtime.util.LogWriter;
 import org.evosuite.testcarver.capture.CaptureLog;
 import org.evosuite.testcarver.capture.CaptureUtil;
 import org.evosuite.testcarver.capture.FieldRegistry;
@@ -32,6 +33,7 @@ import org.objectweb.asm.tree.*;
 import org.objectweb.asm.util.TraceClassVisitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.event.Level;
 
 import java.io.PrintWriter;
 import java.lang.instrument.IllegalClassFormatException;
@@ -232,7 +234,7 @@ public final class Instrumenter {
         final int numWM = wrappedMethods.size();
         cn.methods.addAll(wrappedMethods);
 
-        TraceClassVisitor tcv = new TraceClassVisitor(new PrintWriter(System.err));
+        TraceClassVisitor tcv = new TraceClassVisitor(new PrintWriter(new LogWriter(logger, Level.INFO)));
         cn.accept(tcv);
     }
 

@@ -57,7 +57,7 @@ public class ConcolicBytecodeInstrumentation {
 
         // Apply transformations to class under test and its owned
         // classes
-        // cv = new TraceClassVisitor(cv, new PrintWriter(System.err));
+        // cv = new TraceClassVisitor(cv, new PrintWriter(new LogWriter(logger, Level.ERROR)));
         cv = new ConcolicClassAdapter(cv, className);
 
         // If we need to reset static constructors, make them explicit methods

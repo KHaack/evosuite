@@ -22,10 +22,14 @@ package org.evosuite.instrumentation;
 
 import org.evosuite.Properties;
 import org.evosuite.classpath.ResourceList;
+import org.evosuite.runtime.util.LogWriter;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.util.TraceClassVisitor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.event.Level;
 
 import java.io.PrintWriter;
 import java.lang.instrument.ClassFileTransformer;
@@ -39,6 +43,8 @@ import java.security.ProtectionDomain;
  * @author Gordon Fraser
  */
 public class PrintBytecodeTransformer implements ClassFileTransformer {
+
+    private static final Logger logger = LoggerFactory.getLogger(PrintBytecodeTransformer.class);
 
     private static final String target_class = Properties.TARGET_CLASS;
 
@@ -64,7 +70,7 @@ public class PrintBytecodeTransformer implements ClassFileTransformer {
                 ClassVisitor cv = writer;
                 if (classNameWithDots.equals(target_class) || (classNameWithDots.startsWith(target_class + "$"))) {
 //				if (classNameWithDots.startsWith(Properties.PROJECT_PREFIX)) {
-                    cv = new TraceClassVisitor(cv, new PrintWriter(System.out));
+                    cv = new TraceClassVisitor(cv, new PrintWriter(new LogWriter(logger, Level.INFO)));
                 }
                 reader.accept(cv, ClassReader.SKIP_FRAMES);
                 classfileBuffer = writer.toByteArray();

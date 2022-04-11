@@ -33,6 +33,7 @@ import org.evosuite.junit.writer.TestSuiteWriterUtils;
 import org.evosuite.runtime.RuntimeSettings;
 import org.evosuite.runtime.instrumentation.*;
 import org.evosuite.runtime.util.ComputeClassWriter;
+import org.evosuite.runtime.util.LogWriter;
 import org.evosuite.seeding.PrimitiveClassAdapter;
 import org.evosuite.setup.DependencyAnalysis;
 import org.evosuite.setup.TestCluster;
@@ -46,6 +47,7 @@ import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.util.TraceClassVisitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.event.Level;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -195,7 +197,7 @@ public class BytecodeInstrumentation {
 
         ClassVisitor cv = writer;
         if (logger.isDebugEnabled()) {
-            cv = new TraceClassVisitor(cv, new PrintWriter(System.err));
+            cv = new TraceClassVisitor(cv, new PrintWriter(new LogWriter(logger, Level.ERROR)));
         }
 
         if (Properties.RESET_STATIC_FIELDS) {
