@@ -713,14 +713,18 @@ public class MSecurityManager extends SecurityManager {
 
         boolean foundMasterNode = false;
 
-        traceLoop:
-        for (StackTraceElement element : Thread.currentThread().getStackTrace()) {
-            for (String masterNodeMethod : masterNodeRemoteMethodNames) {
-                if (element.toString().contains(masterNodeMethod)) {
-                    foundMasterNode = true;
-                    break traceLoop;
+        if(null != this.masterNodeRemoteMethodNames) {
+            traceLoop:
+            for (StackTraceElement element : Thread.currentThread().getStackTrace()) {
+                for (String masterNodeMethod : masterNodeRemoteMethodNames) {
+                    if (element.toString().contains(masterNodeMethod)) {
+                        foundMasterNode = true;
+                        break traceLoop;
+                    }
                 }
             }
+        } else {
+            logger.warn("checkIfEvoSuiteRMI: masterNodeRemoteMethodNames is NULL");
         }
 
         if (!foundMasterNode) {
