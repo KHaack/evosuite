@@ -19,9 +19,36 @@
  */
 package com.examples.with.different.packagename.concolic;
 
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class MIMETypeTest {
 
+    /**
+     * Method used in org.evosuite.symbolic.TestMIMEType.
+     *
+     * @throws MalformedMIMETypeException
+     */
     public static void test() throws MalformedMIMETypeException {
-        new MIMEType("xml", false);
+        new MIMEType("text/xml", false);
+    }
+
+    @Test
+    public void mimeTest() throws MalformedMIMETypeException {
+        new MIMEType("text/xml");
+    }
+
+    @Test
+    public void mimeExceptionTest() {
+        Exception exception = assertThrows(MalformedMIMETypeException.class, () -> {
+            new MIMEType("xml");
+        });
+
+        String expectedMessage = "No '/' in mime-type (xml)!";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
     }
 }

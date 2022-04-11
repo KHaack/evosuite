@@ -27,6 +27,7 @@ package com.examples.with.different.packagename.concolic;
  * @version $Revision: 1.10 $
  */
 public class MIMEType {
+
     /**
      * The "text/xml" MIME type.
      */
@@ -51,12 +52,8 @@ public class MIMEType {
      */
     int slash;
 
-    public MIMEType(String s, boolean noThrow) {
-        slash = s.indexOf('/');
-        if (slash == -1)
-            Tracer.bug("Invalid MIME Type given in private constructor: " + s);
-
-        mimeType = s;
+    public MIMEType(String ntype, boolean noThrow) {
+        mimeType = ntype;
     }
 
     /**
@@ -71,8 +68,7 @@ public class MIMEType {
     public MIMEType(String ntype) throws MalformedMIMETypeException {
         slash = ntype.indexOf('/');
         if (slash == -1)
-            throw new MalformedMIMETypeException("No '/' in mime-type ("
-                    + ntype + ")!", ntype);
+            throw new MalformedMIMETypeException("No '/' in mime-type (" + ntype + ")!", ntype);
         mimeType = ntype;
     }
 
