@@ -63,6 +63,7 @@ public class TestGeneration {
         if (strategy == null) {
             strategy = Strategy.MOSUITE;
         }
+        logger.info("choosen strategy: {}", strategy);
 
         List<List<TestGenerationResult>> results = new ArrayList<>();
 
@@ -504,8 +505,9 @@ public class TestGeneration {
             } catch (InterruptedException e) {
             }
             if (clients == null) {
-                logger.error("Not possible to access to clients. Clients' state:\n" + handler.getProcessStates() +
-                        "Master registry port: " + MasterServices.getInstance().getRegistryPort());
+                logger.error("Not possible to access to clients. Clients' state:\n{} Master registry port:  {}",
+                        handler.getProcessStates(),
+                        MasterServices.getInstance().getRegistryPort());
 
             } else {
                 /*
