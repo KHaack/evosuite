@@ -44,6 +44,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TestName;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -59,6 +61,7 @@ import static org.junit.Assert.assertTrue;
  * @author Andrea Arcuri
  */
 public class SystemTestBase {
+    private static final Logger logger = LoggerFactory.getLogger(SystemTestBase.class);
 
     public static final String ALREADY_SETUP = "systemtest.alreadysetup";
     /**
@@ -93,7 +96,7 @@ public class SystemTestBase {
 
         deleteEvoDirs();
 
-        System.out.println("*** SystemTest: runSetup() ***");
+        logger.info("*** SystemTest: runSetup() ***");
 
         String master = getMasterTestsTarget();
         String runtime = getRuntimeTestsTarget();
@@ -165,7 +168,7 @@ public class SystemTestBase {
 
     private static void deleteEvoDirs() {
 
-        System.out.println("*** SystemTest: deleteEvoDirs() ***");
+        logger.info("*** SystemTest: deleteEvoDirs() ***");
 
         try {
             org.apache.commons.io.FileUtils.deleteDirectory(new File("evosuite-files"));
@@ -273,7 +276,7 @@ public class SystemTestBase {
         Object result = evosuite.parseCommandLine(command);
         GeneticAlgorithm<TestSuiteChromosome> ga = getGAFromResult(result);
         TestSuiteChromosome best = ga.getBestIndividual();
-        System.out.println("EvolvedTestSuite:\n" + best);
+        logger.info("EvolvedTestSuite:\n" + best);
 
         double cov = best.getCoverageInstanceOf(LineCoverageSuiteFitness.class);
 
@@ -295,7 +298,7 @@ public class SystemTestBase {
         Object result = evosuite.parseCommandLine(command);
         GeneticAlgorithm<TestSuiteChromosome> ga = getGAFromResult(result);
         TestSuiteChromosome best = ga.getBestIndividual();
-        System.out.println("EvolvedTestSuite:\n" + best);
+        logger.info("EvolvedTestSuite:\n" + best);
 
         Assert.assertEquals("Non-optimal coverage: ", 1d, best.getCoverage(), 0.001);
 
@@ -315,7 +318,7 @@ public class SystemTestBase {
         Object result = evosuite.parseCommandLine(command);
         GeneticAlgorithm<?> ga = getGAFromResult(result);
         TestSuiteChromosome best = (TestSuiteChromosome) ga.getBestIndividual();
-        System.out.println("EvolvedTestSuite:\n" + best);
+        logger.info("EvolvedTestSuite:\n" + best);
 
         Assert.assertNotEquals("Unexpected optimal coverage: ", 1d, best.getCoverage(), 0.001);
 

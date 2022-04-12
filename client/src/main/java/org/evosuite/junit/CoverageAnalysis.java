@@ -41,6 +41,7 @@ import org.evosuite.runtime.sandbox.Sandbox;
 import org.evosuite.setup.DependencyAnalysis;
 import org.evosuite.statistics.RuntimeVariable;
 import org.evosuite.statistics.StatisticsSender;
+import org.evosuite.strategy.IndividualTestStrategy;
 import org.evosuite.testcase.TestChromosome;
 import org.evosuite.testcase.TestFitnessFunction;
 import org.evosuite.testcase.execution.ExecutionResult;
@@ -75,7 +76,6 @@ import java.util.zip.ZipFile;
  * @author José Campos
  */
 public class CoverageAnalysis {
-
     /**
      * FIXME
      * <p>
@@ -385,32 +385,15 @@ public class CoverageAnalysis {
                 if (isTest(clazz))
                     testClasses.add(clazz);
             } catch (IllegalAccessError ex) {
-                System.setOut(old_out);
-                System.setErr(old_err);
-                System.out.println("Cannot access class "
-                        + file.getName().substring(0, file.getName().length() - 6));
+                logger.error("Cannot access class {}", file.getName().substring(0, file.getName().length() - 6), ex);
             } catch (NoClassDefFoundError ex) {
-                System.setOut(old_out);
-                System.setErr(old_err);
-                System.out.println("Cannot find dependent class " + ex);
+                logger.error("Cannot find dependent class", ex);
             } catch (ExceptionInInitializerError ex) {
-                System.setOut(old_out);
-                System.setErr(old_err);
-                System.out.println("Exception in initializer of "
-                        + file.getName().substring(0, file.getName().length() - 6));
+                logger.error("Exception in initializer of {}", file.getName().substring(0, file.getName().length() - 6));
             } catch (ClassNotFoundException ex) {
-                System.setOut(old_out);
-                System.setErr(old_err);
-                System.out.println("Cannot find class "
-                        + file.getName().substring(0, file.getName().length() - 6) + ": "
-                        + ex);
+                logger.error("Cannot find class {}",file.getName().substring(0, file.getName().length() - 6), ex);
             } catch (Throwable t) {
-                System.setOut(old_out);
-                System.setErr(old_err);
-
-                System.out.println("  Unexpected error: "
-                        + file.getName().substring(0, file.getName().length() - 6) + ": "
-                        + t);
+                logger.error("Unexpected error: {}",file.getName().substring(0, file.getName().length() - 6), t);
             } finally {
                 System.setOut(old_out);
                 System.setErr(old_err);
