@@ -19,7 +19,6 @@
  */
 package org.evosuite.ga.problems.singleobjective;
 
-import com.examples.with.different.packagename.testcarver.InnerCalls;
 import org.evosuite.Properties;
 import org.evosuite.ga.ChromosomeFactory;
 import org.evosuite.ga.FitnessFunction;
@@ -61,14 +60,14 @@ public class TestBooths {
 
         double[] values = {-2.0, 1.0};
         NSGAChromosome c = new NSGAChromosome(-10.0, 10.0, values);
-        Assert.assertEquals(((DoubleVariable) c.getVariables().get(0)).getValue(), -2.0, 0.0);
-        Assert.assertEquals(((DoubleVariable) c.getVariables().get(1)).getValue(), 1.0, 0.0);
+        Assert.assertEquals(-2.0, ((DoubleVariable) c.getVariables().get(0)).getValue(), 0.0);
+        Assert.assertEquals(1.0, ((DoubleVariable) c.getVariables().get(1)).getValue(), 0.0);
 
-        Assert.assertEquals(f1.getFitness(c), 113.0, 0.0);
+        Assert.assertEquals(113.0, f1.getFitness(c), 0.0);
 
         double[] values_m = {1.0, 3.0};
         c = new NSGAChromosome(-10.0, 10.0, values_m);
-        Assert.assertEquals(f1.getFitness(c), 0.0, 0.0);
+        Assert.assertEquals(0.0, f1.getFitness(c), 0.0);
     }
 
     /**
@@ -101,7 +100,7 @@ public class TestBooths {
         chromosomes.sort(comparingDouble(chr -> chr.getFitness(f1)));
 
         for (NSGAChromosome chromosome : chromosomes)
-            Assert.assertEquals(chromosome.getFitness(f1), 0.000, 0.001);
+            Assert.assertEquals(0.0, chromosome.getFitness(f1), 0.001);
 
         for (NSGAChromosome chromosome : chromosomes) {
             DoubleVariable x = (DoubleVariable) chromosome.getVariables().get(0);
