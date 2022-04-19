@@ -991,6 +991,13 @@ public class Properties {
     public static boolean ECLIPSE_PLUGIN = false;
     @Parameter(key = "honour_data_annotations", group = "Runtime", description = "Allows EvoSuite to generate tests with or without honouring the parameter data annotations")
     public static boolean HONOUR_DATA_ANNOTATIONS = true;
+
+    @Parameter(key = "enable_fitness_history", group = "Landscape", description = "Enables the fitness history")
+    public static boolean ENABLE_FITNESS_HISTORY = false;
+    @Parameter(key = "fitness_history_capacity", group = "Landscape", description = "The capacity of the fitness history.")
+    @IntValue(min = 0, max = 100)
+    public static int FITNESS_HISTORY_CAPACITY = 10;
+
     /**
      * Cache target class
      */

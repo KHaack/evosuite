@@ -25,6 +25,9 @@
 
     <contextName>ContextForTests</contextName>
 
+    <logger name="org.evosuite.landscape.FitnessHistoryListener" level="DEBUG"/>
+    <logger name="org.evosuite.landscape.FitnessHistory" level="DEBUG"/>
+
     <root level="WARN">
         <appender class="ch.qos.logback.core.ConsoleAppender">
             <target>System.out</target>

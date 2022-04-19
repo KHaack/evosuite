@@ -33,6 +33,7 @@ import org.evosuite.ga.populationlimit.IndividualPopulationLimit;
 import org.evosuite.ga.populationlimit.PopulationLimit;
 import org.evosuite.ga.populationlimit.SizePopulationLimit;
 import org.evosuite.ga.stoppingconditions.*;
+import org.evosuite.landscape.FitnessHistoryListener;
 import org.evosuite.statistics.StatisticsListener;
 import org.evosuite.testcase.TestChromosome;
 import org.evosuite.testsuite.RelativeSuiteLengthBloatControl;
@@ -493,6 +494,8 @@ public abstract class TestSuiteAdapter<A extends GeneticAlgorithm<TestChromosome
                 super.addListener(listener);
             } else if (listener instanceof ZeroFitnessStoppingCondition) {
                 super.addListener(listener);
+            } else if (listener instanceof FitnessHistoryListener) {
+                super.addListener(listener);
             } else {
                 throw new IllegalArgumentException("cannot adapt listener " + listener);
             }
@@ -517,6 +520,8 @@ public abstract class TestSuiteAdapter<A extends GeneticAlgorithm<TestChromosome
             } else if (listener instanceof ProgressMonitor) {
                 super.removeListener(listener);
             } else if (listener instanceof ZeroFitnessStoppingCondition) {
+                super.removeListener(listener);
+            } else if (listener instanceof FitnessHistoryListener) {
                 super.removeListener(listener);
             } else {
                 throw new IllegalArgumentException("cannot adapt listener " + listener);

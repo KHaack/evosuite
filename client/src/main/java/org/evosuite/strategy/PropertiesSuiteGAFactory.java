@@ -45,6 +45,7 @@ import org.evosuite.ga.operators.ranking.RankingFunction;
 import org.evosuite.ga.operators.selection.*;
 import org.evosuite.ga.populationlimit.PopulationLimit;
 import org.evosuite.ga.stoppingconditions.*;
+import org.evosuite.landscape.FitnessHistoryListener;
 import org.evosuite.statistics.StatisticsListener;
 import org.evosuite.testcase.factories.AllMethodsTestChromosomeFactory;
 import org.evosuite.testcase.factories.JUnitTestCarvedChromosomeFactory;
@@ -380,6 +381,11 @@ public class PropertiesSuiteGAFactory
         }
 
         ga.addListener(new ResourceController<>());
+
+        if(Properties.ENABLE_FITNESS_HISTORY) {
+            ga.addListener(new FitnessHistoryListener<>());
+        }
+
         return ga;
     }
 
