@@ -3,6 +3,7 @@ package org.evosuite.landscape;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +13,7 @@ import java.util.Map;
  *
  * @author Kevin Haack
  */
-public class FitnessHistory {
+public class FitnessHistory implements Serializable {
     /**
      * The logger.
      */
@@ -44,11 +45,13 @@ public class FitnessHistory {
      * Prints the fitness history.
      */
     public void printHistory() {
-        NeutralityVolume nv = new NeutralityVolume();
-        logger.info("Neutrality Volume: " + nv.neutralityVolume(this));
+        NeutralityVolume nv = new NeutralityVolume(this);
+        nv.init();
+        logger.info("Neutrality Volume (NV): " + nv.getNeutralityVolume());
 
-        List<Integer> changes = nv.fitnessChangesSequence(this);
-        logger.info("{}", changes);
+        List<Integer> changes = nv.getChangeSequence();
+        logger.info("NV ChangeSequence: {}", changes);
+        logger.info("Information Content (IV): {}", nv.getInformationContent());
         logger.info("----------------------");
 
         for (Map.Entry<Integer, Double> entry : this.fitnessHistory.entrySet()) {

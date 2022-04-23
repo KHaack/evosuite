@@ -495,7 +495,11 @@ public abstract class TestSuiteAdapter<A extends GeneticAlgorithm<TestChromosome
             } else if (listener instanceof ZeroFitnessStoppingCondition) {
                 super.addListener(listener);
             } else if (listener instanceof FitnessHistoryListener) {
-                super.addListener(listener);
+                if (!searchListenerMapping.containsKey(listener)) {
+                    FitnessHistoryListener<TestChromosome> adapteeListener = new FitnessHistoryListener<>();
+                    searchListenerMapping.put(listener, adapteeListener);
+                    algorithm.addListener(adapteeListener);
+                }
             } else {
                 throw new IllegalArgumentException("cannot adapt listener " + listener);
             }
@@ -522,7 +526,8 @@ public abstract class TestSuiteAdapter<A extends GeneticAlgorithm<TestChromosome
             } else if (listener instanceof ZeroFitnessStoppingCondition) {
                 super.removeListener(listener);
             } else if (listener instanceof FitnessHistoryListener) {
-                super.removeListener(listener);
+                if (searchListenerMapping.containsKey(listener))
+                    algorithm.removeListener(searchListenerMapping.get(listener));
             } else {
                 throw new IllegalArgumentException("cannot adapt listener " + listener);
             }

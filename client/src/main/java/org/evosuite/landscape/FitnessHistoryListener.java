@@ -6,6 +6,8 @@ import org.evosuite.ga.metaheuristics.SearchListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+
 /**
  * The {@link SearchListener} that keep track of the fitness history.
  *
@@ -29,7 +31,13 @@ public class FitnessHistoryListener<T extends Chromosome<T>> implements SearchLi
 
     @Override
     public void iteration(GeneticAlgorithm<T> algorithm) {
-        this.fitnessHistory.addFitness(algorithm.getAge(), algorithm.getBestIndividual().getFitness());
+        double fitness = 0;
+
+        for(T c: algorithm.getPopulation()) {
+            fitness += c.getFitness();
+        }
+
+        this.fitnessHistory.addFitness(algorithm.getAge(), fitness);
     }
 
     @Override
