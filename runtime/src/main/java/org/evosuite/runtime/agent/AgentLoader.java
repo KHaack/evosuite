@@ -71,23 +71,12 @@ public class AgentLoader {
             logger.info("Using JavaAgent in " + jarFilePath);
         }
 
-        /*
-         * We need to use reflection on a new instantiated ClassLoader because
-         * we can make no assumption whatsoever on the class loader of AgentLoader
-         *
-         * TODO: it is likely that here, instead of null, we should access to an environment variable
-         * to identify where tools.jar is.
-         * This is because maybe there can be problems if tests generated on local machine are then
-         * published on a remote Continuous Integration server
-         */
-        ClassLoader toolLoader = new ToolsJarLocator(null).getLoaderForToolsJar();
-
         logger.info("Classpath: " + System.getProperty("java.class.path"));
 
         try {
             logger.info("Going to attach agent to process " + pid);
 
-            attachAgent(pid, jarFilePath, toolLoader);
+            ByteBuddyAgent.attach(new File(jarFilePath), pid);
 
         } catch (Exception e) {
             Throwable cause = e.getCause();
@@ -100,7 +89,7 @@ public class AgentLoader {
                 msg += "PID: " + pid + "\n";
                 logger.error(msg);
 
-                attachAgent(pid, jarFilePath, toolLoader);
+                ByteBuddyAgent.attach(new File(jarFilePath), pid);
 
             } catch (Exception e2) {
                 throw new RuntimeException(e2);
@@ -108,22 +97,6 @@ public class AgentLoader {
         }
 
         alreadyLoaded = true;
-    }
-
-    private static void attachAgent(String pid, String jarFilePath,
-                                    ClassLoader toolLoader) throws Exception {
-        Class<?> provider = toolLoader.loadClass("com.sun.tools.attach.spi.AttachProvider");
-        Method getProviders = provider.getDeclaredMethod("providers");
-        List<?> list = (List<?>) getProviders.invoke(null);
-        if (list == null || list.isEmpty()) {
-            String msg = "AttachProvider.providers() failed to return any provider. Tool classloader: " + toolLoader;
-            throw new RuntimeException(msg);
-        }
-        if (list.stream().anyMatch(Objects::isNull)) {
-            throw new RuntimeException("AttachProvider.providers() returned null values");
-        }
-
-        ByteBuddyAgent.attach(new File(jarFilePath), pid);
     }
 
     private static boolean isEvoSuiteMainJar(String path) throws IllegalArgumentException {
