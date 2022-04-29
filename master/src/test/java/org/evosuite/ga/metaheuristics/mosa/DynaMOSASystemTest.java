@@ -21,6 +21,7 @@ public class DynaMOSASystemTest extends SystemTestBase {
         //Properties.ENABLE_ADAPTIVE_PARAMETER_CONTROL = true;
 
         Properties.ENABLE_FITNESS_HISTORY = true;
+        Properties.ENABLE_LANDSCAPE_ANALYSIS = true;
         //Properties.FITNESS_HISTORY_CAPACITY = 10;
 
         Properties.CLIENT_ON_THREAD = true;

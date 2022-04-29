@@ -994,6 +994,8 @@ public class Properties {
 
     @Parameter(key = "enable_fitness_history", group = "Landscape", description = "Enables the fitness history")
     public static boolean ENABLE_FITNESS_HISTORY = false;
+    @Parameter(key = "enable_landscape_analysis", group = "Landscape", description = "Enables the landscape analysis")
+    public static boolean ENABLE_LANDSCAPE_ANALYSIS = false;
     @Parameter(key = "fitness_history_capacity", group = "Landscape", description = "The capacity of the fitness history.")
     @IntValue(min = 0, max = 100)
     public static int FITNESS_HISTORY_CAPACITY = 10;

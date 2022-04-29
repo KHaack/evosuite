@@ -1,5 +1,6 @@
 package org.evosuite.landscape;
 
+import org.evosuite.Properties;
 import org.evosuite.ga.Chromosome;
 import org.evosuite.ga.metaheuristics.GeneticAlgorithm;
 import org.evosuite.ga.metaheuristics.SearchListener;
@@ -46,13 +47,15 @@ public class FitnessHistoryListener<T extends Chromosome<T>> implements SearchLi
     public void searchFinished(GeneticAlgorithm<T> algorithm) {
         logger.info("searchFinished");
 
-        NeutralityVolume nv = new NeutralityVolume(this.fitnessHistory);
-        nv.init();
+        if(Properties.ENABLE_LANDSCAPE_ANALYSIS) {
+            NeutralityVolume nv = new NeutralityVolume(this.fitnessHistory);
+            nv.init();
 
-        nv.printHistory();
+            nv.printHistory();
 
-        ClientServices.getInstance().getClientNode().trackOutputVariable(RuntimeVariable.NeutralityVolume, nv.getNeutralityVolume());
-        ClientServices.getInstance().getClientNode().trackOutputVariable(RuntimeVariable.InformationContent, nv.getInformationContent());
+            ClientServices.getInstance().getClientNode().trackOutputVariable(RuntimeVariable.NeutralityVolume, nv.getNeutralityVolume());
+            ClientServices.getInstance().getClientNode().trackOutputVariable(RuntimeVariable.InformationContent, nv.getInformationContent());
+        }
     }
 
     @Override
