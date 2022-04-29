@@ -3,6 +3,8 @@ package org.evosuite.landscape;
 import org.evosuite.ga.Chromosome;
 import org.evosuite.ga.metaheuristics.GeneticAlgorithm;
 import org.evosuite.ga.metaheuristics.SearchListener;
+import org.evosuite.rmi.ClientServices;
+import org.evosuite.statistics.RuntimeVariable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,6 +46,12 @@ public class FitnessHistoryListener<T extends Chromosome<T>> implements SearchLi
     public void searchFinished(GeneticAlgorithm<T> algorithm) {
         logger.info("searchFinished");
         this.fitnessHistory.printHistory();
+
+        NeutralityVolume nv = new NeutralityVolume(this.fitnessHistory);
+        nv.init();
+
+        ClientServices.getInstance().getClientNode().trackOutputVariable(RuntimeVariable.NeutralityVolume, nv.getNeutralityVolume());
+        ClientServices.getInstance().getClientNode().trackOutputVariable(RuntimeVariable.InformationContent, nv.getInformationContent());
     }
 
     @Override

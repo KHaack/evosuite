@@ -28,8 +28,11 @@ public class DynaMOSASystemTest extends SystemTestBase {
 
         //Properties.CRITERION = new Properties.Criterion[]{BRANCH, LINE};
         Properties.POPULATION = 1;
-        //Properties.STRATEGY = MOSUITE;
         Properties.SELECTION_FUNCTION = Properties.SelectionFunction.RANK_CROWD_DISTANCE_TOURNAMENT;
+
+        Properties.NEW_STATISTICS = true;
+        Properties.STATISTICS_BACKEND = Properties.StatisticsBackend.CSV;
+        Properties.OUTPUT_VARIABLES = "TARGET_CLASS,criterion,Coverage,Total_Goals,Covered_Goals,NeutralityVolume,InformationContent";
 
         /*
 

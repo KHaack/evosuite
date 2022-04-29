@@ -51,7 +51,7 @@ public class FitnessHistory implements Serializable {
 
         List<Integer> changes = nv.getChangeSequence();
         logger.info("NV ChangeSequence: {}", changes);
-        logger.info("Information Content (IV): {}", nv.getInformationContent());
+        logger.info("Information Content (IC): {}", nv.getInformationContent());
         logger.info("----------------------");
 
         for (Map.Entry<Integer, Double> entry : this.fitnessHistory.entrySet()) {

@@ -27,6 +27,8 @@
 
     <logger name="org.evosuite.landscape.FitnessHistoryListener" level="DEBUG"/>
     <logger name="org.evosuite.landscape.FitnessHistory" level="DEBUG"/>
+    <logger name="org.evosuite.ga.metaheuristics.mosa.DynaMOSASystemTest" level="DEBUG"/>
+    <!--<logger name="org.evosuite.statistics.SearchStatistics" level="DEBUG"/>-->
 
     <root level="WARN">
         <appender class="ch.qos.logback.core.ConsoleAppender">

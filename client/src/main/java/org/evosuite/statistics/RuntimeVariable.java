@@ -594,7 +594,13 @@ public enum RuntimeVariable {
      */
     QueryCacheSize,
     QueryCacheCalls,
-    QueryCacheHitRate;
+    QueryCacheHitRate,
+
+    /*
+     * Landscape analysis
+     */
+    NeutralityVolume,
+    InformationContent;
 
     /* -------------------------------------------------- */
 
