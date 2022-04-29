@@ -231,17 +231,19 @@ public class SearchStatistics implements Listener<ClientStateInformation> {
     }
 
     /**
-     * Retrieve list of possible variables
+     * Returns the default list of statistic variables.
      *
-     * @return
+     * @return Returns the default list of statistic variables.
      */
-    private List<String> getAllOutputVariableNames() {
+    private List<String> getDefaultOutputVariableNames() {
 
-        String[] essentials = new String[]{  //TODO maybe add some more
-                "TARGET_CLASS", "criterion",
+        // the essential statistic variables.
+        String[] essentials = new String[]{
+                RuntimeVariable.Algorithm.toString(),
+                RuntimeVariable.TARGET_CLASS.toString(),
+                RuntimeVariable.criterion.toString(),
                 RuntimeVariable.Coverage.toString(),
-                //TODO: why is this fixed?
-                //RuntimeVariable.BranchCoverage.toString(),
+                RuntimeVariable.BranchCoverage.toString(),
                 RuntimeVariable.Total_Goals.toString(),
                 RuntimeVariable.Covered_Goals.toString()
         };
@@ -270,7 +272,7 @@ public class SearchStatistics implements Listener<ClientStateInformation> {
     private Collection<String> getOutputVariableNames() {
         List<String> variableNames = new ArrayList<>();
         if (Properties.OUTPUT_VARIABLES == null) {
-            variableNames.addAll(getAllOutputVariableNames());
+            variableNames.addAll(getDefaultOutputVariableNames());
         } else {
             for (String entry : Properties.OUTPUT_VARIABLES.split(",")) {
                 variableNames.add(entry.trim());

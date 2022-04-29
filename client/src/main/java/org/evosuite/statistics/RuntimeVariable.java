@@ -47,6 +47,18 @@ import java.util.Map;
 public enum RuntimeVariable {
 
     /**
+     * The used algorithm.
+     */
+    Algorithm,
+    /**
+     * Target class.
+     */
+    TARGET_CLASS,
+    /**
+     * Criterion.
+     */
+    criterion,
+    /**
      * Number of predicates in CUT
      */
     Predicates,
@@ -646,8 +658,8 @@ public enum RuntimeVariable {
             }
 
             String[] criteria = null;
-            if (map.containsKey("criterion")) {
-                criteria = map.get("criterion").toString().split(":");
+            if (map.containsKey(RuntimeVariable.criterion.toString())) {
+                criteria = map.get(RuntimeVariable.criterion.toString()).toString().split(":");
             }
 
             Double coverage = getDoubleValue(map, Coverage);

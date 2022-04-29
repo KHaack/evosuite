@@ -536,7 +536,7 @@ public class CoverageAnalysis {
             Properties.TARGET_CLASS = targetClass;
             LoggingUtils.getEvoLogger().info("* " + ClientProcess.getPrettyPrintIdentifier() + "Target class "
                     + Properties.TARGET_CLASS);
-            ClientServices.getInstance().getClientNode().updateProperty("TARGET_CLASS", Properties.TARGET_CLASS);
+            ClientServices.getInstance().getClientNode().updateProperty(RuntimeVariable.TARGET_CLASS.toString(), Properties.TARGET_CLASS);
 
             for (Criterion c : criterion) {
                 Properties.CRITERION = new Criterion[]{c};

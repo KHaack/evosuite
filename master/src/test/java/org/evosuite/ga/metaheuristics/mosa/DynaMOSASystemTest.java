@@ -32,7 +32,7 @@ public class DynaMOSASystemTest extends SystemTestBase {
 
         Properties.NEW_STATISTICS = true;
         Properties.STATISTICS_BACKEND = Properties.StatisticsBackend.CSV;
-        Properties.OUTPUT_VARIABLES = "TARGET_CLASS,criterion,Coverage,Total_Goals,Covered_Goals,NeutralityVolume,InformationContent";
+        Properties.OUTPUT_VARIABLES = "Algorithm,TARGET_CLASS,Generations,criterion,Coverage,BranchCoverage,Total_Goals,Covered_Goals,NeutralityVolume,InformationContent";
 
         /*
 

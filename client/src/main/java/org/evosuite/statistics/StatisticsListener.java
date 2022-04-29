@@ -115,6 +115,7 @@ public class StatisticsListener<T extends Chromosome<T>> implements SearchListen
         // If the search is finished, we may want to clear the queue and just send the final element?
         //individuals.clear(); // TODO: Maybe have a check on size
         individuals.offer(algorithm.getBestIndividual());
+        ClientServices.getInstance().getClientNode().trackOutputVariable(RuntimeVariable.Algorithm, Properties.ALGORITHM);
         ClientServices.getInstance().getClientNode().trackOutputVariable(RuntimeVariable.Statements_Executed, MaxStatementsStoppingCondition.getNumExecutedStatements());
         ClientServices.getInstance().getClientNode().trackOutputVariable(RuntimeVariable.Tests_Executed, MaxTestsStoppingCondition.getNumExecutedTests());
         ClientServices.getInstance().getClientNode().trackOutputVariable(RuntimeVariable.Generations, algorithm.getAge());
