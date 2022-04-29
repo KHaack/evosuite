@@ -36,27 +36,12 @@ public class FitnessHistory implements Serializable {
     public void addFitness(int age, double fitnessValue) {
         if (null == this.observedMaximum || fitnessValue > this.observedMaximum) {
             this.observedMaximum = fitnessValue;
+            logger.info("{} -> {} new observed maximum", age, fitnessValue);
+        } else {
+            logger.info("{} -> {}", age, fitnessValue);
         }
 
         this.fitnessHistory.put(age, fitnessValue);
-    }
-
-    /**
-     * Prints the fitness history.
-     */
-    public void printHistory() {
-        NeutralityVolume nv = new NeutralityVolume(this);
-        nv.init();
-        logger.info("Neutrality Volume (NV): " + nv.getNeutralityVolume());
-
-        List<Integer> changes = nv.getChangeSequence();
-        logger.info("NV ChangeSequence: {}", changes);
-        logger.info("Information Content (IC): {}", nv.getInformationContent());
-        logger.info("----------------------");
-
-        for (Map.Entry<Integer, Double> entry : this.fitnessHistory.entrySet()) {
-            logger.info("{} -> {}", entry.getKey(), entry.getValue());
-        }
     }
 
     /**

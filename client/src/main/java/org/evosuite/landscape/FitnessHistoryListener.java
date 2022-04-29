@@ -45,10 +45,11 @@ public class FitnessHistoryListener<T extends Chromosome<T>> implements SearchLi
     @Override
     public void searchFinished(GeneticAlgorithm<T> algorithm) {
         logger.info("searchFinished");
-        this.fitnessHistory.printHistory();
 
         NeutralityVolume nv = new NeutralityVolume(this.fitnessHistory);
         nv.init();
+
+        nv.printHistory();
 
         ClientServices.getInstance().getClientNode().trackOutputVariable(RuntimeVariable.NeutralityVolume, nv.getNeutralityVolume());
         ClientServices.getInstance().getClientNode().trackOutputVariable(RuntimeVariable.InformationContent, nv.getInformationContent());
