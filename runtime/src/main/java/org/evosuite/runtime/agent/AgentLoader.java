@@ -112,9 +112,6 @@ public class AgentLoader {
 
     private static void attachAgent(String pid, String jarFilePath,
                                     ClassLoader toolLoader) throws Exception {
-
-        Class<?> string = toolLoader.loadClass("java.lang.String");
-
         Class<?> provider = toolLoader.loadClass("com.sun.tools.attach.spi.AttachProvider");
         Method getProviders = provider.getDeclaredMethod("providers");
         List<?> list = (List<?>) getProviders.invoke(null);
