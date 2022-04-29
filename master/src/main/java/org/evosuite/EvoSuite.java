@@ -51,18 +51,30 @@ import java.util.List;
  */
 public class EvoSuite {
 
+    /**
+     * The logger.
+     */
     private static final Logger logger = LoggerFactory.getLogger(EvoSuite.class);
+    /**
+     * The file separator.
+     */
     private static final String separator = System.getProperty("file.separator");
+
     /**
      * Functional moved to @{@link JavaExecCmdUtil#getJavaBinExecutablePath()}
      * Constant
      * <code>JAVA_CMD="javaHome + separator + bin + separatorj"{trunked}</code>
      */
     //public final static String JAVA_CMD = javaHome + separator + "bin" + separator + "java";
-
+    /**
+     * Base directory path.
+     */
     public static String base_dir_path = System.getProperty("user.dir");
     //private static String javaHome = System.getProperty("java.home");
 
+    /*
+     * Initialize logback.
+     */
     static {
         LoggingUtils.loadLogbackForEvoSuite();
     }
