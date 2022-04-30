@@ -5,8 +5,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Represents the fitness history of the search.
@@ -38,16 +36,19 @@ public class FitnessHistory implements Serializable {
      * @param fitnessValue The fitness value.
      */
     public void addFitness(int age, double fitnessValue) {
-        if (null == this.observedMinimum || fitnessValue > this.observedMinimum) {
-            this.observedMinimum = fitnessValue;
+        if (fitnessValue != Double.POSITIVE_INFINITY
+                && fitnessValue != Double.NEGATIVE_INFINITY) {
+            // do not save infinity values, otherwise the epsilon calculation does not work
+            if (null == this.observedMinimum || fitnessValue < this.observedMinimum) {
+                this.observedMinimum = fitnessValue;
+                logger.info("{} -> {} min", age, fitnessValue);
+            }
+
+            if (null == this.observedMaximum || fitnessValue > this.observedMaximum) {
+                this.observedMaximum = fitnessValue;
+                logger.info("{} -> {} max", age, fitnessValue);
+            }
         }
-
-        if (null == this.observedMaximum || fitnessValue < this.observedMaximum) {
-            this.observedMaximum = fitnessValue;
-        }
-
-        logger.info("{} -> {}", age, fitnessValue);
-
 
         this.fitnessHistory.put(age, fitnessValue);
     }

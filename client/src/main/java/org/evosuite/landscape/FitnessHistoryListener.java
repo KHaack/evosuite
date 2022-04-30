@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * The {@link SearchListener} that keep track of the fitness history.
@@ -53,8 +54,11 @@ public class FitnessHistoryListener<T extends Chromosome<T>> implements SearchLi
 
             nv.printHistory();
 
-            ClientServices.getInstance().getClientNode().trackOutputVariable(RuntimeVariable.FitnessMax, nv.getFitnessHistory().getObservedMaximum());
             ClientServices.getInstance().getClientNode().trackOutputVariable(RuntimeVariable.FitnessMin, nv.getFitnessHistory().getObservedMinimum());
+            ClientServices.getInstance().getClientNode().trackOutputVariable(RuntimeVariable.FitnessMax, nv.getFitnessHistory().getObservedMaximum());
+            ClientServices.getInstance().getClientNode().trackOutputVariable(RuntimeVariable.NeutralityVolumeEpsilon, nv.selectFitnessSequenceEpsilon());
+            String sequence = "[" + nv.getChangeSequence().stream().map(String::valueOf).collect(Collectors.joining(";")) + "]";
+            ClientServices.getInstance().getClientNode().trackOutputVariable(RuntimeVariable.NeutralityVolumeSequence, sequence);
             ClientServices.getInstance().getClientNode().trackOutputVariable(RuntimeVariable.NeutralityVolume, nv.getNeutralityVolume());
             ClientServices.getInstance().getClientNode().trackOutputVariable(RuntimeVariable.InformationContent, nv.getInformationContent());
         }

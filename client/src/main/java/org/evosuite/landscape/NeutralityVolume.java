@@ -15,11 +15,6 @@ public class NeutralityVolume implements Serializable {
      */
     private static final Logger logger = LoggerFactory.getLogger(NeutralityVolume.class);
     /**
-     * The divider used for the fitness sequence epsilon selection.
-     * TODO: via properties
-     */
-    private static final int SEQUENCE_EPSILON_SELECTION_DIV = 100;
-    /**
      * The epsilon for the area compare.
      */
     private static final double NEUTRALITY_VOLUME_EPSILON = 0.000001d;
@@ -34,11 +29,11 @@ public class NeutralityVolume implements Serializable {
     /**
      * The last change value for the neutrality volume.
      */
-    private Double lastChangeValue = null;
+    private double lastChangeValue = 0.0;
     /**
      * The last change type [0, -1, 1] for the change sequence.
      */
-    private Integer lastChangeType = null;
+    private int lastChangeType = 0;
     /**
      * The counted areas for the neutrality volume.
      */
@@ -65,6 +60,11 @@ public class NeutralityVolume implements Serializable {
      * Initialize the calculations.
      */
     public void init() {
+        this.changeSequence.clear();
+        this.changeSequence.add(0);
+        this.lastChangeType = 0;
+        this.lastChangeValue = 0.0;
+
         double sequenceEpsilon = this.selectFitnessSequenceEpsilon();
         for (Map.Entry<Integer, Double> entry : fitnessHistory.getFitnessHistory().entrySet()) {
             this.add(entry.getValue(), sequenceEpsilon);
@@ -87,40 +87,35 @@ public class NeutralityVolume implements Serializable {
      * @param sequenceEpsilon The change epsilion.
      */
     private void add(double value, double sequenceEpsilon) {
-        if (null == lastChangeValue || Math.abs(lastChangeValue - value) >= NEUTRALITY_VOLUME_EPSILON) {
+        if (Math.abs(lastChangeValue - value) >= NEUTRALITY_VOLUME_EPSILON) {
             this.areaCount++;
 
-            if (null == this.lastChangeValue) {
-                this.changeSequence.add(0);
-                this.lastChangeType = 0;
+            double changeValue = this.lastChangeValue - value;
+
+            // get change type
+            int changeType;
+            if (changeValue > sequenceEpsilon) {
+                changeType = -1;
+            } else if (changeValue < -sequenceEpsilon) {
+                changeType = 1;
             } else {
-                double changeValue = this.lastChangeValue - value;
-
-                // get change type
-                int changeType;
-                if (changeValue > sequenceEpsilon) {
-                    changeType = -1;
-                } else if (changeValue < -sequenceEpsilon) {
-                    changeType = 1;
-                } else {
-                    changeType = 0;
-                }
-
-                // count the sub blocks
-                if (this.lastChangeType != null && this.lastChangeType != changeType) {
-                    SubBlock block = new SubBlock(this.lastChangeType, changeType);
-                    if (!this.subBlocks.containsKey(block)) {
-                        this.subBlocks.put(block, 0);
-                    }
-
-                    this.subBlocks.put(block, this.subBlocks.get(block) + 1);
-                    this.numberOfSubBlocks++;
-                }
-
-                this.changeSequence.add(changeType);
-                this.lastChangeType = changeType;
+                changeType = 0;
             }
 
+            // count the sub blocks
+            if (this.lastChangeType != changeType) {
+                SubBlock block = new SubBlock(this.lastChangeType, changeType);
+                if (!this.subBlocks.containsKey(block)) {
+                    this.subBlocks.put(block, 0);
+                }
+
+                this.subBlocks.put(block, this.subBlocks.get(block) + 1);
+
+            }
+
+            this.changeSequence.add(changeType);
+            this.lastChangeType = changeType;
+            this.numberOfSubBlocks++;
             this.lastChangeValue = value;
         }
     }
@@ -135,7 +130,7 @@ public class NeutralityVolume implements Serializable {
             return 0.0d;
         }
 
-        return this.fitnessHistory.getObservedMaximum() / SEQUENCE_EPSILON_SELECTION_DIV;
+        return (this.fitnessHistory.getObservedMaximum() - this.fitnessHistory.getObservedMinimum()) / 100.0d;
     }
 
     /**
@@ -197,7 +192,9 @@ public class NeutralityVolume implements Serializable {
      * @return Returns the subBlock propability.
      */
     public double getSubBlockPropability(SubBlock subBlock) {
-        return this.subBlocks.containsKey(subBlock) ? this.subBlocks.get(subBlock) / (double) this.numberOfSubBlocks : 0;
+        return this.subBlocks.containsKey(subBlock)
+                ? this.subBlocks.get(subBlock) / (double) this.getNumberOfSubBlocks()
+                : 0;
     }
 
     /**
@@ -209,7 +206,7 @@ public class NeutralityVolume implements Serializable {
         List<Integer> changes = this.getChangeSequence();
         logger.info("Fitness min: {}", this.getFitnessHistory().getObservedMinimum());
         logger.info("Fitness max: {}", this.getFitnessHistory().getObservedMaximum());
-        logger.info("NV ChangeSequence: {}", changes);
+        logger.info("NV Epsilon: {}", this.selectFitnessSequenceEpsilon());
         logger.info("NV ChangeSequence: {}", changes);
         logger.info("Information Content (IC): {}", this.getInformationContent());
         logger.info("----------------------");

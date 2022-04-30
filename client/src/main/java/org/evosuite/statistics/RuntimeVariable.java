@@ -614,6 +614,8 @@ public enum RuntimeVariable {
     FitnessMax,
     FitnessMin,
     NeutralityVolume,
+    NeutralityVolumeSequence,
+    NeutralityVolumeEpsilon,
     InformationContent;
 
     /* -------------------------------------------------- */

@@ -68,11 +68,25 @@ public class NeutralityVolumeTest {
     public void selectFitnessSequenceEpsilonTest() {
         FitnessHistory history = new FitnessHistory();
 
-        history.addFitness(0, 10);
+        history.addFitness(0, 5);
+        history.addFitness(1, 10);
 
         NeutralityVolume volume = new NeutralityVolume(history);
         volume.init();
-        assertEquals(0.1d, volume.selectFitnessSequenceEpsilon(), 0.0001d);
+        assertEquals(0.05d, volume.selectFitnessSequenceEpsilon(), 0.0001d);
+    }
+
+    @Test
+    public void selectFitnessSequenceEpsilonInfinityTest() {
+        FitnessHistory history = new FitnessHistory();
+
+        history.addFitness(0, 5);
+        history.addFitness(1, Double.POSITIVE_INFINITY);
+        history.addFitness(2, 0);
+
+        NeutralityVolume volume = new NeutralityVolume(history);
+        volume.init();
+        assertEquals(0.05, volume.selectFitnessSequenceEpsilon(), 0.0001d);
     }
 
     @Test
@@ -90,15 +104,20 @@ public class NeutralityVolumeTest {
         history.addFitness(5, 0.997);
         history.addFitness(6, 0.997);
 
+        history.addFitness(7, 0.0);
+
         NeutralityVolume volume = new NeutralityVolume(history);
         volume.init();
+
+        assertEquals(0.01, volume.selectFitnessSequenceEpsilon());
         List<Integer> sequence = volume.getChangeSequence();
-        assertEquals(4, sequence.size());
+        assertEquals(5, sequence.size());
 
         assertEquals(0, sequence.get(0));
         assertEquals(0, sequence.get(1));
         assertEquals(0, sequence.get(2));
         assertEquals(0, sequence.get(3));
+        assertEquals(-1, sequence.get(4));
     }
 
     @Test
@@ -195,12 +214,12 @@ public class NeutralityVolumeTest {
         assertEquals(1, subBlocks.get(new SubBlock(-1, 1)));
         assertEquals(1, subBlocks.get(new SubBlock(1, 0)));
 
-        assertEquals(3, volume.getNumberOfSubBlocks());
+        assertEquals(5, volume.getNumberOfSubBlocks());
 
-        assertEquals(0.33333d, volume.getSubBlockPropability(new SubBlock(0, -1)), 0.0001d);
-        assertEquals(0.33333d, volume.getSubBlockPropability(new SubBlock(-1, 1)), 0.0001d);
-        assertEquals(0.33333d, volume.getSubBlockPropability(new SubBlock(1, 0)), 0.0001d);
+        assertEquals(0.2d, volume.getSubBlockPropability(new SubBlock(0, -1)), 0.0001d);
+        assertEquals(0.2d, volume.getSubBlockPropability(new SubBlock(-1, 1)), 0.0001d);
+        assertEquals(0.2d, volume.getSubBlockPropability(new SubBlock(1, 0)), 0.0001d);
 
-        assertEquals(0.6131d, volume.getInformationContent(), 0.0001d);
+        assertEquals(0.5389d, volume.getInformationContent(), 0.0001d);
     }
 }

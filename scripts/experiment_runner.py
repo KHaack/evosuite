@@ -21,6 +21,7 @@ LOG_FORMAT = "%(levelname)s %(asctime)s - %(message)s"
 LOG_LEVEL = logging.INFO
 LOG_STREAM = sys.stdout
 EXECUTIONS_PER_CLASS = 1
+DELETE_STATISTICS = True
 
 
 def getProjectClassPath(project):
@@ -73,6 +74,13 @@ def runEvoSuite(project, clazz, numberOfClasses, numberCurrentClass):
         if not os.path.exists(pathLog):
             os.mkdir(pathLog)
 
+        # remove old statistic
+        if DELETE_STATISTICS:
+            pathStatistic = os.path.join(pathReport, "statistics.csv")
+            if os.path.exists(pathStatistic):
+                logging.debug("remove old statistic file " + pathStatistic)
+                os.remove(pathStatistic)
+
         # build evoSuite parameters
         parameter = []
         parameter.append('java')
@@ -91,12 +99,28 @@ def runEvoSuite(project, clazz, numberOfClasses, numberCurrentClass):
         parameter.append('-Dclient_on_thread=false')
 
         parameter.append('-criterion')
-        parameter.append('branch')
+        parameter.append('branch:line')
         parameter.append('-Denable_fitness_history=true')
         parameter.append('-Denable_landscape_analysis=true')
+
+        # statistics
         parameter.append('-Dnew_statistics=true')
         parameter.append(
-            '-Doutput_variables=Algorithm,TARGET_CLASS,Generations,criterion,Coverage,BranchCoverage,Total_Goals,Covered_Goals,NeutralityVolume,InformationContent')
+            '-Doutput_variables='
+            'Algorithm,'
+            'TARGET_CLASS,'
+            'Generations,'
+            'criterion,'
+            'Coverage,'
+            'BranchCoverage,'
+            'Total_Goals,'
+            'Covered_Goals,'
+            'FitnessMax,'
+            'FitnessMin,'
+            'NeutralityVolumeEpsilon,'
+            'NeutralityVolumeSequence,'
+            'NeutralityVolume,'
+            'InformationContent')
 
         # start process
         output = open(pathLogFile, "w")
@@ -124,8 +148,8 @@ def main():
         clazz = parts[1].replace('\n', '')
 
         runEvoSuite(project, clazz, numberOfClasses, numberCurrentClass)
+
         numberCurrentClass = numberCurrentClass + 1
-        return
 
 
 if __name__ == "__main__":
