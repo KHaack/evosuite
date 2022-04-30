@@ -53,6 +53,8 @@ public class FitnessHistoryListener<T extends Chromosome<T>> implements SearchLi
 
             nv.printHistory();
 
+            ClientServices.getInstance().getClientNode().trackOutputVariable(RuntimeVariable.FitnessMax, nv.getFitnessHistory().getObservedMaximum());
+            ClientServices.getInstance().getClientNode().trackOutputVariable(RuntimeVariable.FitnessMin, nv.getFitnessHistory().getObservedMinimum());
             ClientServices.getInstance().getClientNode().trackOutputVariable(RuntimeVariable.NeutralityVolume, nv.getNeutralityVolume());
             ClientServices.getInstance().getClientNode().trackOutputVariable(RuntimeVariable.InformationContent, nv.getInformationContent());
         }

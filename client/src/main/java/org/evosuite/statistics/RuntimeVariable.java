@@ -611,6 +611,8 @@ public enum RuntimeVariable {
     /*
      * Landscape analysis
      */
+    FitnessMax,
+    FitnessMin,
     NeutralityVolume,
     InformationContent;
 

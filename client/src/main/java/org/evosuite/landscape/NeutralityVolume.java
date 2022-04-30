@@ -207,6 +207,9 @@ public class NeutralityVolume implements Serializable {
         logger.info("Neutrality Volume (NV): " + getNeutralityVolume());
 
         List<Integer> changes = this.getChangeSequence();
+        logger.info("Fitness min: {}", this.getFitnessHistory().getObservedMinimum());
+        logger.info("Fitness max: {}", this.getFitnessHistory().getObservedMaximum());
+        logger.info("NV ChangeSequence: {}", changes);
         logger.info("NV ChangeSequence: {}", changes);
         logger.info("Information Content (IC): {}", this.getInformationContent());
         logger.info("----------------------");

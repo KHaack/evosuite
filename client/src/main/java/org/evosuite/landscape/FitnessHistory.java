@@ -26,6 +26,10 @@ public class FitnessHistory implements Serializable {
      * The observed maximum fitness value.
      */
     private Double observedMaximum;
+    /**
+     * The observed minimum fitness value.
+     */
+    private Double observedMinimum;
 
     /**
      * Adds the passed fitness value to the history.
@@ -34,12 +38,16 @@ public class FitnessHistory implements Serializable {
      * @param fitnessValue The fitness value.
      */
     public void addFitness(int age, double fitnessValue) {
-        if (null == this.observedMaximum || fitnessValue > this.observedMaximum) {
-            this.observedMaximum = fitnessValue;
-            logger.info("{} -> {} new observed maximum", age, fitnessValue);
-        } else {
-            logger.info("{} -> {}", age, fitnessValue);
+        if (null == this.observedMinimum || fitnessValue > this.observedMinimum) {
+            this.observedMinimum = fitnessValue;
         }
+
+        if (null == this.observedMaximum || fitnessValue < this.observedMaximum) {
+            this.observedMaximum = fitnessValue;
+        }
+
+        logger.info("{} -> {}", age, fitnessValue);
+
 
         this.fitnessHistory.put(age, fitnessValue);
     }
@@ -60,5 +68,14 @@ public class FitnessHistory implements Serializable {
      */
     public Double getObservedMaximum() {
         return observedMaximum;
+    }
+
+    /**
+     * Returns the observed minimum fitness value.
+     *
+     * @return Returns the observed minimum fitness value.
+     */
+    public Double getObservedMinimum() {
+        return observedMinimum;
     }
 }
