@@ -10,6 +10,7 @@ import re
 import subprocess
 import sys
 
+# files and folders
 DIRECTORY_CORPUS = "SF110-20130704"
 DIRECTORY_REPORTS = "reports"
 DIRECTORY_TESTS = "tests"
@@ -17,11 +18,16 @@ DIRECTORY_LOGS = "logs"
 PATH_WORKING_DIRECTORY = "C:\\Users\\kha\\Desktop\\Benchmark"
 PATH_EVOSUITE = "C:\\Users\\kha\\repos\\evosuite\\master\\target\\evosuite-master-1.2.1-SNAPSHOT.jar"
 FILE_CLASSES = "classes.txt"
+# logging
 LOG_FORMAT = "%(levelname)s %(asctime)s - %(message)s"
 LOG_LEVEL = logging.INFO
 LOG_STREAM = sys.stdout
-EXECUTIONS_PER_CLASS = 1
-DELETE_STATISTICS = True
+# tests
+EXECUTIONS_PER_CLASS = 10
+SAMPLE_SIZE = 50
+# timing
+SEARCH_BUDGET = 180
+TIMEOUT = 360
 
 
 def getProjectClassPath(project):
@@ -74,57 +80,48 @@ def runEvoSuite(project, clazz, numberOfClasses, numberCurrentClass):
         if not os.path.exists(pathLog):
             os.mkdir(pathLog)
 
-        # remove old statistic
-        if DELETE_STATISTICS:
-            pathStatistic = os.path.join(pathReport, "statistics.csv")
-            if os.path.exists(pathStatistic):
-                logging.debug("remove old statistic file " + pathStatistic)
-                os.remove(pathStatistic)
-
         # build evoSuite parameters
-        parameter = []
-        parameter.append('java')
-        parameter.append('-Xmx4G')
-        parameter.append('-jar')
-        parameter.append(PATH_EVOSUITE)
-        parameter.append('-class')
-        parameter.append(clazz)
-        parameter.append('-projectCP')
-        parameter.append(projectClassPath)
-
-        parameter.append('-Dreport_dir=' + pathReport)
-        parameter.append('-Dtest_dir=' + pathTest)
-        parameter.append('-Dshow_progress=false')
-        parameter.append('-Dplot=false')
-        parameter.append('-Dclient_on_thread=false')
-
-        parameter.append('-criterion')
-        parameter.append('branch:line')
-        parameter.append('-Denable_fitness_history=true')
-        parameter.append('-Denable_landscape_analysis=true')
-
-        # statistics
-        parameter.append('-Dnew_statistics=true')
-        parameter.append(
-            '-Doutput_variables='
-            'Algorithm,'
-            'TARGET_CLASS,'
-            'Generations,'
-            'criterion,'
-            'Coverage,'
-            'BranchCoverage,'
-            'Total_Goals,'
-            'Covered_Goals,'
-            'FitnessMax,'
-            'FitnessMin,'
-            'NeutralityVolumeEpsilon,'
-            'NeutralityVolumeSequence,'
-            'NeutralityVolume,'
-            'InformationContent')
+        parameter = ['java',
+                     '-Xmx4G',
+                     '-jar',
+                     PATH_EVOSUITE,
+                     '-class',
+                     clazz,
+                     '-projectCP',
+                     projectClassPath,
+                     '-Dreport_dir=' + pathReport,
+                     '-Dtest_dir=' + pathTest,
+                     '-Dshow_progress=false',
+                     '-Dplot=false',
+                     '-Dclient_on_thread=false',
+                     '-criterion',
+                     'branch:line',
+                     '-Dsearch_budget=' + str(SEARCH_BUDGET),
+                     '-Denable_fitness_history=true',
+                     '-Denable_landscape_analysis=true',
+                     '-Dnew_statistics=true',
+                     '-Doutput_variables='
+                     'Algorithm,'
+                     'TARGET_CLASS,'
+                     'Generations,'
+                     'criterion,'
+                     'Coverage,'
+                     'BranchCoverage,'
+                     'Total_Goals,'
+                     'Covered_Goals,'
+                     'FitnessMax,'
+                     'FitnessMin,'
+                     'NeutralityVolumeEpsilon,'
+                     'NeutralityVolumeSequence,'
+                     'NeutralityVolume,'
+                     'InformationContent']
 
         # start process
         output = open(pathLogFile, "w")
-        subprocess.call(parameter, stdout=output, stderr=subprocess.STDOUT)
+        try:
+            subprocess.call(parameter, stdout=output, stderr=subprocess.STDOUT, timeout=TIMEOUT)
+        except subprocess.TimeoutExpired:
+            logging.error(f'Timeout ({TIMEOUT}s) expired')
         output.close()
 
 
@@ -148,6 +145,10 @@ def main():
         clazz = parts[1].replace('\n', '')
 
         runEvoSuite(project, clazz, numberOfClasses, numberCurrentClass)
+
+        if SAMPLE_SIZE is not None:
+            if numberCurrentClass == SAMPLE_SIZE:
+                return
 
         numberCurrentClass = numberCurrentClass + 1
 
