@@ -122,6 +122,8 @@ def runEvoSuite(project, clazz, numberOfClasses, numberCurrentClass):
             subprocess.call(parameter, stdout=output, stderr=subprocess.STDOUT, timeout=TIMEOUT)
         except subprocess.TimeoutExpired:
             logging.error(f'Timeout ({TIMEOUT}s) expired')
+        except subprocess.SubprocessError as error:
+            logging.error(f"Unexpected {err=}, {type(err)=}")
         output.close()
 
 
