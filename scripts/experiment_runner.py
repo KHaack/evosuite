@@ -113,7 +113,7 @@ def getProjectClassPath(project):
     jarList = glob.iglob(os.path.join(projectPath, '**/*.jar'), recursive=True)
     classPath = ""
     for jar in jarList:
-        classPath = classPath + jar + ";"
+        classPath = classPath + jar + os.pathsep
 
     return classPath
 
@@ -304,9 +304,9 @@ def main():
     createBackups(initSample, sample)
 
     # run tests
-    for i in sample:
-        project = initSample[i][0]
-        clazz = initSample[i][1]
+    for i in range(len(sample)):
+        project = initSample[sample[i]][0]
+        clazz = initSample[sample[i]][1]
         runEvoSuite(project, clazz, i)
 
 
