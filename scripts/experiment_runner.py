@@ -12,6 +12,8 @@ import signal
 import subprocess
 import sys
 import psutil
+import socket
+from datetime import datetime, timedelta
 
 # files and folders
 DIRECTORY_CORPUS = "SF110-20130704"
@@ -30,18 +32,19 @@ LOG_STREAM = sys.stdout
 # tests
 EXECUTIONS_PER_CLASS = 3
 RANDOM = False
-SAMPLE_SIZE = 91
-# timing
+SAMPLE_SIZE = 150
+# timing (in seconds)
 SEARCH_BUDGET = 120
 TIMEOUT = 240
-# Algorithms and parameters (RANDOM or DYNAMOSA)
+# Algorithms (supported in this script: 'RANDOM' or 'DYNAMOSA')
 ALGORITHM = 'DYNAMOSA'
+# Criterion list as string (seperated with ':') or 'default' for EvoSuits default setting
+CRITERION = 'branch:line'
+# Parameters
 PARAMETER_ALL = [
     '-Dshow_progress=false',
     '-Dplot=false',
     '-Dclient_on_thread=false',
-    '-criterion',
-    'branch:line',
     '-Dtrack_boolean_branches=true',
     '-Dtrack_covered_gradient_branches=true',
     '-Dsearch_budget=' + str(SEARCH_BUDGET)
@@ -144,6 +147,9 @@ def createParameter(project, clazz, pathClassDir, currentExecution):
                  ]
 
     parameter = parameter + PARAMETER_ALL
+
+    if CRITERION != 'default':
+        parameter = parameter + ['-criterion',  CRITERION]
 
     if ALGORITHM == 'DYNAMOSA':
         return parameter + PARAMETER_DYNAMOSA
@@ -282,16 +288,22 @@ def main():
     """
     logging.basicConfig(stream=LOG_STREAM, filemode="w", format=LOG_FORMAT, level=LOG_LEVEL)
 
-    logging.info("Initial sample file '" + FILE_CLASSES_INIT + "'")
     initSample = getInitSample()
 
-    logging.info("Total number of classes: " + str(len(initSample)))
-    logging.info("Random sample selection: " + str(RANDOM))
-    logging.info("Sample size: " + str(SAMPLE_SIZE))
-    logging.info("Executions/Class: " + str(EXECUTIONS_PER_CLASS))
-    logging.info("Search budget: " + str(SEARCH_BUDGET) + "s")
-    logging.info("Timeout: " + str(TIMEOUT) + "s")
-    logging.info("Algorithm: " + ALGORITHM)
+    logging.info("Initial sample file:\t" + FILE_CLASSES_INIT)
+    logging.info("Total number of classes:\t" + str(len(initSample)))
+    logging.info("Random sample selection:\t" + str(RANDOM))
+    logging.info("Sample size:\t\t" + str(SAMPLE_SIZE))
+    logging.info("Executions/Class:\t" + str(EXECUTIONS_PER_CLASS))
+    logging.info("Search budget:\t\t" + str(SEARCH_BUDGET) + "s")
+    logging.info("Timeout:\t\t\t" + str(TIMEOUT) + "s")
+    logging.info("Algorithm:\t\t" + ALGORITHM)
+    logging.info("Criterion:\t\t" + CRITERION)
+    logging.info("Host:\t\t\t" + socket.gethostname())
+
+    runtime = SAMPLE_SIZE * EXECUTIONS_PER_CLASS * SEARCH_BUDGET
+    estimation = datetime.now() + timedelta(seconds=runtime)
+    logging.info("Run time estimation:\t" + str(runtime / 60) + "min (end at " + str(estimation) + ")")
 
     if SAMPLE_SIZE > len(initSample):
         logging.error("sample size '" + str(SAMPLE_SIZE) + "' > init file length '" + str(len(initSample)) + "'")
