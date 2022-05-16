@@ -40,6 +40,10 @@ TIMEOUT = 240
 ALGORITHM = 'DYNAMOSA'
 # Criterion list as string (seperated with ':') or 'default' for EvoSuits default setting
 CRITERION = 'branch:line'
+# Mutation rate as float or 'default'
+MUTATION_RATE = 'default'
+# Cross over rate as float or 'default'
+CROSS_OVER_RATE = 'default'
 # Parameters
 PARAMETER_ALL = [
     '-Dshow_progress=false',
@@ -150,6 +154,12 @@ def createParameter(project, clazz, pathClassDir, currentExecution):
 
     if CRITERION != 'default':
         parameter = parameter + ['-criterion',  CRITERION]
+
+    if CROSS_OVER_RATE != 'default':
+        parameter = parameter + ['-Dcrossover_rate',  str(CROSS_OVER_RATE)]
+
+    if MUTATION_RATE != 'default':
+        parameter = parameter + ['-Dmutation_rate',  str(MUTATION_RATE)]
 
     if ALGORITHM == 'DYNAMOSA':
         return parameter + PARAMETER_DYNAMOSA
@@ -299,6 +309,8 @@ def main():
     logging.info("Timeout:\t\t\t" + str(TIMEOUT) + "s")
     logging.info("Algorithm:\t\t" + ALGORITHM)
     logging.info("Criterion:\t\t" + CRITERION)
+    logging.info("Mutation rate:\t\t" + str(MUTATION_RATE))
+    logging.info("Cross over rate:\t\t" + str(CROSS_OVER_RATE))
     logging.info("Host:\t\t\t" + socket.gethostname())
 
     runtime = SAMPLE_SIZE * EXECUTIONS_PER_CLASS * SEARCH_BUDGET
