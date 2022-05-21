@@ -18,6 +18,7 @@ from datetime import datetime, timedelta
 # files and folders
 DIRECTORY_CORPUS = "SF110-20130704"
 DIRECTORY_REPORTS = "reports"
+DIRECTORY_RESULTS = "results"
 DIRECTORY_TESTS = "tests"
 DIRECTORY_LOGS = "logs"
 PATH_WORKING_DIRECTORY = "C:\\Users\\kha\\Desktop\\Benchmark"
@@ -38,13 +39,13 @@ RANDOM = False
 # number of classes that should be selected
 SAMPLE_SIZE = 15
 # search budget in seconds
-SEARCH_BUDGET = 120
+SEARCH_BUDGET = 10
 # timeout in seconds
 TIMEOUT = 180
 # Algorithms (supported in this script: 'RANDOM' or 'DYNAMOSA')
 ALGORITHM = 'DYNAMOSA'
 # Criterion list as string (seperated with ':') or 'default' for EvoSuits default setting
-CRITERION = 'branch:line'
+CRITERION = 'default'
 # Mutation rate as float or 'default'
 MUTATION_RATE = 'default'
 # Cross over rate as float or 'default'
@@ -130,6 +131,14 @@ def getProjectClassPath(project):
     return classPath
 
 
+def moveResults(project, clazz, pathClassDir, currentExecution, pathResults):
+    oldFilePath = os.path.join(pathClassDir, DIRECTORY_REPORTS, str(currentExecution), "statistics.csv")
+    newname = f"{project}-{clazz}-{str(currentExecution)}.csv"
+    newFilePath = os.path.join(pathResults, newname)
+
+    os.rename(oldFilePath, newFilePath)
+
+
 def createParameter(project, clazz, pathClassDir, currentExecution):
     """
     Create the EvoSuite parameter list for the passt parameter.
@@ -151,8 +160,8 @@ def createParameter(project, clazz, pathClassDir, currentExecution):
                  clazz,
                  '-projectCP',
                  projectClassPath,
-                 '-Dreport_dir=' + pathReport,
-                 '-Dtest_dir=' + pathTest
+                 f'-Dreport_dir={pathReport}',
+                 f'-Dtest_dir={pathTest}'
                  ]
 
     parameter = parameter + PARAMETER_ALL
@@ -174,7 +183,7 @@ def createParameter(project, clazz, pathClassDir, currentExecution):
         raise ValueError("unsupported algorithm: " + ALGORITHM)
 
 
-def runEvoSuite(project, clazz, currentClass):
+def runEvoSuite(project, clazz, currentClass, pathResults):
     """
     Runs multiple executions of EvoSuite for the passed class.
     :param project: The project of the class.
@@ -212,6 +221,7 @@ def runEvoSuite(project, clazz, currentClass):
 
         try:
             proc.communicate(timeout=TIMEOUT)
+            moveResults(project, clazz, pathClassDir, execution, pathResults)
             timeouts = 0
         except subprocess.TimeoutExpired:
             # skip if timeouts reached
@@ -344,11 +354,17 @@ def main():
     # save backup
     createBackups(initSample, sample)
 
+    # create result directory
+    now = datetime.now()
+    pathResults = os.path.join(PATH_WORKING_DIRECTORY, DIRECTORY_RESULTS, now.strftime("%Y-%m-%d %H-%M-%S"))
+    if not os.path.exists(pathResults):
+        os.mkdir(pathResults)
+
     # run tests
     for i in range(len(sample)):
         project = initSample[sample[i]][0]
         clazz = initSample[sample[i]][1]
-        runEvoSuite(project, clazz, i)
+        runEvoSuite(project, clazz, i, pathResults)
 
 
 if __name__ == "__main__":
