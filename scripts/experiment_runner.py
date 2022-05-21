@@ -9,10 +9,10 @@ import os
 import random
 import re
 import signal
+import socket
 import subprocess
 import sys
 import psutil
-import socket
 from datetime import datetime, timedelta
 
 # files and folders
@@ -29,13 +29,18 @@ FILE_CLASSES_NOT_IN_SAMPLE = "notInSample.txt"
 LOG_FORMAT = "%(levelname)s %(asctime)s - %(message)s"
 LOG_LEVEL = logging.INFO
 LOG_STREAM = sys.stdout
-# tests
+# number of executions per class
 EXECUTIONS_PER_CLASS = 3
+# skip executions after x timeouts
+SKIP_AFTER_TIMEOUTS = 2
+# select randomly
 RANDOM = False
-SAMPLE_SIZE = 150
-# timing (in seconds)
+# number of classes that should be selected
+SAMPLE_SIZE = 15
+# search budget in seconds
 SEARCH_BUDGET = 120
-TIMEOUT = 240
+# timeout in seconds
+TIMEOUT = 180
 # Algorithms (supported in this script: 'RANDOM' or 'DYNAMOSA')
 ALGORITHM = 'DYNAMOSA'
 # Criterion list as string (seperated with ':') or 'default' for EvoSuits default setting
@@ -153,13 +158,13 @@ def createParameter(project, clazz, pathClassDir, currentExecution):
     parameter = parameter + PARAMETER_ALL
 
     if CRITERION != 'default':
-        parameter = parameter + ['-criterion',  CRITERION]
+        parameter = parameter + ['-criterion', CRITERION]
 
     if CROSS_OVER_RATE != 'default':
-        parameter = parameter + ['-Dcrossover_rate',  str(CROSS_OVER_RATE)]
+        parameter = parameter + ['-Dcrossover_rate', str(CROSS_OVER_RATE)]
 
     if MUTATION_RATE != 'default':
-        parameter = parameter + ['-Dmutation_rate',  str(MUTATION_RATE)]
+        parameter = parameter + ['-Dmutation_rate', str(MUTATION_RATE)]
 
     if ALGORITHM == 'DYNAMOSA':
         return parameter + PARAMETER_DYNAMOSA
@@ -176,10 +181,12 @@ def runEvoSuite(project, clazz, currentClass):
     :param clazz: The class to test.
     :param currentClass: The index of the passed class.
     """
-    for currentExecution in range(0, EXECUTIONS_PER_CLASS):
-        logging.info("Class (" + str(currentClass + 1) + " / " + str(SAMPLE_SIZE) + ") Execution (" + str(
-            currentExecution + 1) + " / " + str(
-            EXECUTIONS_PER_CLASS) + "): Running default configuration for class (" + clazz + ") in project (" + project + ") with random seed.")
+    timeouts = 0
+    execution = 0
+    skip = False
+    while not skip and execution < EXECUTIONS_PER_CLASS:
+        logging.info(
+            f"Class ({str(currentClass + 1)} / {str(SAMPLE_SIZE)}) Execution ({str(execution + 1)} / {str(EXECUTIONS_PER_CLASS)}): Running default configuration in project ({project}) for class ({clazz}) with random seed.")
 
         # output directories
         pathClassDir = os.path.join(PATH_WORKING_DIRECTORY, DIRECTORY_CORPUS, project, clazz)
@@ -189,7 +196,7 @@ def runEvoSuite(project, clazz, currentClass):
             os.mkdir(pathClassDir)
 
         # build evoSuite parameters
-        parameter = createParameter(project, clazz, pathClassDir, currentExecution)
+        parameter = createParameter(project, clazz, pathClassDir, execution)
 
         # setup log
         pathLog = os.path.join(pathClassDir, DIRECTORY_LOGS)
@@ -197,7 +204,7 @@ def runEvoSuite(project, clazz, currentClass):
         if not os.path.exists(pathLog):
             os.mkdir(pathLog)
 
-        pathLogFile = os.path.join(pathLog, "log_" + str(currentExecution) + ".txt")
+        pathLogFile = os.path.join(pathLog, "log_" + str(execution) + ".txt")
         output = open(pathLogFile, "w")
 
         # start process
@@ -205,11 +212,21 @@ def runEvoSuite(project, clazz, currentClass):
 
         try:
             proc.communicate(timeout=TIMEOUT)
+            timeouts = 0
         except subprocess.TimeoutExpired:
-            print('Subprocess timeout ' + str(TIMEOUT) + "s")
+            # skip if timeouts reached
+            timeouts = timeouts + 1
+            if 0 < SKIP_AFTER_TIMEOUTS <= timeouts:
+                skip = True
+                logging.info(f"max timeouts reached, skip next")
+
+            # kill process
+            logging.warning(f'Subprocess timeout ({str(timeouts)}/{str(SKIP_AFTER_TIMEOUTS)}) {str(TIMEOUT)}s')
             killProcess(proc)
         except Exception as error:
             logging.error(f"Unexpected {error=}, {type(error)=}")
+
+        execution = execution + 1
 
 
 def killProcess(proc):
