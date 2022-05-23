@@ -11,25 +11,23 @@ import re
 import signal
 import socket
 import subprocess
-import sys
 import psutil
 from datetime import datetime, timedelta
 
 # files and folders
-DIRECTORY_CORPUS = "SF110-20130704"
-DIRECTORY_REPORTS = "reports"
-DIRECTORY_RESULTS = "results"
-DIRECTORY_TESTS = "tests"
-DIRECTORY_LOGS = "logs"
-PATH_WORKING_DIRECTORY = "C:\\Users\\kha\\Desktop\\Benchmark"
-PATH_EVOSUITE = "C:\\Users\\kha\\repos\\evosuite\\master\\target\\evosuite-master-1.2.1-SNAPSHOT.jar"
-FILE_CLASSES_INIT = "init.txt"
-FILE_CLASSES_SAMPLE = "sample.txt"
-FILE_CLASSES_NOT_IN_SAMPLE = "notInSample.txt"
+DIRECTORY_CORPUS = "/home/user/Benchmark/SF110-20130704"
+DIRECTORY_EXECUTION_REPORTS = "reports"
+DIRECTORY_EXECUTION_TESTS = "tests"
+DIRECTORY_EXECUTION_LOGS = "logs"
+DIRECTORY_RESULTS = "/home/user/Benchmark/results"
+FILE_EVOSUITE = "/home/user/Benchmark/evosuite-master-1.2.1-SNAPSHOT.jar"
+FILE_SAMPLE = "/home/user/Benchmark/samples/10 - new default - 356.txt"
+FILE_SELECTED_SAMPLE = "/home/user/Benchmark/sample.txt"
+FILE_NOT_SELECTED_SAMPLE = "/home/user/Benchmark/notInSample.txt"
 # logging
 LOG_FORMAT = "%(levelname)s %(asctime)s - %(message)s"
 LOG_LEVEL = logging.INFO
-LOG_STREAM = sys.stdout
+FILE_LOG = "/home/user/Benchmark/output.log"
 # number of executions per class
 EXECUTIONS_PER_CLASS = 3
 # skip executions after x timeouts
@@ -120,7 +118,7 @@ def getProjectClassPath(project):
     :param project: The project.
     Returns: Colon seperated class path
     """
-    projectPath = os.path.join(PATH_WORKING_DIRECTORY, DIRECTORY_CORPUS, project)
+    projectPath = os.path.join(DIRECTORY_CORPUS, project)
     logging.debug("create projectClassPath for folder '" + projectPath + "'")
 
     jarList = glob.iglob(os.path.join(projectPath, '**/*.jar'), recursive=True)
@@ -132,7 +130,17 @@ def getProjectClassPath(project):
 
 
 def moveResults(project, clazz, pathClassDir, currentExecution, pathResults):
-    oldFilePath = os.path.join(pathClassDir, DIRECTORY_REPORTS, str(currentExecution), "statistics.csv")
+    """
+    Move the exection results to the pathResults.
+    :param project: The project.
+    :param clazz: The current class.
+    :param pathClassDir: The path of the class directory.
+    :param currentExecution: The index of the current execution.
+    :param pathResults: the destination of the results.
+    :return: None
+    """
+    oldFilePath = os.path.join(pathClassDir, DIRECTORY_EXECUTION_REPORTS, str(currentExecution), "statistics.csv")
+
     newname = f"{project}-{clazz}-{str(currentExecution)}.csv"
     newFilePath = os.path.join(pathResults, newname)
 
@@ -149,13 +157,13 @@ def createParameter(project, clazz, pathClassDir, currentExecution):
     :return: The parameter for EvoSuite.
     """
     projectClassPath = getProjectClassPath(project)
-    pathReport = os.path.join(pathClassDir, DIRECTORY_REPORTS, str(currentExecution))
-    pathTest = os.path.join(pathClassDir, DIRECTORY_TESTS, str(currentExecution))
+    pathReport = os.path.join(pathClassDir, DIRECTORY_EXECUTION_REPORTS, str(currentExecution))
+    pathTest = os.path.join(pathClassDir, DIRECTORY_EXECUTION_TESTS, str(currentExecution))
 
     parameter = ['java',
                  '-Xmx4G',
                  '-jar',
-                 PATH_EVOSUITE,
+                 FILE_EVOSUITE,
                  '-class',
                  clazz,
                  '-projectCP',
@@ -198,7 +206,7 @@ def runEvoSuite(project, clazz, currentClass, pathResults):
             f"Class ({str(currentClass + 1)} / {str(SAMPLE_SIZE)}) Execution ({str(execution + 1)} / {str(EXECUTIONS_PER_CLASS)}): Running default configuration in project ({project}) for class ({clazz}) with random seed.")
 
         # output directories
-        pathClassDir = os.path.join(PATH_WORKING_DIRECTORY, DIRECTORY_CORPUS, project, clazz)
+        pathClassDir = os.path.join(DIRECTORY_CORPUS, project, clazz)
 
         # create directories
         if not os.path.exists(pathClassDir):
@@ -208,7 +216,7 @@ def runEvoSuite(project, clazz, currentClass, pathResults):
         parameter = createParameter(project, clazz, pathClassDir, execution)
 
         # setup log
-        pathLog = os.path.join(pathClassDir, DIRECTORY_LOGS)
+        pathLog = os.path.join(pathClassDir, DIRECTORY_EXECUTION_LOGS)
 
         if not os.path.exists(pathLog):
             os.mkdir(pathLog)
@@ -268,7 +276,7 @@ def onTimeout(args):
 def selectSample(initSample):
     """
     Select a sample given the constants.
-    :param files: The initial sample of all classes.
+    :param initSample: The initial sample of all classes.
     :return: The selected sample.
     """
     if RANDOM:
@@ -284,11 +292,8 @@ def createBackups(initSample, sample):
     :param sample: The selected sample.
     :return:
     """
-    pathSample = os.path.join(PATH_WORKING_DIRECTORY, DIRECTORY_CORPUS, FILE_CLASSES_SAMPLE)
-    pathNotInSample = os.path.join(PATH_WORKING_DIRECTORY, DIRECTORY_CORPUS, FILE_CLASSES_NOT_IN_SAMPLE)
-
-    fileSample = open(pathSample, 'w')
-    fileNotInSample = open(pathNotInSample, 'w')
+    fileSample = open(FILE_SELECTED_SAMPLE, 'w')
+    fileNotInSample = open(FILE_NOT_SELECTED_SAMPLE, 'w')
     for i in range(0, len(initSample)):
         line = initSample[i]
         if i in sample:
@@ -305,14 +310,12 @@ def getInitSample():
     Read the initial sample from the file.
     :return: The initial sample.
     """
-    pathInit = os.path.join(PATH_WORKING_DIRECTORY, DIRECTORY_CORPUS, FILE_CLASSES_INIT)
-
     initSample = []
-    fileInit = open(pathInit, "r")
+    fileInit = open(FILE_SAMPLE, "r")
 
     for line in fileInit:
         parts = re.split('\t', line)
-        if (len(parts) >= 2):
+        if len(parts) >= 2:
             initSample.append((parts[0], parts[1].replace('\n', '')))
 
     fileInit.close()
@@ -323,11 +326,11 @@ def main():
     """
     Runs large scale experiment.
     """
-    logging.basicConfig(stream=LOG_STREAM, filemode="w", format=LOG_FORMAT, level=LOG_LEVEL)
+    logging.basicConfig(filename=FILE_LOG, filemode="w", format=LOG_FORMAT, level=LOG_LEVEL)
 
+    logging.info("Initial sample file:\t" + FILE_SAMPLE)
     initSample = getInitSample()
 
-    logging.info("Initial sample file:\t" + FILE_CLASSES_INIT)
     logging.info("Total number of classes:\t" + str(len(initSample)))
     logging.info("Random sample selection:\t" + str(RANDOM))
     logging.info("Sample size:\t\t" + str(SAMPLE_SIZE))
@@ -356,7 +359,7 @@ def main():
 
     # create result directory
     now = datetime.now()
-    pathResults = os.path.join(PATH_WORKING_DIRECTORY, DIRECTORY_RESULTS, now.strftime("%Y-%m-%d %H-%M-%S"))
+    pathResults = os.path.join(DIRECTORY_RESULTS, now.strftime("%Y-%m-%d %H-%M-%S"))
     if not os.path.exists(pathResults):
         os.mkdir(pathResults)
 

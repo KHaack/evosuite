@@ -1,3 +1,7 @@
+"""
+    Purpose: This experiment library contains shared functions for the experiments.
+    Author: Kevin Haack
+"""
 import logging
 import os
 import pandas as pd
