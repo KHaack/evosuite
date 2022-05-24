@@ -36,14 +36,18 @@ def addAdditionalColumns(dataframe):
 
     # classes
     classes = {'worst': 0, 'bad': 1, 'mid': 2, 'good': 3, 'very good': 4}
-    dataframe.loc[dataframe['Coverage'].le(0.20), 'class'] = classes['worst']
-    dataframe.loc[dataframe['Coverage'].gt(0.20) & dataframe['Coverage'].le(0.40), 'class'] = classes['bad']
-    dataframe.loc[dataframe['Coverage'].gt(0.40) & dataframe['Coverage'].lt(0.60), 'class'] = classes['mid']
-    dataframe.loc[dataframe['Coverage'].ge(0.60) & dataframe['Coverage'].lt(0.80), 'class'] = classes['good']
-    dataframe.loc[dataframe['Coverage'].ge(0.80), 'class'] = classes['very good']
+    dataframe.loc[dataframe['Coverage'].le(0.20), 'CoverageClass'] = classes['worst']
+    dataframe.loc[dataframe['Coverage'].gt(0.20) & dataframe['Coverage'].le(0.40), 'CoverageClass'] = classes['bad']
+    dataframe.loc[dataframe['Coverage'].gt(0.40) & dataframe['Coverage'].lt(0.60), 'CoverageClass'] = classes['mid']
+    dataframe.loc[dataframe['Coverage'].ge(0.60) & dataframe['Coverage'].lt(0.80), 'CoverageClass'] = classes['good']
+    dataframe.loc[dataframe['Coverage'].ge(0.80), 'CoverageClass'] = classes['very good']
 
-    dataframe.loc[dataframe['class'].lt(4), 'groundTruth'] = True
-    dataframe.loc[dataframe['class'].eq(4), 'groundTruth'] = False
+    # classification groundTruth
+    dataframe.loc[dataframe['CoverageClass'].lt(4), 'GroundTruth'] = True
+    dataframe.loc[dataframe['CoverageClass'].eq(4), 'GroundTruth'] = False
+
+    # branchless
+    dataframe['Branchless'] = dataframe['Total_Branches'].eq(0)
 
     return dataframe
 

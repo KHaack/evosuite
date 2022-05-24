@@ -3,6 +3,7 @@
     Purpose: Compares the experiment results from two run of the the experiment_runner
     Author: Kevin Haack
 """
+import argparse
 import glob
 import logging
 import os
@@ -10,23 +11,17 @@ import sys
 
 import matplotlib.pyplot as plt
 import pandas as pd
-import scipy.stats as stats
 
 import experiment_lib as ex
 
 pd.options.mode.chained_assignment = None
 
-# files and folders
-DIRECTORY_CSV_A = "results\\2022-05-20 BR0.2\\default parameter"
-DIRECTORY_CSV_B = "results\\2022-05-20 BR0.2\\0.85 parameter"
-DIRECTORY_PLOT = "plots"
-PATH_WORKING_DIRECTORY = "C:\\Users\\kha\\Desktop\\Benchmark"
 # logging
 LOG_FORMAT = "%(levelname)s %(asctime)s - %(message)s"
 LOG_LEVEL = logging.INFO
 LOG_STREAM = sys.stdout
 # filter
-FILTER_MIN_EXECUTIONS = 3
+FILTER_MIN_EXECUTIONS = 9
 
 
 def getStatisticFiles(path):
@@ -34,7 +29,7 @@ def getStatisticFiles(path):
     Determines all statistic files.
     Returns: A list of all files
     """
-    logging.debug('use pattern: ' + path);
+    logging.debug('use pattern: ' + path)
     files = list(glob.iglob(path, recursive=True))
 
     li = []
@@ -64,8 +59,7 @@ def compare(dataframe):
     percentReached = 2
 
     subset = ex.getMeasurings(dataframe, percentReached)
-    subset = subset[subset['PercentageReached'] > 0]
-    subset = subset[subset['_GradientBra'].eq(0)]
+    # subset = subset[subset['_GradientBra'].eq(0)]
 
     logging.info("merge...")
     groups = subset.groupby(['set', 'TARGET_CLASS']).median()
@@ -92,29 +86,30 @@ def compare(dataframe):
     plt.show()
 
 
-def plot(name, dataframe, x, y, save=False):
+def dir_path(path):
     """
-    Plot the passed variables x and y.
-
-    :param name: The name of that dataframe.
-    :param dataframe: The dataframe.
-    :param x: Variable x.
-    :param y: Variable y.
-    :param save: Indicates whether the plot should be save as file.
-    :return: None
+    Retruns true, if the passed string is a directory path.
+    :param path: the directory path to check.
+    :return: Retruns true, if the passed string is a directory path.
     """
-    plotDir = os.path.join(PATH_WORKING_DIRECTORY, DIRECTORY_PLOT)
+    if os.path.isdir(path):
+        return path
+    else:
+        raise argparse.ArgumentTypeError(f"readable_dir:{path} is not a valid path")
 
-    if not os.path.exists(plotDir):
-        os.mkdir(plotDir)
 
-    dataframe.plot.scatter(x=x, y=y, title=name)
+def setupArgparse():
+    """
+    Setup the argparse.
+    :return: The parser
+    """
+    parser = argparse.ArgumentParser(
+        description="Compares the experiment results from two runs (a & b) of the the experiment_runner",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument("-a", help="The directory path of the run a", type=dir_path)
+    parser.add_argument("-b", help="The directory path of the run b", type=dir_path)
 
-    if save:
-        filename = name + "-" + x + "-" + y
-        plotFile = os.path.join(plotDir, filename + ".png")
-        plt.savefig(plotFile)
-        plt.close(plotFile)
+    return parser
 
 
 def main():
@@ -123,9 +118,12 @@ def main():
     """
     logging.basicConfig(stream=LOG_STREAM, filemode="w", format=LOG_FORMAT, level=LOG_LEVEL)
 
+    parser = setupArgparse()
+    args = parser.parse_args()
+
     logging.info("search files...")
-    dataframeA = getStatisticFiles(os.path.join(PATH_WORKING_DIRECTORY, DIRECTORY_CSV_A, '*.csv'))
-    dataframeB = getStatisticFiles(os.path.join(PATH_WORKING_DIRECTORY, DIRECTORY_CSV_B, '*.csv'))
+    dataframeA = getStatisticFiles(os.path.join(args.a, '**', '*.csv'))
+    dataframeB = getStatisticFiles(os.path.join(args.b, '**', '*.csv'))
 
     dataframeA['set'] = 'A'
     dataframeB['set'] = 'B'

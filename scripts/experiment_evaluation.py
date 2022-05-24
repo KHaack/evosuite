@@ -27,6 +27,7 @@ LOG_STREAM = sys.stdout
 # filter
 FILTER_MIN_EXECUTIONS = 9
 
+
 def getStatisticFiles():
     """
     Determines all statistic files.
@@ -129,8 +130,13 @@ def evaluation(dataframe):
     calculateF1(subset)
     logging.info("----------------------------")
 
-    logging.info("@20%: _BranchRatio <= 0.2 and Total_Branches > 0")
-    subset['predicted'] = subset['_BranchRatio'].le(0.2) & subset['Total_Branches'].gt(0)
+    logging.info("@20%: _BranchRatio <= 0.2 and not Branchless")
+    subset['predicted'] = subset['_BranchRatio'].le(0.2) & ~subset['Branchless']
+    calculateF1(subset)
+    logging.info("----------------------------")
+
+    logging.info("@20%: Branchless")
+    subset['predicted'] = subset['Branchless']
     calculateF1(subset)
     logging.info("----------------------------")
 
@@ -144,11 +150,22 @@ def evaluation(dataframe):
     calculateF1(subset)
     logging.info("----------------------------")
 
+    logging.info("@20%: _BranchRatio <= 0.2 and not Branchless and _Fitness >= 0.5 and _NeutralityGen >= 0.5")
+    subset['predicted'] = subset['_BranchRatio'].le(0.2) & ~subset['Branchless'] & subset['_Fitness'].ge(0.5) & subset[
+        '_NeutralityGen'].ge(0.5)
+    calculateF1(subset)
+    logging.info("----------------------------")
+
     # ###############################################################
+    subset = subset[subset['_BranchRatio'].le(0.2) & ~subset['Branchless']]
+    # subset = subset[subset['_BranchRatio'].gt(0)]
 
     ax = plt.axes(projection='3d')
-    ax.scatter3D(subset['_NotCovGraRatio'], subset['_Fitness'], subset['Coverage'], c=subset['class'])
-    ax.set_xlabel('_NotCovGraRatio at 20%')
+    # GroundTruth, Branchless, CoverageClass
+    # _NotGradRatio, _GradientRatio, _BranchRatio, _NotCovGraRatio
+    # _InfoContent, _NeutralityVol, _NeutralityGen
+    ax.scatter3D(subset['_InfoContent'], subset['_Fitness'], subset['Coverage'], c=subset['GroundTruth'])
+    ax.set_xlabel('_InfoContent at 20%')
     ax.set_ylabel('_Fitness at 20%')
     ax.set_zlabel('End Coverage')
     ax.set_xlim3d(0, 1)
@@ -181,19 +198,21 @@ def foo_class_variance(dataframe):
 def calculateF1(dataframe):
     # A test result that correctly indicates the presence of a condition or characteristic
     dataframe['condition'] = ''
-    dataframe.loc[(dataframe['predicted'].eq(True) & dataframe['groundTruth'].eq(True)), 'condition'] = 'TP'
+    dataframe.loc[(dataframe['predicted'].eq(True) & dataframe['GroundTruth'].eq(True)), 'condition'] = 'TP'
     # A test result which wrongly indicates that a particular condition or attribute is present
-    dataframe.loc[(dataframe['predicted'].eq(True) & dataframe['groundTruth'].eq(False)), 'condition'] = 'FP'
+    dataframe.loc[(dataframe['predicted'].eq(True) & dataframe['GroundTruth'].eq(False)), 'condition'] = 'FP'
     # A test result which wrongly indicates that a particular condition or attribute is absent
-    dataframe.loc[(dataframe['predicted'].eq(False) & dataframe['groundTruth'].eq(True)), 'condition'] = 'FN'
+    dataframe.loc[(dataframe['predicted'].eq(False) & dataframe['GroundTruth'].eq(True)), 'condition'] = 'FN'
 
     precision = 0.0
     recall = 0.0
     if len(dataframe[dataframe['condition'].eq('TP')].index) > 0:
         precision = len(dataframe[dataframe['condition'].eq('TP')].index) / (
-                len(dataframe[dataframe['condition'].eq('TP')].index) + len(dataframe[dataframe['condition'].eq('FP')].index))
+                len(dataframe[dataframe['condition'].eq('TP')].index) + len(
+            dataframe[dataframe['condition'].eq('FP')].index))
         recall = len(dataframe[dataframe['condition'].eq('TP')].index) / (
-                len(dataframe[dataframe['condition'].eq('TP')].index) + len(dataframe[dataframe['condition'].eq('FN')].index))
+                len(dataframe[dataframe['condition'].eq('TP')].index) + len(
+            dataframe[dataframe['condition'].eq('FN')].index))
 
     f1 = 2 * (precision * recall) / (precision + recall)
 
