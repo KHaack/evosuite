@@ -24,10 +24,10 @@ FILE_EVOSUITE = "/home/user/Benchmark/evosuite-master-1.2.1-SNAPSHOT.jar"
 FILE_SAMPLE = "/home/user/Benchmark/samples/10 - new default - 356.txt"
 FILE_SELECTED_SAMPLE = "/home/user/Benchmark/sample.txt"
 FILE_NOT_SELECTED_SAMPLE = "/home/user/Benchmark/notInSample.txt"
+FILE_LOG = "/home/user/Benchmark/output.log"
 # logging
 LOG_FORMAT = "%(levelname)s %(asctime)s - %(message)s"
 LOG_LEVEL = logging.INFO
-FILE_LOG = "/home/user/Benchmark/output.log"
 # number of executions per class
 EXECUTIONS_PER_CLASS = 3
 # skip executions after x timeouts
@@ -35,9 +35,9 @@ SKIP_AFTER_TIMEOUTS = 2
 # select randomly
 RANDOM = False
 # number of classes that should be selected
-SAMPLE_SIZE = 15
+SAMPLE_SIZE = 356
 # search budget in seconds
-SEARCH_BUDGET = 10
+SEARCH_BUDGET = 120
 # timeout in seconds
 TIMEOUT = 180
 # Algorithms (supported in this script: 'RANDOM' or 'DYNAMOSA')

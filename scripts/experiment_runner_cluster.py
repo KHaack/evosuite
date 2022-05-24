@@ -2,21 +2,29 @@
     Purpose: Run large scale experiments on a cluster.
     Author: Kevin Haack
 """
+import argparse
 import paramiko
 import logging
 import sys
+import os
 from scp import SCPClient
 from ping3 import ping
 
 # paths and files
-SCRIPT_LOCATION = "C:\\Users\\kha\\repos\\evosuite\\scripts\\experiment_runner.py"
-SCRIPT_LOCATION_REMOTE = "/home/user/Benchmark/experiment_runner.py"
-REMOTE_COMMAND = f'python3 {SCRIPT_LOCATION_REMOTE}'
+FILE_TEMP = "output.log"
+LOCATION_LOG_REMOTE = "/home/user/Benchmark/output.log"
+LOCATION_SCRIPT = "C:\\Users\\kha\\repos\\evosuite\\scripts\\experiment_runner.py"
+LOCATION_SCRIPT_REMOTE = "/home/user/Benchmark/experiment_runner.py"
+LOCATION_JAR = "C:\\Users\\kha\\repos\\evosuite\\master\\target\\evosuite-master-1.2.1-SNAPSHOT.jar"
+LOCATION_JAR_REMOTE = "/home/user/Benchmark/evosuite-master-1.2.1-SNAPSHOT.jar"
+# the command that should be executed on the remotes
+REMOTE_COMMAND = f'python3 {LOCATION_SCRIPT_REMOTE}'
 # logging
 LOG_FORMAT = "%(levelname)s %(asctime)s - %(message)s"
 LOG_LEVEL = logging.INFO
 LOG_STREAM = sys.stdout
 # remote computer
+COPY_JAR = False
 ACCEPT_EVERY_SSH_KEY = True
 CLUSTER_IPS = [
     '192.168.178.68',   # cluster0671
@@ -27,11 +35,11 @@ USERNAME = 'user'
 PASSWORD = 'user'
 
 
-def runRemote(ip):
+def getSSH(ip):
     """
-    Run the experiment on the passed remote.
-    :param ip: The remote ip.
-    :return: None
+    Return the ssh object for the passed ip.
+    :param ip: The ip for the ssh connection.
+    :return: The ssh object
     """
     logging.info(f'connect to {ip}...')
     ssh = paramiko.SSHClient()
@@ -43,9 +51,40 @@ def runRemote(ip):
     ssh.connect(hostname=ip,
                 username=USERNAME,
                 password=PASSWORD)
+    return ssh
 
+
+def monitorRemote(ip):
+    """
+    Monitor the remote with the passed ip
+    :param ip: The ip of the remote.
+    :return: None
+    """
+    with SCPClient(getSSH(ip).get_transport()) as scp:
+        logging.info(f'get log of {ip}...')
+        scp.get(LOCATION_LOG_REMOTE)
+
+        with open(FILE_TEMP, 'r') as f:
+            last_line = f.readlines()[-1].replace('\n', '')
+            logging.info(last_line)
+        os.remove(FILE_TEMP)
+
+
+
+def startRemote(ip):
+    """
+    Run the experiment on the passed remote.
+    :param ip: The remote ip.
+    :return: None
+    """
+    ssh = getSSH(ip)
     with SCPClient(ssh.get_transport()) as scp:
-        scp.put(SCRIPT_LOCATION, SCRIPT_LOCATION_REMOTE)
+        logging.info(f'copy files on {ip}...')
+        scp.put(LOCATION_SCRIPT, LOCATION_SCRIPT_REMOTE)
+
+        if COPY_JAR:
+            scp.put(LOCATION_JAR, LOCATION_JAR_REMOTE)
+
         logging.info(f'start script on {ip}...')
         ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(REMOTE_COMMAND)
 
@@ -68,19 +107,51 @@ def getReachable():
 
     return reachable
 
-def runRemotes():
+
+def startRemotes():
     """
-    Run the experiments of the remotes.
+    Run the experiments on the remotes.
     :return: None
     """
+    logging.info('start...')
     for ip in getReachable():
-        runRemote(ip)
+        startRemote(ip)
+
+
+def monitorRemotes():
+    """
+    Monitor the experiments on the remotes.
+    :return: None
+    """
+    logging.info('monitor...')
+    for ip in getReachable():
+        monitorRemote(ip)
+
+
+def setupArgparse():
+    """
+    Setup the argparse.
+    :return: The parser
+    """
+    parser = argparse.ArgumentParser(description="Run large scale experiments on a cluster.",
+                                     formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument("-start", help="Start the script on the remotes", action='store_true')
+    group.add_argument("-monitor", help="Monitor the script on the remotes", action='store_true')
+
+    return parser
 
 
 def main():
     logging.basicConfig(stream=LOG_STREAM, filemode="w", format=LOG_FORMAT, level=LOG_LEVEL)
-    logging.info('start...')
-    runRemotes()
+
+    parser = setupArgparse()
+    args = parser.parse_args()
+
+    if args.monitor:
+        monitorRemotes()
+    elif args.start:
+        startRemotes()
 
 
 if __name__ == "__main__":
