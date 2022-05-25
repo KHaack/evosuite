@@ -3,6 +3,7 @@
     Purpose: Collect the experiment results from the experiment_runner
     Author: Kevin Haack
 """
+import argparse
 import glob
 import logging
 import os
@@ -17,7 +18,6 @@ import experiment_lib as ex
 pd.options.mode.chained_assignment = None
 
 # files and folders
-DIRECTORY_CSV = "results\\09 new default"
 DIRECTORY_PLOT = "plots"
 PATH_WORKING_DIRECTORY = "C:\\Users\\kha\\Desktop\\Benchmark"
 # logging
@@ -33,7 +33,7 @@ def getStatisticFiles():
     Determines all statistic files.
     Returns: A list of all files
     """
-    pattern = os.path.join(PATH_WORKING_DIRECTORY, DIRECTORY_CSV, '**', '*.csv')
+    pattern = os.path.join(PATH_WORKING_DIRECTORY, args.results, '**', '*.csv')
     logging.debug('use pattern: ' + pattern)
     return list(glob.iglob(pattern, recursive=True))
 
@@ -44,7 +44,7 @@ def evaluation(dataframe):
     :param dataframe: The dataframe for the evaluation
     """
 
-    logging.info("CSV Directory:\t\t" + DIRECTORY_CSV)
+    logging.info("CSV Directory:\t\t" + args.results)
     totalLength = len(dataframe.index)
     logging.info("Total tests:\t\t" + str(totalLength))
 
@@ -150,24 +150,30 @@ def evaluation(dataframe):
     calculateF1(subset)
     logging.info("----------------------------")
 
-    logging.info("@20%: _BranchRatio <= 0.2 and not Branchless and _Fitness >= 0.5 and _NeutralityGen >= 0.5")
-    subset['predicted'] = subset['_BranchRatio'].le(0.2) & ~subset['Branchless'] & subset['_Fitness'].ge(0.5) & subset[
-        '_NeutralityGen'].ge(0.5)
+    logging.info("@20% (without branchless): _Fitness == 0 or (_BranchRatio <= 0.2 and (_Fitness >= 0.2 and _NeutralityGen >= 0.2))")
+    percentReached = 2
+    subset = ex.getMeasurings(dataframe, percentReached)
+    subset = subset[~subset['Branchless']]
+    subset = subset[subset['_BranchRatio'].gt(0)]
+
+    subset['predicted'] = subset['_GradientRatio'].lt(1)
     calculateF1(subset)
     logging.info("----------------------------")
 
     # ###############################################################
-    subset = subset[subset['_BranchRatio'].le(0.2) & ~subset['Branchless']]
-    # subset = subset[subset['_BranchRatio'].gt(0)]
+    percentReached = 2
+    subset = ex.getMeasurings(dataframe, percentReached)
+    #subset = subset[~subset['Branchless']]
+    #subset = subset[subset['_BranchRatio'].gt(0)]
 
     ax = plt.axes(projection='3d')
-    # GroundTruth, Branchless, CoverageClass
-    # _NotGradRatio, _GradientRatio, _BranchRatio, _NotCovGraRatio
-    # _InfoContent, _NeutralityVol, _NeutralityGen
-    ax.scatter3D(subset['_InfoContent'], subset['_Fitness'], subset['Coverage'], c=subset['GroundTruth'])
-    ax.set_xlabel('_InfoContent at 20%')
+    # GroundTruth, Branchless, CoverageClass, Coverage
+    # _NotGradRatio, _GradientRatio, _BranchRatio, _NotCovGraRatio, _Fitness
+    # _InfoContent, _NeutralityGen
+    ax.scatter3D(subset['_BranchRatio'], subset['_Fitness'], subset['Coverage'], c=subset['GroundTruth'])
+    ax.set_xlabel('_BranchRatio at 20%')
     ax.set_ylabel('_Fitness at 20%')
-    ax.set_zlabel('End Coverage')
+    ax.set_zlabel('Coverage at 20%')
     ax.set_xlim3d(0, 1)
     ax.set_ylim3d(0, 1)
     ax.set_zlim3d(0, 1)
@@ -284,6 +290,18 @@ def plot(name, dataframe, x, y):
     plt.close(plotFile)
 
 
+def setupArgparse():
+    """
+    Setup the argparse.
+    :return: The parser
+    """
+    parser = argparse.ArgumentParser(description="Collect the experiment results from the experiment_runner",
+                                     formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument("-results", help="The directory of the results", type=ex.dir_path, required=True)
+
+    return parser
+
+
 def main():
     """
     Runs large scale experiment.
@@ -305,4 +323,6 @@ def main():
 
 
 if __name__ == "__main__":
+    parser = setupArgparse()
+    args = parser.parse_args()
     main()
