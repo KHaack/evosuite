@@ -86,18 +86,6 @@ def compare(dataframe):
     plt.show()
 
 
-def dir_path(path):
-    """
-    Retruns true, if the passed string is a directory path.
-    :param path: the directory path to check.
-    :return: Retruns true, if the passed string is a directory path.
-    """
-    if os.path.isdir(path):
-        return path
-    else:
-        raise argparse.ArgumentTypeError(f"readable_dir:{path} is not a valid path")
-
-
 def setupArgparse():
     """
     Setup the argparse.
@@ -106,8 +94,8 @@ def setupArgparse():
     parser = argparse.ArgumentParser(
         description="Compares the experiment results from two runs (a & b) of the the experiment_runner",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument("-a", help="The directory path of the run a", type=dir_path)
-    parser.add_argument("-b", help="The directory path of the run b", type=dir_path)
+    parser.add_argument("-a", help="The directory path of the run a", type=ex.dir_path, required=True)
+    parser.add_argument("-b", help="The directory path of the run b", type=ex.dir_path, required=True)
 
     return parser
 
@@ -117,9 +105,6 @@ def main():
     Runs large scale experiment.
     """
     logging.basicConfig(stream=LOG_STREAM, filemode="w", format=LOG_FORMAT, level=LOG_LEVEL)
-
-    parser = setupArgparse()
-    args = parser.parse_args()
 
     logging.info("search files...")
     dataframeA = getStatisticFiles(os.path.join(args.a, '**', '*.csv'))
@@ -133,4 +118,6 @@ def main():
 
 
 if __name__ == "__main__":
+    parser = setupArgparse()
+    args = parser.parse_args()
     main()

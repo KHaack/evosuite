@@ -164,3 +164,6 @@ master/dependency-reduced-pom.xml
 shaded/dependency-reduced-pom.xml
 standalone_runtime/dependency-reduced-pom.xml
 nbactions.xml
+/scripts/results/
+/scripts/notInSample.txt
+/scripts/sample.txt

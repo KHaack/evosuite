@@ -5,6 +5,7 @@
 import logging
 import os
 import pandas as pd
+import argparse
 
 # files and directories
 FILE_CLASSES = "samples\\00 - original - 23894.txt"
@@ -94,6 +95,7 @@ def getNth(x, n):
 
     return float(parts[n])
 
+
 def getMeasurings(dataframe, percent):
     """
     Extract the measuring.
@@ -168,3 +170,27 @@ def filter(dataframe, minExecutions):
         logging.info(f"Tests less then {str(minExecutions)}execs:\t{str(totalLength - len(dataframe.index))}")
 
     return dataframe
+
+
+def dir_path(path):
+    """
+    Retruns true, if the passed string is a directory path.
+    :param path: the directory path to check.
+    :return: Retruns true, if the passed string is a directory path.
+    """
+    if os.path.isdir(path):
+        return path
+    else:
+        raise argparse.ArgumentTypeError(f"{path} is not a valid path")
+
+
+def file_path(path):
+    """
+    Retruns true, if the passed string is a file path.
+    :param path: the file path to check.
+    :return: Retruns true, if the passed string is a file path.
+    """
+    if os.path.isfile(path):
+        return path
+    else:
+        raise argparse.ArgumentTypeError(f"{path} is not a valid path")

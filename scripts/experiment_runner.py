@@ -3,6 +3,7 @@
     Purpose: Run large scale experiments with EvoSuite
     Author: Kevin Haack (based on the batch script from Mitchell Olsthoorn)
 """
+import argparse
 import glob
 import logging
 import os
@@ -11,20 +12,19 @@ import re
 import signal
 import socket
 import subprocess
-import psutil
+import experiment_lib as ex
 from datetime import datetime, timedelta
 
+import psutil
+
 # files and folders
-DIRECTORY_CORPUS = "/home/user/Benchmark/SF110-20130704"
 DIRECTORY_EXECUTION_REPORTS = "reports"
 DIRECTORY_EXECUTION_TESTS = "tests"
 DIRECTORY_EXECUTION_LOGS = "logs"
-DIRECTORY_RESULTS = "/home/user/Benchmark/results"
-FILE_EVOSUITE = "/home/user/Benchmark/evosuite-master-1.2.1-SNAPSHOT.jar"
-FILE_SAMPLE = "/home/user/Benchmark/samples/10 - new default - 356.txt"
-FILE_SELECTED_SAMPLE = "/home/user/Benchmark/sample.txt"
-FILE_NOT_SELECTED_SAMPLE = "/home/user/Benchmark/notInSample.txt"
-FILE_LOG = "/home/user/Benchmark/output.log"
+DIRECTORY_RESULTS = "results"
+FILE_SELECTED_SAMPLE = "sample.txt"
+FILE_NOT_SELECTED_SAMPLE = "notInSample.txt"
+FILE_LOG = "output.log"
 # logging
 LOG_FORMAT = "%(levelname)s %(asctime)s - %(message)s"
 LOG_LEVEL = logging.INFO
@@ -118,11 +118,17 @@ def getProjectClassPath(project):
     :param project: The project.
     Returns: Colon seperated class path
     """
-    projectPath = os.path.join(DIRECTORY_CORPUS, project)
+    projectPath = os.path.join(args.corpus, project)
     logging.debug("create projectClassPath for folder '" + projectPath + "'")
 
-    jarList = glob.iglob(os.path.join(projectPath, '**/*.jar'), recursive=True)
+    # add dependencies
+    jarList = glob.iglob(os.path.join(projectPath, 'lib', '*.jar'), recursive=True)
     classPath = ""
+    for jar in jarList:
+        classPath = classPath + jar + os.pathsep
+
+    # add tested jar
+    jarList = glob.iglob(os.path.join(projectPath, '*.jar'))
     for jar in jarList:
         classPath = classPath + jar + os.pathsep
 
@@ -163,7 +169,7 @@ def createParameter(project, clazz, pathClassDir, currentExecution):
     parameter = ['java',
                  '-Xmx4G',
                  '-jar',
-                 FILE_EVOSUITE,
+                 args.evosuite,
                  '-class',
                  clazz,
                  '-projectCP',
@@ -206,7 +212,7 @@ def runEvoSuite(project, clazz, currentClass, pathResults):
             f"Class ({str(currentClass + 1)} / {str(SAMPLE_SIZE)}) Execution ({str(execution + 1)} / {str(EXECUTIONS_PER_CLASS)}): Running default configuration in project ({project}) for class ({clazz}) with random seed.")
 
         # output directories
-        pathClassDir = os.path.join(DIRECTORY_CORPUS, project, clazz)
+        pathClassDir = os.path.join(args.corpus, project, clazz)
 
         # create directories
         if not os.path.exists(pathClassDir):
@@ -292,8 +298,12 @@ def createBackups(initSample, sample):
     :param sample: The selected sample.
     :return:
     """
-    fileSample = open(FILE_SELECTED_SAMPLE, 'w')
-    fileNotInSample = open(FILE_NOT_SELECTED_SAMPLE, 'w')
+    scriptPath = os.path.dirname(os.path.realpath(__file__))
+    selectedSamplePath = os.path.join(scriptPath, FILE_SELECTED_SAMPLE)
+    selectedNotSamplePath = os.path.join(scriptPath, FILE_NOT_SELECTED_SAMPLE)
+
+    fileSample = open(selectedSamplePath, 'w')
+    fileNotInSample = open(selectedNotSamplePath, 'w')
     for i in range(0, len(initSample)):
         line = initSample[i]
         if i in sample:
@@ -305,13 +315,14 @@ def createBackups(initSample, sample):
     fileNotInSample.close()
 
 
-def getInitSample():
+def getInitSample(sampleFilePath):
     """
     Read the initial sample from the file.
+    :param sampleFilePath: The sample file path.
     :return: The initial sample.
     """
     initSample = []
-    fileInit = open(FILE_SAMPLE, "r")
+    fileInit = open(sampleFilePath, "r")
 
     for line in fileInit:
         parts = re.split('\t', line)
@@ -322,16 +333,33 @@ def getInitSample():
     return initSample
 
 
+def setupArgparse():
+    """
+    Setup the argparse.
+    :return: The parser
+    """
+    parser = argparse.ArgumentParser(
+        description="Run large scale experiments with EvoSuite",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument("-sample", help="The path of the sample file", type=ex.file_path, required=True)
+    parser.add_argument("-corpus", help="The path of the corpus directory", type=ex.dir_path, required=True)
+    parser.add_argument("-evosuite", help="The path of the evosuite jar", type=ex.file_path, required=True)
+
+    return parser
+
+
 def main():
     """
     Runs large scale experiment.
     """
-    logging.basicConfig(filename=FILE_LOG, filemode="w", format=LOG_FORMAT, level=LOG_LEVEL)
+    scriptPath = os.path.dirname(os.path.realpath(__file__))
+    logFilePath = os.path.join(scriptPath, FILE_LOG)
+    logging.basicConfig(filename=logFilePath, filemode="w", format=LOG_FORMAT, level=LOG_LEVEL)
 
-    logging.info("Initial sample file:\t" + FILE_SAMPLE)
-    initSample = getInitSample()
+    logging.info("Initial sample file:\t" + args.sample)
+    sampleList = getInitSample(args.sample)
 
-    logging.info("Total number of classes:\t" + str(len(initSample)))
+    logging.info("Total number of classes:\t" + str(len(sampleList)))
     logging.info("Random sample selection:\t" + str(RANDOM))
     logging.info("Sample size:\t\t" + str(SAMPLE_SIZE))
     logging.info("Executions/Class:\t" + str(EXECUTIONS_PER_CLASS))
@@ -347,28 +375,34 @@ def main():
     estimation = datetime.now() + timedelta(seconds=runtime)
     logging.info("Run time estimation:\t" + str(runtime / 60) + "min (end at " + str(estimation) + ")")
 
-    if SAMPLE_SIZE > len(initSample):
-        logging.error("sample size '" + str(SAMPLE_SIZE) + "' > init file length '" + str(len(initSample)) + "'")
+    if SAMPLE_SIZE > len(sampleList):
+        logging.error("sample size '" + str(SAMPLE_SIZE) + "' > init file length '" + str(len(sampleList)) + "'")
         return
 
     # select sample
-    sample = selectSample(initSample)
+    sample = selectSample(sampleList)
 
     # save backup
-    createBackups(initSample, sample)
+    createBackups(sampleList, sample)
 
     # create result directory
+    pathResults = os.path.join(scriptPath, DIRECTORY_RESULTS)
+    if not os.path.exists(pathResults):
+        os.mkdir(pathResults)
+
     now = datetime.now()
-    pathResults = os.path.join(DIRECTORY_RESULTS, now.strftime("%Y-%m-%d %H-%M-%S"))
+    pathResults = os.path.join(scriptPath, DIRECTORY_RESULTS, now.strftime("%Y-%m-%d %H-%M-%S"))
     if not os.path.exists(pathResults):
         os.mkdir(pathResults)
 
     # run tests
     for i in range(len(sample)):
-        project = initSample[sample[i]][0]
-        clazz = initSample[sample[i]][1]
+        project = sampleList[sample[i]][0]
+        clazz = sampleList[sample[i]][1]
         runEvoSuite(project, clazz, i, pathResults)
 
 
 if __name__ == "__main__":
+    parser = setupArgparse()
+    args = parser.parse_args()
     main()
