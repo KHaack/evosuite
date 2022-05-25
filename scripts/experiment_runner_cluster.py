@@ -14,14 +14,16 @@ from scp import SCPClient
 # paths and files
 FILE_TEMP = "output.log"
 LOCATION_LOG_REMOTE = "/home/user/Benchmark/output.log"
+LOCATION_LIB = "C:\\Users\\kha\\repos\\evosuite\\scripts\\experiment_lib.py"
+LOCATION_LIB_REMOTE = "/home/user/Benchmark/experiment_lib.py"
 LOCATION_SCRIPT = "C:\\Users\\kha\\repos\\evosuite\\scripts\\experiment_runner.py"
 LOCATION_SCRIPT_REMOTE = "/home/user/Benchmark/experiment_runner.py"
 LOCATION_JAR = "C:\\Users\\kha\\repos\\evosuite\\master\\target\\evosuite-master-1.2.1-SNAPSHOT.jar"
 LOCATION_JAR_REMOTE = "/home/user/Benchmark/evosuite-master-1.2.1-SNAPSHOT.jar"
-LOCATION_SAMPLE_REMOTE = "/home/user/Benchmark/samples/10 - new default - 356.txt"
+LOCATION_SAMPLE_REMOTE = "/home/user/Benchmark/samples/00 - original - 23894.txt"
 LOCATION_CORPUS_REMOTE = "/home/user/Benchmark/SF110-20130704"
 # the command that should be executed on the remotes
-REMOTE_COMMAND = f'python3 "{LOCATION_SCRIPT_REMOTE}" -sample "{LOCATION_SAMPLE_REMOTE}" -corpus "{LOCATION_CORPUS_REMOTE}" -evosuite {LOCATION_JAR_REMOTE}'
+REMOTE_COMMAND = f'python3 "{LOCATION_SCRIPT_REMOTE}" -sample "{LOCATION_SAMPLE_REMOTE}" -corpus "{LOCATION_CORPUS_REMOTE}" -evosuite "{LOCATION_JAR_REMOTE}"'
 # logging
 LOG_FORMAT = "%(levelname)s %(asctime)s - %(message)s"
 LOG_LEVEL = logging.INFO
@@ -29,6 +31,7 @@ LOG_STREAM = sys.stdout
 # remote computer
 COPY_JAR = False
 COPY_SCRIPT = True
+COPY_LIB = True
 ACCEPT_EVERY_SSH_KEY = True
 CLUSTER_IPS = [
     '192.168.178.68',  # cluster0671
@@ -82,9 +85,13 @@ def startRemote(ip):
     """
     ssh = getSSH(ip)
     with SCPClient(ssh.get_transport()) as scp:
-        if COPY_JAR:
+        if COPY_SCRIPT:
             logging.info(f'copy script on {ip}...')
             scp.put(LOCATION_SCRIPT, LOCATION_SCRIPT_REMOTE)
+
+        if COPY_LIB:
+            logging.info(f'copy lib on {ip}...')
+            scp.put(LOCATION_LIB, LOCATION_LIB_REMOTE)
 
         if COPY_JAR:
             logging.info(f'copy jar on {ip}...')
@@ -119,6 +126,8 @@ def startRemotes():
     :return: None
     """
     logging.info('start...')
+    logging.info(f"remote command:\t{REMOTE_COMMAND}")
+
     for ip in getReachable():
         startRemote(ip)
 
@@ -143,6 +152,7 @@ def setupArgparse():
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument("-start", help="Start the script on the remotes", action='store_true')
     group.add_argument("-monitor", help="Monitor the script on the remotes", action='store_true')
+    group.add_argument("-ping", help="Ping the remotes", action='store_true')
 
     return parser
 
@@ -154,6 +164,8 @@ def main():
         monitorRemotes()
     elif args.start:
         startRemotes()
+    elif args.ping:
+        getReachable()
 
 
 if __name__ == "__main__":

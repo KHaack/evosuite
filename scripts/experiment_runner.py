@@ -29,13 +29,13 @@ FILE_LOG = "output.log"
 LOG_FORMAT = "%(levelname)s %(asctime)s - %(message)s"
 LOG_LEVEL = logging.INFO
 # number of executions per class
-EXECUTIONS_PER_CLASS = 3
+EXECUTIONS_PER_CLASS = 10
 # skip executions after x timeouts
 SKIP_AFTER_TIMEOUTS = 2
 # select randomly
-RANDOM = False
+RANDOM = True
 # number of classes that should be selected
-SAMPLE_SIZE = 356
+SAMPLE_SIZE = 119
 # search budget in seconds
 SEARCH_BUDGET = 120
 # timeout in seconds

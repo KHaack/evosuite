@@ -205,7 +205,7 @@ def shutdown():
     logging.info("shutdown...")
     system = platform.system()
     if system == 'Linux':
-        os.system("systemctl poweroff")
+        os.system("sudo poweroff")
     elif system == 'Windows':
         os.system("shutdown /s /t 1")
     else:
@@ -220,7 +220,7 @@ def reboot():
     logging.info("reboot...")
     system = platform.system()
     if system == 'Linux':
-        os.system("systemctl reboot -i")
+        os.system("sudo reboot -i")
     elif system == 'Windows':
         os.system("shutdown /r /t 1")
     else:
