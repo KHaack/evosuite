@@ -6,6 +6,7 @@ import logging
 import os
 import pandas as pd
 import argparse
+import platform
 
 # files and directories
 FILE_CLASSES = "samples\\00 - original - 23894.txt"
@@ -194,3 +195,33 @@ def file_path(path):
         return path
     else:
         raise argparse.ArgumentTypeError(f"{path} is not a valid path")
+
+
+def shutdown():
+    """
+    Shutdown the system.
+    :return: None
+    """
+    logging.info("shutdown...")
+    system = platform.system()
+    if system == 'Linux':
+        os.system("systemctl poweroff")
+    elif system == 'Windows':
+        os.system("shutdown /s /t 1")
+    else:
+        raise Exception(f"Unsupported os '{system}'")
+
+
+def reboot():
+    """
+    Reboot the system.
+    :return: None
+    """
+    logging.info("reboot...")
+    system = platform.system()
+    if system == 'Linux':
+        os.system("systemctl reboot -i")
+    elif system == 'Windows':
+        os.system("shutdown /r /t 1")
+    else:
+        raise Exception(f"Unsupported os '{system}'")

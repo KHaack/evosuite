@@ -345,6 +345,10 @@ def setupArgparse():
     parser.add_argument("-corpus", help="The path of the corpus directory", type=ex.dir_path, required=True)
     parser.add_argument("-evosuite", help="The path of the evosuite jar", type=ex.file_path, required=True)
 
+    group = parser.add_mutually_exclusive_group(required=False)
+    group.add_argument("-shutdown", help="Shutdown after the executions", action='store_true')
+    group.add_argument("-reboot", help="Reboot after the executions", action='store_true')
+
     return parser
 
 
@@ -400,6 +404,12 @@ def main():
         project = sampleList[sample[i]][0]
         clazz = sampleList[sample[i]][1]
         runEvoSuite(project, clazz, i, pathResults)
+
+    logging.info("DONE.")
+    if args.shutdown:
+        ex.shutdown()
+    elif args.reboot:
+        ex.reboot()
 
 
 if __name__ == "__main__":

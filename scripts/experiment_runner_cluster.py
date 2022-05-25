@@ -3,12 +3,13 @@
     Author: Kevin Haack
 """
 import argparse
-import paramiko
 import logging
-import sys
 import os
-from scp import SCPClient
+import sys
+
+import paramiko
 from ping3 import ping
+from scp import SCPClient
 
 # paths and files
 FILE_TEMP = "output.log"
@@ -27,12 +28,13 @@ LOG_LEVEL = logging.INFO
 LOG_STREAM = sys.stdout
 # remote computer
 COPY_JAR = False
+COPY_SCRIPT = True
 ACCEPT_EVERY_SSH_KEY = True
 CLUSTER_IPS = [
-    '192.168.178.68',   # cluster0671
+    '192.168.178.68',  # cluster0671
     '192.168.178.69',  # cluster0521
-    '192.168.178.70',   # cluster0162
-    ]
+    '192.168.178.70',  # cluster0162
+]
 USERNAME = 'user'
 PASSWORD = 'user'
 
@@ -72,7 +74,6 @@ def monitorRemote(ip):
         os.remove(FILE_TEMP)
 
 
-
 def startRemote(ip):
     """
     Run the experiment on the passed remote.
@@ -81,10 +82,12 @@ def startRemote(ip):
     """
     ssh = getSSH(ip)
     with SCPClient(ssh.get_transport()) as scp:
-        logging.info(f'copy files on {ip}...')
-        scp.put(LOCATION_SCRIPT, LOCATION_SCRIPT_REMOTE)
+        if COPY_JAR:
+            logging.info(f'copy script on {ip}...')
+            scp.put(LOCATION_SCRIPT, LOCATION_SCRIPT_REMOTE)
 
         if COPY_JAR:
+            logging.info(f'copy jar on {ip}...')
             scp.put(LOCATION_JAR, LOCATION_JAR_REMOTE)
 
         logging.info(f'start script on {ip}...')
