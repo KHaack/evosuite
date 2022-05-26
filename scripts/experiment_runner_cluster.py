@@ -42,7 +42,7 @@ USERNAME = 'user'
 PASSWORD = 'user'
 
 
-def getSSH(ip):
+def get_ssh(ip):
     """
     Return the ssh object for the passed ip.
     :param ip: The ip for the ssh connection.
@@ -61,13 +61,13 @@ def getSSH(ip):
     return ssh
 
 
-def monitorRemote(ip):
+def monitor_remote(ip):
     """
     Monitor the remote with the passed ip
     :param ip: The ip of the remote.
     :return: None
     """
-    with SCPClient(getSSH(ip).get_transport()) as scp:
+    with SCPClient(get_ssh(ip).get_transport()) as scp:
         logging.info(f'get log of {ip}...')
         scp.get(LOCATION_LOG_REMOTE)
 
@@ -77,13 +77,13 @@ def monitorRemote(ip):
         os.remove(FILE_TEMP)
 
 
-def startRemote(ip):
+def start_remote(ip):
     """
     Run the experiment on the passed remote.
     :param ip: The remote ip.
     :return: None
     """
-    ssh = getSSH(ip)
+    ssh = get_ssh(ip)
     with SCPClient(ssh.get_transport()) as scp:
         if COPY_SCRIPT:
             logging.info(f'copy script on {ip}...')
@@ -101,10 +101,10 @@ def startRemote(ip):
         ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(REMOTE_COMMAND)
 
 
-def getReachable():
+def get_reachable_ips():
     """
-    Ping the remotes.
-    :return: The reachable machines.
+    Ping the remotes and return the reachable ips.
+    :return: The reachable ips.
     """
     logging.info('ping cluster...')
 
@@ -120,7 +120,7 @@ def getReachable():
     return reachable
 
 
-def startRemotes():
+def start_remotes():
     """
     Run the experiments on the remotes.
     :return: None
@@ -128,18 +128,18 @@ def startRemotes():
     logging.info('start...')
     logging.info(f"remote command:\t{REMOTE_COMMAND}")
 
-    for ip in getReachable():
-        startRemote(ip)
+    for ip in get_reachable_ips():
+        start_remote(ip)
 
 
-def monitorRemotes():
+def monitor_remotes():
     """
     Monitor the experiments on the remotes.
     :return: None
     """
     logging.info('monitor...')
-    for ip in getReachable():
-        monitorRemote(ip)
+    for ip in get_reachable_ips():
+        monitor_remote(ip)
 
 
 def setupArgparse():
@@ -147,28 +147,27 @@ def setupArgparse():
     Setup the argparse.
     :return: The parser
     """
-    parser = argparse.ArgumentParser(description="Run large scale experiments on a cluster.",
-                                     formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    group = parser.add_mutually_exclusive_group(required=True)
+    argument_parser = argparse.ArgumentParser(description="Run large scale experiments on a cluster.",
+                                              formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    group = argument_parser.add_mutually_exclusive_group(required=True)
     group.add_argument("-start", help="Start the script on the remotes", action='store_true')
     group.add_argument("-monitor", help="Monitor the script on the remotes", action='store_true')
     group.add_argument("-ping", help="Ping the remotes", action='store_true')
 
-    return parser
+    return argument_parser
 
 
 def main():
     logging.basicConfig(stream=LOG_STREAM, filemode="w", format=LOG_FORMAT, level=LOG_LEVEL)
 
     if args.monitor:
-        monitorRemotes()
+        monitor_remotes()
     elif args.start:
-        startRemotes()
+        start_remotes()
     elif args.ping:
-        getReachable()
+        get_reachable_ips()
 
 
 if __name__ == "__main__":
-    parser = setupArgparse()
-    args = parser.parse_args()
+    args = setupArgparse().parse_args()
     main()

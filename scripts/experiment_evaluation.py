@@ -15,6 +15,10 @@ import scipy.stats as stats
 
 import experiment_lib as ex
 
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import classification_report, accuracy_score
+
 pd.options.mode.chained_assignment = None
 
 # files and folders
@@ -49,9 +53,9 @@ def evaluation(dataframe):
     logging.info("Total tests:\t\t" + str(totalLength))
 
     dataframe = ex.clean(dataframe)
-    dataframe = ex.addAdditionalColumns(dataframe)
-    dataframe = ex.getMeasurings(dataframe, 0)
-    dataframe = ex.filter(dataframe, FILTER_MIN_EXECUTIONS)
+    dataframe = ex.add_additional_columns(dataframe)
+    dataframe = ex.get_measurements(dataframe, 0)
+    dataframe = ex.filter_dataframe(dataframe, FILTER_MIN_EXECUTIONS)
 
     # ##################################
     # print infos
@@ -67,6 +71,39 @@ def evaluation(dataframe):
     logging.info("Lines max:\t\t" + str(dataframe['Lines'].max()))
     logging.info("Lines min:\t\t" + str(dataframe['Lines'].min()))
 
+    # ex.createExport(subset[subset['_BranchRatio'].lt(0.2)])
+    # foo_correlation(dataframe)
+    # foo_class_variance(dataframe)
+    # foo_f1(dataframe)
+    # foo_3d(dataframe)
+    foo_random_forest(dataframe)
+
+
+def foo_random_forest(dataframe):
+    percentReached = 2
+    subset = ex.get_measurements(dataframe, percentReached)
+
+    x = subset[['Branchless', '_GradientRatio', '_BranchRatio', '_NotCovGraRatio', '_Fitness', '_InfoContent', '_NeutralityGen', '_NotGradRatio']].values
+    y = subset['GroundTruth'].values
+
+    y = y.astype('int')
+
+    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
+
+    logging.info('fit train data...')
+    model = RandomForestClassifier(n_estimators=20, random_state=42)
+    model.fit(x_train, y_train)
+
+    logging.info('predict test data...')
+    prediction = model.predict(x_test)
+
+    logging.info('get classification_report...')
+    print(classification_report(y_test, prediction))
+    logging.info('get accuracy_score...')
+    print(accuracy_score(y_test, prediction))
+
+
+def foo_correlation(dataframe):
     logging.info("----------------------------------------------------------------------------------------------------")
     logging.info("-- Measuring point at the end of the search")
     logging.info("----------------------------------------------------------------------------------------------------")
@@ -79,13 +116,13 @@ def evaluation(dataframe):
     logging.info("----------------------------------------------------------------------------------------------------")
 
     percentReached = 1
-    subset = ex.getMeasurings(dataframe, percentReached)
+    subset = ex.get_measurements(dataframe, percentReached)
     printCorrelations(str(percentReached * 10) + 'p-time', subset, 'Coverage')
 
     logging.info("----------------------------------------------------------")
 
     percentReached = 2
-    subset = ex.getMeasurings(dataframe, percentReached)
+    subset = ex.get_measurements(dataframe, percentReached)
     printCorrelations(str(percentReached * 10) + 'p-time', subset, 'Coverage')
 
     logging.info("----------------------------------------------------------------------------------------------------")
@@ -95,20 +132,35 @@ def evaluation(dataframe):
     logging.info("----------------------------------------------------------------------------------------------------")
 
     percentReached = 2
-    subset = ex.getMeasurings(dataframe, percentReached)
+    subset = ex.get_measurements(dataframe, percentReached)
     subset = subset[subset['Total_Branches'].gt(0)]
     printCorrelations(str(percentReached * 10) + 'p-time', subset, 'Coverage')
 
-    # ###############################################################
-    # ###############################################################
-    # ###############################################################
-    # ex.createExport(subset[subset['_BranchRatio'].lt(0.2)])
-    # foo_class_variance(dataframe)
 
-    logging.info("----------------------------------------------------------------------------------------------------")
-
+def foo_3d(dataframe):
     percentReached = 2
-    subset = ex.getMeasurings(dataframe, percentReached)
+    subset = ex.get_measurements(dataframe, percentReached)
+    subset = subset[~subset['Branchless']]
+    subset = subset[subset['_BranchRatio'].gt(0)]
+
+    ax = plt.axes(projection='3d')
+    # GroundTruth, Branchless, CoverageClass, Coverage
+    # _GradientRatio, _BranchRatio, _NotCovGraRatio, _Fitness
+    # _InfoContent, _NeutralityGen
+    # _NotGradRatio
+    ax.scatter3D(subset['_BranchRatio'], subset['_Fitness'], subset['Coverage'], c=subset['CoverageClass'])
+    ax.set_xlabel('_BranchRatio at 20%')
+    ax.set_ylabel('_Fitness at 20%')
+    ax.set_zlabel('Coverage at 20%')
+    ax.set_xlim3d(0, 1)
+    ax.set_ylim3d(0, 1)
+    ax.set_zlim3d(0, 1)
+    plt.show()
+
+
+def foo_f1(dataframe):
+    percentReached = 2
+    subset = ex.get_measurements(dataframe, percentReached)
 
     logging.info("@20%: _BranchRatio <= 0.2 and _BranchRatio > 0.0")
     subset['predicted'] = subset['_BranchRatio'].le(0.2) & subset['_BranchRatio'].gt(0)
@@ -150,39 +202,21 @@ def evaluation(dataframe):
     calculateF1(subset)
     logging.info("----------------------------")
 
-    logging.info("@20% (without branchless): _Fitness == 0 or (_BranchRatio <= 0.2 and (_Fitness >= 0.2 and _NeutralityGen >= 0.2))")
+    logging.info("@20% (without branchless): _Fitness > 0.8 or _NeutralityGen >= 0.8")
     percentReached = 2
-    subset = ex.getMeasurings(dataframe, percentReached)
+    subset = ex.get_measurements(dataframe, percentReached)
     subset = subset[~subset['Branchless']]
     subset = subset[subset['_BranchRatio'].gt(0)]
+    subset = subset[subset['_BranchRatio'].le(0.2)]
 
-    subset['predicted'] = subset['_GradientRatio'].lt(1)
+    subset['predicted'] = subset['_NeutralityGen'].gt(0.8) | subset['_Fitness'].gt(0.8)
     calculateF1(subset)
     logging.info("----------------------------")
-
-    # ###############################################################
-    percentReached = 2
-    subset = ex.getMeasurings(dataframe, percentReached)
-    #subset = subset[~subset['Branchless']]
-    #subset = subset[subset['_BranchRatio'].gt(0)]
-
-    ax = plt.axes(projection='3d')
-    # GroundTruth, Branchless, CoverageClass, Coverage
-    # _NotGradRatio, _GradientRatio, _BranchRatio, _NotCovGraRatio, _Fitness
-    # _InfoContent, _NeutralityGen
-    ax.scatter3D(subset['_BranchRatio'], subset['_Fitness'], subset['Coverage'], c=subset['GroundTruth'])
-    ax.set_xlabel('_BranchRatio at 20%')
-    ax.set_ylabel('_Fitness at 20%')
-    ax.set_zlabel('Coverage at 20%')
-    ax.set_xlim3d(0, 1)
-    ax.set_ylim3d(0, 1)
-    ax.set_zlim3d(0, 1)
-    plt.show()
 
 
 def foo_class_variance(dataframe):
     percentReached = 2
-    dataframe = ex.getMeasurings(dataframe, percentReached)
+    dataframe = ex.get_measurements(dataframe, percentReached)
     dataframe['matched'] = dataframe['_BranchRatio'].le(0.2)
 
     groups = dataframe.groupby('TARGET_CLASS').agg({

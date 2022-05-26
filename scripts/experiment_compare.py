@@ -24,7 +24,7 @@ LOG_STREAM = sys.stdout
 FILTER_MIN_EXECUTIONS = 9
 
 
-def getStatisticFiles(path):
+def get_statistic_files(path):
     """
     Determines all statistic files.
     Returns: A list of all files
@@ -51,14 +51,14 @@ def compare(dataframe):
     logging.info("Total tests in B:\t" + str(len(b.index)))
 
     dataframe = ex.clean(dataframe)
-    dataframe = ex.addAdditionalColumns(dataframe)
-    dataframe = ex.getMeasurings(dataframe, 0)
-    dataframe = ex.filter(dataframe, FILTER_MIN_EXECUTIONS)
+    dataframe = ex.add_additional_columns(dataframe)
+    dataframe = ex.get_measurements(dataframe, 0)
+    dataframe = ex.filter_dataframe(dataframe, FILTER_MIN_EXECUTIONS)
 
     logging.info("filter...")
-    percentReached = 2
+    percent_reached = 2
 
-    subset = ex.getMeasurings(dataframe, percentReached)
+    subset = ex.get_measurements(dataframe, percent_reached)
     # subset = subset[subset['_GradientBra'].eq(0)]
 
     logging.info("merge...")
@@ -86,18 +86,18 @@ def compare(dataframe):
     plt.show()
 
 
-def setupArgparse():
+def setup_argparse():
     """
     Setup the argparse.
     :return: The parser
     """
-    parser = argparse.ArgumentParser(
+    argument_parser = argparse.ArgumentParser(
         description="Compares the experiment results from two runs (a & b) of the the experiment_runner",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument("-a", help="The directory path of the run a", type=ex.dir_path, required=True)
-    parser.add_argument("-b", help="The directory path of the run b", type=ex.dir_path, required=True)
+    argument_parser.add_argument("-a", help="The directory path of the run a", type=ex.dir_path, required=True)
+    argument_parser.add_argument("-b", help="The directory path of the run b", type=ex.dir_path, required=True)
 
-    return parser
+    return argument_parser
 
 
 def main():
@@ -107,17 +107,16 @@ def main():
     logging.basicConfig(stream=LOG_STREAM, filemode="w", format=LOG_FORMAT, level=LOG_LEVEL)
 
     logging.info("search files...")
-    dataframeA = getStatisticFiles(os.path.join(args.a, '**', '*.csv'))
-    dataframeB = getStatisticFiles(os.path.join(args.b, '**', '*.csv'))
+    dataframe_a = get_statistic_files(os.path.join(args.a, '**', '*.csv'))
+    dataframe_b = get_statistic_files(os.path.join(args.b, '**', '*.csv'))
 
-    dataframeA['set'] = 'A'
-    dataframeB['set'] = 'B'
+    dataframe_a['set'] = 'A'
+    dataframe_b['set'] = 'B'
 
     logging.info("start evaluation...")
-    compare(pd.concat([dataframeA, dataframeB], ignore_index=True))
+    compare(pd.concat([dataframe_a, dataframe_b], ignore_index=True))
 
 
 if __name__ == "__main__":
-    parser = setupArgparse()
-    args = parser.parse_args()
+    args = setup_argparse().parse_args()
     main()

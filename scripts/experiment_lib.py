@@ -2,11 +2,12 @@
     Purpose: This experiment library contains shared functions for the experiments.
     Author: Kevin Haack
 """
+import argparse
 import logging
 import os
-import pandas as pd
-import argparse
 import platform
+
+import pandas as pd
 
 # files and directories
 FILE_CLASSES = "samples\\00 - original - 23894.txt"
@@ -17,23 +18,23 @@ FILTER_ZERO_GENERATIONS = True
 FILTER_PERCENTAGE = True
 
 
-def createExport(dataframe):
+def create_export(dataframe):
     """
     Export the passed dataframe to the runner format.
     :param dataframe: The dataframe to export
     :return: None
     """
-    pathSamples = os.path.join(PATH_WORKING_DIRECTORY, FILE_CLASSES)
-    pathExport = os.path.join(PATH_WORKING_DIRECTORY, FILE_EXPORT)
+    path_samples = os.path.join(PATH_WORKING_DIRECTORY, FILE_CLASSES)
+    path_export = os.path.join(PATH_WORKING_DIRECTORY, FILE_EXPORT)
 
-    samples = pd.read_csv(pathSamples, delimiter='\t', names=['project', 'TARGET_CLASS'])
+    samples = pd.read_csv(path_samples, delimiter='\t', names=['project', 'TARGET_CLASS'])
     merged = dataframe.merge(samples, left_on='TARGET_CLASS', right_on='TARGET_CLASS', how='inner')
     merged = merged.groupby(['project', 'TARGET_CLASS']).count().reset_index()[['project', 'TARGET_CLASS']]
 
-    merged.to_csv(pathExport, header=None, sep='\t', index=False)
+    merged.to_csv(path_export, header=None, sep='\t', index=False)
 
 
-def addAdditionalColumns(dataframe):
+def add_additional_columns(dataframe):
     dataframe['PercentageReached'] = dataframe['NeutralityVolume'].str.count(';') * 10
 
     # classes
@@ -55,6 +56,11 @@ def addAdditionalColumns(dataframe):
 
 
 def clean(dataframe):
+    """
+    Clean the passed dataframe.
+    :param dataframe: The dataframe.
+    :return: The cleaned dataframe.
+    """
     # remove
     dataframe.drop('_FitnessMax', axis=1, inplace=True)
     dataframe.drop('_FitnessMin', axis=1, inplace=True)
@@ -78,7 +84,7 @@ def clean(dataframe):
     return dataframe
 
 
-def getNth(x, n):
+def get_n_th(x, n):
     """
     Returns the n-th element of the passed string x in the format [a;b;c;d].
     :param x: String in the format [a;b;c;d]
@@ -97,7 +103,7 @@ def getNth(x, n):
     return float(parts[n])
 
 
-def getMeasurings(dataframe, percent):
+def get_measurements(dataframe, percent):
     """
     Extract the measuring.
     :param dataframe: The dataframe.
@@ -111,12 +117,12 @@ def getMeasurings(dataframe, percent):
     index = percent - 1
 
     # get measurings
-    dataframe['_GradientBra'] = dataframe['GradientBranches'].apply(lambda x: getNth(x, index))
-    dataframe['_GradientCov'] = dataframe['GradientBranchesCovered'].apply(lambda x: getNth(x, index))
-    dataframe['_Fitness'] = dataframe['Fitness'].apply(lambda x: getNth(x, index))
-    dataframe['_InfoContent'] = dataframe['InformationContent'].apply(lambda x: getNth(x, index))
-    dataframe['_NeutralityVol'] = dataframe['NeutralityVolume'].apply(lambda x: getNth(x, index))
-    dataframe['_Generations'] = dataframe['Generations'].apply(lambda x: getNth(x, index))
+    dataframe['_GradientBra'] = dataframe['GradientBranches'].apply(lambda x: get_n_th(x, index))
+    dataframe['_GradientCov'] = dataframe['GradientBranchesCovered'].apply(lambda x: get_n_th(x, index))
+    dataframe['_Fitness'] = dataframe['Fitness'].apply(lambda x: get_n_th(x, index))
+    dataframe['_InfoContent'] = dataframe['InformationContent'].apply(lambda x: get_n_th(x, index))
+    dataframe['_NeutralityVol'] = dataframe['NeutralityVolume'].apply(lambda x: get_n_th(x, index))
+    dataframe['_Generations'] = dataframe['Generations'].apply(lambda x: get_n_th(x, index))
 
     # calculate others
     dataframe.loc[dataframe['_Generations'].eq(0), '_NeutralityGen'] = 0
@@ -137,38 +143,39 @@ def getMeasurings(dataframe, percent):
         dataframe['Total_Branches'])
 
     dataframe.loc[dataframe['Total_Branches'].eq(0), '_NotCovGraRatio'] = 0
-    dataframe.loc[dataframe['Total_Branches'].gt(0), '_NotCovGraRatio'] = (dataframe['_GradientBra'] - dataframe['_GradientCov']) / (
-        dataframe['Total_Branches'])
+    dataframe.loc[dataframe['Total_Branches'].gt(0), '_NotCovGraRatio'] = (dataframe['_GradientBra'] - dataframe[
+        '_GradientCov']) / (dataframe['Total_Branches'])
 
     return dataframe
 
 
-def filter(dataframe, minExecutions):
+def filter_dataframe(dataframe, minimum_executions):
     """
     Filter the passed dataframe.
+    :param minimum_executions: Datasets with lower executions will be filtered.
     :param dataframe: The dataframe to filter.
     :return: The filtered dataframe.
     """
     # not 10% reached
     if FILTER_PERCENTAGE:
-        totalLength = len(dataframe.index)
+        total_length = len(dataframe.index)
         dataframe = dataframe[dataframe['PercentageReached'] > 0]
-        logging.info("Tests not reached 10%:\t" + str(totalLength - len(dataframe.index)))
+        logging.info("Tests not reached 10%:\t" + str(total_length - len(dataframe.index)))
 
     # zero generations
     if FILTER_ZERO_GENERATIONS:
-        totalLength = len(dataframe.index)
+        total_length = len(dataframe.index)
         dataframe = dataframe[dataframe['_Generations'] > 0]
-        logging.info("Zero generations tests:\t" + str(totalLength - len(dataframe.index)))
+        logging.info("Zero generations tests:\t" + str(total_length - len(dataframe.index)))
 
     # executions
-    if minExecutions > 0:
-        totalLength = len(dataframe.index)
+    if minimum_executions > 0:
+        total_length = len(dataframe.index)
         groups = dataframe.groupby('TARGET_CLASS').count()
         groups = groups.reset_index()
-        groups = groups[groups['Algorithm'] >= minExecutions]
+        groups = groups[groups['Algorithm'] >= minimum_executions]
         dataframe = dataframe[dataframe['TARGET_CLASS'].isin(groups['TARGET_CLASS'])]
-        logging.info(f"Tests less then {str(minExecutions)}execs:\t{str(totalLength - len(dataframe.index))}")
+        logging.info(f"Tests less then {str(minimum_executions)}execs:\t{str(total_length - len(dataframe.index))}")
 
     return dataframe
 

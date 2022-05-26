@@ -12,10 +12,11 @@ import re
 import signal
 import socket
 import subprocess
-import experiment_lib as ex
 from datetime import datetime, timedelta
 
 import psutil
+
+import experiment_lib as ex
 
 # files and folders
 DIRECTORY_EXECUTION_REPORTS = "reports"
@@ -111,60 +112,60 @@ PARAMETER_DYNAMOSA = [
 ]
 
 
-def getProjectClassPath(project):
+def get_project_class_path(project):
     """
     Determines the classpath based on the project and outputs this.
     Expects the following file structure: projects/<project>/<jars>
     :param project: The project.
     Returns: Colon seperated class path
     """
-    projectPath = os.path.join(args.corpus, project)
-    logging.debug("create projectClassPath for folder '" + projectPath + "'")
+    project_path = os.path.join(args.corpus, project)
+    logging.debug("create projectClassPath for folder '" + project_path + "'")
 
     # add dependencies
-    jarList = glob.iglob(os.path.join(projectPath, 'lib', '*.jar'), recursive=True)
-    classPath = ""
-    for jar in jarList:
-        classPath = classPath + jar + os.pathsep
+    jar_list = glob.iglob(os.path.join(project_path, 'lib', '*.jar'), recursive=True)
+    class_path = ""
+    for jar in jar_list:
+        class_path = class_path + jar + os.pathsep
 
     # add tested jar
-    jarList = glob.iglob(os.path.join(projectPath, '*.jar'))
-    for jar in jarList:
-        classPath = classPath + jar + os.pathsep
+    jar_list = glob.iglob(os.path.join(project_path, '*.jar'))
+    for jar in jar_list:
+        class_path = class_path + jar + os.pathsep
 
-    return classPath
+    return class_path
 
 
-def moveResults(project, clazz, pathClassDir, currentExecution, pathResults):
+def move_results(project, clazz, path_class_dir, current_execution, path_results):
     """
     Move the exection results to the pathResults.
     :param project: The project.
     :param clazz: The current class.
-    :param pathClassDir: The path of the class directory.
-    :param currentExecution: The index of the current execution.
-    :param pathResults: the destination of the results.
+    :param path_class_dir: The path of the class directory.
+    :param current_execution: The index of the current execution.
+    :param path_results: the destination of the results.
     :return: None
     """
-    oldFilePath = os.path.join(pathClassDir, DIRECTORY_EXECUTION_REPORTS, str(currentExecution), "statistics.csv")
+    old_file_path = os.path.join(path_class_dir, DIRECTORY_EXECUTION_REPORTS, str(current_execution), "statistics.csv")
 
-    newname = f"{project}-{clazz}-{str(currentExecution)}.csv"
-    newFilePath = os.path.join(pathResults, newname)
+    newname = f"{project}-{clazz}-{str(current_execution)}.csv"
+    new_file_path = os.path.join(path_results, newname)
 
-    os.rename(oldFilePath, newFilePath)
+    os.rename(old_file_path, new_file_path)
 
 
-def createParameter(project, clazz, pathClassDir, currentExecution):
+def create_parameter(project, clazz, path_class_dir, current_execution):
     """
     Create the EvoSuite parameter list for the passt parameter.
     :param project: The project.
     :param clazz: The class to test
-    :param pathClassDir: The path to the class
-    :param currentExecution: The current execution index
+    :param path_class_dir: The path to the class
+    :param current_execution: The current execution index
     :return: The parameter for EvoSuite.
     """
-    projectClassPath = getProjectClassPath(project)
-    pathReport = os.path.join(pathClassDir, DIRECTORY_EXECUTION_REPORTS, str(currentExecution))
-    pathTest = os.path.join(pathClassDir, DIRECTORY_EXECUTION_TESTS, str(currentExecution))
+    project_class_path = get_project_class_path(project)
+    path_report = os.path.join(path_class_dir, DIRECTORY_EXECUTION_REPORTS, str(current_execution))
+    path_test = os.path.join(path_class_dir, DIRECTORY_EXECUTION_TESTS, str(current_execution))
 
     parameter = ['java',
                  '-Xmx4G',
@@ -173,9 +174,9 @@ def createParameter(project, clazz, pathClassDir, currentExecution):
                  '-class',
                  clazz,
                  '-projectCP',
-                 projectClassPath,
-                 f'-Dreport_dir={pathReport}',
-                 f'-Dtest_dir={pathTest}'
+                 project_class_path,
+                 f'-Dreport_dir={path_report}',
+                 f'-Dtest_dir={path_test}'
                  ]
 
     parameter = parameter + PARAMETER_ALL
@@ -197,45 +198,46 @@ def createParameter(project, clazz, pathClassDir, currentExecution):
         raise ValueError("unsupported algorithm: " + ALGORITHM)
 
 
-def runEvoSuite(project, clazz, currentClass, pathResults):
+def run_evosuite(project, clazz, current_class, path_results):
     """
     Runs multiple executions of EvoSuite for the passed class.
+    :param path_results: The path to the results directory
     :param project: The project of the class.
     :param clazz: The class to test.
-    :param currentClass: The index of the passed class.
+    :param current_class: The index of the passed class.
     """
     timeouts = 0
     execution = 0
     skip = False
     while not skip and execution < EXECUTIONS_PER_CLASS:
         logging.info(
-            f"Class ({str(currentClass + 1)} / {str(SAMPLE_SIZE)}) Execution ({str(execution + 1)} / {str(EXECUTIONS_PER_CLASS)}): Running default configuration in project ({project}) for class ({clazz}) with random seed.")
+            f"Class ({str(current_class + 1)} / {str(SAMPLE_SIZE)}) Execution ({str(execution + 1)} / {str(EXECUTIONS_PER_CLASS)}): Running default configuration in project ({project}) for class ({clazz}) with random seed.")
 
         # output directories
-        pathClassDir = os.path.join(args.corpus, project, clazz)
+        path_class_dir = os.path.join(args.corpus, project, clazz)
 
         # create directories
-        if not os.path.exists(pathClassDir):
-            os.mkdir(pathClassDir)
+        if not os.path.exists(path_class_dir):
+            os.mkdir(path_class_dir)
 
         # build evoSuite parameters
-        parameter = createParameter(project, clazz, pathClassDir, execution)
+        parameter = create_parameter(project, clazz, path_class_dir, execution)
 
         # setup log
-        pathLog = os.path.join(pathClassDir, DIRECTORY_EXECUTION_LOGS)
+        path_log = os.path.join(path_class_dir, DIRECTORY_EXECUTION_LOGS)
 
-        if not os.path.exists(pathLog):
-            os.mkdir(pathLog)
+        if not os.path.exists(path_log):
+            os.mkdir(path_log)
 
-        pathLogFile = os.path.join(pathLog, "log_" + str(execution) + ".txt")
-        output = open(pathLogFile, "w")
+        path_log_file = os.path.join(path_log, "log_" + str(execution) + ".txt")
+        output = open(path_log_file, "w")
 
         # start process
         proc = subprocess.Popen(parameter, stdout=output, stderr=output)
 
         try:
             proc.communicate(timeout=TIMEOUT)
-            moveResults(project, clazz, pathClassDir, execution, pathResults)
+            move_results(project, clazz, path_class_dir, execution, path_results)
             timeouts = 0
         except subprocess.TimeoutExpired:
             # skip if timeouts reached
@@ -246,14 +248,14 @@ def runEvoSuite(project, clazz, currentClass, pathResults):
 
             # kill process
             logging.warning(f'Subprocess timeout ({str(timeouts)}/{str(SKIP_AFTER_TIMEOUTS)}) {str(TIMEOUT)}s')
-            killProcess(proc)
+            kill_process(proc)
         except Exception as error:
             logging.error(f"Unexpected {error=}, {type(error)=}")
 
         execution = execution + 1
 
 
-def killProcess(proc):
+def kill_process(proc):
     """
     Kills the passed process and its subprocesses.
     :param proc: The process to kill.
@@ -268,107 +270,108 @@ def killProcess(proc):
     process.kill()
 
 
-def onTimeout(args):
+def on_timeout(process_arguments):
     """
     Function to be called on a thread timeout.
-    :param args: at index 0, the proccess
+    :param process_arguments: at index 0, the proccess
     :return:
     """
-    if args[0].pid >= 0:
+    if process_arguments[0].pid >= 0:
         logging.error("Timeout after " + str(TIMEOUT) + "s: kill process " + args[0].pid)
-        os.kill(args[0].pid, signal.SIGTERM)
+        os.kill(process_arguments[0].pid, signal.SIGTERM)
 
 
-def selectSample(initSample):
+def select_sample(init_sample):
     """
     Select a sample given the constants.
-    :param initSample: The initial sample of all classes.
+    :param init_sample: The initial sample of all classes.
     :return: The selected sample.
     """
     if RANDOM:
-        return random.sample(range(len(initSample)), SAMPLE_SIZE)
+        return random.sample(range(len(init_sample)), SAMPLE_SIZE)
     else:
         return range(0, SAMPLE_SIZE)
 
 
-def createBackups(initSample, sample):
+def create_backups(initial_sample, sample):
     """
     Saves a backup of the selected samples.
-    :param initSample: The initial sample of all classes.
+    :param initial_sample: The initial sample of all classes.
     :param sample: The selected sample.
     :return:
     """
-    scriptPath = os.path.dirname(os.path.realpath(__file__))
-    selectedSamplePath = os.path.join(scriptPath, FILE_SELECTED_SAMPLE)
-    selectedNotSamplePath = os.path.join(scriptPath, FILE_NOT_SELECTED_SAMPLE)
+    script_path = os.path.dirname(os.path.realpath(__file__))
+    selected_sample_path = os.path.join(script_path, FILE_SELECTED_SAMPLE)
+    selected_not_sample_path = os.path.join(script_path, FILE_NOT_SELECTED_SAMPLE)
 
-    fileSample = open(selectedSamplePath, 'w')
-    fileNotInSample = open(selectedNotSamplePath, 'w')
-    for i in range(0, len(initSample)):
-        line = initSample[i]
+    file_sample = open(selected_sample_path, 'w')
+    file_not_in_sample = open(selected_not_sample_path, 'w')
+    for i in range(0, len(initial_sample)):
+        line = initial_sample[i]
         if i in sample:
-            fileSample.writelines(line[0] + '\t' + line[1] + '\n')
+            file_sample.writelines(line[0] + '\t' + line[1] + '\n')
         else:
-            fileNotInSample.writelines(line[0] + '\t' + line[1] + '\n')
+            file_not_in_sample.writelines(line[0] + '\t' + line[1] + '\n')
 
-    fileSample.close()
-    fileNotInSample.close()
+    file_sample.close()
+    file_not_in_sample.close()
 
 
-def getInitSample(sampleFilePath):
+def get_initial_sample(sample_file_path):
     """
     Read the initial sample from the file.
-    :param sampleFilePath: The sample file path.
+    :param sample_file_path: The sample file path.
     :return: The initial sample.
     """
-    initSample = []
-    fileInit = open(sampleFilePath, "r")
+    init_sample = []
+    file_init = open(sample_file_path, "r")
 
-    for line in fileInit:
+    for line in file_init:
         parts = re.split('\t', line)
         if len(parts) >= 2:
-            initSample.append((parts[0], parts[1].replace('\n', '')))
+            init_sample.append((parts[0], parts[1].replace('\n', '')))
 
-    fileInit.close()
-    return initSample
+    file_init.close()
+    return init_sample
 
 
-def setupArgparse():
+def setup_argparse():
     """
     Setup the argparse.
     :return: The parser
     """
-    parser = argparse.ArgumentParser(
+    argument_parser = argparse.ArgumentParser(
         description="Run large scale experiments with EvoSuite",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument("-sample", help="The path of the sample file", type=ex.file_path, required=True)
-    parser.add_argument("-corpus", help="The path of the corpus directory", type=ex.dir_path, required=True)
-    parser.add_argument("-evosuite", help="The path of the evosuite jar", type=ex.file_path, required=True)
+    argument_parser.add_argument("-sample", help="The path of the sample file", type=ex.file_path, required=True)
+    argument_parser.add_argument("-corpus", help="The path of the corpus directory", type=ex.dir_path, required=True)
+    argument_parser.add_argument("-evosuite", help="The path of the evosuite jar", type=ex.file_path, required=True)
 
-    group = parser.add_mutually_exclusive_group(required=False)
+    group = argument_parser.add_mutually_exclusive_group(required=False)
     group.add_argument("-shutdown", help="Shutdown after the executions", action='store_true')
     group.add_argument("-reboot", help="Reboot after the executions", action='store_true')
 
-    return parser
+    return argument_parser
 
 
 def main():
     """
     Runs large scale experiment.
     """
-    scriptPath = os.path.dirname(os.path.realpath(__file__))
-    logFilePath = os.path.join(scriptPath, FILE_LOG)
-    logging.basicConfig(filename=logFilePath, filemode="w", format=LOG_FORMAT, level=LOG_LEVEL)
+    script_path = os.path.dirname(os.path.realpath(__file__))
+    log_file_path = os.path.join(script_path, FILE_LOG)
+    logging.basicConfig(filename=log_file_path, filemode="w", format=LOG_FORMAT, level=LOG_LEVEL)
 
     logging.info("Initial sample file:\t" + args.sample)
-    sampleList = getInitSample(args.sample)
+    sample_list = get_initial_sample(args.sample)
 
-    logging.info("Total number of classes:\t" + str(len(sampleList)))
+    logging.info("Total number of classes:\t" + str(len(sample_list)))
     logging.info("Random sample selection:\t" + str(RANDOM))
     logging.info("Sample size:\t\t" + str(SAMPLE_SIZE))
     logging.info("Executions/Class:\t" + str(EXECUTIONS_PER_CLASS))
     logging.info("Search budget:\t\t" + str(SEARCH_BUDGET) + "s")
     logging.info("Timeout:\t\t\t" + str(TIMEOUT) + "s")
+    logging.info("Skip after timeouts:\t" + str(SKIP_AFTER_TIMEOUTS))
     logging.info("Algorithm:\t\t" + ALGORITHM)
     logging.info("Criterion:\t\t" + CRITERION)
     logging.info("Mutation rate:\t\t" + str(MUTATION_RATE))
@@ -379,31 +382,31 @@ def main():
     estimation = datetime.now() + timedelta(seconds=runtime)
     logging.info("Run time estimation:\t" + str(runtime / 60) + "min (end at " + str(estimation) + ")")
 
-    if SAMPLE_SIZE > len(sampleList):
-        logging.error("sample size '" + str(SAMPLE_SIZE) + "' > init file length '" + str(len(sampleList)) + "'")
+    if SAMPLE_SIZE > len(sample_list):
+        logging.error("sample size '" + str(SAMPLE_SIZE) + "' > init file length '" + str(len(sample_list)) + "'")
         return
 
     # select sample
-    sample = selectSample(sampleList)
+    sample = select_sample(sample_list)
 
     # save backup
-    createBackups(sampleList, sample)
+    create_backups(sample_list, sample)
 
     # create result directory
-    pathResults = os.path.join(scriptPath, DIRECTORY_RESULTS)
-    if not os.path.exists(pathResults):
-        os.mkdir(pathResults)
+    path_results = os.path.join(script_path, DIRECTORY_RESULTS)
+    if not os.path.exists(path_results):
+        os.mkdir(path_results)
 
     now = datetime.now()
-    pathResults = os.path.join(scriptPath, DIRECTORY_RESULTS, now.strftime("%Y-%m-%d %H-%M-%S"))
-    if not os.path.exists(pathResults):
-        os.mkdir(pathResults)
+    path_results = os.path.join(script_path, DIRECTORY_RESULTS, now.strftime("%Y-%m-%d %H-%M-%S"))
+    if not os.path.exists(path_results):
+        os.mkdir(path_results)
 
     # run tests
     for i in range(len(sample)):
-        project = sampleList[sample[i]][0]
-        clazz = sampleList[sample[i]][1]
-        runEvoSuite(project, clazz, i, pathResults)
+        project = sample_list[sample[i]][0]
+        clazz = sample_list[sample[i]][1]
+        run_evosuite(project, clazz, i, path_results)
 
     logging.info("DONE.")
     if args.shutdown:
@@ -413,6 +416,5 @@ def main():
 
 
 if __name__ == "__main__":
-    parser = setupArgparse()
-    args = parser.parse_args()
+    args = setup_argparse().parse_args()
     main()
