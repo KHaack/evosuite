@@ -6,16 +6,25 @@ import argparse
 import logging
 import os
 import platform
-
+from datetime import datetime
+import json
 import pandas as pd
 
 # files and directories
 FILE_CLASSES = "samples\\00 - original - 23894.txt"
-FILE_EXPORT = "samples\\export.txt"
-PATH_WORKING_DIRECTORY = "C:\\Users\\kha\\Desktop\\Benchmark"
+FILE_EXPORT = "export.txt"
+FILE_STATUS = "status.log"
 # filtering
 FILTER_ZERO_GENERATIONS = True
 FILTER_PERCENTAGE = True
+
+
+def get_script_path():
+    """
+    Returns the script path.
+    :return: Returns the script path.
+    """
+    return os.path.dirname(os.path.realpath(__file__))
 
 
 def create_export(dataframe):
@@ -24,8 +33,8 @@ def create_export(dataframe):
     :param dataframe: The dataframe to export
     :return: None
     """
-    path_samples = os.path.join(PATH_WORKING_DIRECTORY, FILE_CLASSES)
-    path_export = os.path.join(PATH_WORKING_DIRECTORY, FILE_EXPORT)
+    path_samples = os.path.join(get_script_path(), FILE_CLASSES)
+    path_export = os.path.join(get_script_path(), FILE_EXPORT)
 
     samples = pd.read_csv(path_samples, delimiter='\t', names=['project', 'TARGET_CLASS'])
     merged = dataframe.merge(samples, left_on='TARGET_CLASS', right_on='TARGET_CLASS', how='inner')
@@ -232,3 +241,79 @@ def reboot():
         os.system("shutdown /r /t 1")
     else:
         raise Exception(f"Unsupported os '{system}'")
+
+
+class RunnerStatus:
+    """
+    Represents the runner status.
+    """
+
+    def __init__(self, initial_sample_file, hostname, start_time, sample_size, random=True, executions_per_class=10,
+                 search_budget=120, timeout=180,
+                 skip_after_timeouts=2, algorithm='DYNAMOSA', criterion='default', mutation_rate='default',
+                 cross_over_rate='default'):
+        self.initial_sample_file = initial_sample_file
+        self.random = random
+        self.sample_size = sample_size
+        self.executions_per_class = executions_per_class
+        self.search_budget = search_budget
+        self.timeout = timeout
+        self.skip_after_timeouts = skip_after_timeouts
+        self.algorithm = algorithm
+        self.criterion = criterion
+        self.mutation_rate = mutation_rate
+        self.cross_over_rate = cross_over_rate
+        self.hostname = hostname
+        self.start_time = start_time
+        self.current_project = None
+        self.current_class = None
+        self.current_class_index = None
+        self.current_execution = None
+
+    def print_status(self):
+        """
+        Prints the runner status
+        :return: None
+        """
+        logging.info(f"Initial sample file:\t{self.initial_sample_file}")
+        logging.info(f"Random sample selection:\t{str(self.random)}")
+        logging.info(f"Sample size:\t\t{str(self.sample_size)}")
+        logging.info(f"Executions/Class:\t{str(self.executions_per_class)}")
+        logging.info(f"Search budget:\t\t{str(self.search_budget)}s")
+        logging.info(f"Timeout:\t\t\t{str(self.timeout)}s")
+        logging.info(f"Skip after timeouts:\t{str(self.skip_after_timeouts)}")
+        logging.info(f"Algorithm:\t\t{self.algorithm}")
+        logging.info(f"Criterion:\t\t{self.criterion}")
+        logging.info(f"Mutation rate:\t\t{str(self.mutation_rate)}")
+        logging.info(f"Cross over rate:\t\t{str(self.cross_over_rate)}")
+        logging.info(f"Host:\t\t\t{self.hostname}")
+        logging.info(f"Start time:\t\t{self.start_time.strftime('%Y-%m-%d %H-%M-%S')}")
+        logging.info(f"Runtime estimation:\t{str(self.get_runtime_estimation() / 60 / 60)}h")
+
+    def get_runtime_estimation(self):
+        """
+        Returns the runtime estimation.
+        :return: Returns the runtime estimation.
+        """
+        return self.sample_size * self.executions_per_class * self.search_budget
+
+    def save_to_file(self):
+        """
+        Write the object to a file.
+        :return: None
+        """
+        status_file_path = os.path.join(get_script_path(), FILE_STATUS)
+        with open(status_file_path, 'w') as status_file:
+            status_file.write(json.dumps(self.__dict__, indent=4, cls=DateTimeAwareEncoder))
+
+
+class DateTimeAwareEncoder(json.JSONEncoder):
+    """
+    A Datetime aware encoder for json.
+    https://stackoverflow.com/questions/44630103/how-to-write-and-read-datetime-dictionaries
+    """
+    def default(self, o):
+        if isinstance(o, datetime):
+            return o.isoformat()
+        else:
+            return json.JSONEncoder.default(self, o)
