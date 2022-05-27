@@ -17,7 +17,8 @@ import experiment_lib as ex
 
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import classification_report, accuracy_score
+from sklearn.metrics import classification_report, accuracy_score, confusion_matrix, \
+    ConfusionMatrixDisplay
 
 pd.options.mode.chained_assignment = None
 
@@ -76,11 +77,18 @@ def evaluation(dataframe):
     logging.info("---------------------------------------------------------")
 
     # ex.createExport(subset[subset['_BranchRatio'].lt(0.2)])
+    foo_common_plots(dataframe)
     # foo_correlation(dataframe)
     # foo_class_variance(dataframe)
     # foo_f1(dataframe)
-    foo_random_forest(dataframe)
-    foo_3d(dataframe)
+    # foo_random_forest(dataframe)
+    # foo_3d(dataframe)
+
+
+def foo_common_plots(dataframe):
+    plt.hist(dataframe['Coverage'])
+    plt.plot()
+    plt.show()
 
 
 def foo_random_forest(dataframe):
@@ -104,7 +112,6 @@ def foo_random_forest(dataframe):
 
     logging.info('fit train data...')
     model = RandomForestClassifier(n_estimators=100, random_state=42, max_features="sqrt")
-    sample_weight = np.array([5 if i == 0 else 1 for i in y])
     model.fit(x_train, y_train)
 
     logging.info('plot feature importances...')
@@ -122,6 +129,14 @@ def foo_random_forest(dataframe):
 
     logging.info('get classification_report...')
     print(classification_report(y_test, prediction))
+
+    logging.info('get confusion matrix...')
+    cm = confusion_matrix(y_test, prediction, labels=model.classes_, normalize='true')
+    disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=model.classes_)
+    disp.plot()
+    plt.show()
+
+    logging.info('predict test data...')
     logging.info(f'accuracy_score: {accuracy_score(y_test, prediction)}')
 
 
@@ -166,11 +181,11 @@ def foo_3d(dataframe):
     subset = subset[subset['_BranchRatio'].gt(0)]
 
     ax = plt.axes(projection='3d')
-    # GroundTruth, Branchless, CoverageClass, Coverage
+    # GroundTruth, Branchless, Coverage
     # _GradientRatio, _BranchRatio, _NotCovGraRatio, _NotGradRatio
     # _InfoContent, _NeutralityGen
     # _Fitness
-    ax.scatter3D(subset['_NeutralityGen'], subset['_BranchRatio'], subset['Coverage'], c=subset['CoverageClass'])
+    ax.scatter3D(subset['_NeutralityGen'], subset['_BranchRatio'], subset['Coverage'], c=subset['Coverage'])
     ax.set_xlabel('_NeutralityGen at 20%')
     ax.set_ylabel('_BranchRatio at 20%')
     ax.set_zlabel('Coverage at 20%')

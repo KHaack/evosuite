@@ -68,7 +68,7 @@ def monitor_remote(ip):
     """
     Monitor the remote with the passed ip
     :param ip: The ip of the remote.
-    :return: None
+    :return: RunnerStatus of the passed ip.
     """
     with SCPClient(get_ssh(ip).get_transport()) as scp:
         logging.info(f'get status of {ip}...')
@@ -79,6 +79,8 @@ def monitor_remote(ip):
             status = RunnerStatus(**content)
             status.print_status()
         os.remove(FILE_TEMP)
+
+    return status
 
 
 def start_remote(ip):
@@ -142,8 +144,21 @@ def monitor_remotes():
     :return: None
     """
     logging.info('monitor...')
+    max_runtime = 0
+    sample_total = 0
+    sample_done = 0
     for ip in get_reachable_ips():
-        monitor_remote(ip)
+        status = monitor_remote(ip)
+
+        sample_total = sample_total + status.sample_size
+        sample_done = sample_done + status.current_class_index
+        runtime = status.get_runtime_estimation()
+        if runtime > max_runtime:
+            max_runtime = runtime
+
+    logging.info('-------------------------------------------------------')
+    logging.info(f'Estimated runtime {str(max_runtime / 60 / 60)}h')
+    logging.info(f'Class {str(sample_done)}/{str(sample_total)}')
 
 
 def setupArgparse():

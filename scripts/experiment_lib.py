@@ -48,17 +48,8 @@ def add_additional_columns(dataframe):
     dataframe['PercentageReached'] = dataframe['NeutralityVolume'].str.count(';') * 10
 
     # classes
-    classes = {'worst': 0, 'bad': 1, 'mid': 2, 'good': 3, 'very good': 4}
-    dataframe.loc[dataframe['Coverage'].le(0.20), 'CoverageClass'] = classes['worst']
-    dataframe.loc[dataframe['Coverage'].gt(0.20) & dataframe['Coverage'].le(0.40), 'CoverageClass'] = classes['bad']
-    dataframe.loc[dataframe['Coverage'].gt(0.40) & dataframe['Coverage'].lt(0.60), 'CoverageClass'] = classes['mid']
-    dataframe.loc[dataframe['Coverage'].ge(0.60) & dataframe['Coverage'].lt(0.80), 'CoverageClass'] = classes['good']
-    dataframe.loc[dataframe['Coverage'].ge(0.80), 'CoverageClass'] = classes['very good']
-
     # classification groundTruth
-    dataframe.loc[dataframe['CoverageClass'].lt(4), 'GroundTruth'] = True
-    dataframe.loc[dataframe['CoverageClass'].eq(4), 'GroundTruth'] = False
-    dataframe['GroundTruth'] = dataframe['GroundTruth'].astype('bool')
+    dataframe['GroundTruth'] = dataframe['Coverage'].ge(0.8)
 
     # branchless
     dataframe['Branchless'] = dataframe['Total_Branches'].eq(0)
