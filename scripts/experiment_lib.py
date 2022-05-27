@@ -3,17 +3,18 @@
     Author: Kevin Haack
 """
 import argparse
+import json
 import logging
 import os
 import platform
 from datetime import datetime
-import json
+
 import pandas as pd
+from dateutil import parser
 
 # files and directories
 FILE_CLASSES = "samples\\00 - original - 23894.txt"
 FILE_EXPORT = "export.txt"
-FILE_STATUS = "status.log"
 # filtering
 FILTER_ZERO_GENERATIONS = True
 FILTER_PERCENTAGE = True
@@ -252,7 +253,8 @@ class RunnerStatus:
     def __init__(self, initial_sample_file, hostname, start_time, sample_size, random=True, executions_per_class=10,
                  search_budget=120, timeout=180,
                  skip_after_timeouts=2, algorithm='DYNAMOSA', criterion='default', mutation_rate='default',
-                 cross_over_rate='default'):
+                 cross_over_rate='default', current_project=None, current_class=None, current_class_index=0,
+                 current_execution=0):
         self.initial_sample_file = initial_sample_file
         self.random = random
         self.sample_size = sample_size
@@ -265,11 +267,15 @@ class RunnerStatus:
         self.mutation_rate = mutation_rate
         self.cross_over_rate = cross_over_rate
         self.hostname = hostname
-        self.start_time = start_time
-        self.current_project = None
-        self.current_class = None
-        self.current_class_index = None
-        self.current_execution = None
+        self.current_project = current_project
+        self.current_class = current_class
+        self.current_class_index = current_class_index
+        self.current_execution = current_execution
+
+        if isinstance(start_time, str):
+            self.start_time = parser.parse(start_time)
+        else:
+            self.start_time = start_time
 
     def print_status(self):
         """
@@ -296,16 +302,18 @@ class RunnerStatus:
         Returns the runtime estimation.
         :return: Returns the runtime estimation.
         """
-        return self.sample_size * self.executions_per_class * self.search_budget
+        estimation = (self.sample_size - self.current_class_index) * (
+                    self.executions_per_class - 1)
+        estimation = estimation + (self.executions_per_class - self.current_execution)
+        return estimation * self.search_budget
 
-    def save_to_file(self):
+    def save_to_file(self, status_file):
         """
-        Write the object to a file.
+        Write the object to the passed file object.
+        :param status_file: The file object.
         :return: None
         """
-        status_file_path = os.path.join(get_script_path(), FILE_STATUS)
-        with open(status_file_path, 'w') as status_file:
-            status_file.write(json.dumps(self.__dict__, indent=4, cls=DateTimeAwareEncoder))
+        status_file.write(json.dumps(self.__dict__, indent=4, cls=DateTimeAwareEncoder))
 
 
 class DateTimeAwareEncoder(json.JSONEncoder):
@@ -313,6 +321,7 @@ class DateTimeAwareEncoder(json.JSONEncoder):
     A Datetime aware encoder for json.
     https://stackoverflow.com/questions/44630103/how-to-write-and-read-datetime-dictionaries
     """
+
     def default(self, o):
         if isinstance(o, datetime):
             return o.isoformat()

@@ -6,14 +6,17 @@ import argparse
 import logging
 import os
 import sys
-
+import json
 import paramiko
 from ping3 import ping
 from scp import SCPClient
 
 # paths and files
-FILE_TEMP = "output.log"
+from experiment_lib import RunnerStatus
+
+FILE_TEMP = "temp.log"
 LOCATION_LOG_REMOTE = "/home/user/Benchmark/output.log"
+LOCATION_STATUS_REMOTE = "/home/user/Benchmark/status.log"
 LOCATION_LIB = "C:\\Users\\kha\\repos\\evosuite\\scripts\\experiment_lib.py"
 LOCATION_LIB_REMOTE = "/home/user/Benchmark/experiment_lib.py"
 LOCATION_SCRIPT = "C:\\Users\\kha\\repos\\evosuite\\scripts\\experiment_runner.py"
@@ -68,12 +71,13 @@ def monitor_remote(ip):
     :return: None
     """
     with SCPClient(get_ssh(ip).get_transport()) as scp:
-        logging.info(f'get log of {ip}...')
-        scp.get(LOCATION_LOG_REMOTE)
+        logging.info(f'get status of {ip}...')
+        scp.get(LOCATION_STATUS_REMOTE, FILE_TEMP)
 
         with open(FILE_TEMP, 'r') as f:
-            last_line = f.readlines()[-1].replace('\n', '')
-            logging.info(last_line)
+            content = json.loads(f.read())
+            status = RunnerStatus(**content)
+            status.print_status()
         os.remove(FILE_TEMP)
 
 

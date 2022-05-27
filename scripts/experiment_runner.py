@@ -25,6 +25,7 @@ DIRECTORY_EXECUTION_LOGS = "logs"
 DIRECTORY_RESULTS = "results"
 FILE_SELECTED_SAMPLE = "sample.txt"
 FILE_NOT_SELECTED_SAMPLE = "notInSample.txt"
+FILE_STATUS = "status.log"
 FILE_LOG = "output.log"
 RESULT_DIR_FORMAT = "%Y-%m-%d %H-%M-%S"
 # logging
@@ -174,6 +175,16 @@ def create_parameter(path_class_dir):
         raise ValueError("unsupported algorithm: " + runner_status.algorithm)
 
 
+def write_status_file():
+    """
+    Write the status file.
+    :return: None
+    """
+    status_file_path = os.path.join(ex.get_script_path(), FILE_STATUS)
+    with open(status_file_path, 'w') as status_file:
+        runner_status.save_to_file(status_file)
+
+
 def run_evosuite(path_results):
     """
     Runs multiple executions of EvoSuite for the passed class.
@@ -188,7 +199,7 @@ def run_evosuite(path_results):
 
         # write status
         if args.write_status:
-            runner_status.save_to_file()
+            write_status_file()
 
         # output directories
         path_class_dir = os.path.join(args.corpus, runner_status.current_project, runner_status.current_class)
@@ -364,7 +375,7 @@ def main():
 
     # write status
     if args.write_status:
-        runner_status.save_to_file()
+        write_status_file()
 
     # run tests
     logging.info("run tests...")
