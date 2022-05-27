@@ -12,7 +12,7 @@ import sys
 import matplotlib.pyplot as plt
 import pandas as pd
 import scipy.stats as stats
-
+import numpy as np
 import experiment_lib as ex
 
 from sklearn.ensemble import RandomForestClassifier
@@ -61,29 +61,41 @@ def evaluation(dataframe):
     # print infos
     # ##################################
     logging.info("---------------------------------------------------------")
-    logging.info("Tests for evaluation:\t" + str(len(dataframe.index)))
-    logging.info("Java classes:\t\t" + str(len(dataframe.groupby('TARGET_CLASS'))))
-    logging.info("Mean execution/class:\t" + str(dataframe.groupby('TARGET_CLASS').count().mean()[0]))
-    logging.info("Branches max:\t\t" + str(dataframe['Total_Branches'].max()))
-    logging.info("Branches min:\t\t" + str(dataframe['Total_Branches'].min()))
-    logging.info("Gradient branches max:\t" + str(dataframe['Gradient_Branches'].max()))
-    logging.info("Gradient branches min:\t" + str(dataframe['Gradient_Branches'].min()))
-    logging.info("Lines max:\t\t" + str(dataframe['Lines'].max()))
-    logging.info("Lines min:\t\t" + str(dataframe['Lines'].min()))
+    logging.info(f"Tests for evaluation:\t{str(len(dataframe.index))}")
+    logging.info(f"Java classes:\t\t{str(len(dataframe.groupby('TARGET_CLASS')))}")
+    logging.info(f"Mean execution/class:\t{str(dataframe.groupby('TARGET_CLASS').count().mean()[0])}")
+    logging.info(f"Branches max:\t\t{str(dataframe['Total_Branches'].max())}")
+    logging.info(f"Branches min:\t\t{str(dataframe['Total_Branches'].min())}")
+    logging.info(f"Gradient branches max:\t{str(dataframe['Gradient_Branches'].max())}")
+    logging.info(f"Gradient branches min:\t{str(dataframe['Gradient_Branches'].min())}")
+    logging.info(f"Lines max:\t\t{str(dataframe['Lines'].max())}")
+    logging.info(f"Lines min:\t\t{str(dataframe['Lines'].min())}")
+    logging.info(f'GroundTruth (True):\t{len(dataframe[dataframe["GroundTruth"]])}')
+    logging.info(f'GroundTruth (False):\t{len(dataframe[~dataframe["GroundTruth"]])}')
+    logging.info(f'Branchless:\t\t{len(dataframe[dataframe["Branchless"]])}')
+    logging.info("---------------------------------------------------------")
 
     # ex.createExport(subset[subset['_BranchRatio'].lt(0.2)])
     # foo_correlation(dataframe)
     # foo_class_variance(dataframe)
     # foo_f1(dataframe)
-    # foo_3d(dataframe)
     foo_random_forest(dataframe)
+    foo_3d(dataframe)
 
 
 def foo_random_forest(dataframe):
     percentReached = 2
     subset = ex.get_measurements(dataframe, percentReached)
 
-    x = subset[['Branchless', '_GradientRatio', '_BranchRatio', '_NotCovGraRatio', '_Fitness', '_InfoContent', '_NeutralityGen', '_NotGradRatio']].values
+    subset = subset[~subset['Branchless']]
+    subset = subset[subset['_BranchRatio'].gt(0)]
+    logging.info(f'Without BranchRatio.eq(0): {len(subset)}')
+
+    logging.info(f'GroundTruth (True): {len(subset[subset["GroundTruth"]])}')
+    logging.info(f'GroundTruth (False): {len(subset[~subset["GroundTruth"]])}')
+    logging.info(f'balancing: {len(subset[subset["GroundTruth"]]) / len(subset[~subset["GroundTruth"]])}')
+
+    x = subset[['Branchless', '_GradientRatio', '_BranchRatio', '_NotCovGraRatio', '_Fitness', '_InfoContent', '_NeutralityGen']]
     y = subset['GroundTruth'].values
 
     y = y.astype('int')
@@ -91,16 +103,26 @@ def foo_random_forest(dataframe):
     x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
 
     logging.info('fit train data...')
-    model = RandomForestClassifier(n_estimators=20, random_state=42)
+    model = RandomForestClassifier(n_estimators=100, random_state=42, max_features="sqrt")
+    sample_weight = np.array([5 if i == 0 else 1 for i in y])
     model.fit(x_train, y_train)
+
+    logging.info('plot feature importances...')
+    importances = model.feature_importances_
+    sorted_indices = np.argsort(importances)[::-1]
+
+    plt.title('Feature Importance')
+    plt.bar(range(x_train.shape[1]), importances[sorted_indices], align='center')
+    plt.xticks(range(x_train.shape[1]), x.columns[sorted_indices], rotation=90)
+    plt.tight_layout()
+    plt.show()
 
     logging.info('predict test data...')
     prediction = model.predict(x_test)
 
     logging.info('get classification_report...')
     print(classification_report(y_test, prediction))
-    logging.info('get accuracy_score...')
-    print(accuracy_score(y_test, prediction))
+    logging.info(f'accuracy_score: {accuracy_score(y_test, prediction)}')
 
 
 def foo_correlation(dataframe):
@@ -145,12 +167,12 @@ def foo_3d(dataframe):
 
     ax = plt.axes(projection='3d')
     # GroundTruth, Branchless, CoverageClass, Coverage
-    # _GradientRatio, _BranchRatio, _NotCovGraRatio, _Fitness
+    # _GradientRatio, _BranchRatio, _NotCovGraRatio, _NotGradRatio
     # _InfoContent, _NeutralityGen
-    # _NotGradRatio
-    ax.scatter3D(subset['_BranchRatio'], subset['_Fitness'], subset['Coverage'], c=subset['CoverageClass'])
-    ax.set_xlabel('_BranchRatio at 20%')
-    ax.set_ylabel('_Fitness at 20%')
+    # _Fitness
+    ax.scatter3D(subset['_NeutralityGen'], subset['_BranchRatio'], subset['Coverage'], c=subset['CoverageClass'])
+    ax.set_xlabel('_NeutralityGen at 20%')
+    ax.set_ylabel('_BranchRatio at 20%')
     ax.set_zlabel('Coverage at 20%')
     ax.set_xlim3d(0, 1)
     ax.set_ylim3d(0, 1)

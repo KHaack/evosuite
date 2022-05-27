@@ -57,6 +57,7 @@ def add_additional_columns(dataframe):
     # classification groundTruth
     dataframe.loc[dataframe['CoverageClass'].lt(4), 'GroundTruth'] = True
     dataframe.loc[dataframe['CoverageClass'].eq(4), 'GroundTruth'] = False
+    dataframe['GroundTruth'] = dataframe['GroundTruth'].astype('bool')
 
     # branchless
     dataframe['Branchless'] = dataframe['Total_Branches'].eq(0)

@@ -384,6 +384,6 @@ def main():
 if __name__ == "__main__":
     args = setup_argparse().parse_args()
     now = datetime.now()
-    runner_status = ex.RunnerStatus(initial_sample_file=args.sample, sample_size=119, executions_per_class=10,
-                                    hostname=socket.gethostname(), start_time=now)
+    runner_status = ex.RunnerStatus(initial_sample_file=args.sample, sample_size=713, executions_per_class=5,
+                                    hostname=socket.gethostname(), start_time=now, random=False)
     main()
