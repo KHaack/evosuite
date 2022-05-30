@@ -124,10 +124,10 @@ def move_results(path_class_dir, path_results):
     :param path_results: the destination of the results.
     :return: None
     """
-    old_file_path = os.path.join(path_class_dir, DIRECTORY_EXECUTION_REPORTS, str(runner_status.current_execution),
+    old_file_path = os.path.join(path_class_dir, DIRECTORY_EXECUTION_REPORTS, str(runner.current_execution),
                                  "statistics.csv")
 
-    newname = f"{runner_status.current_project}-{runner_status.current_class}-{str(runner_status.current_execution)}.csv"
+    newname = f"{runner.current_project}-{runner.current_class}-{str(runner.current_execution)}.csv"
     new_file_path = os.path.join(path_results, newname)
 
     os.rename(old_file_path, new_file_path)
@@ -139,50 +139,52 @@ def create_parameter(path_class_dir):
     :param path_class_dir: The path to the class
     :return: The parameter for EvoSuite.
     """
-    project_class_path = get_project_class_path(runner_status.current_project)
-    path_report = os.path.join(path_class_dir, DIRECTORY_EXECUTION_REPORTS, str(runner_status.current_execution))
-    path_test = os.path.join(path_class_dir, DIRECTORY_EXECUTION_TESTS, str(runner_status.current_execution))
+    project_class_path = get_project_class_path(runner.current_project)
+    path_report = os.path.join(path_class_dir, DIRECTORY_EXECUTION_REPORTS, str(runner.current_execution))
+    path_test = os.path.join(path_class_dir, DIRECTORY_EXECUTION_TESTS, str(runner.current_execution))
 
     parameter = ['java',
                  '-Xmx4G',
                  '-jar',
                  args.evosuite,
                  '-class',
-                 runner_status.current_class,
+                 runner.current_class,
                  '-projectCP',
                  project_class_path,
                  f'-Dreport_dir={path_report}',
                  f'-Dtest_dir={path_test}',
-                 f'-Dsearch_budget={str(runner_status.search_budget)}'
+                 f'-Dsearch_budget={str(runner.search_budget)}'
                  ]
 
     parameter = parameter + PARAMETER_ALL
 
-    if runner_status.criterion != 'default':
-        parameter = parameter + ['-criterion', runner_status.criterion]
+    if runner.criterion != 'default':
+        parameter = parameter + ['-criterion', runner.criterion]
 
-    if runner_status.cross_over_rate != 'default':
-        parameter = parameter + ['-Dcrossover_rate', str(runner_status.cross_over_rate)]
+    if runner.cross_over_rate != 'default':
+        parameter = parameter + ['-Dcrossover_rate', str(runner.cross_over_rate)]
 
-    if runner_status.mutation_rate != 'default':
-        parameter = parameter + ['-Dmutation_rate', str(runner_status.mutation_rate)]
+    if runner.mutation_rate != 'default':
+        parameter = parameter + ['-Dmutation_rate', str(runner.mutation_rate)]
 
-    if runner_status.algorithm == 'DYNAMOSA':
+    if runner.algorithm == 'DYNAMOSA':
         return parameter + PARAMETER_DYNAMOSA
-    elif runner_status.algorithm == 'RANDOM':
+    elif runner.algorithm == 'RANDOM':
         return parameter + PARAMETER_RANDOM
     else:
-        raise ValueError("unsupported algorithm: " + runner_status.algorithm)
+        raise ValueError("unsupported algorithm: " + runner.algorithm)
 
 
-def write_status_file():
+def write_status_file(status):
     """
     Write the status file.
     :return: None
     """
+    runner.status = status
+
     status_file_path = os.path.join(ex.get_script_path(), FILE_STATUS)
     with open(status_file_path, 'w') as status_file:
-        runner_status.save_to_file(status_file)
+        runner.save_to_file(status_file)
 
 
 def run_evosuite(path_results):
@@ -191,18 +193,18 @@ def run_evosuite(path_results):
     :param path_results: The path to the results directory
     """
     timeouts = 0
-    runner_status.current_execution = 0
+    runner.current_execution = 0
     skip = False
-    while not skip and runner_status.current_execution < runner_status.executions_per_class:
+    while not skip and runner.current_execution < runner.executions_per_class:
         logging.info(
-            f"Class ({str(runner_status.current_class_index + 1)} / {str(runner_status.sample_size)}) Execution ({str(runner_status.current_execution + 1)} / {str(runner_status.executions_per_class)}): Running default configuration in project ({runner_status.current_project}) for class ({runner_status.current_class}) with random seed.")
+            f"Class ({str(runner.current_class_index + 1)} / {str(runner.sample_size)}) Execution ({str(runner.current_execution + 1)} / {str(runner.executions_per_class)}): Running default configuration in project ({runner.current_project}) for class ({runner.current_class}) with random seed.")
 
         # write status
         if args.write_status:
-            write_status_file()
+            write_status_file(ex.Status.RUNNING)
 
         # output directories
-        path_class_dir = os.path.join(args.corpus, runner_status.current_project, runner_status.current_class)
+        path_class_dir = os.path.join(args.corpus, runner.current_project, runner.current_class)
 
         # create directories
         if not os.path.exists(path_class_dir):
@@ -217,31 +219,31 @@ def run_evosuite(path_results):
         if not os.path.exists(path_log):
             os.mkdir(path_log)
 
-        path_log_file = os.path.join(path_log, "log_" + str(runner_status.current_execution) + ".txt")
+        path_log_file = os.path.join(path_log, "log_" + str(runner.current_execution) + ".txt")
         output = open(path_log_file, "w")
 
         # start process
         proc = subprocess.Popen(parameter, stdout=output, stderr=output)
 
         try:
-            proc.communicate(timeout=runner_status.timeout)
+            proc.communicate(timeout=runner.timeout)
             move_results(path_class_dir, path_results)
             timeouts = 0
         except subprocess.TimeoutExpired:
             # skip if timeouts reached
             timeouts = timeouts + 1
-            if 0 < runner_status.skip_after_timeouts <= timeouts:
+            if 0 < runner.skip_after_timeouts <= timeouts:
                 skip = True
                 logging.info(f"max timeouts reached, skip next")
 
             # kill process
             logging.warning(
-                f'Subprocess timeout ({str(timeouts)}/{str(runner_status.skip_after_timeouts)}) {str(runner_status.timeout)}s')
+                f'Subprocess timeout ({str(timeouts)}/{str(runner.skip_after_timeouts)}) {str(runner.timeout)}s')
             kill_process(proc)
         except Exception as error:
             logging.error(f"Unexpected {error=}, {type(error)=}")
 
-        runner_status.current_execution = runner_status.current_execution + 1
+        runner.current_execution = runner.current_execution + 1
 
 
 def kill_process(proc):
@@ -266,7 +268,7 @@ def on_timeout(process_arguments):
     :return:
     """
     if process_arguments[0].pid >= 0:
-        logging.error("Timeout after " + str(runner_status.timeout) + "s: kill process " + args[0].pid)
+        logging.error("Timeout after " + str(runner.timeout) + "s: kill process " + args[0].pid)
         os.kill(process_arguments[0].pid, signal.SIGTERM)
 
 
@@ -276,10 +278,10 @@ def select_sample(init_sample):
     :param init_sample: The initial sample of all classes.
     :return: The selected sample.
     """
-    if runner_status.random:
-        return random.sample(range(len(init_sample)), runner_status.sample_size)
+    if runner.random:
+        return random.sample(range(len(init_sample)), runner.sample_size)
     else:
-        return range(0, runner_status.sample_size)
+        return range(0, runner.sample_size)
 
 
 def create_backups(initial_sample, sample):
@@ -352,10 +354,13 @@ def main():
 
     sample_list = get_initial_sample(args.sample)
 
-    runner_status.print_status()
+    runner.print_status()
 
-    if runner_status.sample_size > len(sample_list):
-        raise ValueError(f"sample size '{str(runner_status.sample_size)}' > init file length '{str(len(sample_list))}'")
+    if runner.sample_size > len(sample_list):
+        raise ValueError(f"sample size '{str(runner.sample_size)}' > init file length '{str(len(sample_list))}'")
+
+    if args.write_status:
+        write_status_file(ex.Status.IDLE)
 
     # select sample
     sample = select_sample(sample_list)
@@ -369,23 +374,31 @@ def main():
         os.mkdir(path_results)
 
     path_results = os.path.join(ex.get_script_path(), DIRECTORY_RESULTS,
-                                runner_status.start_time.strftime(RESULT_DIR_FORMAT))
+                                runner.start_time.strftime(RESULT_DIR_FORMAT))
     if not os.path.exists(path_results):
         os.mkdir(path_results)
 
-    # write status
-    if args.write_status:
-        write_status_file()
-
     # run tests
     logging.info("run tests...")
-    for i in range(len(sample)):
-        runner_status.current_class = sample_list[sample[i]][1]
-        runner_status.current_project = sample_list[sample[i]][0]
-        runner_status.current_class_index = i
-        run_evosuite(path_results)
+    if args.write_status:
+        write_status_file(ex.Status.RUNNING)
 
+    try:
+        for i in range(len(sample)):
+            runner.current_class = sample_list[sample[i]][1]
+            runner.current_project = sample_list[sample[i]][0]
+            runner.current_class_index = i
+
+            run_evosuite(path_results)
+    except Exception as error:
+        logging.error(f"Unexpected {error=}, {type(error)=}")
+        if args.write_status:
+            write_status_file(ex.Status.ERROR)
+
+    if args.write_status:
+        write_status_file(ex.Status.DONE)
     logging.info("DONE.")
+
     if args.shutdown:
         ex.shutdown()
     elif args.reboot:
@@ -395,6 +408,6 @@ def main():
 if __name__ == "__main__":
     args = setup_argparse().parse_args()
     now = datetime.now()
-    runner_status = ex.RunnerStatus(initial_sample_file=args.sample, sample_size=713, executions_per_class=5,
-                                    hostname=socket.gethostname(), start_time=now, random=False)
+    runner = ex.ExperimentRunner(initial_sample_file=args.sample, sample_size=713, executions_per_class=2,
+                                 hostname=socket.gethostname(), start_time=now, random=False)
     main()

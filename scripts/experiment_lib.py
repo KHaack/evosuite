@@ -8,6 +8,7 @@ import logging
 import os
 import platform
 from datetime import datetime
+from enum import IntEnum
 
 import pandas as pd
 from dateutil import parser
@@ -136,17 +137,13 @@ def get_measurements(dataframe, percent):
     dataframe.loc[dataframe['Total_Branches'].gt(0), '_NotGradRatio'] = (dataframe['Total_Branches'] - dataframe[
         '_GradientBra']) / (dataframe['Total_Branches'])
 
-    dataframe.loc[dataframe['_GradientBra'].eq(0), '_GradientRatio'] = 0
+    dataframe.loc[dataframe['_GradientBra'].eq(0), '_GradientRatio'] = 1
     dataframe.loc[dataframe['_GradientBra'].gt(0), '_GradientRatio'] = dataframe['_GradientCov'] / (
         dataframe['_GradientBra'])
 
     dataframe.loc[dataframe['Total_Branches'].eq(0), '_BranchRatio'] = 0
     dataframe.loc[dataframe['Total_Branches'].gt(0), '_BranchRatio'] = dataframe['_GradientBra'] / (
         dataframe['Total_Branches'])
-
-    dataframe.loc[dataframe['Total_Branches'].eq(0), '_NotCovGraRatio'] = 0
-    dataframe.loc[dataframe['Total_Branches'].gt(0), '_NotCovGraRatio'] = (dataframe['_GradientBra'] - dataframe[
-        '_GradientCov']) / (dataframe['Total_Branches'])
 
     return dataframe
 
@@ -236,16 +233,24 @@ def reboot():
         raise Exception(f"Unsupported os '{system}'")
 
 
-class RunnerStatus:
+class Status(IntEnum):
+    UNKNOWN = 0
+    IDLE = 1
+    RUNNING = 2
+    DONE = 3
+    ERROR = 4
+
+
+class ExperimentRunner:
     """
-    Represents the runner status.
+    Represents the experiment runner.
     """
 
     def __init__(self, initial_sample_file, hostname, start_time, sample_size, random=True, executions_per_class=10,
                  search_budget=120, timeout=180,
                  skip_after_timeouts=2, algorithm='DYNAMOSA', criterion='default', mutation_rate='default',
                  cross_over_rate='default', current_project=None, current_class=None, current_class_index=0,
-                 current_execution=0):
+                 current_execution=0, status=Status.UNKNOWN):
         self.initial_sample_file = initial_sample_file
         self.random = random
         self.sample_size = sample_size
@@ -262,6 +267,7 @@ class RunnerStatus:
         self.current_class = current_class
         self.current_class_index = current_class_index
         self.current_execution = current_execution
+        self.status = status
 
         if isinstance(start_time, str):
             self.start_time = parser.parse(start_time)
@@ -304,10 +310,10 @@ class RunnerStatus:
         :param status_file: The file object.
         :return: None
         """
-        status_file.write(json.dumps(self.__dict__, indent=4, cls=DateTimeAwareEncoder))
+        status_file.write(json.dumps(self.__dict__, indent=4, cls=ExperimentRunnerEncoder))
 
 
-class DateTimeAwareEncoder(json.JSONEncoder):
+class ExperimentRunnerEncoder(json.JSONEncoder):
     """
     A Datetime aware encoder for json.
     https://stackoverflow.com/questions/44630103/how-to-write-and-read-datetime-dictionaries

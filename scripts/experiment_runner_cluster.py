@@ -3,16 +3,19 @@
     Author: Kevin Haack
 """
 import argparse
+import datetime
 import logging
 import os
 import sys
 import json
+from datetime import timedelta, datetime
+
 import paramiko
 from ping3 import ping
 from scp import SCPClient
 
 # paths and files
-from experiment_lib import RunnerStatus
+from experiment_lib import ExperimentRunner, Status
 
 FILE_TEMP = "temp.log"
 LOCATION_LOG_REMOTE = "/home/user/Benchmark/output.log"
@@ -68,7 +71,7 @@ def monitor_remote(ip):
     """
     Monitor the remote with the passed ip
     :param ip: The ip of the remote.
-    :return: RunnerStatus of the passed ip.
+    :return: ExperimentRunner of the passed ip.
     """
     with SCPClient(get_ssh(ip).get_transport()) as scp:
         logging.info(f'get status of {ip}...')
@@ -76,11 +79,10 @@ def monitor_remote(ip):
 
         with open(FILE_TEMP, 'r') as f:
             content = json.loads(f.read())
-            status = RunnerStatus(**content)
-            status.print_status()
+            runner = ExperimentRunner(**content)
         os.remove(FILE_TEMP)
 
-    return status
+    return runner
 
 
 def start_remote(ip):
@@ -148,16 +150,24 @@ def monitor_remotes():
     sample_total = 0
     sample_done = 0
     for ip in get_reachable_ips():
-        status = monitor_remote(ip)
+        runner = monitor_remote(ip)
+        logging.info(f"{ip} status: {runner.status}")
 
-        sample_total = sample_total + status.sample_size
-        sample_done = sample_done + status.current_class_index
-        runtime = status.get_runtime_estimation()
-        if runtime > max_runtime:
-            max_runtime = runtime
+        if runner.status == Status.RUNNING or runner.status == Status.UNKNOWN:
+            runner.print_status()
+
+            sample_total = sample_total + runner.sample_size
+            sample_done = sample_done + runner.current_class_index
+            runtime = runner.get_runtime_estimation()
+            if runtime > max_runtime:
+                max_runtime = runtime
 
     logging.info('-------------------------------------------------------')
+    delta = timedelta(seconds=max_runtime)
+    end = datetime.now() + delta
+
     logging.info(f'Estimated runtime {str(max_runtime / 60 / 60)}h')
+    logging.info(f'Estimated end {end.strftime("%Y-%m-%d %H-%M-%S")}h')
     logging.info(f'Class {str(sample_done)}/{str(sample_total)}')
 
 
