@@ -133,7 +133,7 @@ def get_measurements(dataframe, percent):
         dataframe['_Generations'])
     dataframe.loc[dataframe['_NeutralityGen'] > 1, '_NeutralityGen'] = 1
 
-    dataframe.loc[dataframe['Total_Branches'].eq(0), '_NotGradRatio'] = 0
+    dataframe.loc[dataframe['Total_Branches'].eq(0), '_NotGradRatio'] = 1
     dataframe.loc[dataframe['Total_Branches'].gt(0), '_NotGradRatio'] = (dataframe['Total_Branches'] - dataframe[
         '_GradientBra']) / (dataframe['Total_Branches'])
 
