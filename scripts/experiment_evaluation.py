@@ -9,6 +9,7 @@ import logging
 import os
 import sys
 
+import matplotlib
 import matplotlib.pyplot as plt
 import pandas as pd
 import scipy.stats as stats
@@ -77,18 +78,21 @@ def evaluation(dataframe):
     logging.info(f'Branchless:\t\t{len(dataframe[dataframe["Branchless"]])}')
     logging.info("---------------------------------------------------------")
 
-    # ex.createExport(subset[subset['_BranchRatio'].lt(0.2)])
-    # foo_correlation(dataframe)
-    # foo_class_variance(dataframe)
-
-    # foo_predict('RandomForest', dataframe, RandomForestClassifier(n_estimators=100, random_state=42, max_features="sqrt"))
-
-    # ###################################################################
-    logging.info("Predict @20%: all")
+    logging.info("@20%")
     subset = ex.get_measurements(dataframe, 2)
+    # foo_correlation(subset)
+    # foo_variance(subset)
 
-    foo_predict('All @20%', subset, tree.DecisionTreeClassifier(max_depth=5, random_state=42), True)
-    # foo_common_plots('all', subset, '_BranchRatio', '_Fitness', 'Coverage')
+    # foo_predict('RandomForest', subset, RandomForestClassifier(n_estimators=100, random_state=42, max_features="sqrt", max_depth=5))
+    # foo_predict('All @20%', subset, tree.DecisionTreeClassifier(max_depth=5, random_state=42, criterion="gini"), True)
+    # ###################################################################
+
+
+    # GroundTruth, Branchless, Coverage
+    # _GradientRatio, _BranchRatio, _NotGradRatio
+    # _InfoContent, _NeutralityGen
+    # _Fitness
+    draw_3d(subset, 'BranchRatio at 20%', 'Fitness at 20%', 'Coverage', 'GroundTruth', '_BranchRatio', '_Fitness', 'Coverage', 'GroundTruth')
 
 
 def foo_predict(title, dataframe, model, make_plots=False):
@@ -172,48 +176,89 @@ def foo_correlation(dataframe):
     printCorrelations(str(percentReached * 10) + 'p-time', subset, 'Coverage')
 
 
-def foo_common_plots(title, dataframe, x, y, z):
-    plt.title(f"Coverage histogram: {title}")
-    plt.hist(dataframe['Coverage'])
-    plt.plot()
-    plt.show()
+def foo_variance(dataframe):
+    groups = dataframe.groupby('TARGET_CLASS').agg({
+        'Coverage': 'var',
+        'GroundTruth': 'mean',
+        'Branchless': 'mean',
+        '_GradientRatio': 'mean',
+        '_BranchRatio': 'mean',
+        '_NotGradRatio': 'mean',
+        '_InfoContent': 'mean',
+        '_NeutralityGen': 'mean',
+        '_Fitness': 'mean'
+    }).reset_index()
 
-    # ################################
-    ax = plt.axes(projection='3d')
-    # GroundTruth, Branchless, Coverage
-    # _GradientRatio, _BranchRatio, _NotGradRatio
-    # _InfoContent, _NeutralityGen
-    # _Fitness
-    ax.scatter3D(dataframe[x], dataframe[y], dataframe[z], c=dataframe['GroundTruth'])
-    ax.set_xlabel(f'{x} at 20%')
-    ax.set_ylabel(f'{y} at 20%')
-    ax.set_zlabel(f'{z} at 20%')
+    draw_2d(groups, 'Branchless (mean)', 'Coverage (var)', 'GroundTruth (mean)', 'Branchless', 'Coverage', 'GroundTruth')
+    draw_2d(groups, 'GradientRatio at 20% (mean)', 'Coverage (var)', 'GroundTruth (mean)', '_GradientRatio', 'Coverage', 'GroundTruth')
+    draw_2d(groups, 'BranchRatio at 20% (mean)', 'Coverage (var)', 'GroundTruth (mean)', '_BranchRatio', 'Coverage', 'GroundTruth')
+    draw_2d(groups, 'NotGradRatio at 20% (mean)', 'Coverage (var)', 'GroundTruth (mean)', '_NotGradRatio', 'Coverage', 'GroundTruth')
+    draw_2d(groups, 'InfoContent at 20% (mean)', 'Coverage (var)', 'GroundTruth (mean)', '_InfoContent', 'Coverage', 'GroundTruth')
+    draw_2d(groups, 'NeutralityGen at 20% (mean)', 'Coverage (var)', 'GroundTruth (mean)', '_NeutralityGen', 'Coverage', 'GroundTruth')
+    draw_2d(groups, 'Fitness at 20% (mean)', 'Coverage (var)', 'GroundTruth (mean)', '_Fitness', 'Coverage', 'GroundTruth')
+
+
+def draw_3d(dataframe, x_name, y_name, z_name, color_name, x, y, z, color):
+    """
+    Draw a 3d scatter plot.
+    :param dataframe: The dataframe.
+    :param x_name: The display name of the x column
+    :param y_name: The display name of the y column
+    :param z_name: The display name of the z column
+    :param x: The name of the x column
+    :param y: The name of the y column
+    :param z: The name of the z column
+    :param color: The name of the color column
+    :return: None
+    """
+    ax = plt.gca(projection='3d')
+    fig = plt.gcf()
+    norm = matplotlib.colors.Normalize(vmin=0, vmax=1)
+    colormap = plt.cm.viridis
+
+    ax.scatter3D(dataframe[x], dataframe[y], dataframe[z], c=dataframe[color])
+    ax.set_xlabel(x_name)
+    ax.set_ylabel(y_name)
+    ax.set_zlabel(z_name)
+
     ax.set_xlim3d(0, 1)
     ax.set_ylim3d(0, 1)
     ax.set_zlim3d(0, 1)
-    plt.title(title)
+
+    plt.title(f'{x_name} - {y_name} - {z_name}')
+
+    sm = plt.cm.ScalarMappable(cmap=colormap, norm=norm)
+    fig.colorbar(sm, label=color_name)
+
     plt.show()
 
 
-def foo_class_variance(dataframe):
-    percentReached = 2
-    dataframe = ex.get_measurements(dataframe, percentReached)
-    dataframe['matched'] = dataframe['_BranchRatio'].le(0.2)
+def draw_2d(dataframe, x_name, y_name, color_name, x, y, color):
+    """
+    Draw a 2d scatter plot.
+    :param dataframe: The dataframe.
+    :param x_name: The display name of the x column
+    :param y_name: The display name of the y column
+    :param x: The name of the x column
+    :param y: The name of the y column
+    :param color: The name of the color column
+    :return: None
+    """
+    ax = plt.gca()
+    fig = plt.gcf()
+    norm = matplotlib.colors.Normalize(vmin=0, vmax=1)
+    colormap = plt.cm.viridis
 
-    groups = dataframe.groupby('TARGET_CLASS').agg({
-        'Coverage': 'var',
-        '_Fitness': 'mean',
-        '_BranchRatio': 'mean',
-        'matched': 'mean'
-    }).reset_index()
+    ax.scatter(dataframe[x], dataframe[y], c=dataframe[color], norm=norm, cmap=colormap)
+    ax.set_xlabel(x_name)
+    ax.set_ylabel(y_name)
 
-    ax = plt.axes(projection='3d')
-    ax.scatter3D(groups['_BranchRatio'], groups['_Fitness'], groups['Coverage'], c=groups['matched'])
-    ax.set_xlabel('_BranchRatio (mean) at 20%')
-    ax.set_ylabel('_Fitness (mean) at 20%')
-    ax.set_zlabel('End Coverage (variance)')
-    ax.set_xlim3d(0, 1)
-    ax.set_ylim3d(0, 1)
+    plt.title(f'{x_name} - {y_name}')
+
+    sm = plt.cm.ScalarMappable(cmap=colormap, norm=norm)
+    fig.colorbar(sm, label=color_name)
+
+    plt.show()
 
 
 def printCorrelations(name, dataframe, referenceColumn, enablePlotting=False):
