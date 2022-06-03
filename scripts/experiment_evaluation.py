@@ -32,7 +32,7 @@ LOG_FORMAT = "%(levelname)s %(asctime)s - %(message)s"
 LOG_LEVEL = logging.INFO
 LOG_STREAM = sys.stdout
 # filter
-FILTER_MIN_EXECUTIONS = 20
+FILTER_MIN_EXECUTIONS = 25
 
 
 def getStatisticFiles():
@@ -81,7 +81,7 @@ def evaluation(dataframe):
     logging.info("@20%")
     subset = ex.get_measurements(dataframe, 2)
     # foo_correlation(subset)
-    # foo_variance(subset)
+    foo_variance(subset)
 
     # foo_predict('RandomForest', subset, RandomForestClassifier(n_estimators=100, random_state=42, max_features="sqrt", max_depth=5))
     # foo_predict('All @20%', subset, tree.DecisionTreeClassifier(max_depth=5, random_state=42, criterion="gini"), True)
@@ -92,7 +92,7 @@ def evaluation(dataframe):
     # _GradientRatio, _BranchRatio, _NotGradRatio
     # _InfoContent, _NeutralityGen
     # _Fitness
-    draw_3d(subset, 'BranchRatio at 20%', 'Fitness at 20%', 'Coverage', 'GroundTruth', '_BranchRatio', '_Fitness', 'Coverage', 'GroundTruth')
+    # draw_3d(subset, 'BranchRatio at 20%', 'Fitness at 20%', 'Coverage', 'GroundTruth', '_BranchRatio', '_Fitness', 'Coverage', 'GroundTruth')
 
 
 def foo_predict(title, dataframe, model, make_plots=False):
@@ -178,7 +178,7 @@ def foo_correlation(dataframe):
 
 def foo_variance(dataframe):
     groups = dataframe.groupby('TARGET_CLASS').agg({
-        'Coverage': 'var',
+        'Coverage': ['var', 'std', 'min', 'max', 'median'],
         'GroundTruth': 'mean',
         'Branchless': 'mean',
         '_GradientRatio': 'mean',
@@ -189,13 +189,48 @@ def foo_variance(dataframe):
         '_Fitness': 'mean'
     }).reset_index()
 
-    draw_2d(groups, 'Branchless (mean)', 'Coverage (var)', 'GroundTruth (mean)', 'Branchless', 'Coverage', 'GroundTruth')
-    draw_2d(groups, 'GradientRatio at 20% (mean)', 'Coverage (var)', 'GroundTruth (mean)', '_GradientRatio', 'Coverage', 'GroundTruth')
-    draw_2d(groups, 'BranchRatio at 20% (mean)', 'Coverage (var)', 'GroundTruth (mean)', '_BranchRatio', 'Coverage', 'GroundTruth')
-    draw_2d(groups, 'NotGradRatio at 20% (mean)', 'Coverage (var)', 'GroundTruth (mean)', '_NotGradRatio', 'Coverage', 'GroundTruth')
-    draw_2d(groups, 'InfoContent at 20% (mean)', 'Coverage (var)', 'GroundTruth (mean)', '_InfoContent', 'Coverage', 'GroundTruth')
-    draw_2d(groups, 'NeutralityGen at 20% (mean)', 'Coverage (var)', 'GroundTruth (mean)', '_NeutralityGen', 'Coverage', 'GroundTruth')
-    draw_2d(groups, 'Fitness at 20% (mean)', 'Coverage (var)', 'GroundTruth (mean)', '_Fitness', 'Coverage', 'GroundTruth')
+    groups[('Coverage', 'spread')] = groups[('Coverage', 'max')] - groups[('Coverage', 'min')]
+    groups.sort_values(('Coverage', 'std'), inplace=True, ascending=False)
+
+    # groups['yyy'] = groups[('Coverage', 'max')] - groups[('Coverage', 'min')]
+    groups['yyy'] = groups[('Coverage', 'std')]
+    yyy_name = 'Coverage (std)'
+    draw_2d(groups, 'Branchless (mean)', yyy_name, 'GroundTruth (mean)', 'Branchless', 'yyy', 'GroundTruth')
+    draw_2d(groups, 'GradientRatio at 20% (mean)', yyy_name, 'GroundTruth (mean)', '_GradientRatio', 'yyy', 'GroundTruth')
+    draw_2d(groups, 'BranchRatio at 20% (mean)', yyy_name, 'GroundTruth (mean)', '_BranchRatio', 'yyy', 'GroundTruth')
+    draw_2d(groups, 'NotGradRatio at 20% (mean)', yyy_name, 'GroundTruth (mean)', '_NotGradRatio', 'yyy', 'GroundTruth')
+    draw_2d(groups, 'InfoContent at 20% (mean)', yyy_name, 'GroundTruth (mean)', '_InfoContent', 'yyy', 'GroundTruth')
+    draw_2d(groups, 'NeutralityGen at 20% (mean)', yyy_name, 'GroundTruth (mean)', '_NeutralityGen', 'yyy', 'GroundTruth')
+    draw_2d(groups, 'Fitness at 20% (mean)', yyy_name, 'GroundTruth (mean)', '_Fitness', 'yyy', 'GroundTruth')
+
+
+def draw_2d(dataframe, x_name, y_name, color_name, x, y, color):
+    """
+    Draw a 2d scatter plot.
+    :param dataframe: The dataframe.
+    :param x_name: The display name of the x column
+    :param y_name: The display name of the y column
+    :param color_name: The display name of the color column
+    :param x: The name of the x column
+    :param y: The name of the y column
+    :param color: The name of the color column
+    :return: None
+    """
+    ax = plt.gca()
+    fig = plt.gcf()
+    norm = matplotlib.colors.Normalize(vmin=0, vmax=1)
+    colormap = plt.cm.viridis
+
+    ax.scatter(dataframe[x], dataframe[y], c=dataframe[color].values, norm=norm, cmap=colormap)
+    ax.set_xlabel(x_name)
+    ax.set_ylabel(y_name)
+
+    plt.title(f'{x_name} - {y_name}')
+
+    sm = plt.cm.ScalarMappable(cmap=colormap, norm=norm)
+    fig.colorbar(sm, label=color_name)
+
+    plt.show()
 
 
 def draw_3d(dataframe, x_name, y_name, z_name, color_name, x, y, z, color):
@@ -205,6 +240,7 @@ def draw_3d(dataframe, x_name, y_name, z_name, color_name, x, y, z, color):
     :param x_name: The display name of the x column
     :param y_name: The display name of the y column
     :param z_name: The display name of the z column
+    :param color_name: The display name of the color column
     :param x: The name of the x column
     :param y: The name of the y column
     :param z: The name of the z column
@@ -226,34 +262,6 @@ def draw_3d(dataframe, x_name, y_name, z_name, color_name, x, y, z, color):
     ax.set_zlim3d(0, 1)
 
     plt.title(f'{x_name} - {y_name} - {z_name}')
-
-    sm = plt.cm.ScalarMappable(cmap=colormap, norm=norm)
-    fig.colorbar(sm, label=color_name)
-
-    plt.show()
-
-
-def draw_2d(dataframe, x_name, y_name, color_name, x, y, color):
-    """
-    Draw a 2d scatter plot.
-    :param dataframe: The dataframe.
-    :param x_name: The display name of the x column
-    :param y_name: The display name of the y column
-    :param x: The name of the x column
-    :param y: The name of the y column
-    :param color: The name of the color column
-    :return: None
-    """
-    ax = plt.gca()
-    fig = plt.gcf()
-    norm = matplotlib.colors.Normalize(vmin=0, vmax=1)
-    colormap = plt.cm.viridis
-
-    ax.scatter(dataframe[x], dataframe[y], c=dataframe[color], norm=norm, cmap=colormap)
-    ax.set_xlabel(x_name)
-    ax.set_ylabel(y_name)
-
-    plt.title(f'{x_name} - {y_name}')
 
     sm = plt.cm.ScalarMappable(cmap=colormap, norm=norm)
     fig.colorbar(sm, label=color_name)

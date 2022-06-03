@@ -26,7 +26,7 @@ LOCATION_SCRIPT = "C:\\Users\\kha\\repos\\evosuite\\scripts\\experiment_runner.p
 LOCATION_SCRIPT_REMOTE = "/home/user/Benchmark/experiment_runner.py"
 LOCATION_JAR = "C:\\Users\\kha\\repos\\evosuite\\master\\target\\evosuite-master-1.2.1-SNAPSHOT.jar"
 LOCATION_JAR_REMOTE = "/home/user/Benchmark/evosuite-master-1.2.1-SNAPSHOT.jar"
-LOCATION_SAMPLE_REMOTE = "/home/user/Benchmark/samples/12 - new default - 713.txt"
+LOCATION_SAMPLE_REMOTE = "/home/user/Benchmark/samples/13 - high stdev - 100.txt"
 LOCATION_CORPUS_REMOTE = "/home/user/Benchmark/SF110-20130704"
 # the command that should be executed on the remotes
 REMOTE_COMMAND = f'python3 "{LOCATION_SCRIPT_REMOTE}" -sample "{LOCATION_SAMPLE_REMOTE}" -corpus "{LOCATION_CORPUS_REMOTE}" -evosuite "{LOCATION_JAR_REMOTE}" -write_status -reboot'
@@ -140,25 +140,25 @@ def start_remotes():
         start_remote(ip)
 
 
-def monitor_remotes():
+def create_cluster_report(runners):
     """
-    Monitor the experiments on the remotes.
+    Creates a cluster report.
+    :param runners: A list of all runners.
     :return: None
     """
-    logging.info('monitor...')
-    max_runtime = 0
     sample_total = 0
     sample_done = 0
-    for ip in get_reachable_ips():
-        runner = monitor_remote(ip)
-        logging.info(f"{ip} status: {runner.status}")
+    max_runtime = 0
 
-        if runner.status == Status.RUNNING or runner.status == Status.UNKNOWN:
+    logging.info('-------------------------------------------------------')
+    for runner in runners:
+        if runner.status == Status.RUNNING:
             runner.print_status()
 
             sample_total = sample_total + runner.sample_size
             sample_done = sample_done + runner.current_class_index
             runtime = runner.get_runtime_estimation()
+
             if runtime > max_runtime:
                 max_runtime = runtime
 
@@ -169,6 +169,45 @@ def monitor_remotes():
     logging.info(f'Estimated runtime {str(max_runtime / 60 / 60)}h')
     logging.info(f'Estimated end {end.strftime("%Y-%m-%d %H-%M-%S")}h')
     logging.info(f'Class {str(sample_done)}/{str(sample_total)}')
+
+
+def monitor_remotes():
+    """
+    Monitor the experiments on the remotes.
+    :return: None
+    """
+    logging.info('monitor...')
+
+    runners = []
+    for ip in get_reachable_ips():
+        runner = monitor_remote(ip)
+
+        if runner.status == 0:
+            logging.warning(f"{ip} status: unknown")
+        elif runner.status == 1:
+            logging.info(f"{ip} status: idle")
+        elif runner.status == 2:
+            logging.warning(f"{ip} status: running (no saved_at)")
+            if runner.saved_at is None:
+                runners.append(runner)
+            else:
+                # check saved_at
+                delta = timedelta(seconds=runner.timeout)
+                last_accepted_time = runner.saved_at + delta
+
+                if datetime.now() >= last_accepted_time:
+                    logging.info(f"{ip} status: running, BUT no new status file")
+                else:
+                    logging.info(f"{ip} status: running")
+                    runners.append(runner)
+        elif runner.status == 3:
+            # done
+            logging.info(f"{ip} status: done")
+        elif runner.status == 4:
+            # error
+            logging.error(f"{ip} status: error")
+
+    create_cluster_report(runners)
 
 
 def setupArgparse():

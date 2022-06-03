@@ -181,18 +181,48 @@ def write_status_file(status):
     :return: None
     """
     runner.status = status
+    runner.saved_at = datetime.now()
 
     status_file_path = os.path.join(ex.get_script_path(), FILE_STATUS)
     with open(status_file_path, 'w') as status_file:
         runner.save_to_file(status_file)
 
 
-def run_evosuite(path_results):
+def run_execution(path_results, parameter, output, path_class_dir):
+    """
+    Runs one execution of EvoSuite for the passed class.
+    :param path_results: The path of the results.
+    :param parameter: The parameter for the run.
+    :param output: The output stream of the execution.
+    :param path_class_dir: The class path.
+    :return: True if succeeded
+    """
+    proc = subprocess.Popen(parameter, stdout=output, stderr=output)
+
+    try:
+        proc.communicate(timeout=runner.timeout)
+        move_results(path_class_dir, path_results)
+
+        return True
+    except subprocess.TimeoutExpired:
+        # kill process
+        logging.warning(
+            f'Subprocess timeout after {str(runner.timeout)}s')
+        kill_process(proc)
+
+        return False
+    except Exception as error:
+        logging.error(f"Unexpected {error=}, {type(error)=}")
+        return False
+
+
+def run_executions(path_results):
     """
     Runs multiple executions of EvoSuite for the passed class.
     :param path_results: The path to the results directory
+    :return: None
     """
-    timeouts = 0
+    attempts = 0
     runner.current_execution = 0
     skip = False
     while not skip and runner.current_execution < runner.executions_per_class:
@@ -223,26 +253,18 @@ def run_evosuite(path_results):
         output = open(path_log_file, "w")
 
         # start process
-        proc = subprocess.Popen(parameter, stdout=output, stderr=output)
+        success = run_execution(path_results, parameter, output, path_class_dir)
 
-        try:
-            proc.communicate(timeout=runner.timeout)
-            move_results(path_class_dir, path_results)
-            timeouts = 0
-        except subprocess.TimeoutExpired:
-            # skip if timeouts reached
-            timeouts = timeouts + 1
-            if 0 < runner.skip_after_timeouts <= timeouts:
+        # skip?
+        if success:
+            attempts = 0
+        else:
+            attempts = attempts + 1
+            if 0 < runner.number_attempts <= attempts:
                 skip = True
-                logging.info(f"max timeouts reached, skip next")
+                logging.info(f"max attempts reached, skip class")
 
-            # kill process
-            logging.warning(
-                f'Subprocess timeout ({str(timeouts)}/{str(runner.skip_after_timeouts)}) {str(runner.timeout)}s')
-            kill_process(proc)
-        except Exception as error:
-            logging.error(f"Unexpected {error=}, {type(error)=}")
-
+        # next
         runner.current_execution = runner.current_execution + 1
 
 
@@ -389,7 +411,7 @@ def main():
             runner.current_project = sample_list[sample[i]][0]
             runner.current_class_index = i
 
-            run_evosuite(path_results)
+            run_executions(path_results)
     except Exception as error:
         logging.error(f"Unexpected {error=}, {type(error)=}")
         if args.write_status:
@@ -408,6 +430,11 @@ def main():
 if __name__ == "__main__":
     args = setup_argparse().parse_args()
     now = datetime.now()
-    runner = ex.ExperimentRunner(initial_sample_file=args.sample, sample_size=713, executions_per_class=2,
-                                 hostname=socket.gethostname(), start_time=now, random=False)
+    runner = ex.ExperimentRunner(initial_sample_file=args.sample,
+                                 sample_size=100,
+                                 executions_per_class=10,
+                                 hostname=socket.gethostname(),
+                                 start_time=now,
+                                 random=False,
+                                 mutation_rate=0.95)
     main()
