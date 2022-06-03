@@ -12,9 +12,10 @@ import re
 import signal
 import socket
 import subprocess
+import time
 from datetime import datetime
-
 import psutil
+import numpy as np
 
 import experiment_lib as ex
 
@@ -28,6 +29,8 @@ FILE_NOT_SELECTED_SAMPLE = "notInSample.txt"
 FILE_STATUS = "status.log"
 FILE_LOG = "output.log"
 RESULT_DIR_FORMAT = "%Y-%m-%d %H-%M-%S"
+# mease the mean runtime very x executions
+MEASURE_MEAN_RUNTIME_EVERY = 10
 # logging
 LOG_FORMAT = "%(levelname)s %(asctime)s - %(message)s"
 LOG_LEVEL = logging.INFO
@@ -225,7 +228,11 @@ def run_executions(path_results):
     attempts = 0
     runner.current_execution = 0
     skip = False
+    measured_runtimes = []
+
     while not skip and runner.current_execution < runner.executions_per_class:
+        start_time = time.time()
+
         logging.info(
             f"Class ({str(runner.current_class_index + 1)} / {str(runner.sample_size)}) Execution ({str(runner.current_execution + 1)} / {str(runner.executions_per_class)}): Running default configuration in project ({runner.current_project}) for class ({runner.current_class}) with random seed.")
 
@@ -263,6 +270,14 @@ def run_executions(path_results):
             if 0 < runner.number_attempts <= attempts:
                 skip = True
                 logging.info(f"max attempts reached, skip class")
+
+        # measure runtime
+        end_time = time.time()
+        elapsed_time = end_time - start_time
+        measured_runtimes.append(elapsed_time)
+
+        if (len(measured_runtimes) % MEASURE_MEAN_RUNTIME_EVERY) == 0:
+            runner.mean_runtime_per_execution = np.mean(measured_runtimes)
 
         # next
         runner.current_execution = runner.current_execution + 1

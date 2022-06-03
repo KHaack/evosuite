@@ -250,7 +250,7 @@ class ExperimentRunner:
                  search_budget=120, timeout=180,
                  number_attempts=2, algorithm='DYNAMOSA', criterion='default', mutation_rate='default',
                  cross_over_rate='default', current_project=None, current_class=None, current_class_index=0,
-                 current_execution=0, status=Status.UNKNOWN, saved_at=None):
+                 current_execution=0, status=Status.UNKNOWN, saved_at=None, skip_after_timeouts=1):
         self.initial_sample_file = initial_sample_file
         self.random = random
         self.sample_size = sample_size
@@ -269,7 +269,7 @@ class ExperimentRunner:
         self.current_execution = current_execution
         self.status = status
         self.saved_at = saved_at
-        self.avg_runtime_per_execution = search_budget
+        self.mean_runtime_per_execution = search_budget
 
         if isinstance(start_time, str):
             self.start_time = parser.parse(start_time)
@@ -286,9 +286,9 @@ class ExperimentRunner:
         logging.info(f"Sample size:\t\t{str(self.sample_size)}")
         logging.info(f"Executions/Class:\t{str(self.executions_per_class)}")
         logging.info(f"Search budget:\t\t{str(self.search_budget)}s")
-        logging.info(f"AVG runtime/execution:\t\t{str(self.avg_runtime_per_execution)}s")
+        logging.info(f"Mean runtime/execution:\t{str(self.mean_runtime_per_execution)}s")
         logging.info(f"Timeout:\t\t\t{str(self.timeout)}s")
-        logging.info(f"Skip after timeouts:\t{str(self.number_attempts)}")
+        logging.info(f"Number of attempts:\t{str(self.number_attempts)}")
         logging.info(f"Algorithm:\t\t{self.algorithm}")
         logging.info(f"Criterion:\t\t{self.criterion}")
         logging.info(f"Mutation rate:\t\t{str(self.mutation_rate)}")
@@ -311,7 +311,7 @@ class ExperimentRunner:
         executions = (self.current_class_index * self.executions_per_class) + self.current_execution
         executions_todo = (self.sample_size * self.executions_per_class) - executions
 
-        return executions_todo * self.avg_runtime_per_execution
+        return executions_todo * self.mean_runtime_per_execution
 
     def save_to_file(self, status_file):
         """

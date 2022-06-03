@@ -50,7 +50,6 @@ def evaluation(dataframe):
     Creates a evaluation for the passed dataframe.
     :param dataframe: The dataframe for the evaluation
     """
-
     logging.info("CSV Directory:\t\t" + args.results)
     totalLength = len(dataframe.index)
     logging.info("Total tests:\t\t" + str(totalLength))
