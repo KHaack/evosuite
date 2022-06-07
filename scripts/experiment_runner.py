@@ -161,14 +161,17 @@ def create_parameter(path_class_dir):
 
     parameter = parameter + PARAMETER_ALL
 
-    if runner.criterion != 'default':
+    if runner.criterion is not None:
         parameter = parameter + ['-criterion', runner.criterion]
 
-    if runner.cross_over_rate != 'default':
+    if runner.cross_over_rate is not None:
         parameter = parameter + ['-Dcrossover_rate', str(runner.cross_over_rate)]
 
-    if runner.mutation_rate != 'default':
+    if runner.mutation_rate is not None:
         parameter = parameter + ['-Dmutation_rate', str(runner.mutation_rate)]
+
+    if runner.mutation_rate is not None:
+        parameter = parameter + ['-Dpopulation', str(runner.population)]
 
     if runner.algorithm == 'DYNAMOSA':
         return parameter + PARAMETER_DYNAMOSA
@@ -451,5 +454,7 @@ if __name__ == "__main__":
                                  hostname=socket.gethostname(),
                                  start_time=now,
                                  random=False,
-                                 mutation_rate=0.95)
+                                 mutation_rate=None,
+                                 population=None,
+                                 cross_over_rate=0.95)
     main()

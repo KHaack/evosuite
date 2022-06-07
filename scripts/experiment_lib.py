@@ -7,7 +7,7 @@ import json
 import logging
 import os
 import platform
-from datetime import datetime
+from datetime import timedelta, datetime
 from enum import IntEnum
 
 import pandas as pd
@@ -234,6 +234,9 @@ def reboot():
 
 
 class Status(IntEnum):
+    """
+    Represents a runner status.
+    """
     UNKNOWN = 0
     IDLE = 1
     RUNNING = 2
@@ -243,14 +246,15 @@ class Status(IntEnum):
 
 class ExperimentRunner:
     """
-    Represents the experiment runner.
+    Represents the experiment runner, and it's status during the run.
     """
 
     def __init__(self, initial_sample_file, hostname, start_time, sample_size, random=True, executions_per_class=10,
                  search_budget=120, timeout=180,
-                 number_attempts=2, algorithm='DYNAMOSA', criterion='default', mutation_rate='default',
-                 cross_over_rate='default', current_project=None, current_class=None, current_class_index=0,
-                 current_execution=0, status=Status.UNKNOWN, saved_at=None, skip_after_timeouts=1):
+                 number_attempts=2, algorithm='DYNAMOSA', criterion=None, mutation_rate=None,
+                 cross_over_rate=None, current_project=None, current_class=None, current_class_index=0,
+                 current_execution=0, status=Status.UNKNOWN, saved_at=None, mean_runtime_per_execution=None,
+                 population=None):
         self.initial_sample_file = initial_sample_file
         self.random = random
         self.sample_size = sample_size
@@ -268,19 +272,52 @@ class ExperimentRunner:
         self.current_class_index = current_class_index
         self.current_execution = current_execution
         self.status = status
-        self.saved_at = saved_at
-        self.mean_runtime_per_execution = search_budget
+        self.population = population
+
+        if mean_runtime_per_execution is None:
+            self.mean_runtime_per_execution = self.search_budget
+        else:
+            self.mean_runtime_per_execution = mean_runtime_per_execution
 
         if isinstance(start_time, str):
             self.start_time = parser.parse(start_time)
         else:
             self.start_time = start_time
 
+        if isinstance(saved_at, str):
+            self.saved_at = parser.parse(saved_at)
+        else:
+            self.saved_at = saved_at
+
     def print_status(self):
         """
         Prints the runner status
         :return: None
         """
+        if self.status == Status.UNKNOWN:
+            logging.warning(f"{self.hostname} status:\tunknown")
+        elif self.status == Status.IDLE:
+            logging.info(f"{self.hostname} status:\tidle")
+        elif self.status == Status.RUNNING:
+            if self.saved_at is None:
+                logging.warning(f"{self.hostname} status:\trunning (no saved_at)")
+            else:
+                # check saved_at
+                delta = timedelta(seconds=self.timeout)
+                last_accepted_time = self.saved_at + delta
+
+                if datetime.now() >= last_accepted_time:
+                    logging.info(f"{self.hostname} status:\trunning, BUT no new status file")
+
+                else:
+                    logging.info(f"{self.hostname} status:\trunning")
+        elif self.status == Status.DONE:
+            # done
+            logging.info(f"{self.hostname} status:\tdone")
+        elif self.status == Status.ERROR:
+            # error
+            logging.error(f"{self.hostname} status:\terror")
+
         logging.info(f"Initial sample file:\t{self.initial_sample_file}")
         logging.info(f"Random sample selection:\t{str(self.random)}")
         logging.info(f"Sample size:\t\t{str(self.sample_size)}")
@@ -290,11 +327,32 @@ class ExperimentRunner:
         logging.info(f"Timeout:\t\t\t{str(self.timeout)}s")
         logging.info(f"Number of attempts:\t{str(self.number_attempts)}")
         logging.info(f"Algorithm:\t\t{self.algorithm}")
-        logging.info(f"Criterion:\t\t{self.criterion}")
-        logging.info(f"Mutation rate:\t\t{str(self.mutation_rate)}")
-        logging.info(f"Cross over rate:\t\t{str(self.cross_over_rate)}")
         logging.info(f"Host:\t\t\t{self.hostname}")
-        logging.info(f"Start time:\t\t{self.start_time.strftime('%Y-%m-%d %H-%M-%S')}")
+
+        if self.criterion is None:
+            logging.info(f"Criterion:\t\tdefault")
+        else:
+            logging.info(f"Criterion:\t\t{self.criterion}")
+
+        if self.mutation_rate is None:
+            logging.info(f"Mutation rate:\t\tdefault")
+        else:
+            logging.info(f"Mutation rate:\t\t{str(self.mutation_rate)}")
+
+        if self.cross_over_rate is None:
+            logging.info(f"Crossover rate:\t\tdefault")
+        else:
+            logging.info(f"Crossover rate:\t\t{str(self.cross_over_rate)}")
+
+        if self.population is None:
+            logging.info(f"Population:\t\tdefault")
+        else:
+            logging.info(f"Population:\t\t{str(self.population)}")
+
+        if self.start_time is None:
+            logging.info(f"Start time:\t\t-")
+        else:
+            logging.info(f"Start time:\t\t{self.start_time.strftime('%Y-%m-%d %H-%M-%S')}")
 
         if self.saved_at is None:
             logging.info("Saved at:\t\t-")
@@ -308,6 +366,9 @@ class ExperimentRunner:
         Returns the runtime estimation.
         :return: Returns the runtime estimation.
         """
+        if self.current_class_index is None or self.executions_per_class is None or self.current_execution is None:
+            return 0
+
         executions = (self.current_class_index * self.executions_per_class) + self.current_execution
         executions_todo = (self.sample_size * self.executions_per_class) - executions
 

@@ -146,15 +146,17 @@ def create_cluster_report(runners):
     :param runners: A list of all runners.
     :return: None
     """
+    logging.info('create report...')
+
     sample_total = 0
     sample_done = 0
     max_runtime = 0
 
-    logging.info('-------------------------------------------------------')
+    logging.info('---------------------------------------------------------------------------------------')
     for runner in runners:
-        if runner.status == Status.RUNNING:
-            runner.print_status()
+        runner.print_status()
 
+        if runner.status == Status.RUNNING:
             sample_total = sample_total + runner.sample_size
             sample_done = sample_done + runner.current_class_index
             runtime = runner.get_runtime_estimation()
@@ -162,7 +164,8 @@ def create_cluster_report(runners):
             if runtime > max_runtime:
                 max_runtime = runtime
 
-    logging.info('-------------------------------------------------------')
+        logging.info('---------------------------------------------------------------------------------------')
+
     delta = timedelta(seconds=max_runtime)
     end = datetime.now() + delta
 
@@ -181,31 +184,7 @@ def monitor_remotes():
     runners = []
     for ip in get_reachable_ips():
         runner = monitor_remote(ip)
-
-        if runner.status == 0:
-            logging.warning(f"{ip} status: unknown")
-        elif runner.status == 1:
-            logging.info(f"{ip} status: idle")
-        elif runner.status == 2:
-            logging.warning(f"{ip} status: running (no saved_at)")
-            if runner.saved_at is None:
-                runners.append(runner)
-            else:
-                # check saved_at
-                delta = timedelta(seconds=runner.timeout)
-                last_accepted_time = runner.saved_at + delta
-
-                if datetime.now() >= last_accepted_time:
-                    logging.info(f"{ip} status: running, BUT no new status file")
-                else:
-                    logging.info(f"{ip} status: running")
-                    runners.append(runner)
-        elif runner.status == 3:
-            # done
-            logging.info(f"{ip} status: done")
-        elif runner.status == 4:
-            # error
-            logging.error(f"{ip} status: error")
+        runners.append(runner)
 
     create_cluster_report(runners)
 

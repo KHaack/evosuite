@@ -59,7 +59,6 @@ def compare(dataframe):
     percent_reached = 2
 
     subset = ex.get_measurements(dataframe, percent_reached)
-    # subset = subset[subset['_GradientBra'].eq(0)]
 
     logging.info("merge...")
     groups = subset.groupby(['set', 'TARGET_CLASS']).median()
@@ -75,6 +74,9 @@ def compare(dataframe):
     merged['_CoverageDifference'] = merged['Coverage_a'] - merged['Coverage_b']
 
     logging.info(f"sum of coverage difference: {merged['_CoverageDifference'].sum()}")
+    logging.info(f"mean coverage difference: {merged['_CoverageDifference'].mean()}")
+    logging.info(f"median coverage difference: {merged['_CoverageDifference'].median()}")
+    logging.info(f"std coverage difference: {merged['_CoverageDifference'].std()}")
 
     logging.info("plot...")
 
