@@ -3,10 +3,13 @@
     Author: Kevin Haack
 """
 import argparse
+import glob
 import json
 import logging
+import math
 import os
 import platform
+import sys
 from datetime import timedelta, datetime
 from enum import IntEnum
 
@@ -19,6 +22,10 @@ FILE_EXPORT = "export.txt"
 # filtering
 FILTER_ZERO_GENERATIONS = True
 FILTER_PERCENTAGE = True
+# logging
+LOG_FORMAT = "%(levelname)s %(asctime)s - %(message)s"
+LOG_LEVEL = logging.INFO
+LOG_STREAM = sys.stdout
 
 
 def get_script_path():
@@ -48,12 +55,23 @@ def create_export(dataframe):
 def add_additional_columns(dataframe):
     dataframe['PercentageReached'] = dataframe['NeutralityVolume'].str.count(';') * 10
 
-    # classes
-    # classification groundTruth
-    dataframe['GroundTruth'] = dataframe['Coverage'].ge(0.8)
+    # classification
+    dataframe['Well performing'] = dataframe['Coverage'].ge(0.8)
+
+    groups = dataframe.groupby('TARGET_CLASS').agg({
+        'Coverage': 'std'
+    }).reset_index()
+    groups['Coverage (std)'] = groups['Coverage']
+    groups.drop('Coverage', axis=1, inplace=True)
+    dataframe = pd.merge(dataframe, groups, how='left', on='TARGET_CLASS')
+    dataframe['Low Coverage (std)'] = dataframe['Coverage (std)'].lt(0.1)
 
     # branchless
     dataframe['Branchless'] = dataframe['Total_Branches'].eq(0)
+
+    # sigmoid Total_Branches
+    dataframe['sigmoid(Total_Branches)'] = dataframe.apply(lambda row: 1 / (1 + math.exp(-row['Total_Branches'])),
+                                                           axis=1)
 
     return dataframe
 
@@ -85,6 +103,75 @@ def clean(dataframe):
     }, inplace=True, axis=1)
 
     return dataframe
+
+
+def init_default_logging():
+    """
+    Initialize the default logging.
+    :return:
+    """
+    logging.basicConfig(stream=LOG_STREAM, filemode="w", format=LOG_FORMAT, level=LOG_LEVEL)
+
+
+def get_statistics(path):
+    """
+    Determines all statistic files from the passed path and returns the content as dataframe.
+    Returns: The statistics.
+    """
+    logging.info("CSV Directory:\t\t" + path)
+
+    pattern = os.path.join(path, '**', '*.csv')
+    logging.debug('use pattern: ' + pattern)
+
+    files = list(glob.iglob(pattern, recursive=True))
+
+    logging.info("found statistic files:\t" + str(len(files)))
+
+    li = []
+    for file in files:
+        li.append(pd.read_csv(file, delimiter=','))
+
+    dataframe = pd.concat(li, axis=0, ignore_index=True)
+
+    logging.info("Total tests:\t\t" + str(len(dataframe.index)))
+    logging.info(f"Total Java classes:\t{str(len(dataframe.groupby('TARGET_CLASS')))}")
+
+    return dataframe
+
+
+def print_result_infos(dataframe):
+    """
+    Print general information about the passed dataframe.
+    :param dataframe:
+    :return:
+    """
+    logging.info("---------------------------------------------------------")
+    logging.info(f"Tests for evaluation:\t{str(len(dataframe.index))}")
+    logging.info(f"Java classes:\t\t{str(len(dataframe.groupby('TARGET_CLASS')))}")
+    logging.info(f"Execution/class (max):\t{str(dataframe.groupby('TARGET_CLASS').count().max()[0])}")
+    logging.info(f"Execution/class (min):\t{str(dataframe.groupby('TARGET_CLASS').count().min()[0])}")
+    logging.info(f"Execution/class (median):{str(dataframe.groupby('TARGET_CLASS').count().median()[0])}")
+    logging.info(f"Execution/class (mean):\t{str(dataframe.groupby('TARGET_CLASS').count().mean()[0])}")
+    logging.info(f"Generations (max):\t{str(dataframe['_Generations'].max())}")
+    logging.info(f"Generations (min):\t{str(dataframe['_Generations'].min())}")
+    logging.info(f"Generations (median):\t{str(dataframe['_Generations'].median())}")
+    logging.info(f"Generations (mean):\t{str(dataframe['_Generations'].mean())}")
+    logging.info(f"Branches (max):\t\t{str(dataframe['Total_Branches'].max())}")
+    logging.info(f"Branches (min):\t\t{str(dataframe['Total_Branches'].min())}")
+    logging.info(f"Branches (median):\t{str(dataframe['Total_Branches'].median())}")
+    logging.info(f"Branches (mean):\t\t{str(dataframe['Total_Branches'].mean())}")
+    logging.info(f"Gradient branch (max):\t{str(dataframe['Gradient_Branches'].max())}")
+    logging.info(f"Gradient branch (min):\t{str(dataframe['Gradient_Branches'].min())}")
+    logging.info(f"Gradient branch (median):{str(dataframe['Gradient_Branches'].median())}")
+    logging.info(f"Gradient branch (mean):\t{str(dataframe['Gradient_Branches'].mean())}")
+    logging.info(f"Lines (max):\t\t{str(dataframe['Lines'].max())}")
+    logging.info(f"Lines (min):\t\t{str(dataframe['Lines'].min())}")
+    logging.info(f"Lines (median):\t\t{str(dataframe['Lines'].median())}")
+    logging.info(f"Lines (mean):\t\t{str(dataframe['Lines'].mean())}")
+    logging.info(f'Well performing (True):\t{len(dataframe[dataframe["Well performing"]])}')
+    logging.info(f'Well performing (False):\t{len(dataframe[~dataframe["Well performing"]])}')
+    logging.info(f'Branchless:\t\t{len(dataframe[dataframe["Branchless"]])}')
+    logging.info("---------------------------------------------------------")
 
 
 def get_n_th(x, n):
@@ -160,12 +247,6 @@ def filter_dataframe(dataframe, minimum_executions):
         total_length = len(dataframe.index)
         dataframe = dataframe[dataframe['PercentageReached'] > 0]
         logging.info("Tests not reached 10%:\t" + str(total_length - len(dataframe.index)))
-
-    # zero generations
-    if FILTER_ZERO_GENERATIONS:
-        total_length = len(dataframe.index)
-        dataframe = dataframe[dataframe['_Generations'] > 0]
-        logging.info("Zero generations tests:\t" + str(total_length - len(dataframe.index)))
 
     # executions
     if minimum_executions > 0:

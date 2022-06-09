@@ -14,8 +14,9 @@ import socket
 import subprocess
 import time
 from datetime import datetime
-import psutil
+
 import numpy as np
+import psutil
 
 import experiment_lib as ex
 
@@ -447,14 +448,13 @@ def main():
 
 if __name__ == "__main__":
     args = setup_argparse().parse_args()
-    now = datetime.now()
     runner = ex.ExperimentRunner(initial_sample_file=args.sample,
                                  sample_size=100,
                                  executions_per_class=10,
                                  hostname=socket.gethostname(),
-                                 start_time=now,
+                                 start_time=datetime.now(),
                                  random=False,
                                  mutation_rate=None,
-                                 population=None,
-                                 cross_over_rate=0.95)
+                                 cross_over_rate=None,
+                                 population=None)
     main()

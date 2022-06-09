@@ -1,13 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-    Purpose: Compares the experiment results from two run of the the experiment_runner
+    Purpose: Compares the experiment results from two run of the experiment_runner
     Author: Kevin Haack
 """
 import argparse
-import glob
 import logging
-import os
-import sys
 
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -16,76 +13,9 @@ import experiment_lib as ex
 
 pd.options.mode.chained_assignment = None
 
-# logging
-LOG_FORMAT = "%(levelname)s %(asctime)s - %(message)s"
-LOG_LEVEL = logging.INFO
-LOG_STREAM = sys.stdout
 # filter
-FILTER_MIN_EXECUTIONS = 9
-
-
-def get_statistic_files(path):
-    """
-    Determines all statistic files.
-    Returns: A list of all files
-    """
-    logging.debug('use pattern: ' + path)
-    files = list(glob.iglob(path, recursive=True))
-
-    li = []
-    for file in files:
-        li.append(pd.read_csv(file, delimiter=','))
-
-    return pd.concat(li, axis=0, ignore_index=True)
-
-
-def compare(dataframe):
-    """
-    Creates a evaluation for the passed dataframe.
-    :param dataframe: The dataframe for the evaluation
-    """
-    a = dataframe[dataframe['set'].eq('A')]
-    b = dataframe[dataframe['set'].eq('B')]
-
-    logging.info("Total tests in A:\t" + str(len(a.index)))
-    logging.info("Total tests in B:\t" + str(len(b.index)))
-
-    dataframe = ex.clean(dataframe)
-    dataframe = ex.add_additional_columns(dataframe)
-    dataframe = ex.get_measurements(dataframe, 0)
-    dataframe = ex.filter_dataframe(dataframe, FILTER_MIN_EXECUTIONS)
-
-    logging.info("filter...")
-    percent_reached = 2
-
-    subset = ex.get_measurements(dataframe, percent_reached)
-
-    logging.info("merge...")
-    groups = subset.groupby(['set', 'TARGET_CLASS']).median()
-    groups.reset_index(inplace=True)
-
-    a = groups[groups['set'].eq('A')]
-    b = groups[groups['set'].eq('B')]
-
-    logging.info("Java in A classes:\t\t" + str(len(a.index)))
-    logging.info("Java in B classes:\t\t" + str(len(b.index)))
-
-    merged = a.merge(b, how='inner', left_on='TARGET_CLASS', right_on='TARGET_CLASS', suffixes=('_a', '_b'))
-    merged['_CoverageDifference'] = merged['Coverage_a'] - merged['Coverage_b']
-
-    logging.info(f"sum of coverage difference: {merged['_CoverageDifference'].sum()}")
-    logging.info(f"mean coverage difference: {merged['_CoverageDifference'].mean()}")
-    logging.info(f"median coverage difference: {merged['_CoverageDifference'].median()}")
-    logging.info(f"std coverage difference: {merged['_CoverageDifference'].std()}")
-
-    logging.info("plot...")
-
-    ax = plt.axes(projection='3d')
-    ax.scatter3D(merged['_BranchRatio_b'], merged['_Fitness_b'], merged['_CoverageDifference'])
-    ax.set_xlabel('_BranchRatio_b at 20%')
-    ax.set_ylabel('_Fitness_b at 20%')
-    ax.set_zlabel('_CoverageDifference')
-    plt.show()
+FILTER_MIN_EXECUTIONS = 25
+SCATTER_POINT_SIZE = 4
 
 
 def setup_argparse():
@@ -102,23 +32,92 @@ def setup_argparse():
     return argument_parser
 
 
-def main():
+def get_dataframes():
     """
-    Runs large scale experiment.
+    Returns the two results in one dataframe.
+    :return: The dataframe
     """
-    logging.basicConfig(stream=LOG_STREAM, filemode="w", format=LOG_FORMAT, level=LOG_LEVEL)
-
-    logging.info("search files...")
-    dataframe_a = get_statistic_files(os.path.join(args.a, '**', '*.csv'))
-    dataframe_b = get_statistic_files(os.path.join(args.b, '**', '*.csv'))
+    dataframe_a = ex.get_statistics(args.a)
+    dataframe_b = ex.get_statistics(args.b)
 
     dataframe_a['set'] = 'A'
     dataframe_b['set'] = 'B'
 
-    logging.info("start evaluation...")
-    compare(pd.concat([dataframe_a, dataframe_b], ignore_index=True))
+    return pd.concat([dataframe_a, dataframe_b], ignore_index=True)
+
+
+def main():
+    """
+    Runs large scale experiment.
+    """
+    dataframe = get_dataframes()
+
+    logging.info("------------------------------------------")
+
+    logging.info("Total tests in A:\t\t" + str(len(dataframe[dataframe['set'].eq('A')].index)))
+    logging.info("Total tests in B:\t\t" + str(len(dataframe[dataframe['set'].eq('B')].index)))
+
+    dataframe = ex.clean(dataframe)
+    dataframe = ex.add_additional_columns(dataframe)
+
+    logging.info("start compare...")
+    dataframe = ex.get_measurements(dataframe, 2)
+
+    logging.info("merge...")
+    groups = dataframe.groupby(['set', 'TARGET_CLASS']).agg({
+        'Coverage': ['median', 'std'],
+        '_BranchRatio': 'median',
+        '_Generations': ['median', 'max']
+    })
+
+    groups.reset_index(inplace=True)
+    groups.sort_index(inplace=True)
+
+    a = groups[groups['set'].eq('A')]
+    b = groups[groups['set'].eq('B')]
+
+    logging.info("Java in A classes:\t\t" + str(len(a.index)))
+    logging.info("Java in B classes:\t\t" + str(len(b.index)))
+
+    merged = a.merge(b, how='inner', left_on='TARGET_CLASS', right_on='TARGET_CLASS', suffixes=('_a', '_b'))
+    logging.info("matched Java classes:\t\t" + str(len(merged.index)))
+
+    logging.info("Generations median (A):\t\t" + str(merged[('_Generations_a', 'median')].median()))
+    logging.info("Generations median (B):\t\t" + str(merged[('_Generations_b', 'median')].median()))
+    logging.info("Generations max (A):\t\t" + str(merged[('_Generations_a', 'max')].max()))
+    logging.info("Generations max (B):\t\t" + str(merged[('_Generations_b', 'max')].max()))
+
+    merged['Coverage difference (a-b)'] = merged[('Coverage_a', 'median')] - merged[('Coverage_b', 'median')]
+
+    logging.info(f"coverage difference (sum):\t{merged['Coverage difference (a-b)'].sum()}")
+    logging.info(f"coverage difference (mean):\t{merged['Coverage difference (a-b)'].mean()}")
+    logging.info(f"coverage difference (median):\t{merged['Coverage difference (a-b)'].median()}")
+    logging.info(f"coverage difference (std):\t{merged['Coverage difference (a-b)'].std()}")
+    logging.info(f"coverage difference (min):\t{merged['Coverage difference (a-b)'].min()}")
+    logging.info(f"coverage difference (max):\t{merged['Coverage difference (a-b)'].max()}")
+
+    logging.info("plot...")
+
+    # histogram
+    merged.hist(column='Coverage difference (a-b)', bins=50)
+    plt.show()
+
+    # difference
+    fig, ax = plt.subplots()
+    ax.scatter(merged[('Coverage_a', 'std')], merged['Coverage difference (a-b)'], s=SCATTER_POINT_SIZE)
+
+    ax.set_xlabel('Coverage A (std) at 20%')
+    ax.set_ylabel('Coverage difference (a-b)')
+
+    ax.spines["right"].set_visible(False)
+    ax.spines["top"].set_visible(False)
+
+    ax.set_title(f'BranchRatio - Coverage difference (a-b)')
+
+    plt.show()
 
 
 if __name__ == "__main__":
+    ex.init_default_logging()
     args = setup_argparse().parse_args()
     main()

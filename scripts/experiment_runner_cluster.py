@@ -4,16 +4,16 @@
 """
 import argparse
 import datetime
+import json
 import logging
 import os
-import sys
-import json
 from datetime import timedelta, datetime
 
 import paramiko
 from ping3 import ping
 from scp import SCPClient
 
+import experiment_lib as ex
 # paths and files
 from experiment_lib import ExperimentRunner, Status
 
@@ -30,10 +30,6 @@ LOCATION_SAMPLE_REMOTE = "/home/user/Benchmark/samples/13 - high stdev - 100.txt
 LOCATION_CORPUS_REMOTE = "/home/user/Benchmark/SF110-20130704"
 # the command that should be executed on the remotes
 REMOTE_COMMAND = f'python3 "{LOCATION_SCRIPT_REMOTE}" -sample "{LOCATION_SAMPLE_REMOTE}" -corpus "{LOCATION_CORPUS_REMOTE}" -evosuite "{LOCATION_JAR_REMOTE}" -write_status -reboot'
-# logging
-LOG_FORMAT = "%(levelname)s %(asctime)s - %(message)s"
-LOG_LEVEL = logging.INFO
-LOG_STREAM = sys.stdout
 # remote computer
 COPY_JAR = False
 COPY_SCRIPT = True
@@ -148,6 +144,8 @@ def create_cluster_report(runners):
     """
     logging.info('create report...')
 
+    executions_total = 0
+    executions_done = 0
     sample_total = 0
     sample_done = 0
     max_runtime = 0
@@ -159,6 +157,9 @@ def create_cluster_report(runners):
         if runner.status == Status.RUNNING:
             sample_total = sample_total + runner.sample_size
             sample_done = sample_done + runner.current_class_index
+            executions_total = executions_total + (runner.sample_size * runner.executions_per_class)
+            executions_done = executions_done + (runner.current_class_index * runner.executions_per_class) + runner.current_execution
+
             runtime = runner.get_runtime_estimation()
 
             if runtime > max_runtime:
@@ -172,6 +173,7 @@ def create_cluster_report(runners):
     logging.info(f'Estimated runtime {str(max_runtime / 60 / 60)}h')
     logging.info(f'Estimated end {end.strftime("%Y-%m-%d %H-%M-%S")}h')
     logging.info(f'Class {str(sample_done)}/{str(sample_total)}')
+    logging.info(f'Executions {str(executions_done)}/{str(executions_total)}')
 
 
 def monitor_remotes():
@@ -189,7 +191,7 @@ def monitor_remotes():
     create_cluster_report(runners)
 
 
-def setupArgparse():
+def setup_argparse():
     """
     Setup the argparse.
     :return: The parser
@@ -205,8 +207,6 @@ def setupArgparse():
 
 
 def main():
-    logging.basicConfig(stream=LOG_STREAM, filemode="w", format=LOG_FORMAT, level=LOG_LEVEL)
-
     if args.monitor:
         monitor_remotes()
     elif args.start:
@@ -216,5 +216,6 @@ def main():
 
 
 if __name__ == "__main__":
-    args = setupArgparse().parse_args()
+    ex.init_default_logging()
+    args = setup_argparse().parse_args()
     main()
