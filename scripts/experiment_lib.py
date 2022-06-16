@@ -6,7 +6,6 @@ import argparse
 import glob
 import json
 import logging
-import math
 import os
 import platform
 import sys
@@ -68,10 +67,6 @@ def add_additional_columns(dataframe):
 
     # branchless
     dataframe['Branchless'] = dataframe['Total_Branches'].eq(0)
-
-    # sigmoid Total_Branches
-    dataframe['sigmoid(Total_Branches)'] = dataframe.apply(lambda row: 1 / (1 + math.exp(-row['Total_Branches'])),
-                                                           axis=1)
 
     return dataframe
 
@@ -335,7 +330,7 @@ class ExperimentRunner:
                  number_attempts=2, algorithm='DYNAMOSA', criterion=None, mutation_rate=None,
                  cross_over_rate=None, current_project=None, current_class=None, current_class_index=0,
                  current_execution=0, status=Status.UNKNOWN, saved_at=None, mean_runtime_per_execution=None,
-                 population=None):
+                 population=None, enable_landscape_analysis=False, enable_fitness_history=False, enable_parameter_control=False):
         self.initial_sample_file = initial_sample_file
         self.random = random
         self.sample_size = sample_size
@@ -354,6 +349,9 @@ class ExperimentRunner:
         self.current_execution = current_execution
         self.status = status
         self.population = population
+        self.enable_landscape_analysis = enable_landscape_analysis
+        self.enable_fitness_history = enable_fitness_history
+        self.enable_parameter_control = enable_parameter_control
 
         if mean_runtime_per_execution is None:
             self.mean_runtime_per_execution = self.search_budget
@@ -409,6 +407,9 @@ class ExperimentRunner:
         logging.info(f"Number of attempts:\t{str(self.number_attempts)}")
         logging.info(f"Algorithm:\t\t{self.algorithm}")
         logging.info(f"Host:\t\t\t{self.hostname}")
+        logging.info(f"Landscape analysis:\t{str(self.enable_landscape_analysis)}")
+        logging.info(f"Fitness history:\t{str(self.enable_fitness_history)}")
+        logging.info(f"Parameter control:\t{str(self.enable_parameter_control)}")
 
         if self.criterion is None:
             logging.info(f"Criterion:\t\tdefault")

@@ -65,8 +65,6 @@ PARAMETER_RANDOM = [
 PARAMETER_DYNAMOSA = [
     '-generateMOSuite',
     '-Dalgorithm=DYNAMOSA',
-    '-Denable_fitness_history=true',
-    '-Denable_landscape_analysis=true',
     '-Dtrack_boolean_branches=true',
     '-Dtrack_covered_gradient_branches=true',
     '-Doutput_variables='
@@ -173,6 +171,15 @@ def create_parameter(path_class_dir):
 
     if runner.mutation_rate is not None:
         parameter = parameter + ['-Dpopulation', str(runner.population)]
+
+    if runner.enable_landscape_analysis:
+        parameter = parameter + ['-Denable_landscape_analysis=true']
+
+    if runner.enable_fitness_history:
+        parameter = parameter + ['-Denable_fitness_history=true']
+
+    if runner.enable_parameter_control:
+        parameter = parameter + ['-Denable_parameter_control=true']
 
     if runner.algorithm == 'DYNAMOSA':
         return parameter + PARAMETER_DYNAMOSA
@@ -454,6 +461,9 @@ if __name__ == "__main__":
                                  hostname=socket.gethostname(),
                                  start_time=datetime.now(),
                                  random=False,
+                                 enable_landscape_analysis=True,
+                                 enable_fitness_history=True,
+                                 enable_parameter_control=True,
                                  mutation_rate=None,
                                  cross_over_rate=None,
                                  population=None)

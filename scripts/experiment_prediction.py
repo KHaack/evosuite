@@ -28,7 +28,7 @@ FILTER_MIN_EXECUTIONS = 25
 SCATTER_POINT_SIZE = 4
 
 
-def foo_predict(title, dataframe, ground_truth_name, ground_truth, model, make_plots=False):
+def predict(title, dataframe, ground_truth_name, ground_truth, model, make_plots=False, print_tree=False):
     count_true = len(dataframe[dataframe[ground_truth]])
     count_false = len(dataframe[~dataframe[ground_truth]])
 
@@ -55,8 +55,7 @@ def foo_predict(title, dataframe, ground_truth_name, ground_truth, model, make_p
         logging.info(f'{ground_truth_name} (False): {len(dataframe[~dataframe[ground_truth]])}')
         logging.info(f'balancing: {len(dataframe[dataframe[ground_truth]]) / len(dataframe[~dataframe[ground_truth]])}')
 
-    x = dataframe[['Branchless', '_GradientRatio', '_BranchRatio', '_Fitness', '_InfoContent', '_NeutralityGen',
-                   'sigmoid(Total_Branches)']]
+    x = dataframe[['Branchless', '_GradientRatio', '_BranchRatio', '_Fitness', '_InfoContent', '_NeutralityGen']]
     y = dataframe[ground_truth].values
 
     x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
@@ -70,12 +69,14 @@ def foo_predict(title, dataframe, ground_truth_name, ground_truth, model, make_p
     logging.info('get classification_report...')
     print(classification_report(y_test, y_prediction))
 
+    if print_tree:
+        text_representation = tree.export_text(model, feature_names=list(x.columns))
+        print(text_representation)
+
     if make_plots:
         # plot tree
-        tree.plot_tree(model, feature_names=x.columns, rounded=True, filled=True, class_names=['good', 'bad'])
+        tree.plot_tree(model, feature_names=x.columns, rounded=True, filled=True)
         plt.show()
-        # text_representation = tree.export_text(model, feature_names=list(x.columns))
-        # print(text_representation)
 
         # feature importances
         importances = model.feature_importances_
@@ -124,8 +125,8 @@ def main():
     logging.info("@20%")
     dataframe = ex.get_measurements(dataframe, 2)
 
-    model = tree.DecisionTreeClassifier(max_depth=3, random_state=42, criterion="gini")
-    foo_predict('All @20%', dataframe, 'Well performing', 'Well performing', model, True)
+    model = tree.DecisionTreeClassifier(max_depth=4, random_state=42, criterion="gini")
+    predict('All @20%', dataframe, 'Well performing', 'Well performing', model, make_plots=True, print_tree=True)
 
 
 if __name__ == "__main__":
