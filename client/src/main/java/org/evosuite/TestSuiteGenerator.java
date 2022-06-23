@@ -300,7 +300,6 @@ public class TestSuiteGenerator {
      * @return a {@link java.lang.String} object.
      */
     public TestGenerationResult generateTestSuite() {
-
         LoggingUtils.getEvoLogger().info("* " + ClientProcess.getPrettyPrintIdentifier() + "Analyzing classpath: ");
 
         ClientServices.getInstance().getClientNode().changeState(ClientState.INITIALIZATION);

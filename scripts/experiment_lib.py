@@ -54,16 +54,25 @@ def create_export(dataframe):
 def add_additional_columns(dataframe):
     dataframe['PercentageReached'] = dataframe['NeutralityVolume'].str.count(';') * 10
 
-    # classification
+    # performs well
     dataframe['Well performing'] = dataframe['Coverage'].ge(0.8)
 
+    # coverage
     groups = dataframe.groupby('TARGET_CLASS').agg({
-        'Coverage': 'std'
+        'Coverage': ['std', 'max']
     }).reset_index()
-    groups['Coverage (std)'] = groups['Coverage']
+    groups['Coverage (std)'] = groups[('Coverage', 'std')]
+    groups['Coverage (max)'] = groups[('Coverage', 'max')]
     groups.drop('Coverage', axis=1, inplace=True)
+
     dataframe = pd.merge(dataframe, groups, how='left', on='TARGET_CLASS')
+    dataframe['Coverage (std)'] = dataframe[('Coverage (std)', '')]
+    dataframe['Coverage (max)'] = dataframe[('Coverage (max)', '')]
+    dataframe.drop(('Coverage (std)', ''), axis=1, inplace=True)
+    dataframe.drop(('Coverage (max)', ''), axis=1, inplace=True)
+
     dataframe['Low Coverage (std)'] = dataframe['Coverage (std)'].lt(0.1)
+    dataframe['High relative coverage'] = dataframe['Coverage'].ge(dataframe['Coverage (max)'] * 0.8)
 
     # branchless
     dataframe['Branchless'] = dataframe['Total_Branches'].eq(0)
@@ -166,6 +175,13 @@ def print_result_infos(dataframe):
     logging.info(f'Well performing (True):\t{len(dataframe[dataframe["Well performing"]])}')
     logging.info(f'Well performing (False):\t{len(dataframe[~dataframe["Well performing"]])}')
     logging.info(f'Branchless:\t\t{len(dataframe[dataframe["Branchless"]])}')
+
+    if '_ParameterControlled' in dataframe:
+        logging.info("---------------------------------------------------------")
+        logging.info(f'PC (yes):\t\t{len(dataframe[dataframe["_ParameterControlled"].eq("yes")])}')
+        logging.info(f'PC (no):\t\t\t{len(dataframe[dataframe["_ParameterControlled"].eq("no")])}')
+        logging.info(f'PC (None):\t\t{len(dataframe[dataframe["_ParameterControlled"].eq("")])}')
+
     logging.info("---------------------------------------------------------")
 
 
@@ -195,39 +211,41 @@ def get_measurements(dataframe, percent):
     :param percent:
     :return:
     """
+    copy = dataframe.copy()
+
     # filter
     if percent >= 0:
-        dataframe = dataframe[dataframe['PercentageReached'].ge(percent * 10)]
+        copy = copy[copy['PercentageReached'].ge(percent * 10)]
 
     index = percent - 1
 
     # get measurings
-    dataframe['_GradientBra'] = dataframe['GradientBranches'].apply(lambda x: get_n_th(x, index))
-    dataframe['_GradientCov'] = dataframe['GradientBranchesCovered'].apply(lambda x: get_n_th(x, index))
-    dataframe['_Fitness'] = dataframe['Fitness'].apply(lambda x: get_n_th(x, index))
-    dataframe['_InfoContent'] = dataframe['InformationContent'].apply(lambda x: get_n_th(x, index))
-    dataframe['_NeutralityVol'] = dataframe['NeutralityVolume'].apply(lambda x: get_n_th(x, index))
-    dataframe['_Generations'] = dataframe['Generations'].apply(lambda x: get_n_th(x, index))
+    copy['_GradientBra'] = copy['GradientBranches'].apply(lambda x: get_n_th(x, index))
+    copy['_GradientCov'] = copy['GradientBranchesCovered'].apply(lambda x: get_n_th(x, index))
+    copy['_Fitness'] = copy['Fitness'].apply(lambda x: get_n_th(x, index))
+    copy['_InfoContent'] = copy['InformationContent'].apply(lambda x: get_n_th(x, index))
+    copy['_NeutralityVol'] = copy['NeutralityVolume'].apply(lambda x: get_n_th(x, index))
+    copy['_Generations'] = copy['Generations'].apply(lambda x: get_n_th(x, index))
 
     # calculate others
-    dataframe.loc[dataframe['_Generations'].eq(0), '_NeutralityGen'] = 0
-    dataframe.loc[dataframe['_Generations'].gt(0), '_NeutralityGen'] = dataframe['_NeutralityVol'] / (
-        dataframe['_Generations'])
-    dataframe.loc[dataframe['_NeutralityGen'] > 1, '_NeutralityGen'] = 1
+    copy.loc[copy['_Generations'].eq(0), '_NeutralityGen'] = 0
+    copy.loc[copy['_Generations'].gt(0), '_NeutralityGen'] = copy['_NeutralityVol'] / (
+        copy['_Generations'])
+    copy.loc[copy['_NeutralityGen'] > 1, '_NeutralityGen'] = 1
 
-    dataframe.loc[dataframe['Total_Branches'].eq(0), '_NotGradRatio'] = 1
-    dataframe.loc[dataframe['Total_Branches'].gt(0), '_NotGradRatio'] = (dataframe['Total_Branches'] - dataframe[
-        '_GradientBra']) / (dataframe['Total_Branches'])
+    copy.loc[copy['Total_Branches'].eq(0), '_NotGradRatio'] = 1
+    copy.loc[copy['Total_Branches'].gt(0), '_NotGradRatio'] = (copy['Total_Branches'] - copy[
+        '_GradientBra']) / (copy['Total_Branches'])
 
-    dataframe.loc[dataframe['_GradientBra'].eq(0), '_GradientRatio'] = 1
-    dataframe.loc[dataframe['_GradientBra'].gt(0), '_GradientRatio'] = dataframe['_GradientCov'] / (
-        dataframe['_GradientBra'])
+    copy.loc[copy['_GradientBra'].eq(0), '_GradientRatio'] = 1
+    copy.loc[copy['_GradientBra'].gt(0), '_GradientRatio'] = copy['_GradientCov'] / (
+        copy['_GradientBra'])
 
-    dataframe.loc[dataframe['Total_Branches'].eq(0), '_BranchRatio'] = 0
-    dataframe.loc[dataframe['Total_Branches'].gt(0), '_BranchRatio'] = dataframe['_GradientBra'] / (
-        dataframe['Total_Branches'])
+    copy.loc[copy['Total_Branches'].eq(0), '_BranchRatio'] = 0
+    copy.loc[copy['Total_Branches'].gt(0), '_BranchRatio'] = copy['_GradientBra'] / (
+        copy['Total_Branches'])
 
-    return dataframe
+    return copy
 
 
 def filter_dataframe(dataframe, minimum_executions):
@@ -327,10 +345,8 @@ class ExperimentRunner:
 
     def __init__(self, initial_sample_file, hostname, start_time, sample_size, random=True, executions_per_class=10,
                  search_budget=120, timeout=180,
-                 number_attempts=2, algorithm='DYNAMOSA', criterion=None, mutation_rate=None,
-                 cross_over_rate=None, current_project=None, current_class=None, current_class_index=0,
-                 current_execution=0, status=Status.UNKNOWN, saved_at=None, mean_runtime_per_execution=None,
-                 population=None, enable_landscape_analysis=False, enable_fitness_history=False, enable_parameter_control=False):
+                 number_attempts=2, algorithm='DYNAMOSA', current_project=None, current_class=None, current_class_index=0,
+                 current_execution=0, status=Status.UNKNOWN, saved_at=None, mean_runtime_per_execution=None, additional_parameter={}):
         self.initial_sample_file = initial_sample_file
         self.random = random
         self.sample_size = sample_size
@@ -339,19 +355,13 @@ class ExperimentRunner:
         self.timeout = timeout
         self.number_attempts = number_attempts
         self.algorithm = algorithm
-        self.criterion = criterion
-        self.mutation_rate = mutation_rate
-        self.cross_over_rate = cross_over_rate
         self.hostname = hostname
         self.current_project = current_project
         self.current_class = current_class
         self.current_class_index = current_class_index
         self.current_execution = current_execution
         self.status = status
-        self.population = population
-        self.enable_landscape_analysis = enable_landscape_analysis
-        self.enable_fitness_history = enable_fitness_history
-        self.enable_parameter_control = enable_parameter_control
+        self.additional_parameter = additional_parameter
 
         if mean_runtime_per_execution is None:
             self.mean_runtime_per_execution = self.search_budget
@@ -407,29 +417,7 @@ class ExperimentRunner:
         logging.info(f"Number of attempts:\t{str(self.number_attempts)}")
         logging.info(f"Algorithm:\t\t{self.algorithm}")
         logging.info(f"Host:\t\t\t{self.hostname}")
-        logging.info(f"Landscape analysis:\t{str(self.enable_landscape_analysis)}")
-        logging.info(f"Fitness history:\t{str(self.enable_fitness_history)}")
-        logging.info(f"Parameter control:\t{str(self.enable_parameter_control)}")
-
-        if self.criterion is None:
-            logging.info(f"Criterion:\t\tdefault")
-        else:
-            logging.info(f"Criterion:\t\t{self.criterion}")
-
-        if self.mutation_rate is None:
-            logging.info(f"Mutation rate:\t\tdefault")
-        else:
-            logging.info(f"Mutation rate:\t\t{str(self.mutation_rate)}")
-
-        if self.cross_over_rate is None:
-            logging.info(f"Crossover rate:\t\tdefault")
-        else:
-            logging.info(f"Crossover rate:\t\t{str(self.cross_over_rate)}")
-
-        if self.population is None:
-            logging.info(f"Population:\t\tdefault")
-        else:
-            logging.info(f"Population:\t\t{str(self.population)}")
+        logging.info(f"Additional parameter:\t{str(self.additional_parameter)}")
 
         if self.start_time is None:
             logging.info(f"Start time:\t\t-")

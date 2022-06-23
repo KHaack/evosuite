@@ -996,9 +996,27 @@ public class Properties {
     public static boolean ENABLE_FITNESS_HISTORY = false;
     @Parameter(key = "enable_landscape_analysis", group = "Landscape", description = "Enables the landscape analysis")
     public static boolean ENABLE_LANDSCAPE_ANALYSIS = false;
-    @Parameter(key = "fitness_history_capacity", group = "Landscape", description = "The capacity of the fitness history.")
-    @IntValue(min = 0, max = 100)
-    public static int FITNESS_HISTORY_CAPACITY = 10;
+    @Parameter(key = "enable_parameter_control", group = "Landscape", description = "Enables the parameter_control")
+    public static boolean ENABLE_PARAMETER_CONTROL = false;
+
+    @Parameter(key = "pc_crossover_rate", group = "Landscape", description = "The crossover rate for the parameter control.")
+    @DoubleValue(min = 0.0d, max = 1.0d)
+    public static double PC_CROSSOVER_RATE = CROSSOVER_RATE;
+    @Parameter(key = "pc_population", group = "Landscape", description = "Population size for the parameter control.")
+    @IntValue(min = 1)
+    public static int PC_POPULATION = POPULATION;
+    @Parameter(key = "pc_number_of_mutations", group = "Landscape", description = "Number of mutations for the parameter control.")
+    @IntValue(min = 1)
+    public static int PC_NUMBER_OF_MUTATIONS = NUMBER_OF_MUTATIONS;
+    @Parameter(key = "pc_prediction", group = "Landscape", description = "The prediction type")
+    public static PCPredictions PC_Prediction = PCPredictions.NONE;
+
+    @Parameter(key = "epsilon_nv", group = "Landscape", description = "The capacity of the fitness history.")
+    @DoubleValue(min = 0.0d, max = 1.0d)
+    public static double EPSILON_NV = 0.000001d;
+    @Parameter(key = "epsilon_ic", group = "Landscape", description = "The capacity of the fitness history.")
+    @DoubleValue(min = 0.0d, max = 1.0d)
+    public static double EPSILON_IC = 0.01d;
 
     /**
      * Cache target class
@@ -1876,6 +1894,15 @@ public class Properties {
         ALL,
         SINGLE,
         SINGLE_AVG
+    }
+
+    public enum PCPredictions {
+        HIGH_STDEV,
+        PERFORMS_BAD,
+        RELATIVE_LOW_COVERAGE,
+        HIGH_STDEV_PERFORMS_BAD,
+        HIGH_STDEV_RELATIVE_LOW_COVERAGE,
+        NONE
     }
 
     /**

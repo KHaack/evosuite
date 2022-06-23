@@ -340,6 +340,7 @@ public class SearchStatistics implements Listener<ClientStateInformation> {
             return false;
 
         outputVariables.put(RuntimeVariable.Total_Time.name(), new OutputVariable<Object>(RuntimeVariable.Total_Time.name(), System.currentTimeMillis() - startTime));
+        outputVariables.put(RuntimeVariable.Algorithm.name(), new OutputVariable<>(RuntimeVariable.Algorithm.name(), Properties.ALGORITHM.toString()));
 
         if (bestIndividual == null) {
             logger.error("No statistics has been saved because EvoSuite failed to generate any test case");
@@ -350,7 +351,6 @@ public class SearchStatistics implements Listener<ClientStateInformation> {
 
         Map<String, OutputVariable<?>> map = getOutputVariables(individual);
         if (map == null) {
-
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {

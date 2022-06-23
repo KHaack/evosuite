@@ -11,6 +11,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import pandas as pd
 import scipy.stats as stats
+import numpy as np
 
 import experiment_lib as ex
 
@@ -22,6 +23,60 @@ PATH_WORKING_DIRECTORY = "C:\\Users\\kha\\Desktop\\Benchmark"
 # filter
 FILTER_MIN_EXECUTIONS = 25
 SCATTER_POINT_SIZE = 4
+
+
+def euclidean_distance(dataframe1, dataframe2, columns):
+    """
+    Calculates the euclidean distance between the two passed dataframes.
+    :param dataframe1: Dataframe 1
+    :param dataframe2: Dataframe 2
+    :param columns: The columns for the euclidean distance
+    :return: the euclidean distance
+    """
+    return np.linalg.norm(dataframe1[columns].values - dataframe2[columns].values, axis=1)
+
+
+def foo_general_infos(original, dataframe):
+    ax = dataframe.hist(column='Coverage', bins=20)
+    ax[0][0].set_ylabel("Count")
+    ax[0][0].set_xlabel("Coverage")
+    plt.title('Histogram - Coverage')
+    plt.tight_layout()
+    plt.show()
+
+
+def foo_percentage_dif(dataframe):
+    rows = []
+    for i in range(2, 11):
+        first = i - 1
+        second = i
+
+        subset10 = ex.get_measurements(dataframe, first)
+        subset20 = ex.get_measurements(dataframe, second)
+        subset10 = subset10[subset10['PercentageReached'].ge(second * 10)]
+
+        subset10['Branchless'] = subset10['Branchless'].astype(float)
+        subset20['Branchless'] = subset20['Branchless'].astype(float)
+
+        columns = ['Branchless', '_GradientRatio', '_BranchRatio', '_Fitness', '_InfoContent', '_NeutralityGen']
+        distance = euclidean_distance(subset10, subset20, columns)
+
+        row = {
+            'measuring points': f"{first}0%-{second}0%",
+            'max': np.max(distance),
+            'min': np.min(distance),
+            'mean': np.mean(distance),
+            'median': np.median(distance)
+        }
+        rows.append(row)
+
+    result = pd.DataFrame(rows)
+    ax = result.plot(kind='line', x='measuring points', rot=45)
+    ax.set_ylabel("Euclidean distance")
+    plt.title('Euclidean distances')
+    plt.tight_layout()
+    plt.show()
+
 
 
 def foo_correlation(dataframe):
@@ -36,15 +91,15 @@ def foo_correlation(dataframe):
     logging.info("-- All classes, that reached that point")
     logging.info("----------------------------------------------------------------------------------------------------")
 
-    percentReached = 1
-    dataframe = ex.get_measurements(dataframe, percentReached)
-    print_correlations(str(percentReached * 10) + 'p-time', dataframe, 'Coverage')
+    percent_reached = 1
+    dataframe = ex.get_measurements(dataframe, percent_reached)
+    print_correlations(str(percent_reached * 10) + 'p-time', dataframe, 'Coverage')
 
     logging.info("----------------------------------------------------------")
 
-    percentReached = 2
-    dataframe = ex.get_measurements(dataframe, percentReached)
-    print_correlations(str(percentReached * 10) + 'p-time', dataframe, 'Coverage')
+    percent_reached = 2
+    dataframe = ex.get_measurements(dataframe, percent_reached)
+    print_correlations(str(percent_reached * 10) + 'p-time', dataframe, 'Coverage')
 
     logging.info("----------------------------------------------------------------------------------------------------")
     logging.info("-- Measuring point at a certain percentage of the search budget")
@@ -52,10 +107,10 @@ def foo_correlation(dataframe):
     logging.info("-- Remove zero branches")
     logging.info("----------------------------------------------------------------------------------------------------")
 
-    percentReached = 2
-    dataframe = ex.get_measurements(dataframe, percentReached)
+    percent_reached = 2
+    dataframe = ex.get_measurements(dataframe, percent_reached)
     subset = dataframe[dataframe['Total_Branches'].gt(0)]
-    print_correlations(str(percentReached * 10) + 'p-time', subset, 'Coverage')
+    print_correlations(str(percent_reached * 10) + 'p-time', subset, 'Coverage')
 
 
 def foo_std(dataframe):
@@ -250,21 +305,25 @@ def main():
     Runs large scale experiment.
     """
     path = os.path.join(PATH_WORKING_DIRECTORY, args.results)
-    dataframe = ex.get_statistics(path)
-    dataframe = ex.clean(dataframe)
-    dataframe = ex.add_additional_columns(dataframe)
-    dataframe = ex.filter_dataframe(dataframe, FILTER_MIN_EXECUTIONS)
+    original = ex.get_statistics(path)
+    original = ex.clean(original)
+    original = ex.add_additional_columns(original)
+    dataframe = ex.filter_dataframe(original, FILTER_MIN_EXECUTIONS)
 
     dataframe = ex.get_measurements(dataframe, -1)
     ex.print_result_infos(dataframe)
 
     logging.info("start evaluation...")
-    logging.info("@20%")
-    dataframe = ex.get_measurements(dataframe, 2)
 
-    # foo_correlation(subset)
-    foo_std(dataframe)
-    foo_coverage(dataframe)
+    # foo_percentage_dif(dataframe)
+    foo_general_infos(original, dataframe)
+
+    logging.info("@20%")
+    dataframe = ex.get_measurements( dataframe, 2)
+
+    # foo_correlation(dataframe)
+    # foo_std(dataframe)
+    # foo_coverage(dataframe)
 
     # ###################################################################
 

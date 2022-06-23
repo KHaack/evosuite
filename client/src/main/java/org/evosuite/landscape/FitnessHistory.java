@@ -33,24 +33,23 @@ public class FitnessHistory implements Serializable {
      * Adds the passed fitness value to the history.
      *
      * @param age          The age of the fitness value.
-     * @param fitnessValue The fitness value.
+     * @param fitnessValueRaw The fitness value.
      */
-    public void addFitness(int age, double fitnessValue) {
-        if (fitnessValue != Double.POSITIVE_INFINITY
-                && fitnessValue != Double.NEGATIVE_INFINITY) {
+    public void addFitness(int age, double fitnessValueRaw) {
+        if (fitnessValueRaw != Double.POSITIVE_INFINITY && fitnessValueRaw != Double.NEGATIVE_INFINITY) {
             // do not save infinity values, otherwise the epsilon calculation does not work
-            if (null == this.observedMinimum || fitnessValue < this.observedMinimum) {
-                this.observedMinimum = fitnessValue;
-                logger.info("{} -> {} min", age, fitnessValue);
+            if (null == this.observedMinimum || fitnessValueRaw < this.observedMinimum) {
+                this.observedMinimum = fitnessValueRaw;
+                logger.info("{} -> {} min", age, fitnessValueRaw);
             }
 
-            if (null == this.observedMaximum || fitnessValue > this.observedMaximum) {
-                this.observedMaximum = fitnessValue;
-                logger.info("{} -> {} max", age, fitnessValue);
+            if (null == this.observedMaximum || fitnessValueRaw > this.observedMaximum) {
+                this.observedMaximum = fitnessValueRaw;
+                logger.info("{} -> {} max", age, fitnessValueRaw);
             }
+
+            this.fitnessHistory.put(age, fitnessValueRaw);
         }
-
-        this.fitnessHistory.put(age, fitnessValue);
     }
 
     /**

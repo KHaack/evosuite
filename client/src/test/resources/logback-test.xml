@@ -27,9 +27,12 @@
 
     <logger name="org.evosuite.landscape.FitnessHistoryListener" level="DEBUG"/>
     <!--<logger name="org.evosuite.landscape.FitnessHistory" level="DEBUG"/>-->
-    <logger name="org.evosuite.ga.metaheuristics.mosa.DynaMOSASystemTest" level="DEBUG"/>
+    <!--<logger name="org.evosuite.ga.metaheuristics.mosa.DynaMOSASystemTest" level="DEBUG"/>-->
     <logger name="org.evosuite.landscape.NeutralityVolume" level="DEBUG"/>
+    <!--<logger name="org.evosuite.strategy.PropertiesSuiteGAFactory" level="DEBUG"/>-->
+    <!--<logger name="org.evosuite.strategy.PropertiesTestGAFactory" level="DEBUG"/>-->
     <!--<logger name="org.evosuite.statistics.SearchStatistics" level="DEBUG"/>-->
+
 
     <root level="WARN">
         <appender class="ch.qos.logback.core.ConsoleAppender">

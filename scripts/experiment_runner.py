@@ -91,7 +91,8 @@ PARAMETER_DYNAMOSA = [
     '_FitnessRatio,'
     '_Generations,'
     '_GradientBranches,'
-    '_GradientBranchesCovered'
+    '_GradientBranchesCovered,'
+    '_ParameterControlled'
 ]
 
 
@@ -160,26 +161,9 @@ def create_parameter(path_class_dir):
 
     parameter = parameter + PARAMETER_ALL
 
-    if runner.criterion is not None:
-        parameter = parameter + ['-criterion', runner.criterion]
-
-    if runner.cross_over_rate is not None:
-        parameter = parameter + ['-Dcrossover_rate', str(runner.cross_over_rate)]
-
-    if runner.mutation_rate is not None:
-        parameter = parameter + ['-Dmutation_rate', str(runner.mutation_rate)]
-
-    if runner.mutation_rate is not None:
-        parameter = parameter + ['-Dpopulation', str(runner.population)]
-
-    if runner.enable_landscape_analysis:
-        parameter = parameter + ['-Denable_landscape_analysis=true']
-
-    if runner.enable_fitness_history:
-        parameter = parameter + ['-Denable_fitness_history=true']
-
-    if runner.enable_parameter_control:
-        parameter = parameter + ['-Denable_parameter_control=true']
+    for key, value in runner.additional_parameter.items():
+        if value is not None:
+            parameter = parameter + [key + '=' + str(value)]
 
     if runner.algorithm == 'DYNAMOSA':
         return parameter + PARAMETER_DYNAMOSA
@@ -455,16 +439,32 @@ def main():
 
 if __name__ == "__main__":
     args = setup_argparse().parse_args()
+
+    # HIGH_STDEV
+    # PERFORMS_BAD
+    # RELATIVE_LOW_COVERAGE
+    # HIGH_STDEV_PERFORMS_BAD
+    # HIGH_STDEV_RELATIVE_LOW_COVERAGE
+    additional_parameter = {
+        '-criterion': None,
+        '-Dcrossover_rate': None,
+        '-Dmutation_rate': None,
+        '-Dpopulation': None,
+        '-Dnumber_of_mutations': None,
+        '-Denable_landscape_analysis': 'true',
+        '-Denable_fitness_history': 'true',
+        '-Denable_parameter_control': 'true',
+        '-Dpc_population': None,
+        '-Dpc_crossover_rate': 1.0,
+        '-Dpc_number_of_mutations': None,
+        '-Dpc_prediction': 'RELATIVE_LOW_COVERAGE'
+    }
+
     runner = ex.ExperimentRunner(initial_sample_file=args.sample,
-                                 sample_size=100,
+                                 sample_size=20,
                                  executions_per_class=10,
                                  hostname=socket.gethostname(),
                                  start_time=datetime.now(),
                                  random=False,
-                                 enable_landscape_analysis=True,
-                                 enable_fitness_history=True,
-                                 enable_parameter_control=True,
-                                 mutation_rate=None,
-                                 cross_over_rate=None,
-                                 population=None)
+                                 additional_parameter=additional_parameter)
     main()
