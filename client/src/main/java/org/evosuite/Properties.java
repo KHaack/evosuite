@@ -1902,7 +1902,8 @@ public class Properties {
         RELATIVE_LOW_COVERAGE,
         HIGH_STDEV_PERFORMS_BAD,
         HIGH_STDEV_RELATIVE_LOW_COVERAGE,
-        NONE
+        NONE,
+        ALWAYS
     }
 
     /**

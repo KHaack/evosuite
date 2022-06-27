@@ -100,6 +100,9 @@ public class FitnessHistoryListener<T extends Chromosome<T>> implements SearchLi
                     case HIGH_STDEV_RELATIVE_LOW_COVERAGE:
                         shouldControl = !parameterControl.lowCoverageStd() && !parameterControl.relativeHighCoverage();
                         break;
+                    case ALWAYS:
+                        shouldControl = true;
+                        break;
                     case NONE:
                     default:
                         shouldControl = false;
