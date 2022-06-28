@@ -445,6 +445,8 @@ if __name__ == "__main__":
     # RELATIVE_LOW_COVERAGE
     # HIGH_STDEV_PERFORMS_BAD
     # HIGH_STDEV_RELATIVE_LOW_COVERAGE
+    # ALWAYS
+
     additional_parameter = {
         '-criterion': None,
         '-Dcrossover_rate': None,
@@ -454,14 +456,14 @@ if __name__ == "__main__":
         '-Denable_landscape_analysis': 'true',
         '-Denable_fitness_history': 'true',
         '-Denable_parameter_control': 'true',
-        '-Dpc_population': None,
-        '-Dpc_crossover_rate': 1.0,
+        '-Dpc_population': 125,
+        '-Dpc_crossover_rate': None,
         '-Dpc_number_of_mutations': None,
-        '-Dpc_prediction': 'RELATIVE_LOW_COVERAGE'
+        '-Dpc_prediction': 'ALWAYS'
     }
 
     runner = ex.ExperimentRunner(initial_sample_file=args.sample,
-                                 sample_size=20,
+                                 sample_size=713,
                                  executions_per_class=10,
                                  hostname=socket.gethostname(),
                                  start_time=datetime.now(),

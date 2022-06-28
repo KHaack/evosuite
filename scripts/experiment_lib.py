@@ -248,6 +248,34 @@ def get_measurements(dataframe, percent):
     return copy
 
 
+def filter_percentage(dataframe):
+    """
+    Filter the passed dataframe by runs that reach not 10%.
+    :param dataframe: The dataframe to filter.
+    :return: The filtered dataframe.
+    """
+    total_length = len(dataframe.index)
+    dataframe = dataframe[dataframe['PercentageReached'] > 0]
+    logging.info("Tests not reached 10%:\t" + str(total_length - len(dataframe.index)))
+    return dataframe
+
+
+def filter_executions(dataframe, minimum_executions):
+    """
+    Filter the passed dataframe by the passed minimum count of executions.
+    :param dataframe: The dataframe to filter.
+    :param minimum_executions: The minimum count of executions.
+    :return: The filtered dataframe.
+    """
+    total_length = len(dataframe.index)
+    groups = dataframe.groupby('TARGET_CLASS').count()
+    groups = groups.reset_index()
+    groups = groups[groups['Algorithm'] >= minimum_executions]
+    dataframe = dataframe[dataframe['TARGET_CLASS'].isin(groups['TARGET_CLASS'])]
+    logging.info(f"Tests less then {str(minimum_executions)}execs:\t{str(total_length - len(dataframe.index))}")
+    return dataframe
+
+
 def filter_dataframe(dataframe, minimum_executions):
     """
     Filter the passed dataframe.
@@ -257,18 +285,11 @@ def filter_dataframe(dataframe, minimum_executions):
     """
     # not 10% reached
     if FILTER_PERCENTAGE:
-        total_length = len(dataframe.index)
-        dataframe = dataframe[dataframe['PercentageReached'] > 0]
-        logging.info("Tests not reached 10%:\t" + str(total_length - len(dataframe.index)))
+        dataframe = filter_percentage(dataframe)
 
     # executions
     if minimum_executions > 0:
-        total_length = len(dataframe.index)
-        groups = dataframe.groupby('TARGET_CLASS').count()
-        groups = groups.reset_index()
-        groups = groups[groups['Algorithm'] >= minimum_executions]
-        dataframe = dataframe[dataframe['TARGET_CLASS'].isin(groups['TARGET_CLASS'])]
-        logging.info(f"Tests less then {str(minimum_executions)}execs:\t{str(total_length - len(dataframe.index))}")
+        dataframe = filter_executions(dataframe, minimum_executions)
 
     return dataframe
 

@@ -37,11 +37,41 @@ def euclidean_distance(dataframe1, dataframe2, columns):
 
 
 def foo_general_infos(original, dataframe):
+    # percentage histogram
+    ax = original.hist(column='PercentageReached', bins=10)
+    ax[0][0].set_ylabel("Count")
+    ax[0][0].set_xlabel("Percentage reached")
+    plt.title('Histogram - Percentage reached')
+    plt.tight_layout()
+    plt.show()
+
+    # coverage histogram
     ax = dataframe.hist(column='Coverage', bins=20)
     ax[0][0].set_ylabel("Count")
     ax[0][0].set_xlabel("Coverage")
     plt.title('Histogram - Coverage')
     plt.tight_layout()
+    plt.show()
+
+    # generations histogram
+    rows = []
+    for percentage in range(1, 11):
+        subset = ex.get_measurements(dataframe, percentage)
+        row = {
+            'x': percentage - 1,
+            'x-label': f'{percentage * 10}%',
+            'mean': np.mean(subset['_Generations']),
+            'median': np.median(subset['_Generations'])
+        }
+        rows.append(row)
+
+    result = pd.DataFrame(rows)
+    ax = result.plot(kind='line', x='x', grid=True)
+    ax.set_ylabel("Generations")
+    ax.set_xlabel("Percentage")
+    plt.title('Generations')
+    plt.tight_layout()
+    plt.xticks(np.arange(0, len(result['x'])), labels=result['x-label'])
     plt.show()
 
 
@@ -62,21 +92,21 @@ def foo_percentage_dif(dataframe):
         distance = euclidean_distance(subset10, subset20, columns)
 
         row = {
-            'measuring points': f"{first}0%-{second}0%",
-            'max': np.max(distance),
-            'min': np.min(distance),
+            'x': i - 2,
+            'x-label': f"{first}0-{second}0%",
             'mean': np.mean(distance),
             'median': np.median(distance)
         }
         rows.append(row)
 
     result = pd.DataFrame(rows)
-    ax = result.plot(kind='line', x='measuring points', rot=45)
+    ax = result.plot(kind='line', x='x', rot=10, grid=True)
     ax.set_ylabel("Euclidean distance")
-    plt.title('Euclidean distances')
+    ax.set_xlabel("Percentages")
+    plt.title('Aggregated Euclidean distances')
     plt.tight_layout()
+    plt.xticks(np.arange(0, len(result['x'])), labels=result['x-label'])
     plt.show()
-
 
 
 def foo_correlation(dataframe):
@@ -315,8 +345,8 @@ def main():
 
     logging.info("start evaluation...")
 
-    # foo_percentage_dif(dataframe)
-    foo_general_infos(original, dataframe)
+    foo_percentage_dif(dataframe)
+    # foo_general_infos(original, dataframe)
 
     logging.info("@20%")
     dataframe = ex.get_measurements( dataframe, 2)
