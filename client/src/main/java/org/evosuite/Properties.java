@@ -1010,6 +1010,9 @@ public class Properties {
     public static int PC_NUMBER_OF_MUTATIONS = NUMBER_OF_MUTATIONS;
     @Parameter(key = "pc_prediction", group = "Landscape", description = "The prediction type")
     public static PCPredictions PC_Prediction = PCPredictions.NONE;
+    @Parameter(key = "pc_at", group = "Landscape", description = "Percentage at which the parameter are controlled.")
+    @DoubleValue(min = 0.1, max = 0.9)
+    public static double PC_AT = 0.2;
 
     @Parameter(key = "epsilon_nv", group = "Landscape", description = "The capacity of the fitness history.")
     @DoubleValue(min = 0.0d, max = 1.0d)

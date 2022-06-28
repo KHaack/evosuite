@@ -25,7 +25,6 @@ public class FitnessHistoryListener<T extends Chromosome<T>> implements SearchLi
      * The percentage steps of the collections.
      */
     private static final double COLLECTION_STEPS = 0.1;
-    private static final double PARAMETER_CONTROL_AT = 0.2;
 
     /**
      * The logger.
@@ -80,7 +79,7 @@ public class FitnessHistoryListener<T extends Chromosome<T>> implements SearchLi
         }
 
         if (Properties.ENABLE_PARAMETER_CONTROL) {
-            if (isPercentageReached(PARAMETER_CONTROL_AT)) {
+            if (isPercentageReached(Properties.PC_AT)) {
                 ParameterControl parameterControl = new ParameterControl(generations, neutralityVolumes, informationContents, fitnessRatio, gradientBranchesCovered, gradientBranches);
                 boolean shouldControl;
 

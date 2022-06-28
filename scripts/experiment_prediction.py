@@ -16,7 +16,7 @@ from sklearn.metrics import classification_report, accuracy_score, confusion_mat
 from sklearn.model_selection import train_test_split
 from sklearn.utils import resample
 from dtreeviz.trees import dtreeviz
-from IPython.display import Image, display_svg, SVG
+import pydotplus
 
 import experiment_lib as ex
 
@@ -71,11 +71,16 @@ def predict(title, dataframe, ground_truth_name, ground_truth, model, make_plots
     logging.info('predict test data...')
     y_prediction = model.predict(x_test)
 
+    logging.info('get classification_report...')
+    print(classification_report(y_test, y_prediction))
+
     if print_tree:
+        logging.info('print tree...')
         text_representation = tree.export_text(model, feature_names=list(x.columns))
         print(text_representation)
 
     if make_plots:
+        logging.info('make plots...')
         # feature importances
         importances = model.feature_importances_
         sorted_indices = np.argsort(importances)[::-1]
@@ -101,9 +106,6 @@ def predict(title, dataframe, ground_truth_name, ground_truth, model, make_plots
                        feature_names=x_names,
                        class_names=['false', 'true'])
         viz.view()
-
-    logging.info('get classification_report...')
-    print(classification_report(y_test, y_prediction))
 
 
 def setup_argparse():
@@ -134,9 +136,9 @@ def main():
 
     model = tree.DecisionTreeClassifier(max_depth=3, random_state=RANDOM_STATE, criterion="gini")
 
-    # predict('All @20%', dataframe, 'High relative coverage', 'High relative coverage', model, make_plots=True)
+    predict('All @20%', dataframe, 'High relative coverage', 'High relative coverage', model, make_plots=True)
     # predict('All @20%', dataframe, 'Well performing', 'Well performing', model, make_plots=True)
-    predict('All @20%', dataframe, 'Low Coverage (std)', 'Low Coverage (std)', model, make_plots=True)
+    # predict('All @20%', dataframe, 'Low Coverage (std)', 'Low Coverage (std)', model, make_plots=True)
 
 
 if __name__ == "__main__":

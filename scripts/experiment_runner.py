@@ -456,6 +456,7 @@ if __name__ == "__main__":
         '-Denable_landscape_analysis': 'true',
         '-Denable_fitness_history': 'true',
         '-Denable_parameter_control': 'true',
+        '-Dpc_at': 0.2,
         '-Dpc_population': 125,
         '-Dpc_crossover_rate': None,
         '-Dpc_number_of_mutations': None,
