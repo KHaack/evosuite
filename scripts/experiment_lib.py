@@ -55,7 +55,7 @@ def add_additional_columns(dataframe):
     dataframe['PercentageReached'] = dataframe['NeutralityVolume'].str.count(';') * 10
 
     # performs well
-    dataframe['Well performing'] = dataframe['Coverage'].ge(0.8)
+    dataframe['PERFORMS_BAD'] = dataframe['Coverage'].lt(0.8)
 
     # coverage
     groups = dataframe.groupby('TARGET_CLASS').agg({
@@ -71,8 +71,8 @@ def add_additional_columns(dataframe):
     dataframe.drop(('Coverage (std)', ''), axis=1, inplace=True)
     dataframe.drop(('Coverage (max)', ''), axis=1, inplace=True)
 
-    dataframe['Low Coverage (std)'] = dataframe['Coverage (std)'].lt(0.1)
-    dataframe['High relative coverage'] = dataframe['Coverage'].ge(dataframe['Coverage (max)'] * 0.8)
+    dataframe['HIGH_STDEV'] = dataframe['Coverage (std)'].gt(0.1)
+    dataframe['RELATIVE_LOW_COVERAGE'] = dataframe['Coverage'].lt(dataframe['Coverage (max)'] * 0.8)
 
     # branchless
     dataframe['Branchless'] = dataframe['Total_Branches'].eq(0)
@@ -172,8 +172,8 @@ def print_result_infos(dataframe):
     logging.info(f"Lines (min):\t\t{str(dataframe['Lines'].min())}")
     logging.info(f"Lines (median):\t\t{str(dataframe['Lines'].median())}")
     logging.info(f"Lines (mean):\t\t{str(dataframe['Lines'].mean())}")
-    logging.info(f'Well performing (True):\t{len(dataframe[dataframe["Well performing"]])}')
-    logging.info(f'Well performing (False):\t{len(dataframe[~dataframe["Well performing"]])}')
+    logging.info(f'PERFORMS_BAD (True):\t{len(dataframe[dataframe["PERFORMS_BAD"]])}')
+    logging.info(f'PERFORMS_BAD (False):\t{len(dataframe[~dataframe["PERFORMS_BAD"]])}')
     logging.info(f'Branchless:\t\t{len(dataframe[dataframe["Branchless"]])}')
 
     if '_ParameterControlled' in dataframe:

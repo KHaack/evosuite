@@ -146,7 +146,7 @@ def foo_correlation(dataframe):
 def foo_std(dataframe):
     groups = dataframe.groupby('TARGET_CLASS').agg({
         'Coverage': ['var', 'std', 'min', 'max', 'median'],
-        'Well performing': 'mean',
+        'PERFORMS_BAD': 'mean',
         'Branchless': 'mean',
         '_GradientRatio': 'mean',
         '_BranchRatio': 'mean',
@@ -357,11 +357,11 @@ def main():
 
     # ###################################################################
 
-    # Well performing, Low Coverage (std), Branchless, Coverage
+    # PERFORMS_BAD, HIGH_STDEV, Branchless, Coverage
     # _GradientRatio, _BranchRatio, _NotGradRatio
     # _InfoContent, _NeutralityGen
     # _Fitness
-    # draw_3d(subset, 'BranchRatio at 20%', '_Fitness', 'Coverage', 'Well performing', '_BranchRatio', '_Fitness', 'Coverage', 'Well performing')
+    # draw_3d(subset, 'BranchRatio at 20%', '_Fitness', 'Coverage', 'PERFORMS_BAD', '_BranchRatio', '_Fitness', 'Coverage', 'Well performing')
     # plt.show()
 
 

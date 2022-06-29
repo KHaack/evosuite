@@ -32,12 +32,12 @@ SCATTER_POINT_SIZE = 4
 RANDOM_STATE = 42
 
 
-def predict(title, dataframe, ground_truth_name, ground_truth, model, make_plots=False, print_tree=False):
+def predict(title, dataframe, ground_truth, model, make_plots=False, print_tree=False):
     count_true = len(dataframe[dataframe[ground_truth]])
     count_false = len(dataframe[~dataframe[ground_truth]])
 
-    logging.info(f'{ground_truth_name} (True): {count_true}')
-    logging.info(f'{ground_truth_name} (False): {count_false}')
+    logging.info(f'{ground_truth} (True): {count_true}')
+    logging.info(f'{ground_truth} (False): {count_false}')
 
     balance = count_true / (count_true + count_false)
     logging.info(f'balancing: {balance}')
@@ -55,8 +55,8 @@ def predict(title, dataframe, ground_truth_name, ground_truth, model, make_plots
         minority = resample(minority, replace=True, n_samples=len(majority.index), random_state=RANDOM_STATE)
         dataframe = pd.concat([majority, minority])
 
-        logging.info(f'{ground_truth_name} (True): {len(dataframe[dataframe[ground_truth]])}')
-        logging.info(f'{ground_truth_name} (False): {len(dataframe[~dataframe[ground_truth]])}')
+        logging.info(f'{ground_truth} (True): {len(dataframe[dataframe[ground_truth]])}')
+        logging.info(f'{ground_truth} (False): {len(dataframe[~dataframe[ground_truth]])}')
         logging.info(f'balancing: {len(dataframe[dataframe[ground_truth]]) / len(dataframe)}')
 
     x_names = ['Branchless', '_GradientRatio', '_BranchRatio', '_Fitness', '_InfoContent', '_NeutralityGen']
@@ -70,9 +70,6 @@ def predict(title, dataframe, ground_truth_name, ground_truth, model, make_plots
 
     logging.info('predict test data...')
     y_prediction = model.predict(x_test)
-
-    logging.info('get classification_report...')
-    print(classification_report(y_test, y_prediction))
 
     if print_tree:
         logging.info('print tree...')
@@ -100,12 +97,39 @@ def predict(title, dataframe, ground_truth_name, ground_truth, model, make_plots
 
         # dtreeviz
         viz = dtreeviz(model,
-                       title=f'Decision tree - {ground_truth_name}',
+                       title=f'Decision tree - {ground_truth}',
                        x_data=x_train,
                        y_data=y_train,
                        feature_names=x_names,
                        class_names=['false', 'true'])
         viz.view()
+
+    logging.info('get classification_report...')
+    return classification_report(y_test, y_prediction, output_dict=True)
+
+
+def compare_prediction(dataframe):
+    """
+    Compare the results of different predictions.
+    :param dataframe: The dataframe
+    :return: None
+    """
+    rows = []
+    for percentage in range(1, 4):
+        dataframe = ex.get_measurements(dataframe, percentage)
+
+        model = tree.DecisionTreeClassifier(max_depth=3, random_state=RANDOM_STATE, criterion="gini")
+        for y in ['RELATIVE_LOW_COVERAGE', 'PERFORMS_BAD', 'HIGH_STDEV', 'HIGH_STDEV_and_RELATIVE_LOW_COVERAGE', 'HIGH_STDEV_and_PERFORMS_BAD']:
+            logging.info(f"start prediction {y} @ {percentage * 10}...")
+            report = predict(f"@{percentage * 10}%", dataframe, y, model, make_plots=False, print_tree=False)
+            row = {
+                'Percentage': f"{percentage * 10}%",
+                'Target': y,
+                'Accuracy': report['accuracy']
+            }
+            rows.append(row)
+    result = pd.DataFrame(rows)
+    print(result)
 
 
 def setup_argparse():
@@ -130,15 +154,15 @@ def main():
     dataframe = ex.get_measurements(dataframe, -1)
     ex.print_result_infos(dataframe)
 
-    logging.info("start prediction...")
-    logging.info("@20%")
-    dataframe = ex.get_measurements(dataframe, 2)
+    dataframe['HIGH_STDEV_and_RELATIVE_LOW_COVERAGE'] = dataframe['RELATIVE_LOW_COVERAGE'] & dataframe['HIGH_STDEV']
+    dataframe['HIGH_STDEV_and_PERFORMS_BAD'] = dataframe['PERFORMS_BAD'] & dataframe['HIGH_STDEV']
 
+    # compare_prediction(dataframe)
+
+    percentage = 2
+    dataframe = ex.get_measurements(dataframe, percentage)
     model = tree.DecisionTreeClassifier(max_depth=3, random_state=RANDOM_STATE, criterion="gini")
-
-    predict('All @20%', dataframe, 'High relative coverage', 'High relative coverage', model, make_plots=True)
-    # predict('All @20%', dataframe, 'Well performing', 'Well performing', model, make_plots=True)
-    # predict('All @20%', dataframe, 'Low Coverage (std)', 'Low Coverage (std)', model, make_plots=True)
+    predict(f"@{percentage * 10}%", dataframe, 'HIGH_STDEV_and_RELATIVE_LOW_COVERAGE', model, make_plots=True)
 
 
 if __name__ == "__main__":
