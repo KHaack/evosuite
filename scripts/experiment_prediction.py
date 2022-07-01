@@ -16,7 +16,7 @@ from sklearn.metrics import classification_report, accuracy_score, confusion_mat
 from sklearn.model_selection import train_test_split
 from sklearn.utils import resample
 from dtreeviz.trees import dtreeviz
-import pydotplus
+from sklearn.tree._tree import TREE_LEAF
 
 import experiment_lib as ex
 
@@ -31,8 +31,54 @@ SCATTER_POINT_SIZE = 4
 
 RANDOM_STATE = 42
 
+def is_leaf(inner_tree, index):
+    """
+    Check whether node is leaf node.
+    https://stackoverflow.com/questions/51397109/prune-unnecessary-leaves-in-sklearn-decisiontreeclassifier
+    :param inner_tree:
+    :param index:
+    :return:
+    """
+    return (inner_tree.children_left[index] == TREE_LEAF and
+            inner_tree.children_right[index] == TREE_LEAF)
 
-def predict(title, dataframe, ground_truth, model, make_plots=False, print_tree=False):
+def prune_index(inner_tree, decisions, index=0):
+    """
+    Start pruning from the bottom - if we start from the top, we might miss nodes that become leaves during pruning.
+    Do not use this directly - use prune_duplicate_leaves instead.
+    https://stackoverflow.com/questions/51397109/prune-unnecessary-leaves-in-sklearn-decisiontreeclassifier
+    :param inner_tree:
+    :param decisions:
+    :param index:
+    :return:
+    """
+    if not is_leaf(inner_tree, inner_tree.children_left[index]):
+        prune_index(inner_tree, decisions, inner_tree.children_left[index])
+    if not is_leaf(inner_tree, inner_tree.children_right[index]):
+        prune_index(inner_tree, decisions, inner_tree.children_right[index])
+
+    # Prune children if both children are leaves now and make the same decision:
+    if (is_leaf(inner_tree, inner_tree.children_left[index]) and
+            is_leaf(inner_tree, inner_tree.children_right[index]) and
+            (decisions[index] == decisions[inner_tree.children_left[index]]) and
+            (decisions[index] == decisions[inner_tree.children_right[index]])):
+        # turn node into a leaf by "unlinking" its children
+        inner_tree.children_left[index] = TREE_LEAF
+        inner_tree.children_right[index] = TREE_LEAF
+        ##print("Pruned {}".format(index))
+
+
+def prune_duplicate_leaves(model):
+    """
+    Remove leaves if both.
+    :param model:
+    :return:
+    """
+    decisions = model.tree_.value.argmax(axis=2).flatten().tolist()
+    prune_index(model.tree_, decisions)
+
+
+def predict(title, dataframe, ground_truth, model, make_plots=False, print_tree=False, prune_tree=False):
     count_true = len(dataframe[dataframe[ground_truth]])
     count_false = len(dataframe[~dataframe[ground_truth]])
 
@@ -67,6 +113,10 @@ def predict(title, dataframe, ground_truth, model, make_plots=False, print_tree=
 
     logging.info('fit train data...')
     model.fit(x_train, y_train)
+
+    if prune_tree:
+        logging.info('prune tree...')
+        prune_duplicate_leaves(model)
 
     logging.info('predict test data...')
     y_prediction = model.predict(x_test)
@@ -162,7 +212,7 @@ def main():
     percentage = 2
     dataframe = ex.get_measurements(dataframe, percentage)
     model = tree.DecisionTreeClassifier(max_depth=3, random_state=RANDOM_STATE, criterion="gini")
-    predict(f"@{percentage * 10}%", dataframe, 'HIGH_STDEV_and_RELATIVE_LOW_COVERAGE', model, make_plots=True)
+    predict(f"@{percentage * 10}%", dataframe, 'HIGH_STDEV_and_RELATIVE_LOW_COVERAGE', model, make_plots=True, prune_tree=True)
 
 
 if __name__ == "__main__":
