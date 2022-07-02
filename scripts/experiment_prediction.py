@@ -169,7 +169,7 @@ def compare_prediction(dataframe):
         dataframe = ex.get_measurements(dataframe, percentage)
 
         model = tree.DecisionTreeClassifier(max_depth=3, random_state=RANDOM_STATE, criterion="gini")
-        for y in ['RELATIVE_LOW_COVERAGE', 'PERFORMS_BAD', 'HIGH_STDEV', 'HIGH_STDEV_and_RELATIVE_LOW_COVERAGE', 'HIGH_STDEV_and_PERFORMS_BAD']:
+        for y in ['RELATIVE_LOW_COVERAGE', 'LOW_END_COVERAGE', 'HIGH_STDEV', 'HIGH_STDEV_and_RELATIVE_LOW_COVERAGE', 'HIGH_STDEV_and_LOW_END_COVERAGE']:
             logging.info(f"start prediction {y} @ {percentage * 10}...")
             report = predict(f"@{percentage * 10}%", dataframe, y, model, make_plots=False, print_tree=False)
             row = {
@@ -205,14 +205,19 @@ def main():
     ex.print_result_infos(dataframe)
 
     dataframe['HIGH_STDEV_and_RELATIVE_LOW_COVERAGE'] = dataframe['RELATIVE_LOW_COVERAGE'] & dataframe['HIGH_STDEV']
-    dataframe['HIGH_STDEV_and_PERFORMS_BAD'] = dataframe['PERFORMS_BAD'] & dataframe['HIGH_STDEV']
+    dataframe['HIGH_STDEV_and_LOW_END_COVERAGE'] = dataframe['LOW_END_COVERAGE'] & dataframe['HIGH_STDEV']
 
     # compare_prediction(dataframe)
 
     percentage = 2
     dataframe = ex.get_measurements(dataframe, percentage)
     model = tree.DecisionTreeClassifier(max_depth=3, random_state=RANDOM_STATE, criterion="gini")
-    predict(f"@{percentage * 10}%", dataframe, 'HIGH_STDEV_and_RELATIVE_LOW_COVERAGE', model, make_plots=True, prune_tree=True)
+    # LOW_END_COVERAGE
+    # HIGH_STDEV
+    # RELATIVE_LOW_COVERAGE
+    # HIGH_STDEV_and_RELATIVE_LOW_COVERAGE
+    # HIGH_STDEV_and_LOW_END_COVERAGE
+    predict(f"@{percentage * 10}%", dataframe, 'LOW_END_COVERAGE', model, make_plots=True, prune_tree=True)
 
 
 if __name__ == "__main__":

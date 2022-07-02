@@ -55,7 +55,7 @@ def add_additional_columns(dataframe):
     dataframe['PercentageReached'] = dataframe['NeutralityVolume'].str.count(';') * 10
 
     # performs well
-    dataframe['PERFORMS_BAD'] = dataframe['Coverage'].lt(0.8)
+    dataframe['LOW_END_COVERAGE'] = dataframe['Coverage'].lt(0.8)
 
     # coverage
     groups = dataframe.groupby('TARGET_CLASS').agg({
@@ -172,8 +172,8 @@ def print_result_infos(dataframe):
     logging.info(f"Lines (min):\t\t{str(dataframe['Lines'].min())}")
     logging.info(f"Lines (median):\t\t{str(dataframe['Lines'].median())}")
     logging.info(f"Lines (mean):\t\t{str(dataframe['Lines'].mean())}")
-    logging.info(f'PERFORMS_BAD (True):\t{len(dataframe[dataframe["PERFORMS_BAD"]])}')
-    logging.info(f'PERFORMS_BAD (False):\t{len(dataframe[~dataframe["PERFORMS_BAD"]])}')
+    logging.info(f'LOW_END_COVERAGE (True):\t{len(dataframe[dataframe["LOW_END_COVERAGE"]])}')
+    logging.info(f'LOW_END_COVERAGE (False):\t{len(dataframe[~dataframe["LOW_END_COVERAGE"]])}')
     logging.info(f'Branchless:\t\t{len(dataframe[dataframe["Branchless"]])}')
 
     if '_ParameterControlled' in dataframe:

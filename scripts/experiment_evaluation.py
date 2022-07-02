@@ -38,10 +38,18 @@ def euclidean_distance(dataframe1, dataframe2, columns):
 
 def foo_general_infos(original, dataframe):
     # percentage histogram
+    ax = original.hist(column='Total_Branches', bins=10)
+    ax[0][0].set_ylabel("Count")
+    ax[0][0].set_xlabel("Branches")
+    plt.title('Histogram - Branches')
+    plt.tight_layout()
+    plt.show()
+
+    # percentage histogram
     ax = original.hist(column='PercentageReached', bins=10)
     ax[0][0].set_ylabel("Count")
-    ax[0][0].set_xlabel("Percentage reached")
-    plt.title('Histogram - Percentage reached')
+    ax[0][0].set_xlabel("Percentage of search budget reached")
+    plt.title('Histogram - used search budget')
     plt.tight_layout()
     plt.show()
 
@@ -146,7 +154,7 @@ def foo_correlation(dataframe):
 def foo_std(dataframe):
     groups = dataframe.groupby('TARGET_CLASS').agg({
         'Coverage': ['var', 'std', 'min', 'max', 'median'],
-        'PERFORMS_BAD': 'mean',
+        'LOW_END_COVERAGE': 'mean',
         'Branchless': 'mean',
         '_GradientRatio': 'mean',
         '_BranchRatio': 'mean',
@@ -345,11 +353,11 @@ def main():
 
     logging.info("start evaluation...")
 
-    foo_percentage_dif(dataframe)
-    # foo_general_infos(original, dataframe)
+    # foo_percentage_dif(dataframe)
+    foo_general_infos(original, dataframe)
 
     logging.info("@20%")
-    dataframe = ex.get_measurements( dataframe, 2)
+    dataframe = ex.get_measurements(dataframe, 2)
 
     # foo_correlation(dataframe)
     # foo_std(dataframe)
@@ -357,11 +365,11 @@ def main():
 
     # ###################################################################
 
-    # PERFORMS_BAD, HIGH_STDEV, Branchless, Coverage
+    # LOW_END_COVERAGE, HIGH_STDEV, Branchless, Coverage
     # _GradientRatio, _BranchRatio, _NotGradRatio
     # _InfoContent, _NeutralityGen
     # _Fitness
-    # draw_3d(subset, 'BranchRatio at 20%', '_Fitness', 'Coverage', 'PERFORMS_BAD', '_BranchRatio', '_Fitness', 'Coverage', 'Well performing')
+    # draw_3d(subset, 'BranchRatio at 20%', '_Fitness', 'Coverage', 'LOW_END_COVERAGE', '_BranchRatio', '_Fitness', 'Coverage', 'Well performing')
     # plt.show()
 
 

@@ -443,9 +443,9 @@ if __name__ == "__main__":
     args = setup_argparse().parse_args()
 
     # HIGH_STDEV
-    # PERFORMS_BAD
+    # LOW_END_COVERAGE
     # RELATIVE_LOW_COVERAGE
-    # HIGH_STDEV_PERFORMS_BAD
+    # HIGH_STDEV_LOW_END_COVERAGE
     # HIGH_STDEV_RELATIVE_LOW_COVERAGE
     # ALWAYS
 
