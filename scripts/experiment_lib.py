@@ -16,6 +16,8 @@ import pandas as pd
 from dateutil import parser
 
 # files and directories
+from pandas.errors import ParserError
+
 FILE_CLASSES = "C:\\Users\\kha\\Desktop\\Benchmark\\samples\\00 - original - 23894.txt"
 FILE_EXPORT = "export.txt"
 # filtering
@@ -134,7 +136,12 @@ def get_statistics(path):
 
     li = []
     for file in files:
-        li.append(pd.read_csv(file, delimiter=','))
+        try:
+            doc = pd.read_csv(file, delimiter=',')
+        except ParserError as error:
+            logging.error(f"{type(error)} parsing CSV {file}: {error}")
+            exit(0)
+        li.append(doc)
 
     dataframe = pd.concat(li, axis=0, ignore_index=True)
 
