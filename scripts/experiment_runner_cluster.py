@@ -26,7 +26,8 @@ LOCATION_SCRIPT = "C:\\Users\\kha\\repos\\evosuite\\scripts\\experiment_runner.p
 LOCATION_SCRIPT_REMOTE = "/home/user/Benchmark/experiment_runner.py"
 LOCATION_JAR = "C:\\Users\\kha\\repos\\evosuite\\master\\target\\evosuite-master-1.2.1-SNAPSHOT.jar"
 LOCATION_JAR_REMOTE = "/home/user/Benchmark/evosuite-master-1.2.1-SNAPSHOT.jar"
-LOCATION_SAMPLE_REMOTE = "/home/user/Benchmark/samples/12 - new default - 713.txt"
+LOCATION_SAMPLE = "C:\\Users\\kha\\Desktop\\Benchmark\\samples\\15 - kifetew selected classes - 346.txt"
+LOCATION_SAMPLE_REMOTE = "/home/user/Benchmark/samples/15 - kifetew selected classes - 346.txt"
 LOCATION_CORPUS_REMOTE = "/home/user/Benchmark/SF110-20130704"
 # the command that should be executed on the remotes
 REMOTE_COMMAND = f'python3 "{LOCATION_SCRIPT_REMOTE}" -sample "{LOCATION_SAMPLE_REMOTE}" -corpus "{LOCATION_CORPUS_REMOTE}" -evosuite "{LOCATION_JAR_REMOTE}" -write_status -reboot'
@@ -34,6 +35,7 @@ REMOTE_COMMAND = f'python3 "{LOCATION_SCRIPT_REMOTE}" -sample "{LOCATION_SAMPLE_
 COPY_JAR = True
 COPY_SCRIPT = True
 COPY_LIB = True
+COPY_SAMPLE = True
 ACCEPT_EVERY_SSH_KEY = True
 CLUSTER_IPS = [
     '192.168.178.68',  # cluster0671
@@ -92,6 +94,10 @@ def start_remote(ip):
         if COPY_SCRIPT:
             logging.info(f'copy script on {ip}...')
             scp.put(LOCATION_SCRIPT, LOCATION_SCRIPT_REMOTE)
+
+        if COPY_SAMPLE:
+            logging.info(f'copy sample on {ip}...')
+            scp.put(LOCATION_SAMPLE, LOCATION_SAMPLE_REMOTE)
 
         if COPY_LIB:
             logging.info(f'copy lib on {ip}...')
