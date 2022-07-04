@@ -458,11 +458,11 @@ if __name__ == "__main__":
         '-Denable_landscape_analysis': 'true',
         '-Denable_fitness_history': 'true',
         '-Denable_parameter_control': 'true',
-        '-Dpc_at': 0.2,
+        '-Dpc_at': 0.3,
         '-Dpc_population': 125,
         '-Dpc_crossover_rate': None,
         '-Dpc_number_of_mutations': None,
-        '-Dpc_prediction': 'ALWAYS'
+        '-Dpc_prediction': 'HIGH_STDEV_RELATIVE_LOW_COVERAGE'
     }
 
     runner = ex.ExperimentRunner(initial_sample_file=args.sample,

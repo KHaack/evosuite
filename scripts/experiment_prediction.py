@@ -11,8 +11,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from sklearn import tree
-from sklearn.metrics import classification_report, accuracy_score, confusion_matrix, \
-    ConfusionMatrixDisplay
+from sklearn.metrics import classification_report, confusion_matrix, ConfusionMatrixDisplay
 from sklearn.model_selection import train_test_split
 from sklearn.utils import resample
 from dtreeviz.trees import dtreeviz
@@ -165,9 +164,17 @@ def compare_prediction(dataframe, to_csv=False):
     :return: None
     """
     rows = []
+    targets = ['RELATIVE_LOW_COVERAGE',
+               'LOW_END_COVERAGE',
+               'HIGH_STDEV',
+               'HIGH_STDEV_and_RELATIVE_LOW_COVERAGE',
+               'HIGH_STDEV_and_LOW_END_COVERAGE',
+               'HIGHER_WITH_POP125',
+               'HIGHER_WITH_POP125_and_RELATIVE_LOW_COVERAGE']
+
     for percentage in range(1, 4):
         dataframe = ex.get_measurements(dataframe, percentage)
-        for y in ['RELATIVE_LOW_COVERAGE', 'LOW_END_COVERAGE', 'HIGH_STDEV', 'HIGH_STDEV_and_RELATIVE_LOW_COVERAGE', 'HIGH_STDEV_and_LOW_END_COVERAGE']:
+        for y in targets:
             for depth in range(1, 5):
                 logging.info(f"prediction of: {y} @ {percentage * 10}...")
                 model = tree.DecisionTreeClassifier(max_depth=depth, random_state=RANDOM_STATE, criterion="gini")
@@ -183,7 +190,7 @@ def compare_prediction(dataframe, to_csv=False):
                     'true - f1': report['True']['f1-score'],
                     'false - precision': report['False']['precision'],
                     'false - recall': report['False']['recall'],
-                    'false - f1': report['False']['f1-score'],
+                    'false - f1': report['False']['f1-score']
                 }
                 rows.append(row)
 
@@ -194,7 +201,7 @@ def compare_prediction(dataframe, to_csv=False):
     print(result)
 
     if to_csv:
-        result.sort_values(by=['accuracy'], ascending=False).head(20).to_csv('predictions.csv')
+        result.to_csv('predictions.csv')
 
 
 def setup_argparse():
@@ -209,6 +216,22 @@ def setup_argparse():
     return parser
 
 
+def add_additional_coverage(dataframe, column_name, folder):
+    other = ex.get_statistics(folder)
+
+    groups = other.groupby(['TARGET_CLASS']).agg({
+        'Coverage': 'median'
+    })
+    groups.reset_index(inplace=True)
+
+    merged = dataframe.merge(groups, how='inner', left_on='TARGET_CLASS', right_on='TARGET_CLASS')
+    merged.rename({
+        'Coverage': column_name
+    }, inplace=True, axis=1)
+
+    return merged
+
+
 def main():
     path = os.path.join(PATH_WORKING_DIRECTORY, args.results)
     dataframe = ex.get_statistics(path)
@@ -219,20 +242,26 @@ def main():
     dataframe = ex.get_measurements(dataframe, -1)
     ex.print_result_infos(dataframe)
 
+    dataframe = add_additional_coverage(dataframe, 'EndCoverage POP125', 'C:\\Users\\kha\\Desktop\\Benchmark\\results\\33 PC with POP 125')
+    ex.print_result_infos(dataframe)
+
     dataframe['HIGH_STDEV_and_RELATIVE_LOW_COVERAGE'] = dataframe['RELATIVE_LOW_COVERAGE'] & dataframe['HIGH_STDEV']
     dataframe['HIGH_STDEV_and_LOW_END_COVERAGE'] = dataframe['LOW_END_COVERAGE'] & dataframe['HIGH_STDEV']
+    dataframe['HIGHER_WITH_POP125'] = dataframe['EndCoverage'].lt(dataframe['EndCoverage POP125'])
+    dataframe['HIGHER_WITH_POP125_and_RELATIVE_LOW_COVERAGE'] = dataframe['RELATIVE_LOW_COVERAGE'] & dataframe['HIGHER_WITH_POP125']
 
-    compare_prediction(dataframe, to_csv=True)
+    # compare_prediction(dataframe, to_csv=False)
 
-    # percentage = 3
-    # dataframe = ex.get_measurements(dataframe, percentage)
-    # model = tree.DecisionTreeClassifier(max_depth=4, random_state=RANDOM_STATE, criterion="gini")
+    percentage = 3
+    dataframe = ex.get_measurements(dataframe, percentage)
+    model = tree.DecisionTreeClassifier(max_depth=4, random_state=RANDOM_STATE, criterion="gini")
     # LOW_END_COVERAGE
     # HIGH_STDEV
     # RELATIVE_LOW_COVERAGE
     # HIGH_STDEV_and_RELATIVE_LOW_COVERAGE
     # HIGH_STDEV_and_LOW_END_COVERAGE
-    # predict("High stdev and low end coverage", dataframe, 'HIGH_STDEV_and_RELATIVE_LOW_COVERAGE', model, make_plots=True, prune_tree=True)
+    # HIGHER_WITH_POP125
+    predict("xx", dataframe, 'HIGH_STDEV_and_RELATIVE_LOW_COVERAGE', model, make_plots=True, prune_tree=True)
 
 
 if __name__ == "__main__":
