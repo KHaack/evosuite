@@ -52,18 +52,18 @@ def create_export(dataframe):
 
 
 def add_additional_columns(dataframe):
-    dataframe['PercentageReached'] = dataframe['NeutralityVolume'].str.count(';') * 10
+    dataframe['PercentageReached'] = dataframe['NeutralityVolumeAll'].str.count(';') * 10
 
     # performs well
-    dataframe['LOW_END_COVERAGE'] = dataframe['Coverage'].lt(0.8)
+    dataframe['LOW_END_COVERAGE'] = dataframe['EndCoverage'].lt(0.8)
 
     # coverage
     groups = dataframe.groupby('TARGET_CLASS').agg({
-        'Coverage': ['std', 'max']
+        'EndCoverage': ['std', 'max']
     }).reset_index()
-    groups['Coverage (std)'] = groups[('Coverage', 'std')]
-    groups['Coverage (max)'] = groups[('Coverage', 'max')]
-    groups.drop('Coverage', axis=1, inplace=True)
+    groups['Coverage (std)'] = groups[('EndCoverage', 'std')]
+    groups['Coverage (max)'] = groups[('EndCoverage', 'max')]
+    groups.drop('EndCoverage', axis=1, inplace=True)
 
     dataframe = pd.merge(dataframe, groups, how='left', on='TARGET_CLASS')
     dataframe['Coverage (std)'] = dataframe[('Coverage (std)', '')]
@@ -72,7 +72,7 @@ def add_additional_columns(dataframe):
     dataframe.drop(('Coverage (max)', ''), axis=1, inplace=True)
 
     dataframe['HIGH_STDEV'] = dataframe['Coverage (std)'].gt(0.1)
-    dataframe['RELATIVE_LOW_COVERAGE'] = dataframe['Coverage'].lt(dataframe['Coverage (max)'] * 0.8)
+    dataframe['RELATIVE_LOW_COVERAGE'] = dataframe['EndCoverage'].lt(dataframe['Coverage (max)'] * 0.8)
 
     # branchless
     dataframe['Branchless'] = dataframe['Total_Branches'].eq(0)
@@ -94,16 +94,17 @@ def clean(dataframe):
     dataframe.drop('Total_Goals', axis=1, inplace=True)
     dataframe.drop('Covered_Goals', axis=1, inplace=True)
     dataframe.drop('BranchCoverage', axis=1, inplace=True)
-    dataframe.drop('Generations', axis=1, inplace=True)
 
     # rename
     dataframe.rename({
-        '_InformationContent': 'InformationContent',
-        '_NeutralityVolume': 'NeutralityVolume',
-        '_FitnessRatio': 'Fitness',
-        '_Generations': 'Generations',
-        '_GradientBranchesCovered': 'GradientBranchesCovered',
-        '_GradientBranches': 'GradientBranches'
+        'Generations': 'EndGenerations',
+        'Coverage': 'EndCoverage',
+        '_InformationContent': 'InformationContentAll',
+        '_NeutralityVolume': 'NeutralityVolumeAll',
+        '_FitnessRatio': 'FitnessAll',
+        '_Generations': 'GenerationsAll',
+        '_GradientBranchesCovered': 'GradientBranchesCoveredAll',
+        '_GradientBranches': 'GradientBranchesAll'
     }, inplace=True, axis=1)
 
     return dataframe
@@ -156,10 +157,10 @@ def print_result_infos(dataframe):
     logging.info(f"Execution/class (min):\t{str(dataframe.groupby('TARGET_CLASS').count().min()[0])}")
     logging.info(f"Execution/class (median):{str(dataframe.groupby('TARGET_CLASS').count().median()[0])}")
     logging.info(f"Execution/class (mean):\t{str(dataframe.groupby('TARGET_CLASS').count().mean()[0])}")
-    logging.info(f"Generations (max):\t{str(dataframe['_Generations'].max())}")
-    logging.info(f"Generations (min):\t{str(dataframe['_Generations'].min())}")
-    logging.info(f"Generations (median):\t{str(dataframe['_Generations'].median())}")
-    logging.info(f"Generations (mean):\t{str(dataframe['_Generations'].mean())}")
+    logging.info(f"Generations (max):\t{str(dataframe['EndGenerations'].max())}")
+    logging.info(f"Generations (min):\t{str(dataframe['EndGenerations'].min())}")
+    logging.info(f"Generations (median):\t{str(dataframe['EndGenerations'].median())}")
+    logging.info(f"Generations (mean):\t{str(dataframe['EndGenerations'].mean())}")
     logging.info(f"Branches (max):\t\t{str(dataframe['Total_Branches'].max())}")
     logging.info(f"Branches (min):\t\t{str(dataframe['Total_Branches'].min())}")
     logging.info(f"Branches (median):\t{str(dataframe['Total_Branches'].median())}")
@@ -220,29 +221,29 @@ def get_measurements(dataframe, percent):
     index = percent - 1
 
     # get measurings
-    copy['_GradientBra'] = copy['GradientBranches'].apply(lambda x: get_n_th(x, index))
-    copy['_GradientCov'] = copy['GradientBranchesCovered'].apply(lambda x: get_n_th(x, index))
-    copy['_Fitness'] = copy['Fitness'].apply(lambda x: get_n_th(x, index))
-    copy['_InfoContent'] = copy['InformationContent'].apply(lambda x: get_n_th(x, index))
-    copy['_NeutralityVol'] = copy['NeutralityVolume'].apply(lambda x: get_n_th(x, index))
-    copy['_Generations'] = copy['Generations'].apply(lambda x: get_n_th(x, index))
+    copy['GradientBranches'] = copy['GradientBranchesAll'].apply(lambda x: get_n_th(x, index))
+    copy['GradientCovered'] = copy['GradientBranchesCoveredAll'].apply(lambda x: get_n_th(x, index))
+    copy['Fitness'] = copy['FitnessAll'].apply(lambda x: get_n_th(x, index))
+    copy['InformationContent'] = copy['InformationContentAll'].apply(lambda x: get_n_th(x, index))
+    copy['NeutralityVolume'] = copy['NeutralityVolumeAll'].apply(lambda x: get_n_th(x, index))
+    copy['Generations'] = copy['GenerationsAll'].apply(lambda x: get_n_th(x, index))
 
     # calculate others
-    copy.loc[copy['_Generations'].eq(0), '_NeutralityGen'] = 0
-    copy.loc[copy['_Generations'].gt(0), '_NeutralityGen'] = copy['_NeutralityVol'] / (
-        copy['_Generations'])
-    copy.loc[copy['_NeutralityGen'] > 1, '_NeutralityGen'] = 1
+    copy.loc[copy['Generations'].eq(0), 'NeutralityRatio'] = 0
+    copy.loc[copy['Generations'].gt(0), 'NeutralityRatio'] = copy['NeutralityVolume'] / (
+        copy['Generations'])
+    copy.loc[copy['NeutralityRatio'] > 1, 'NeutralityRatio'] = 1
 
-    copy.loc[copy['Total_Branches'].eq(0), '_NotGradRatio'] = 1
-    copy.loc[copy['Total_Branches'].gt(0), '_NotGradRatio'] = (copy['Total_Branches'] - copy[
-        '_GradientBra']) / (copy['Total_Branches'])
+    copy.loc[copy['Total_Branches'].eq(0), 'NotGradientRatio'] = 1
+    copy.loc[copy['Total_Branches'].gt(0), 'NotGradientRatio'] = (copy['Total_Branches'] - copy[
+        'GradientBranches']) / (copy['Total_Branches'])
 
-    copy.loc[copy['_GradientBra'].eq(0), '_GradientRatio'] = 1
-    copy.loc[copy['_GradientBra'].gt(0), '_GradientRatio'] = copy['_GradientCov'] / (
-        copy['_GradientBra'])
+    copy.loc[copy['GradientBranches'].eq(0), 'GradientRatio'] = 1
+    copy.loc[copy['GradientBranches'].gt(0), 'GradientRatio'] = copy['GradientCovered'] / (
+        copy['GradientBranches'])
 
-    copy.loc[copy['Total_Branches'].eq(0), '_BranchRatio'] = 0
-    copy.loc[copy['Total_Branches'].gt(0), '_BranchRatio'] = copy['_GradientBra'] / (
+    copy.loc[copy['Total_Branches'].eq(0), 'BranchRatio'] = 0
+    copy.loc[copy['Total_Branches'].gt(0), 'BranchRatio'] = copy['GradientBranches'] / (
         copy['Total_Branches'])
 
     return copy

@@ -65,9 +65,9 @@ def main():
 
     logging.info("merge...")
     groups = dataframe.groupby(['set', 'TARGET_CLASS']).agg({
-        'Coverage': ['median', 'std'],
-        '_BranchRatio': 'median',
-        '_Generations': ['median', 'max']
+        'EndCoverage': ['median', 'std'],
+        'BranchRatio': 'median',
+        'Generations': ['median', 'max']
     })
 
     groups.reset_index(inplace=True)

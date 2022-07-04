@@ -105,7 +105,7 @@ def predict(title, dataframe, ground_truth, model, make_plots=False, print_tree=
         logging.info(f'{ground_truth} (False): {len(dataframe[~dataframe[ground_truth]])}')
         logging.info(f'balancing: {len(dataframe[dataframe[ground_truth]]) / len(dataframe)}')
 
-    x_names = ['Branchless', '_GradientRatio', '_BranchRatio', '_Fitness', '_InfoContent', '_NeutralityGen']
+    x_names = ['Branchless', 'GradientRatio', 'BranchRatio', 'Fitness', 'InformationContent', 'NeutralityRatio']
     x = dataframe[x_names]
     y = dataframe[ground_truth].values
 
@@ -132,7 +132,7 @@ def predict(title, dataframe, ground_truth, model, make_plots=False, print_tree=
         importances = model.feature_importances_
         sorted_indices = np.argsort(importances)[::-1]
 
-        plt.title(f'Feature Importance: {title}')
+        plt.title(f'Feature Importance - {title}')
         plt.bar(range(x_train.shape[1]), importances[sorted_indices], align='center')
         plt.xticks(range(x_train.shape[1]), x.columns[sorted_indices], rotation=90)
         plt.tight_layout()
@@ -142,12 +142,12 @@ def predict(title, dataframe, ground_truth, model, make_plots=False, print_tree=
         cm = confusion_matrix(y_test, y_prediction, labels=model.classes_, normalize='true')
         disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=model.classes_)
         disp.plot()
-        plt.title(f'Confusion matrix: {title}')
+        plt.title(f'Confusion matrix - {title}')
         plt.show()
 
         # dtreeviz
         viz = dtreeviz(model,
-                       title=f'Decision tree - {ground_truth}',
+                       title=f'Decision tree - {title}',
                        x_data=x_train,
                        y_data=y_train,
                        feature_names=x_names,
@@ -158,7 +158,7 @@ def predict(title, dataframe, ground_truth, model, make_plots=False, print_tree=
     return classification_report(y_test, y_prediction, output_dict=True)
 
 
-def compare_prediction(dataframe):
+def compare_prediction(dataframe, to_csv=False):
     """
     Compare the results of different predictions.
     :param dataframe: The dataframe
@@ -167,19 +167,34 @@ def compare_prediction(dataframe):
     rows = []
     for percentage in range(1, 4):
         dataframe = ex.get_measurements(dataframe, percentage)
-
-        model = tree.DecisionTreeClassifier(max_depth=3, random_state=RANDOM_STATE, criterion="gini")
         for y in ['RELATIVE_LOW_COVERAGE', 'LOW_END_COVERAGE', 'HIGH_STDEV', 'HIGH_STDEV_and_RELATIVE_LOW_COVERAGE', 'HIGH_STDEV_and_LOW_END_COVERAGE']:
-            logging.info(f"start prediction {y} @ {percentage * 10}...")
-            report = predict(f"@{percentage * 10}%", dataframe, y, model, make_plots=False, print_tree=False)
-            row = {
-                'Percentage': f"{percentage * 10}%",
-                'Target': y,
-                'Accuracy': report['accuracy']
-            }
-            rows.append(row)
+            for depth in range(1, 5):
+                logging.info(f"prediction of: {y} @ {percentage * 10}...")
+                model = tree.DecisionTreeClassifier(max_depth=depth, random_state=RANDOM_STATE, criterion="gini")
+                report = predict(f"@{percentage * 10}%", dataframe, y, model, make_plots=False, print_tree=False)
+
+                row = {
+                    'target': y,
+                    'percentage': f"{percentage * 10}%",
+                    'depth': depth,
+                    'accuracy': report['accuracy'],
+                    'true - precision': report['True']['precision'],
+                    'true - recall': report['True']['recall'],
+                    'true - f1': report['True']['f1-score'],
+                    'false - precision': report['False']['precision'],
+                    'false - recall': report['False']['recall'],
+                    'false - f1': report['False']['f1-score'],
+                }
+                rows.append(row)
+
     result = pd.DataFrame(rows)
+    result = result.sort_values(by=['accuracy'], ascending=False).head(20)
+    result = result.round(2)
+
     print(result)
+
+    if to_csv:
+        result.sort_values(by=['accuracy'], ascending=False).head(20).to_csv('predictions.csv')
 
 
 def setup_argparse():
@@ -207,17 +222,17 @@ def main():
     dataframe['HIGH_STDEV_and_RELATIVE_LOW_COVERAGE'] = dataframe['RELATIVE_LOW_COVERAGE'] & dataframe['HIGH_STDEV']
     dataframe['HIGH_STDEV_and_LOW_END_COVERAGE'] = dataframe['LOW_END_COVERAGE'] & dataframe['HIGH_STDEV']
 
-    # compare_prediction(dataframe)
+    compare_prediction(dataframe, to_csv=True)
 
-    percentage = 2
-    dataframe = ex.get_measurements(dataframe, percentage)
-    model = tree.DecisionTreeClassifier(max_depth=3, random_state=RANDOM_STATE, criterion="gini")
+    # percentage = 3
+    # dataframe = ex.get_measurements(dataframe, percentage)
+    # model = tree.DecisionTreeClassifier(max_depth=4, random_state=RANDOM_STATE, criterion="gini")
     # LOW_END_COVERAGE
     # HIGH_STDEV
     # RELATIVE_LOW_COVERAGE
     # HIGH_STDEV_and_RELATIVE_LOW_COVERAGE
     # HIGH_STDEV_and_LOW_END_COVERAGE
-    predict(f"@{percentage * 10}%", dataframe, 'LOW_END_COVERAGE', model, make_plots=True, prune_tree=True)
+    # predict("High stdev and low end coverage", dataframe, 'HIGH_STDEV_and_RELATIVE_LOW_COVERAGE', model, make_plots=True, prune_tree=True)
 
 
 if __name__ == "__main__":

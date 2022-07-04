@@ -54,7 +54,7 @@ def foo_general_infos(original, dataframe):
     plt.show()
 
     # coverage histogram
-    ax = dataframe.hist(column='Coverage', bins=20)
+    ax = dataframe.hist(column='EndCoverage', bins=20)
     ax[0][0].set_ylabel("Count")
     ax[0][0].set_xlabel("Coverage")
     plt.title('Histogram - Coverage')
@@ -68,8 +68,8 @@ def foo_general_infos(original, dataframe):
         row = {
             'x': percentage - 1,
             'x-label': f'{percentage * 10}%',
-            'mean': np.mean(subset['_Generations']),
-            'median': np.median(subset['_Generations'])
+            'mean': np.mean(subset['Generations']),
+            'median': np.median(subset['Generations'])
         }
         rows.append(row)
 
@@ -96,7 +96,7 @@ def foo_percentage_dif(dataframe):
         subset10['Branchless'] = subset10['Branchless'].astype(float)
         subset20['Branchless'] = subset20['Branchless'].astype(float)
 
-        columns = ['Branchless', '_GradientRatio', '_BranchRatio', '_Fitness', '_InfoContent', '_NeutralityGen']
+        columns = ['Branchless', 'GradientRatio', 'BranchRatio', 'Fitness', 'InformationContent', 'NeutralityRatio']
         distance = euclidean_distance(subset10, subset20, columns)
 
         row = {
@@ -122,7 +122,7 @@ def foo_correlation(dataframe):
     logging.info("-- Measuring point at the end of the search")
     logging.info("----------------------------------------------------------------------------------------------------")
 
-    print_correlations('final-state', dataframe, 'Coverage')
+    print_correlations('final-state', dataframe, 'EndCoverage')
 
     logging.info("----------------------------------------------------------------------------------------------------")
     logging.info("-- Measuring point at a certain percentage of the search budget")
@@ -131,13 +131,13 @@ def foo_correlation(dataframe):
 
     percent_reached = 1
     dataframe = ex.get_measurements(dataframe, percent_reached)
-    print_correlations(str(percent_reached * 10) + 'p-time', dataframe, 'Coverage')
+    print_correlations(str(percent_reached * 10) + 'p-time', dataframe, 'EndCoverage')
 
     logging.info("----------------------------------------------------------")
 
     percent_reached = 2
     dataframe = ex.get_measurements(dataframe, percent_reached)
-    print_correlations(str(percent_reached * 10) + 'p-time', dataframe, 'Coverage')
+    print_correlations(str(percent_reached * 10) + 'p-time', dataframe, 'EndCoverage')
 
     logging.info("----------------------------------------------------------------------------------------------------")
     logging.info("-- Measuring point at a certain percentage of the search budget")
@@ -148,44 +148,44 @@ def foo_correlation(dataframe):
     percent_reached = 2
     dataframe = ex.get_measurements(dataframe, percent_reached)
     subset = dataframe[dataframe['Total_Branches'].gt(0)]
-    print_correlations(str(percent_reached * 10) + 'p-time', subset, 'Coverage')
+    print_correlations(str(percent_reached * 10) + 'p-time', subset, 'EndCoverage')
 
 
 def foo_std(dataframe):
     groups = dataframe.groupby('TARGET_CLASS').agg({
-        'Coverage': ['var', 'std', 'min', 'max', 'median'],
+        'EndCoverage': ['var', 'std', 'min', 'max', 'median'],
         'LOW_END_COVERAGE': 'mean',
         'Branchless': 'mean',
-        '_GradientRatio': 'mean',
-        '_BranchRatio': 'mean',
-        '_NotGradRatio': 'mean',
-        '_InfoContent': 'mean',
-        '_NeutralityGen': 'mean',
-        '_Fitness': 'mean'
+        'GradientRatio': 'mean',
+        'BranchRatio': 'mean',
+        'NotGradientRatio': 'mean',
+        'InformationContent': 'mean',
+        'NeutralityRatio': 'mean',
+        'Fitness': 'mean'
     }).reset_index()
 
-    groups[('Coverage', 'spread')] = groups[('Coverage', 'max')] - groups[('Coverage', 'min')]
-    groups.sort_values(('Coverage', 'std'), inplace=True, ascending=False)
+    groups[('EndCoverage', 'spread')] = groups[('EndCoverage', 'max')] - groups[('EndCoverage', 'min')]
+    groups.sort_values(('EndCoverage', 'std'), inplace=True, ascending=False)
 
     fig, axs = plt.subplots(2, 3)
-    draw_2d(axs[0, 0], fig, groups, 'GradientRatio at 20% (mean)', 'Coverage (std)', '_GradientRatio', ('Coverage', 'std'), title='a)')
-    draw_2d(axs[0, 1], fig, groups, 'BranchRatio at 20% (mean)', 'Coverage (std)', '_BranchRatio', ('Coverage', 'std'), title='b)')
-    draw_2d(axs[0, 2], fig, groups, 'NotGradRatio at 20% (mean)', 'Coverage (std)', '_NotGradRatio', ('Coverage', 'std'), title='c)')
-    draw_2d(axs[1, 0], fig, groups, 'IC at 20% (mean)', 'Coverage (std)', '_InfoContent', ('Coverage', 'std'), title='d)')
-    draw_2d(axs[1, 1], fig, groups, 'NV/Gen at 20% (mean)', 'Coverage (std)', '_NeutralityGen', ('Coverage', 'std'), title='e)')
-    draw_2d(axs[1, 2], fig, groups, 'Fitness at 20% (mean)', 'Coverage (std)', '_Fitness', ('Coverage', 'std'), title='f)')
+    draw_2d(axs[0, 0], fig, groups, 'GradientRatio at 20% (mean)', 'EndCoverage (std)', 'GradientRatio', ('EndCoverage', 'std'), title='a)')
+    draw_2d(axs[0, 1], fig, groups, 'BranchRatio at 20% (mean)', 'EndCoverage (std)', 'BranchRatio', ('EndCoverage', 'std'), title='b)')
+    draw_2d(axs[0, 2], fig, groups, 'NotGradRatio at 20% (mean)', 'EndCoverage (std)', 'NotGradientRatio', ('EndCoverage', 'std'), title='c)')
+    draw_2d(axs[1, 0], fig, groups, 'IC at 20% (mean)', 'EndCoverage (std)', 'InformationContent', ('EndCoverage', 'std'), title='d)')
+    draw_2d(axs[1, 1], fig, groups, 'NV/Gen at 20% (mean)', 'EndCoverage (std)', 'NeutralityRatio', ('EndCoverage', 'std'), title='e)')
+    draw_2d(axs[1, 2], fig, groups, 'Fitness at 20% (mean)', 'EndCoverage (std)', 'Fitness', ('EndCoverage', 'std'), title='f)')
     plt.tight_layout()
     plt.show()
 
 
 def foo_coverage(dataframe):
     fig, axs = plt.subplots(2, 3)
-    draw_2d(axs[0, 0], fig, dataframe, 'GradientRatio at 20%', 'Coverage', '_GradientRatio', 'Coverage', title='a)')
-    draw_2d(axs[0, 1], fig, dataframe, 'BranchRatio at 20%', 'Coverage', '_BranchRatio', 'Coverage', title='b)')
-    draw_2d(axs[0, 2], fig, dataframe, 'NotGradRatio at 20%', 'Coverage', '_NotGradRatio', 'Coverage', title='c)')
-    draw_2d(axs[1, 0], fig, dataframe, 'IC at 20%', 'Coverage', '_InfoContent', 'Coverage', title='d)')
-    draw_2d(axs[1, 1], fig, dataframe, 'NV/Gen at 20%', 'Coverage', '_NeutralityGen', 'Coverage', title='e)')
-    draw_2d(axs[1, 2], fig, dataframe, 'Fitness at 20%', 'Coverage', '_Fitness', 'Coverage', title='f)')
+    draw_2d(axs[0, 0], fig, dataframe, 'GradientRatio at 20%', 'EndCoverage', 'GradientRatio', 'EndCoverage', title='a)')
+    draw_2d(axs[0, 1], fig, dataframe, 'BranchRatio at 20%', 'EndCoverage', 'BranchRatio', 'EndCoverage', title='b)')
+    draw_2d(axs[0, 2], fig, dataframe, 'NotGradRatio at 20%', 'EndCoverage', 'NotGradientRatio', 'EndCoverage', title='c)')
+    draw_2d(axs[1, 0], fig, dataframe, 'IC at 20%', 'EndCoverage', 'InformationContent', 'EndCoverage', title='d)')
+    draw_2d(axs[1, 1], fig, dataframe, 'NV/Gen at 20%', 'EndCoverage', 'NeutralityRatio', 'EndCoverage', title='e)')
+    draw_2d(axs[1, 2], fig, dataframe, 'Fitness at 20%', 'EndCoverage', 'Fitness', 'EndCoverage', title='f)')
     plt.tight_layout()
     plt.show()
 
@@ -273,14 +273,14 @@ def print_correlations(name, dataframe, referenceColumn, enablePlotting=False):
 
     if len(dataframe.index) > 1:
         logging.info("\t\t\t\t\tpearson\t\t\tp-value\t\t\t|spearman\t\tp-value")
-        print_correlation(name, dataframe, '_Fitness', referenceColumn, enablePlotting)
-        print_correlation(name, dataframe, '_BranchRatio', referenceColumn, enablePlotting)
-        print_correlation(name, dataframe, '_GradientRatio', referenceColumn, enablePlotting)
-        print_correlation(name, dataframe, '_NotGradRatio', referenceColumn, enablePlotting)
-        print_correlation(name, dataframe, '_InfoContent', referenceColumn, enablePlotting)
-        print_correlation(name, dataframe, '_NeutralityVol', referenceColumn, enablePlotting)
-        print_correlation(name, dataframe, '_NeutralityGen', referenceColumn, enablePlotting)
-        print_correlation(name, dataframe, '_Generations', referenceColumn, enablePlotting)
+        print_correlation(name, dataframe, 'Fitness', referenceColumn, enablePlotting)
+        print_correlation(name, dataframe, 'BranchRatio', referenceColumn, enablePlotting)
+        print_correlation(name, dataframe, 'GradientRatio', referenceColumn, enablePlotting)
+        print_correlation(name, dataframe, 'NotGradientRatio', referenceColumn, enablePlotting)
+        print_correlation(name, dataframe, 'InformationContent', referenceColumn, enablePlotting)
+        print_correlation(name, dataframe, 'NeutralityVolume', referenceColumn, enablePlotting)
+        print_correlation(name, dataframe, 'NeutralityRatio', referenceColumn, enablePlotting)
+        print_correlation(name, dataframe, 'Generations', referenceColumn, enablePlotting)
 
 
 def print_correlation(name, dataframe, x, y, enablePlotting):
@@ -369,7 +369,7 @@ def main():
     # _GradientRatio, _BranchRatio, _NotGradRatio
     # _InfoContent, _NeutralityGen
     # _Fitness
-    # draw_3d(subset, 'BranchRatio at 20%', '_Fitness', 'Coverage', 'LOW_END_COVERAGE', '_BranchRatio', '_Fitness', 'Coverage', 'Well performing')
+    # draw_3d(subset, 'BranchRatio at 20%', 'Fitness', 'EndCoverage', 'LOW_END_COVERAGE', 'BranchRatio', 'Fitness', 'EndCoverage', 'Well performing')
     # plt.show()
 
 
