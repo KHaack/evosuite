@@ -172,30 +172,34 @@ def compare_prediction(dataframe, to_csv=False):
                'HIGHER_WITH_POP125',
                'HIGHER_WITH_POP125_and_RELATIVE_LOW_COVERAGE']
 
+    criterion = ['gini', 'entropy', 'log_loss']
+
     for percentage in range(1, 4):
         dataframe = ex.get_measurements(dataframe, percentage)
-        for y in targets:
-            for depth in range(1, 5):
-                logging.info(f"prediction of: {y} @ {percentage * 10}...")
-                model = tree.DecisionTreeClassifier(max_depth=depth, random_state=RANDOM_STATE, criterion="gini")
-                report = predict(f"@{percentage * 10}%", dataframe, y, model, make_plots=False, print_tree=False)
+        for c in criterion:
+            for y in targets:
+                for depth in range(1, 5):
+                    logging.info(f"prediction of: {y} @ {percentage * 10}...")
+                    model = tree.DecisionTreeClassifier(max_depth=depth, random_state=RANDOM_STATE, criterion=c)
+                    report = predict(f"@{percentage * 10}%", dataframe, y, model, make_plots=False, print_tree=False)
 
-                row = {
-                    'target': y,
-                    'percentage': f"{percentage * 10}%",
-                    'depth': depth,
-                    'accuracy': report['accuracy'],
-                    'true - precision': report['True']['precision'],
-                    'true - recall': report['True']['recall'],
-                    'true - f1': report['True']['f1-score'],
-                    'false - precision': report['False']['precision'],
-                    'false - recall': report['False']['recall'],
-                    'false - f1': report['False']['f1-score']
-                }
-                rows.append(row)
+                    row = {
+                        'target': y,
+                        'percentage': f"{percentage * 10}%",
+                        'depth': depth,
+                        'criterion': c,
+                        'accuracy': report['accuracy'],
+                        'true - precision': report['True']['precision'],
+                        'true - recall': report['True']['recall'],
+                        'true - f1': report['True']['f1-score'],
+                        'false - precision': report['False']['precision'],
+                        'false - recall': report['False']['recall'],
+                        'false - f1': report['False']['f1-score']
+                    }
+                    rows.append(row)
 
     result = pd.DataFrame(rows)
-    result = result.sort_values(by=['accuracy'], ascending=False).head(20)
+    result = result.sort_values(by=['accuracy'], ascending=False).head(50)
     result = result.round(2)
 
     print(result)
@@ -250,18 +254,18 @@ def main():
     dataframe['HIGHER_WITH_POP125'] = dataframe['EndCoverage'].lt(dataframe['EndCoverage POP125'])
     dataframe['HIGHER_WITH_POP125_and_RELATIVE_LOW_COVERAGE'] = dataframe['RELATIVE_LOW_COVERAGE'] & dataframe['HIGHER_WITH_POP125']
 
-    # compare_prediction(dataframe, to_csv=False)
+    compare_prediction(dataframe, to_csv=False)
 
-    percentage = 3
-    dataframe = ex.get_measurements(dataframe, percentage)
-    model = tree.DecisionTreeClassifier(max_depth=4, random_state=RANDOM_STATE, criterion="gini")
+    # percentage = 3
+    # dataframe = ex.get_measurements(dataframe, percentage)
+    # model = tree.DecisionTreeClassifier(max_depth=4, random_state=RANDOM_STATE, criterion="gini")
     # LOW_END_COVERAGE
     # HIGH_STDEV
     # RELATIVE_LOW_COVERAGE
     # HIGH_STDEV_and_RELATIVE_LOW_COVERAGE
     # HIGH_STDEV_and_LOW_END_COVERAGE
     # HIGHER_WITH_POP125
-    predict("xx", dataframe, 'HIGH_STDEV_and_RELATIVE_LOW_COVERAGE', model, make_plots=True, prune_tree=True)
+    # predict("xx", dataframe, 'HIGHER_WITH_POP125', model, make_plots=True, prune_tree=True)
 
 
 if __name__ == "__main__":
