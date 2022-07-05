@@ -89,4 +89,32 @@ public class ParameterControl {
             }
         }
     }
+
+    public boolean highStDevRelativeHighCoverage() {
+        if(neutralityGen <= 0.0) {
+            if(branchRatio <= 0.00) {
+                return true;
+            } else {
+                if(gradienRatio <= 0.88) {
+                    return branchRatio > 0.11;
+                } else {
+                    return false;
+                }
+            }
+        } else {
+            if(ic <= 0.50) {
+                if(neutralityGen <= 0.01) {
+                    return fitness <= 0.18;
+                } else {
+                    return false;
+                }
+            } else {
+                if(branchRatio <= 0.16) {
+                    return fitness <= 0.83;
+                } else {
+                    return false;
+                }
+            }
+        }
+    }
 }

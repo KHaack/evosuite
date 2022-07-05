@@ -461,10 +461,12 @@ if __name__ == "__main__":
         '-Denable_landscape_analysis': 'true',
         '-Denable_fitness_history': 'true',
         '-Denable_parameter_control': 'true',
+        '-Drandom_seed': 42,
         '-Dpc_at': 0.3,
-        '-Dpc_population': 125,
+        '-Dpc_population': None,
         '-Dpc_crossover_rate': None,
         '-Dpc_number_of_mutations': None,
+        '-Dpc_rank_bias': 2.0,
         '-Dpc_prediction': 'HIGH_STDEV_RELATIVE_LOW_COVERAGE'
     }
 

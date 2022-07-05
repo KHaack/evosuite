@@ -1013,6 +1013,9 @@ public class Properties {
     @Parameter(key = "pc_at", group = "Landscape", description = "Percentage at which the parameter are controlled.")
     @DoubleValue(min = 0.1, max = 0.9)
     public static double PC_AT = 0.2;
+    @Parameter(key = "pc_rank_bias", group = "Landscape", description = "Rank Bias for Parameter control.")
+    @DoubleValue(min = 1.01)
+    public static double PC_RANK_BIAS = RANK_BIAS;
 
     @Parameter(key = "epsilon_nv", group = "Landscape", description = "The capacity of the fitness history.")
     @DoubleValue(min = 0.0d, max = 1.0d)

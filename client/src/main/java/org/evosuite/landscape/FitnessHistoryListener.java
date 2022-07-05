@@ -86,18 +86,18 @@ public class FitnessHistoryListener<T extends Chromosome<T>> implements SearchLi
                 switch (Properties.PC_Prediction) {
                     case HIGH_STDEV:
                         shouldControl =!parameterControl.performsWell();
-                        break;
+                        throw new RuntimeException("Not supported... change to one tree. and inverse");
                     case LOW_END_COVERAGE:
                         shouldControl = !parameterControl.lowCoverageStd();
-                        break;
+                        throw new RuntimeException("Not supported... change to one tree. and inverse");
                     case RELATIVE_LOW_COVERAGE:
                         shouldControl = !parameterControl.relativeHighCoverage();
-                        break;
+                        throw new RuntimeException("Not supported... change to one tree. and inverse");
                     case HIGH_STDEV_LOW_END_COVERAGE:
                         shouldControl = !parameterControl.lowCoverageStd() && !parameterControl.performsWell();
-                        break;
+                        throw new RuntimeException("Not supported... change to one tree. and inverse");
                     case HIGH_STDEV_RELATIVE_LOW_COVERAGE:
-                        shouldControl = !parameterControl.lowCoverageStd() && !parameterControl.relativeHighCoverage();
+                        shouldControl = parameterControl.highStDevRelativeHighCoverage();
                         break;
                     case ALWAYS:
                         shouldControl = true;
@@ -112,6 +112,7 @@ public class FitnessHistoryListener<T extends Chromosome<T>> implements SearchLi
                     Properties.CROSSOVER_RATE = Properties.PC_CROSSOVER_RATE;
                     Properties.POPULATION = Properties.PC_POPULATION;
                     Properties.NUMBER_OF_MUTATIONS = Properties.PC_NUMBER_OF_MUTATIONS;
+                    Properties.RANK_BIAS = Properties.PC_RANK_BIAS;
                 } else {
                     ClientServices.getInstance().getClientNode().trackOutputVariable(RuntimeVariable._ParameterControlled, "no");
                 }
