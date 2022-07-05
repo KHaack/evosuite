@@ -372,7 +372,7 @@ class ExperimentRunner:
     Represents the experiment runner, and it's status during the run.
     """
 
-    def __init__(self, initial_sample_file, hostname, start_time, sample_size, random=True, executions_per_class=10,
+    def __init__(self, initial_sample_file, hostname, start_time, sample_size=None, random=True, executions_per_class=10,
                  search_budget=120, timeout=180,
                  number_attempts=2, algorithm='DYNAMOSA', current_project=None, current_class=None, current_class_index=0,
                  current_execution=0, status=Status.UNKNOWN, saved_at=None, mean_runtime_per_execution=None, additional_parameter={}):

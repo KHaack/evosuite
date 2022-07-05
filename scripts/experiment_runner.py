@@ -388,6 +388,9 @@ def main():
 
     sample_list = get_initial_sample(args.sample)
 
+    if runner.sample_size is None:
+        runner.sample_size = len(sample_list)
+
     runner.print_status()
 
     if runner.sample_size > len(sample_list):
@@ -466,7 +469,6 @@ if __name__ == "__main__":
     }
 
     runner = ex.ExperimentRunner(initial_sample_file=args.sample,
-                                 sample_size=713,
                                  executions_per_class=10,
                                  hostname=socket.gethostname(),
                                  start_time=datetime.now(),
