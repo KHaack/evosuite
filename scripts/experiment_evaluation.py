@@ -37,6 +37,14 @@ def euclidean_distance(dataframe1, dataframe2, columns):
 
 
 def foo_general_infos(original, dataframe):
+    # HIGH_STDEV histogram
+    ax = original.hist(column='Coverage (std)', bins=20)
+    ax[0][0].set_ylabel("Count")
+    ax[0][0].set_xlabel("Coverage (std)")
+    plt.title('Histogram - coverage (std)')
+    plt.tight_layout()
+    plt.show()
+
     # percentage histogram
     ax = original.hist(column='Total_Branches', bins=10)
     ax[0][0].set_ylabel("Count")

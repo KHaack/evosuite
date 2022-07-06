@@ -74,6 +74,7 @@ def add_additional_columns(dataframe):
     dataframe.drop(('Coverage (max)', ''), axis=1, inplace=True)
 
     dataframe['HIGH_STDEV'] = dataframe['Coverage (std)'].gt(0.1)
+    dataframe['WITH_STDEV'] = dataframe['Coverage (std)'].gt(0)
     dataframe['RELATIVE_LOW_COVERAGE'] = dataframe['EndCoverage'].lt(dataframe['Coverage (max)'] * 0.8)
 
     # branchless

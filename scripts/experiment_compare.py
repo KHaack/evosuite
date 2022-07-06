@@ -82,12 +82,12 @@ def main():
     merged = a.merge(b, how='inner', left_on='TARGET_CLASS', right_on='TARGET_CLASS', suffixes=('_a', '_b'))
     logging.info("matched Java classes:\t\t" + str(len(merged.index)))
 
-    logging.info("Generations median (A):\t\t" + str(merged[('_Generations_a', 'median')].median()))
-    logging.info("Generations median (B):\t\t" + str(merged[('_Generations_b', 'median')].median()))
-    logging.info("Generations max (A):\t\t" + str(merged[('_Generations_a', 'max')].max()))
-    logging.info("Generations max (B):\t\t" + str(merged[('_Generations_b', 'max')].max()))
+    logging.info("Generations median (A):\t\t" + str(merged[('Generations_a', 'median')].median()))
+    logging.info("Generations median (B):\t\t" + str(merged[('Generations_b', 'median')].median()))
+    logging.info("Generations max (A):\t\t" + str(merged[('Generations_a', 'max')].max()))
+    logging.info("Generations max (B):\t\t" + str(merged[('Generations_b', 'max')].max()))
 
-    merged['Coverage difference (a-b)'] = merged[('Coverage_a', 'median')] - merged[('Coverage_b', 'median')]
+    merged['Coverage difference (a-b)'] = merged[('EndCoverage_a', 'median')] - merged[('EndCoverage_b', 'median')]
 
     logging.info(f"coverage difference (sum):\t{merged['Coverage difference (a-b)'].sum()}")
     logging.info(f"coverage difference (mean):\t{merged['Coverage difference (a-b)'].mean()}")
@@ -104,7 +104,7 @@ def main():
 
     # difference
     fig, ax = plt.subplots()
-    ax.scatter(merged[('Coverage_a', 'std')], merged['Coverage difference (a-b)'], s=SCATTER_POINT_SIZE)
+    ax.scatter(merged[('EndCoverage_a', 'std')], merged['Coverage difference (a-b)'], s=SCATTER_POINT_SIZE)
 
     ax.set_xlabel('Coverage A (std) at 20%')
     ax.set_ylabel('Coverage difference (a-b)')

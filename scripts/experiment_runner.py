@@ -231,7 +231,7 @@ def run_executions(path_results):
         start_time = time.time()
 
         logging.info(
-            f"Class ({str(runner.current_class_index + 1)} / {str(runner.sample_size)}) Execution ({str(runner.current_execution + 1)} / {str(runner.executions_per_class)}): Running default configuration in project ({runner.current_project}) for class ({runner.current_class}) with random seed.")
+            f"Class ({str(runner.current_class_index + 1)} / {str(runner.sample_size)}) Execution ({str(runner.current_execution + 1)} / {str(runner.executions_per_class)}): Running default configuration in project ({runner.current_project}) for class ({runner.current_class}) with random seed {runner.random}.")
 
         # write status
         if args.write_status:
@@ -466,7 +466,7 @@ if __name__ == "__main__":
         '-Dpc_population': None,
         '-Dpc_crossover_rate': None,
         '-Dpc_number_of_mutations': None,
-        '-Dpc_rank_bias': 2.0,
+        '-Dpc_rank_bias': 1.01,
         '-Dpc_prediction': 'HIGH_STDEV_RELATIVE_LOW_COVERAGE'
     }
 

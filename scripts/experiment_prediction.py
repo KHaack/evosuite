@@ -138,8 +138,8 @@ def predict(title, dataframe, ground_truth, model, make_plots=False, print_tree=
         plt.show()
 
         # confusion matrix
-        cm = confusion_matrix(y_test, y_prediction, labels=model.classes_, normalize='true')
-        disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=model.classes_)
+        confusion_norm = confusion_matrix(y_test, y_prediction, labels=model.classes_, normalize='true')
+        disp = ConfusionMatrixDisplay(confusion_matrix=confusion_norm, display_labels=model.classes_)
         disp.plot()
         plt.title(f'Confusion matrix - {title}')
         plt.show()
@@ -154,24 +154,22 @@ def predict(title, dataframe, ground_truth, model, make_plots=False, print_tree=
         viz.view()
 
     logging.info('get classification_report...')
-    return classification_report(y_test, y_prediction, output_dict=True)
+    report = classification_report(y_test, y_prediction, output_dict=True)
+    tn, fp, fn, tp = confusion_matrix(y_test, y_prediction, labels=model.classes_).ravel()
+
+    report['FPR'] = fp / (fp + tn)
+    report['TPR'] = tp / (tp + fn)
+    return report
 
 
-def compare_prediction(dataframe, to_csv=False):
+def compare_prediction(dataframe, targets, to_csv=False):
     """
     Compare the results of different predictions.
+    :param targets:
     :param dataframe: The dataframe
     :return: None
     """
     rows = []
-    targets = ['RELATIVE_LOW_COVERAGE',
-               'LOW_END_COVERAGE',
-               'HIGH_STDEV',
-               'HIGH_STDEV_and_RELATIVE_LOW_COVERAGE',
-               'HIGH_STDEV_and_LOW_END_COVERAGE',
-               'HIGHER_WITH_POP125',
-               'HIGHER_WITH_POP125_and_RELATIVE_LOW_COVERAGE']
-
     criterion = ['gini', 'entropy', 'log_loss']
 
     for percentage in range(1, 4):
@@ -189,6 +187,8 @@ def compare_prediction(dataframe, to_csv=False):
                         'depth': depth,
                         'criterion': c,
                         'accuracy': report['accuracy'],
+                        'TPR': report['TPR'],
+                        'FPR': report['FPR'],
                         'true - precision': report['True']['precision'],
                         'true - recall': report['True']['recall'],
                         'true - f1': report['True']['f1-score'],
@@ -199,13 +199,15 @@ def compare_prediction(dataframe, to_csv=False):
                     rows.append(row)
 
     result = pd.DataFrame(rows)
-    result = result.sort_values(by=['accuracy'], ascending=False).head(50)
+    logging.info(f"created {len(result)} decision trees.")
+    result = result[result['TPR'].ge(0.8)]
+    result = result.sort_values(by=['FPR'], ascending=True).head(50)
     result = result.round(2)
 
     print(result)
 
     if to_csv:
-        result.to_csv('predictions.csv')
+        result[['target', 'percentage', 'depth', 'criterion', 'accuracy', 'TPR', 'FPR']].to_csv('predictions.csv')
 
 
 def setup_argparse():
@@ -244,28 +246,30 @@ def main():
     dataframe = ex.filter_dataframe(dataframe, FILTER_MIN_EXECUTIONS)
 
     dataframe = ex.get_measurements(dataframe, -1)
-    ex.print_result_infos(dataframe)
-
     dataframe = add_additional_coverage(dataframe, 'EndCoverage POP125', 'C:\\Users\\kha\\Desktop\\Benchmark\\results\\33 PC with POP 125')
     ex.print_result_infos(dataframe)
 
     dataframe['HIGH_STDEV_and_RELATIVE_LOW_COVERAGE'] = dataframe['RELATIVE_LOW_COVERAGE'] & dataframe['HIGH_STDEV']
+    dataframe['WITH_STDEV_and_RELATIVE_LOW_COVERAGE'] = dataframe['RELATIVE_LOW_COVERAGE'] & dataframe['WITH_STDEV']
     dataframe['HIGH_STDEV_and_LOW_END_COVERAGE'] = dataframe['LOW_END_COVERAGE'] & dataframe['HIGH_STDEV']
     dataframe['HIGHER_WITH_POP125'] = dataframe['EndCoverage'].lt(dataframe['EndCoverage POP125'])
     dataframe['HIGHER_WITH_POP125_and_RELATIVE_LOW_COVERAGE'] = dataframe['RELATIVE_LOW_COVERAGE'] & dataframe['HIGHER_WITH_POP125']
 
-    compare_prediction(dataframe, to_csv=False)
+    targets = ['RELATIVE_LOW_COVERAGE',
+               'LOW_END_COVERAGE',
+               'HIGH_STDEV',
+               'WITH_STDEV',
+               'HIGH_STDEV_and_RELATIVE_LOW_COVERAGE',
+               'WITH_STDEV_and_RELATIVE_LOW_COVERAGE',
+               'HIGH_STDEV_and_LOW_END_COVERAGE',
+               'HIGHER_WITH_POP125',
+               'HIGHER_WITH_POP125_and_RELATIVE_LOW_COVERAGE']
+    compare_prediction(dataframe, targets, to_csv=True)
 
     # percentage = 3
     # dataframe = ex.get_measurements(dataframe, percentage)
-    # model = tree.DecisionTreeClassifier(max_depth=4, random_state=RANDOM_STATE, criterion="gini")
-    # LOW_END_COVERAGE
-    # HIGH_STDEV
-    # RELATIVE_LOW_COVERAGE
-    # HIGH_STDEV_and_RELATIVE_LOW_COVERAGE
-    # HIGH_STDEV_and_LOW_END_COVERAGE
-    # HIGHER_WITH_POP125
-    # predict("xx", dataframe, 'HIGHER_WITH_POP125', model, make_plots=True, prune_tree=True)
+    # model = tree.DecisionTreeClassifier(max_depth=4, random_state=RANDOM_STATE, criterion="entropy")
+    # predict("stdev & relative cov.", dataframe, 'WITH_STDEV', model, make_plots=True, prune_tree=True)
 
 
 if __name__ == "__main__":
