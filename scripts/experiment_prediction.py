@@ -77,7 +77,7 @@ def prune_duplicate_leaves(model):
     prune_index(model.tree_, decisions)
 
 
-def predict(title, dataframe, ground_truth, model, make_plots=False, print_tree=False, prune_tree=False):
+def predict(title, dataframe, ground_truth, model, make_plots=False, print_tree=False, prune_tree=False, export_prediction=False):
     count_true = len(dataframe[dataframe[ground_truth]])
     count_false = len(dataframe[~dataframe[ground_truth]])
 
@@ -119,6 +119,12 @@ def predict(title, dataframe, ground_truth, model, make_plots=False, print_tree=
 
     logging.info('predict test data...')
     y_prediction = model.predict(x_test)
+
+    if export_prediction:
+        x_test['prediction'] = y_prediction
+        export = pd.merge(dataframe, x_test, left_index=True, right_index=True)
+        ex.create_export(export[export['prediction']])
+        exit(0)
 
     if print_tree:
         logging.info('print tree...')
@@ -264,12 +270,18 @@ def main():
                'HIGH_STDEV_and_LOW_END_COVERAGE',
                'HIGHER_WITH_POP125',
                'HIGHER_WITH_POP125_and_RELATIVE_LOW_COVERAGE']
-    compare_prediction(dataframe, targets, to_csv=True)
+    # compare_prediction(dataframe, targets, to_csv=True)
 
-    # percentage = 3
-    # dataframe = ex.get_measurements(dataframe, percentage)
-    # model = tree.DecisionTreeClassifier(max_depth=4, random_state=RANDOM_STATE, criterion="entropy")
-    # predict("stdev & relative cov.", dataframe, 'WITH_STDEV', model, make_plots=True, prune_tree=True)
+    percentage = 3
+    dataframe = ex.get_measurements(dataframe, percentage)
+    model = tree.DecisionTreeClassifier(max_depth=4, random_state=RANDOM_STATE, criterion="entropy")
+    predict("high stdev & relative cov.",
+            dataframe,
+            'HIGH_STDEV_and_RELATIVE_LOW_COVERAGE',
+            model,
+            make_plots=True,
+            prune_tree=True,
+            export_prediction=False)
 
 
 if __name__ == "__main__":

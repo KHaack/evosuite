@@ -445,6 +445,7 @@ def main():
 if __name__ == "__main__":
     args = setup_argparse().parse_args()
 
+    # NONE
     # HIGH_STDEV
     # LOW_END_COVERAGE
     # RELATIVE_LOW_COVERAGE
@@ -460,14 +461,14 @@ if __name__ == "__main__":
         '-Dnumber_of_mutations': None,
         '-Denable_landscape_analysis': 'true',
         '-Denable_fitness_history': 'true',
-        '-Denable_parameter_control': 'true',
+        '-Denable_parameter_control': 'false',
         '-Drandom_seed': 42,
         '-Dpc_at': 0.3,
         '-Dpc_population': None,
         '-Dpc_crossover_rate': None,
         '-Dpc_number_of_mutations': None,
-        '-Dpc_rank_bias': 1.01,
-        '-Dpc_prediction': 'HIGH_STDEV_RELATIVE_LOW_COVERAGE'
+        '-Dpc_rank_bias': None,
+        '-Dpc_prediction': 'NONE'
     }
 
     runner = ex.ExperimentRunner(initial_sample_file=args.sample,

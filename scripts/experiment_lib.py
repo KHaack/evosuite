@@ -44,13 +44,12 @@ def create_export(dataframe):
     :return: None
     """
     path_samples = os.path.join(get_script_path(), FILE_CLASSES)
-    path_export = os.path.join(get_script_path(), FILE_EXPORT)
 
     samples = pd.read_csv(path_samples, delimiter='\t', names=['project', 'TARGET_CLASS'])
     merged = dataframe.merge(samples, left_on='TARGET_CLASS', right_on='TARGET_CLASS', how='inner')
     merged = merged.groupby(['project', 'TARGET_CLASS']).count().reset_index()[['project', 'TARGET_CLASS']]
 
-    merged.to_csv(path_export, header=None, sep='\t', index=False)
+    merged.to_csv(FILE_EXPORT, header=None, sep='\t', index=False)
 
 
 def add_additional_columns(dataframe):
