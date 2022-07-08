@@ -36,48 +36,16 @@ def euclidean_distance(dataframe1, dataframe2, columns):
     return np.linalg.norm(dataframe1[columns].values - dataframe2[columns].values, axis=1)
 
 
-def foo_general_infos(original, dataframe):
-    # HIGH_STDEV histogram
-    ax = original.hist(column='Coverage (std)', bins=20)
-    ax[0][0].set_ylabel("Count")
-    ax[0][0].set_xlabel("Coverage (std)")
-    plt.title('Histogram - coverage (std)')
-    plt.tight_layout()
-    plt.show()
-
-    # percentage histogram
-    ax = original.hist(column='Total_Branches', bins=10)
-    ax[0][0].set_ylabel("Count")
-    ax[0][0].set_xlabel("Branches")
-    plt.title('Histogram - Branches')
-    plt.tight_layout()
-    plt.show()
-
-    # percentage histogram
-    ax = original.hist(column='PercentageReached', bins=10)
-    ax[0][0].set_ylabel("Count")
-    ax[0][0].set_xlabel("Percentage of search budget reached")
-    plt.title('Histogram - used search budget')
-    plt.tight_layout()
-    plt.show()
-
-    # coverage histogram
-    ax = dataframe.hist(column='EndCoverage', bins=20)
-    ax[0][0].set_ylabel("Count")
-    ax[0][0].set_xlabel("Coverage")
-    plt.title('Histogram - Coverage')
-    plt.tight_layout()
-    plt.show()
-
-    # generations histogram
+def foo_generations(title, original):
+    # generations
     rows = []
     for percentage in range(1, 11):
-        subset = ex.get_measurements(dataframe, percentage)
+        subset = ex.get_measurements(original, percentage)
         row = {
             'x': percentage - 1,
             'x-label': f'{percentage * 10}%',
             'mean': np.mean(subset['Generations']),
-            'median': np.median(subset['Generations'])
+            'median': np.mean(subset['Generations'])
         }
         rows.append(row)
 
@@ -88,6 +56,140 @@ def foo_general_infos(original, dataframe):
     plt.title('Generations')
     plt.tight_layout()
     plt.xticks(np.arange(0, len(result['x'])), labels=result['x-label'])
+    plt.show()
+
+    # generations with PC
+    folders = [
+        {
+            'label': 'Rank bias = 2.0',
+            'color': 'darkorange',
+            'linestyle': 'solid',
+            'folder': 'C:\\Users\\kha\\Desktop\\Benchmark\\results\\34 PC with BIAS 2.0\\'
+        },
+        {
+            'label': 'Rank bias = 1.01',
+            'color': 'darkorange',
+            'linestyle': 'dashed',
+            'folder': 'C:\\Users\\kha\\Desktop\\Benchmark\\results\\35 PC with BIAS 1.01\\'
+        },
+        {
+            'label': 'Population = 125',
+            'color': 'darkblue',
+            'linestyle': 'solid',
+            'folder': 'C:\\Users\\kha\\Desktop\\Benchmark\\results\\37 PC POP 125\\'
+        },
+        {
+            'label': 'Population = 25',
+            'color': 'darkblue',
+            'linestyle': 'dashed',
+            'folder': 'C:\\Users\\kha\\Desktop\\Benchmark\\results\\38 PC POP 25\\'
+        },
+        {
+            'label': 'Test insert = 0.2',
+            'color': 'red',
+            'linestyle': 'solid',
+            'folder': 'C:\\Users\\kha\\Desktop\\Benchmark\\results\\39 PC PTI 0.2\\'
+        },
+        {
+            'label': 'Test insert = 0.0',
+            'color': 'red',
+            'linestyle': 'dashed',
+            'folder': 'C:\\Users\\kha\\Desktop\\Benchmark\\results\\45 PC PTI 0\\'
+        },
+        {
+            'label': 'Crossover = 1.0',
+            'color': 'darkgreen',
+            'linestyle': 'solid',
+            'folder': 'C:\\Users\\kha\\Desktop\\Benchmark\\results\\43 PC CO 1.0\\'
+        },
+        {
+            'label': 'Crossover = 0.0',
+            'color': 'darkgreen',
+            'linestyle': 'dashed',
+            'folder': 'C:\\Users\\kha\\Desktop\\Benchmark\\results\\41 PC CO 0.0\\'
+        }
+    ]
+
+    rows = []
+    for percentage in range(1, 11):
+        subset = ex.get_measurements(original, percentage)
+        row = {
+            'x': percentage - 1,
+            'x-label': f'{percentage * 10}%',
+            'generations': np.mean(subset['Generations']),
+        }
+        rows.append(row)
+    result = pd.DataFrame(rows)
+    plt.plot(result['x'], result['generations'], label='default', color='black', linestyle='solid')
+
+    for folder in folders:
+        dataframe = ex.get_statistics(folder['folder'])
+        dataframe = ex.clean(dataframe)
+        dataframe = ex.add_additional_columns(dataframe)
+        dataframe = ex.filter_dataframe(dataframe, FILTER_MIN_EXECUTIONS)
+
+        rows = []
+        for percentage in range(1, 11):
+            subset = ex.get_measurements(dataframe, percentage)
+            yes = subset[subset["_ParameterControlled"].eq("yes")]
+
+            row = {
+                'x': percentage - 1,
+                'x-label': f'{percentage * 10}%',
+                'generations': np.mean(yes['Generations'])
+            }
+            rows.append(row)
+
+        result = pd.DataFrame(rows)
+        plt.plot(result['x'], result['generations'], label=folder['label'], color=folder['color'], linestyle=folder['linestyle'], alpha=0.4)
+
+    ax = plt.gca()
+    ax.set_ylabel("Generations (mean)")
+    ax.set_xlabel("Percentage")
+
+    plt.title(f'Generations - default vs. parameter')
+    plt.tight_layout()
+    plt.grid()
+    plt.legend()
+    plt.xticks(np.arange(0, len(result['x'])), labels=result['x-label'])
+    plt.show()
+
+
+def foo_general_infos(original, dataframe):
+    # HIGH_STDEV histogram
+    groups = dataframe.groupby('TARGET_CLASS').agg({
+        'Coverage (std)': ['max']
+    }).reset_index()
+
+    ax = groups.hist(column=('Coverage (std)', 'max'), bins=10)
+    ax[0][0].set_ylabel("Count")
+    ax[0][0].set_xlabel("Coverage (std)")
+    plt.title('Histogram - coverage (std)')
+    plt.tight_layout()
+    plt.show()
+
+    # percentage histogram
+    ax = original.hist(column='Total_Branches', bins=10)
+    ax[0][0].set_ylabel("Count")
+    ax[0][0].set_xlabel("Branches")
+    plt.title('Histogram - Branches $S_2$')
+    plt.tight_layout()
+    plt.show()
+
+    # percentage histogram
+    ax = original.hist(column='PercentageReached', bins=10)
+    ax[0][0].set_ylabel("Count")
+    ax[0][0].set_xlabel("Percentage of search budget reached")
+    plt.title('Histogram - used search budget $S_2$')
+    plt.tight_layout()
+    plt.show()
+
+    # coverage histogram
+    ax = dataframe.hist(column='EndCoverage', bins=20)
+    ax[0][0].set_ylabel("Count")
+    ax[0][0].set_xlabel("Coverage")
+    plt.title('Histogram - Coverage $S_2$')
+    plt.tight_layout()
     plt.show()
 
 
@@ -363,9 +465,10 @@ def main():
 
     # foo_percentage_dif(dataframe)
     foo_general_infos(original, dataframe)
+    # foo_generations('Probability test insert changed to 0.0', dataframe)
 
-    logging.info("@20%")
-    dataframe = ex.get_measurements(dataframe, 2)
+    # logging.info("@20%")
+    # dataframe = ex.get_measurements(dataframe, 2)
 
     # foo_correlation(dataframe)
     # foo_std(dataframe)

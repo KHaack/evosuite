@@ -1016,6 +1016,9 @@ public class Properties {
     @Parameter(key = "pc_rank_bias", group = "Landscape", description = "Rank Bias for Parameter control.")
     @DoubleValue(min = 1.01)
     public static double PC_RANK_BIAS = RANK_BIAS;
+    @Parameter(key = "pc_p_test_insertion", group = "Search Algorithm", description = "Initial probability of inserting a new test in a test suite for Parameter control.")
+    @DoubleValue(min = 0.0, max = 1.0)
+    public static double PC_P_TEST_INSERTION = P_TEST_INSERTION;
 
     @Parameter(key = "epsilon_nv", group = "Landscape", description = "The capacity of the fitness history.")
     @DoubleValue(min = 0.0d, max = 1.0d)
@@ -1909,7 +1912,7 @@ public class Properties {
         HIGH_STDEV_LOW_END_COVERAGE,
         HIGH_STDEV_RELATIVE_LOW_COVERAGE,
         NONE,
-        ALWAYS
+        HIGHER_WITH_POP125_and_RELATIVE_LOW_COVERAGE, ALWAYS
     }
 
     /**

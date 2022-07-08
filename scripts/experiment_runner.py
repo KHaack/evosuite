@@ -452,6 +452,7 @@ if __name__ == "__main__":
     # HIGH_STDEV_LOW_END_COVERAGE
     # HIGH_STDEV_RELATIVE_LOW_COVERAGE
     # ALWAYS
+    # HIGHER_WITH_POP125_and_RELATIVE_LOW_COVERAGE
 
     additional_parameter = {
         '-criterion': None,
@@ -465,6 +466,7 @@ if __name__ == "__main__":
         '-Drandom_seed': 42,
         '-Dpc_at': 0.3,
         '-Dpc_population': None,
+        '-Dpc_p_test_insertion': None,
         '-Dpc_crossover_rate': None,
         '-Dpc_number_of_mutations': None,
         '-Dpc_rank_bias': None,
@@ -472,7 +474,7 @@ if __name__ == "__main__":
     }
 
     runner = ex.ExperimentRunner(initial_sample_file=args.sample,
-                                 executions_per_class=10,
+                                 executions_per_class=4,
                                  hostname=socket.gethostname(),
                                  start_time=datetime.now(),
                                  random=False,

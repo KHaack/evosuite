@@ -26,9 +26,9 @@ LOCATION_SCRIPT = "C:\\Users\\kha\\repos\\evosuite\\scripts\\experiment_runner.p
 LOCATION_SCRIPT_REMOTE = "/home/user/Benchmark/experiment_runner.py"
 LOCATION_JAR = "C:\\Users\\kha\\repos\\evosuite\\master\\target\\evosuite-master-1.2.1-SNAPSHOT.jar"
 LOCATION_JAR_REMOTE = "/home/user/Benchmark/evosuite-master-1.2.1-SNAPSHOT.jar"
-LOCATION_SAMPLE = "C:\\Users\\kha\\Desktop\\Benchmark\\samples\\16 - high stdev low cov prediction.txt"
-LOCATION_SAMPLE_REMOTE = "/home/user/Benchmark/samples/16 - high stdev low cov prediction.txt"
-LOCATION_CORPUS_REMOTE = "/home/user/Benchmark/SF110-20130704"
+LOCATION_SAMPLE = "C:\\Users\\kha\\Desktop\\Benchmark\\samples\\18 - kifetew selected classes - PART 2 - 142.txt"
+LOCATION_SAMPLE_REMOTE = "/home/user/Benchmark/samples/18 - kifetew selected classes - PART 2 - 142.txt"
+LOCATION_CORPUS_REMOTE = "/home/user/Benchmark/ntjc-ts-SBSTa-20220718"
 # the command that should be executed on the remotes
 REMOTE_COMMAND = f'python3 "{LOCATION_SCRIPT_REMOTE}" -sample "{LOCATION_SAMPLE_REMOTE}" -corpus "{LOCATION_CORPUS_REMOTE}" -evosuite "{LOCATION_JAR_REMOTE}" -write_status -reboot'
 # remote computer

@@ -89,13 +89,20 @@ def clean(dataframe):
     :return: The cleaned dataframe.
     """
     # remove
-    dataframe.drop('_FitnessMax', axis=1, inplace=True)
-    dataframe.drop('_FitnessMin', axis=1, inplace=True)
-    dataframe.drop('Fitness', axis=1, inplace=True)
-    dataframe.drop('criterion', axis=1, inplace=True)
-    dataframe.drop('Total_Goals', axis=1, inplace=True)
-    dataframe.drop('Covered_Goals', axis=1, inplace=True)
-    dataframe.drop('BranchCoverage', axis=1, inplace=True)
+    if '_FitnessMax' in dataframe:
+        dataframe.drop('_FitnessMax', axis=1, inplace=True)
+    if '_FitnessMin' in dataframe:
+        dataframe.drop('_FitnessMin', axis=1, inplace=True)
+    if 'Fitness' in dataframe:
+        dataframe.drop('Fitness', axis=1, inplace=True)
+    if 'criterion' in dataframe:
+        dataframe.drop('criterion', axis=1, inplace=True)
+    if 'Total_Goals' in dataframe:
+        dataframe.drop('Total_Goals', axis=1, inplace=True)
+    if 'Covered_Goals' in dataframe:
+        dataframe.drop('Covered_Goals', axis=1, inplace=True)
+    if 'BranchCoverage' in dataframe:
+        dataframe.drop('BranchCoverage', axis=1, inplace=True)
 
     # rename
     dataframe.rename({

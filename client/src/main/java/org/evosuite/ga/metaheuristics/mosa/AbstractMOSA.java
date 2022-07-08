@@ -133,7 +133,9 @@ public abstract class AbstractMOSA extends GeneticAlgorithm<TestChromosome> {
      * @return offspring population
      */
     protected List<TestChromosome> breedNextGeneration() {
+        // TODO should be: Properties.POPULATION + (int)(Properties.POPULATION * Properties.P_TEST_INSERTION) + 1
         List<TestChromosome> offspringPopulation = new ArrayList<>(Properties.POPULATION);
+
         // we apply only Properties.POPULATION/2 iterations since in each generation
         // we generate two offsprings
         for (int i = 0; i < Properties.POPULATION / 2 && !this.isFinished(); i++) {

@@ -77,7 +77,7 @@ def prune_duplicate_leaves(model):
     prune_index(model.tree_, decisions)
 
 
-def predict(title, dataframe, ground_truth, model, make_plots=False, print_tree=False, prune_tree=False, export_prediction=False):
+def predict(title, dataframe, ground_truth, model, make_plots=False, print_tree=False, prune_tree=False, export_prediction=False, upsample=False):
     count_true = len(dataframe[dataframe[ground_truth]])
     count_false = len(dataframe[~dataframe[ground_truth]])
 
@@ -87,22 +87,23 @@ def predict(title, dataframe, ground_truth, model, make_plots=False, print_tree=
     balance = count_true / (count_true + count_false)
     logging.info(f'balancing: {balance}')
 
-    if balance < 0.25 or balance > 0.75:
-        logging.info('Up-sample minority class...')
-        if balance > 0.75:
-            majority = dataframe[dataframe[ground_truth]]
-            minority = dataframe[~dataframe[ground_truth]]
-        else:
-            majority = dataframe[~dataframe[ground_truth]]
-            minority = dataframe[dataframe[ground_truth]]
+    if upsample:
+        if balance < 0.25 or balance > 0.75:
+            logging.info('Up-sample minority class...')
+            if balance > 0.75:
+                majority = dataframe[dataframe[ground_truth]]
+                minority = dataframe[~dataframe[ground_truth]]
+            else:
+                majority = dataframe[~dataframe[ground_truth]]
+                minority = dataframe[dataframe[ground_truth]]
 
-        # sample with replacement
-        minority = resample(minority, replace=True, n_samples=len(majority.index), random_state=RANDOM_STATE)
-        dataframe = pd.concat([majority, minority])
+            # sample with replacement
+            minority = resample(minority, replace=True, n_samples=len(majority.index), random_state=RANDOM_STATE)
+            dataframe = pd.concat([majority, minority])
 
-        logging.info(f'{ground_truth} (True): {len(dataframe[dataframe[ground_truth]])}')
-        logging.info(f'{ground_truth} (False): {len(dataframe[~dataframe[ground_truth]])}')
-        logging.info(f'balancing: {len(dataframe[dataframe[ground_truth]]) / len(dataframe)}')
+            logging.info(f'{ground_truth} (True): {len(dataframe[dataframe[ground_truth]])}')
+            logging.info(f'{ground_truth} (False): {len(dataframe[~dataframe[ground_truth]])}')
+            logging.info(f'balancing: {len(dataframe[dataframe[ground_truth]]) / len(dataframe)}')
 
     x_names = ['Branchless', 'GradientRatio', 'BranchRatio', 'Fitness', 'InformationContent', 'NeutralityRatio']
     x = dataframe[x_names]
@@ -124,7 +125,6 @@ def predict(title, dataframe, ground_truth, model, make_plots=False, print_tree=
         x_test['prediction'] = y_prediction
         export = pd.merge(dataframe, x_test, left_index=True, right_index=True)
         ex.create_export(export[export['prediction']])
-        exit(0)
 
     if print_tree:
         logging.info('print tree...')
@@ -168,7 +168,7 @@ def predict(title, dataframe, ground_truth, model, make_plots=False, print_tree=
     return report
 
 
-def compare_prediction(dataframe, targets, to_csv=False):
+def compare_prediction(dataframe, targets, to_csv=False, upsample=True):
     """
     Compare the results of different predictions.
     :param targets:
@@ -184,8 +184,8 @@ def compare_prediction(dataframe, targets, to_csv=False):
             for y in targets:
                 for depth in range(1, 5):
                     logging.info(f"prediction of: {y} @ {percentage * 10}...")
-                    model = tree.DecisionTreeClassifier(max_depth=depth, random_state=RANDOM_STATE, criterion=c)
-                    report = predict(f"@{percentage * 10}%", dataframe, y, model, make_plots=False, print_tree=False)
+                    model = tree.DecisionTreeClassifier(max_depth=depth, random_state=RANDOM_STATE, criterion=c, class_weight='balanced')
+                    report = predict(f"@{percentage * 10}%", dataframe, y, model, make_plots=False, print_tree=False, upsample=True)
 
                     row = {
                         'target': y,
@@ -204,16 +204,20 @@ def compare_prediction(dataframe, targets, to_csv=False):
                     }
                     rows.append(row)
 
-    result = pd.DataFrame(rows)
-    logging.info(f"created {len(result)} decision trees.")
-    result = result[result['TPR'].ge(0.8)]
-    result = result.sort_values(by=['FPR'], ascending=True).head(50)
-    result = result.round(2)
+    logging.info(f"created {len(rows)} decision trees.")
 
-    print(result)
+    results_best = pd.DataFrame()
+    results_all = pd.DataFrame(rows)
+    for y in targets:
+        results_best = pd.concat([results_best, results_all[results_all['target'].eq(y)].sort_values(by=['FPR'], ascending=True).head(5)])
+
+    results_best = results_best.round(2)
+    results_best = results_best.sort_values(by=['FPR'], ascending=True)
 
     if to_csv:
-        result[['target', 'percentage', 'depth', 'criterion', 'accuracy', 'TPR', 'FPR']].to_csv('predictions.csv')
+        results_best[['target', 'percentage', 'depth', 'criterion', 'accuracy', 'TPR', 'FPR']].to_csv('predictions.csv')
+
+    print(results_best)
 
 
 def setup_argparse():
@@ -270,18 +274,16 @@ def main():
                'HIGH_STDEV_and_LOW_END_COVERAGE',
                'HIGHER_WITH_POP125',
                'HIGHER_WITH_POP125_and_RELATIVE_LOW_COVERAGE']
-    # compare_prediction(dataframe, targets, to_csv=True)
+
+    # compare_prediction(dataframe, targets, to_csv=True, upsample=True)
 
     percentage = 3
     dataframe = ex.get_measurements(dataframe, percentage)
-    model = tree.DecisionTreeClassifier(max_depth=4, random_state=RANDOM_STATE, criterion="entropy")
-    predict("high stdev & relative cov.",
-            dataframe,
-            'HIGH_STDEV_and_RELATIVE_LOW_COVERAGE',
-            model,
-            make_plots=True,
-            prune_tree=True,
-            export_prediction=False)
+    model = tree.DecisionTreeClassifier(max_depth=2, random_state=RANDOM_STATE, criterion="gini", class_weight='balanced')
+    predict("stdev > 0.1 & max(cov.) * 0.8", dataframe, 'HIGH_STDEV_and_RELATIVE_LOW_COVERAGE', model, make_plots=True, prune_tree=True, export_prediction=True, upsample=True)
+
+    for y in targets:
+        logging.info(f"{len(dataframe[dataframe[y]])}\t{y}")
 
 
 if __name__ == "__main__":
