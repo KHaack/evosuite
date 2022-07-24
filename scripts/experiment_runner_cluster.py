@@ -117,7 +117,7 @@ def start_remote(ip):
             scp.put(LOCATION_JAR, LOCATION_JAR_REMOTE)
 
         logging.info(f'start script on {ip}...')
-        command = create_start_command();
+        command = create_start_command()
         ssh.exec_command(command)
 
 
@@ -173,7 +173,8 @@ def create_cluster_report(runners):
             sample_total = sample_total + runner.sample_size
             sample_done = sample_done + runner.current_class_index
             executions_total = executions_total + (runner.sample_size * runner.executions_per_class)
-            executions_done = executions_done + (runner.current_class_index * runner.executions_per_class) + runner.current_execution
+            executions_done = executions_done + (
+                        runner.current_class_index * runner.executions_per_class) + runner.current_execution
 
             runtime = runner.get_runtime_estimation()
 
@@ -220,11 +221,20 @@ def setup_argparse():
     group.add_argument("-ping", help="Ping the remotes", action='store_true')
     group.add_argument("-start", help="Start the script on the remotes", action='store_true')
 
-    argument_parser.add_argument("-executions", help="Required if using -start. Number of executions per class", type=ex.check_positive_int)
-    argument_parser.add_argument("-copy_script", help="Optional if using -start. Copy the script file to the cluster machines", action='store_true', default=False)
-    argument_parser.add_argument("-copy_jar", help="Optional if using -start. Copy the jar file to the cluster machines", action='store_true', default=False)
-    argument_parser.add_argument("-copy_lib", help="Optional if using -start. Copy the library file to the cluster machines", action='store_true', default=False)
-    argument_parser.add_argument("-copy_sample", help="Optional if using -start. Copy the sample file to the cluster machines", action='store_true', default=False)
+    argument_parser.add_argument("-executions", help="Required if using -start. Number of executions per class",
+                                 type=ex.check_positive_int)
+    argument_parser.add_argument("-copy_script",
+                                 help="Optional if using -start. Copy the script file to the cluster machines",
+                                 action='store_true', default=False)
+    argument_parser.add_argument("-copy_jar",
+                                 help="Optional if using -start. Copy the jar file to the cluster machines",
+                                 action='store_true', default=False)
+    argument_parser.add_argument("-copy_lib",
+                                 help="Optional if using -start. Copy the library file to the cluster machines",
+                                 action='store_true', default=False)
+    argument_parser.add_argument("-copy_sample",
+                                 help="Optional if using -start. Copy the sample file to the cluster machines",
+                                 action='store_true', default=False)
 
     return argument_parser
 

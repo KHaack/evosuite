@@ -9,9 +9,9 @@ import os
 
 import matplotlib
 import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 import scipy.stats as stats
-import numpy as np
 
 import experiment_lib as ex
 
@@ -141,7 +141,8 @@ def foo_generations(title, original):
             rows.append(row)
 
         result = pd.DataFrame(rows)
-        plt.plot(result['x'], result['generations'], label=folder['label'], color=folder['color'], linestyle=folder['linestyle'], alpha=0.4)
+        plt.plot(result['x'], result['generations'], label=folder['label'], color=folder['color'],
+                 linestyle=folder['linestyle'], alpha=0.4)
 
     ax = plt.gca()
     ax.set_ylabel("Generations (mean)")
@@ -278,21 +279,29 @@ def foo_std(dataframe):
     groups.sort_values(('EndCoverage', 'std'), inplace=True, ascending=False)
 
     fig, axs = plt.subplots(2, 3)
-    draw_2d(axs[0, 0], fig, groups, 'GradientRatio at 20% (mean)', 'EndCoverage (std)', 'GradientRatio', ('EndCoverage', 'std'), title='a)')
-    draw_2d(axs[0, 1], fig, groups, 'BranchRatio at 20% (mean)', 'EndCoverage (std)', 'BranchRatio', ('EndCoverage', 'std'), title='b)')
-    draw_2d(axs[0, 2], fig, groups, 'NotGradRatio at 20% (mean)', 'EndCoverage (std)', 'NotGradientRatio', ('EndCoverage', 'std'), title='c)')
-    draw_2d(axs[1, 0], fig, groups, 'IC at 20% (mean)', 'EndCoverage (std)', 'InformationContent', ('EndCoverage', 'std'), title='d)')
-    draw_2d(axs[1, 1], fig, groups, 'NV/Gen at 20% (mean)', 'EndCoverage (std)', 'NeutralityRatio', ('EndCoverage', 'std'), title='e)')
-    draw_2d(axs[1, 2], fig, groups, 'Fitness at 20% (mean)', 'EndCoverage (std)', 'Fitness', ('EndCoverage', 'std'), title='f)')
+    draw_2d(axs[0, 0], fig, groups, 'GradientRatio at 20% (mean)', 'EndCoverage (std)', 'GradientRatio',
+            ('EndCoverage', 'std'), title='a)')
+    draw_2d(axs[0, 1], fig, groups, 'BranchRatio at 20% (mean)', 'EndCoverage (std)', 'BranchRatio',
+            ('EndCoverage', 'std'), title='b)')
+    draw_2d(axs[0, 2], fig, groups, 'NotGradRatio at 20% (mean)', 'EndCoverage (std)', 'NotGradientRatio',
+            ('EndCoverage', 'std'), title='c)')
+    draw_2d(axs[1, 0], fig, groups, 'IC at 20% (mean)', 'EndCoverage (std)', 'InformationContent',
+            ('EndCoverage', 'std'), title='d)')
+    draw_2d(axs[1, 1], fig, groups, 'NV/Gen at 20% (mean)', 'EndCoverage (std)', 'NeutralityRatio',
+            ('EndCoverage', 'std'), title='e)')
+    draw_2d(axs[1, 2], fig, groups, 'Fitness at 20% (mean)', 'EndCoverage (std)', 'Fitness', ('EndCoverage', 'std'),
+            title='f)')
     plt.tight_layout()
     plt.show()
 
 
 def foo_coverage(dataframe):
     fig, axs = plt.subplots(2, 3)
-    draw_2d(axs[0, 0], fig, dataframe, 'GradientRatio at 20%', 'EndCoverage', 'GradientRatio', 'EndCoverage', title='a)')
+    draw_2d(axs[0, 0], fig, dataframe, 'GradientRatio at 20%', 'EndCoverage', 'GradientRatio', 'EndCoverage',
+            title='a)')
     draw_2d(axs[0, 1], fig, dataframe, 'BranchRatio at 20%', 'EndCoverage', 'BranchRatio', 'EndCoverage', title='b)')
-    draw_2d(axs[0, 2], fig, dataframe, 'NotGradRatio at 20%', 'EndCoverage', 'NotGradientRatio', 'EndCoverage', title='c)')
+    draw_2d(axs[0, 2], fig, dataframe, 'NotGradRatio at 20%', 'EndCoverage', 'NotGradientRatio', 'EndCoverage',
+            title='c)')
     draw_2d(axs[1, 0], fig, dataframe, 'IC at 20%', 'EndCoverage', 'InformationContent', 'EndCoverage', title='d)')
     draw_2d(axs[1, 1], fig, dataframe, 'NV/Gen at 20%', 'EndCoverage', 'NeutralityRatio', 'EndCoverage', title='e)')
     draw_2d(axs[1, 2], fig, dataframe, 'Fitness at 20%', 'EndCoverage', 'Fitness', 'EndCoverage', title='f)')
@@ -318,7 +327,8 @@ def draw_2d(ax, fig, dataframe, x_name, y_name, x, y, color=None, color_name=Non
         norm = matplotlib.colors.Normalize(vmin=0, vmax=1)
         colormap = plt.cm.viridis
 
-        ax.scatter(dataframe[x], dataframe[y], s=SCATTER_POINT_SIZE, c=dataframe[color].values, norm=norm, cmap=colormap)
+        ax.scatter(dataframe[x], dataframe[y], s=SCATTER_POINT_SIZE, c=dataframe[color].values, norm=norm,
+                   cmap=colormap)
         sm = plt.cm.ScalarMappable(cmap=colormap, norm=norm)
         fig.colorbar(sm, label=color_name)
     else:

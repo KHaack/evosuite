@@ -57,10 +57,12 @@ def main():
 
     logging.info("Total tests in A:\t\t" + str(len(dataframe[dataframe['set'].eq('A')].index)))
     logging.info("Total tests in B:\t\t" + str(len(dataframe[dataframe['set'].eq('B')].index)))
-    logging.info("Total tests in B with PC:\t" + str(len(dataframe[dataframe['set'].eq('B') & dataframe["_ParameterControlled"].eq("yes")].index)))
+    logging.info("Total tests in B with PC:\t" + str(
+        len(dataframe[dataframe['set'].eq('B') & dataframe["_ParameterControlled"].eq("yes")].index)))
 
     if args.only_pc:
-        dataframe = dataframe[dataframe['set'].eq('A') | (dataframe['set'].eq('B') & dataframe["_ParameterControlled"].eq("yes"))]
+        dataframe = dataframe[
+            dataframe['set'].eq('A') | (dataframe['set'].eq('B') & dataframe["_ParameterControlled"].eq("yes"))]
 
     dataframe = ex.clean(dataframe)
     dataframe = ex.add_additional_columns(dataframe)

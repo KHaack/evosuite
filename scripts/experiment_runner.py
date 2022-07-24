@@ -368,9 +368,12 @@ def setup_argparse():
         description="Run large scale experiments with EvoSuite",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     argument_parser.add_argument("-sample", help="The path of the sample file", type=ex.check_file_path, required=True)
-    argument_parser.add_argument("-corpus", help="The path of the corpus directory", type=ex.check_dir_path, required=True)
-    argument_parser.add_argument("-evosuite", help="The path of the evosuite jar", type=ex.check_file_path, required=True)
-    argument_parser.add_argument("-executions", help="Number of executions per class", type=ex.check_positive_int, required=True)
+    argument_parser.add_argument("-corpus", help="The path of the corpus directory", type=ex.check_dir_path,
+                                 required=True)
+    argument_parser.add_argument("-evosuite", help="The path of the evosuite jar", type=ex.check_file_path,
+                                 required=True)
+    argument_parser.add_argument("-executions", help="Number of executions per class", type=ex.check_positive_int,
+                                 required=True)
     argument_parser.add_argument("-write_status", help="Write the status in the status file", action='store_true')
 
     group = argument_parser.add_mutually_exclusive_group(required=False)

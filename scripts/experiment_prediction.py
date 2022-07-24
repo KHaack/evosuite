@@ -10,12 +10,12 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+from dtreeviz.trees import dtreeviz
 from sklearn import tree
 from sklearn.metrics import classification_report, confusion_matrix, ConfusionMatrixDisplay
 from sklearn.model_selection import train_test_split
-from sklearn.utils import resample
-from dtreeviz.trees import dtreeviz
 from sklearn.tree._tree import TREE_LEAF
+from sklearn.utils import resample
 
 import experiment_lib as ex
 
@@ -30,6 +30,7 @@ SCATTER_POINT_SIZE = 4
 
 RANDOM_STATE = 42
 
+
 def is_leaf(inner_tree, index):
     """
     Check whether node is leaf node.
@@ -40,6 +41,7 @@ def is_leaf(inner_tree, index):
     """
     return (inner_tree.children_left[index] == TREE_LEAF and
             inner_tree.children_right[index] == TREE_LEAF)
+
 
 def prune_index(inner_tree, decisions, index=0):
     """
@@ -77,7 +79,8 @@ def prune_duplicate_leaves(model):
     prune_index(model.tree_, decisions)
 
 
-def predict(title, dataframe, ground_truth, model, make_plots=False, print_tree=False, prune_tree=False, export_prediction=False, upsample=False):
+def predict(title, dataframe, ground_truth, model, make_plots=False, print_tree=False, prune_tree=False,
+            export_prediction=False, upsample=False):
     count_true = len(dataframe[dataframe[ground_truth]])
     count_false = len(dataframe[~dataframe[ground_truth]])
 
@@ -184,8 +187,10 @@ def compare_prediction(dataframe, targets, to_csv=False, upsample=True):
             for y in targets:
                 for depth in range(1, 5):
                     logging.info(f"prediction of: {y} @ {percentage * 10}...")
-                    model = tree.DecisionTreeClassifier(max_depth=depth, random_state=RANDOM_STATE, criterion=c, class_weight='balanced')
-                    report = predict(f"@{percentage * 10}%", dataframe, y, model, make_plots=False, print_tree=False, upsample=True)
+                    model = tree.DecisionTreeClassifier(max_depth=depth, random_state=RANDOM_STATE, criterion=c,
+                                                        class_weight='balanced')
+                    report = predict(f"@{percentage * 10}%", dataframe, y, model, make_plots=False, print_tree=False,
+                                     upsample=True)
 
                     row = {
                         'target': y,
@@ -209,7 +214,8 @@ def compare_prediction(dataframe, targets, to_csv=False, upsample=True):
     results_best = pd.DataFrame()
     results_all = pd.DataFrame(rows)
     for y in targets:
-        results_best = pd.concat([results_best, results_all[results_all['target'].eq(y)].sort_values(by=['FPR'], ascending=True).head(5)])
+        results_best = pd.concat(
+            [results_best, results_all[results_all['target'].eq(y)].sort_values(by=['FPR'], ascending=True).head(5)])
 
     results_best = results_best.round(2)
     results_best = results_best.sort_values(by=['FPR'], ascending=True)
@@ -256,14 +262,16 @@ def main():
     dataframe = ex.filter_dataframe(dataframe, FILTER_MIN_EXECUTIONS)
 
     dataframe = ex.get_measurements(dataframe, -1)
-    dataframe = add_additional_coverage(dataframe, 'EndCoverage POP125', 'C:\\Users\\kha\\Desktop\\Benchmark\\results\\33 PC with POP 125')
+    dataframe = add_additional_coverage(dataframe, 'EndCoverage POP125',
+                                        'C:\\Users\\kha\\Desktop\\Benchmark\\results\\33 PC with POP 125')
     ex.print_result_infos(dataframe)
 
     dataframe['HIGH_STDEV_and_RELATIVE_LOW_COVERAGE'] = dataframe['RELATIVE_LOW_COVERAGE'] & dataframe['HIGH_STDEV']
     dataframe['WITH_STDEV_and_RELATIVE_LOW_COVERAGE'] = dataframe['RELATIVE_LOW_COVERAGE'] & dataframe['WITH_STDEV']
     dataframe['HIGH_STDEV_and_LOW_END_COVERAGE'] = dataframe['LOW_END_COVERAGE'] & dataframe['HIGH_STDEV']
     dataframe['HIGHER_WITH_POP125'] = dataframe['EndCoverage'].lt(dataframe['EndCoverage POP125'])
-    dataframe['HIGHER_WITH_POP125_and_RELATIVE_LOW_COVERAGE'] = dataframe['RELATIVE_LOW_COVERAGE'] & dataframe['HIGHER_WITH_POP125']
+    dataframe['HIGHER_WITH_POP125_and_RELATIVE_LOW_COVERAGE'] = dataframe['RELATIVE_LOW_COVERAGE'] & dataframe[
+        'HIGHER_WITH_POP125']
 
     targets = ['RELATIVE_LOW_COVERAGE',
                'LOW_END_COVERAGE',
@@ -279,8 +287,10 @@ def main():
 
     percentage = 3
     dataframe = ex.get_measurements(dataframe, percentage)
-    model = tree.DecisionTreeClassifier(max_depth=2, random_state=RANDOM_STATE, criterion="gini", class_weight='balanced')
-    predict("stdev > 0.1$ & $cov. max(cov.) * 0.8", dataframe, 'HIGH_STDEV_and_RELATIVE_LOW_COVERAGE', model, make_plots=True, prune_tree=True, export_prediction=True, upsample=True)
+    model = tree.DecisionTreeClassifier(max_depth=2, random_state=RANDOM_STATE, criterion="gini",
+                                        class_weight='balanced')
+    predict("stdev > 0.1$ & $cov. max(cov.) * 0.8", dataframe, 'HIGH_STDEV_and_RELATIVE_LOW_COVERAGE', model,
+            make_plots=True, prune_tree=True, export_prediction=True, upsample=True)
 
     for y in targets:
         logging.info(f"{len(dataframe[dataframe[y]])}\t{y}")
