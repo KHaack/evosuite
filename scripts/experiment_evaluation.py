@@ -443,7 +443,8 @@ def setup_argparse():
     """
     parser = argparse.ArgumentParser(description="Collect the experiment results from the experiment_runner",
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument("-results", help="The directory of the results", type=ex.dir_path, required=True)
+    parser.add_argument("-results", help="The directory of the results", type=ex.check_dir_path, required=True)
+    parser.add_argument("-only_pc", help="compares only classes with pc=yes", action='store_true')
 
     return parser
 
@@ -457,6 +458,9 @@ def main():
     original = ex.clean(original)
     original = ex.add_additional_columns(original)
     dataframe = ex.filter_dataframe(original, FILTER_MIN_EXECUTIONS)
+
+    if args.only_pc:
+        dataframe = dataframe[dataframe["_ParameterControlled"].eq("yes")]
 
     dataframe = ex.get_measurements(dataframe, -1)
     ex.print_result_infos(dataframe)

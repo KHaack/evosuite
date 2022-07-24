@@ -29,8 +29,8 @@ LOCATION_JAR_REMOTE = "/home/user/Benchmark/evosuite-master-1.2.1-SNAPSHOT.jar"
 LOCATION_SAMPLE = "C:\\Users\\kha\\Desktop\\Benchmark\\samples\\18 - kifetew selected classes - PART 2 - 142.txt"
 LOCATION_SAMPLE_REMOTE = "/home/user/Benchmark/samples/18 - kifetew selected classes - PART 2 - 142.txt"
 LOCATION_CORPUS_REMOTE = "/home/user/Benchmark/ntjc-ts-SBSTa-20220718"
-# the command that should be executed on the remotes
-REMOTE_COMMAND = f'python3 "{LOCATION_SCRIPT_REMOTE}" -sample "{LOCATION_SAMPLE_REMOTE}" -corpus "{LOCATION_CORPUS_REMOTE}" -evosuite "{LOCATION_JAR_REMOTE}" -write_status -reboot'
+# the command for python on the remote machines
+REMOTE_PYTHON_COMMAND = 'python3'
 # remote computer
 COPY_JAR = True
 COPY_SCRIPT = True
@@ -63,6 +63,20 @@ def get_ssh(ip):
                 username=USERNAME,
                 password=PASSWORD)
     return ssh
+
+
+def create_start_command():
+    command = REMOTE_PYTHON_COMMAND
+
+    command = command + ' "' + LOCATION_SCRIPT_REMOTE + '"'
+    command = command + ' -sample "' + LOCATION_SAMPLE_REMOTE + '"'
+    command = command + ' -corpus "' + LOCATION_CORPUS_REMOTE + '"'
+    command = command + ' -evosuite "' + LOCATION_JAR_REMOTE + '"'
+    command = command + ' -executions ' + str(args.executions)
+    command = command + ' -write_status'
+    command = command + ' -reboot'
+
+    return command
 
 
 def monitor_remote(ip):
@@ -108,7 +122,8 @@ def start_remote(ip):
             scp.put(LOCATION_JAR, LOCATION_JAR_REMOTE)
 
         logging.info(f'start script on {ip}...')
-        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(REMOTE_COMMAND)
+        command = create_start_command();
+        ssh.exec_command(command)
 
 
 def get_reachable_ips():
@@ -136,7 +151,6 @@ def start_remotes():
     :return: None
     """
     logging.info('start...')
-    logging.info(f"remote command:\t{REMOTE_COMMAND}")
 
     for ip in get_reachable_ips():
         start_remote(ip)
@@ -171,7 +185,8 @@ def create_cluster_report(runners):
             if runtime > max_runtime:
                 max_runtime = runtime
 
-        logging.info('---------------------------------------------------------------------------------------')
+        logging.info('----------------------')
+    logging.info('---------------------------------------------------------------------------------------')
 
     delta = timedelta(seconds=max_runtime)
     end = datetime.now() + delta
@@ -204,10 +219,13 @@ def setup_argparse():
     """
     argument_parser = argparse.ArgumentParser(description="Run large scale experiments on a cluster.",
                                               formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+
     group = argument_parser.add_mutually_exclusive_group(required=True)
-    group.add_argument("-start", help="Start the script on the remotes", action='store_true')
     group.add_argument("-monitor", help="Monitor the script on the remotes", action='store_true')
     group.add_argument("-ping", help="Ping the remotes", action='store_true')
+    group.add_argument("-start", help="Start the script on the remotes", action='store_true')
+
+    argument_parser.add_argument("-executions", help="Number of executions per class", type=ex.check_positive_int)
 
     return argument_parser
 
@@ -216,6 +234,8 @@ def main():
     if args.monitor:
         monitor_remotes()
     elif args.start:
+        if args.executions is None:
+            parser.error("You can't use -start without -executions")
         start_remotes()
     elif args.ping:
         get_reachable_ips()
@@ -223,5 +243,6 @@ def main():
 
 if __name__ == "__main__":
     ex.init_default_logging()
-    args = setup_argparse().parse_args()
+    parser = setup_argparse()
+    args = parser.parse_args()
     main()

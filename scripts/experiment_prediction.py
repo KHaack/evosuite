@@ -227,7 +227,7 @@ def setup_argparse():
     """
     parser = argparse.ArgumentParser(description="Collect the experiment results and make a prediction",
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument("-results", help="The directory of the results", type=ex.dir_path, required=True)
+    parser.add_argument("-results", help="The directory of the results", type=ex.check_dir_path, required=True)
 
     return parser
 
@@ -280,7 +280,7 @@ def main():
     percentage = 3
     dataframe = ex.get_measurements(dataframe, percentage)
     model = tree.DecisionTreeClassifier(max_depth=2, random_state=RANDOM_STATE, criterion="gini", class_weight='balanced')
-    predict("stdev > 0.1 & max(cov.) * 0.8", dataframe, 'HIGH_STDEV_and_RELATIVE_LOW_COVERAGE', model, make_plots=True, prune_tree=True, export_prediction=True, upsample=True)
+    predict("stdev > 0.1$ & $cov. max(cov.) * 0.8", dataframe, 'HIGH_STDEV_and_RELATIVE_LOW_COVERAGE', model, make_plots=True, prune_tree=True, export_prediction=True, upsample=True)
 
     for y in targets:
         logging.info(f"{len(dataframe[dataframe[y]])}\t{y}")

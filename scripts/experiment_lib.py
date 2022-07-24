@@ -309,11 +309,24 @@ def filter_dataframe(dataframe, minimum_executions):
     return dataframe
 
 
-def dir_path(path):
+def check_positive_int(value):
     """
-    Retruns true, if the passed string is a directory path.
+    Returns the int value, if the passed value was an integer and positive.
+    :param value: the value to check.
+    :return: Returns the int value, if the passed value was an integer and positive.
+    """
+    integer_value = int(value)
+    if integer_value > 0:
+        return integer_value
+    else:
+        raise argparse.ArgumentTypeError("%s is an invalid positive int value" % value)
+
+
+def check_dir_path(path):
+    """
+    Returns the directory path, if the passed string is a directory path.
     :param path: the directory path to check.
-    :return: Retruns true, if the passed string is a directory path.
+    :return: Returns the directory path, if the passed string is a directory path.
     """
     if os.path.isdir(path):
         return path
@@ -321,11 +334,11 @@ def dir_path(path):
         raise argparse.ArgumentTypeError(f"{path} is not a valid path")
 
 
-def file_path(path):
+def check_file_path(path):
     """
-    Retruns true, if the passed string is a file path.
+    Returns the file path, if the passed string is a file path.
     :param path: the file path to check.
-    :return: Retruns true, if the passed string is a file path.
+    :return: Returns the file path, if the passed string is a file path.
     """
     if os.path.isfile(path):
         return path

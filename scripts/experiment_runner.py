@@ -367,9 +367,10 @@ def setup_argparse():
     argument_parser = argparse.ArgumentParser(
         description="Run large scale experiments with EvoSuite",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    argument_parser.add_argument("-sample", help="The path of the sample file", type=ex.file_path, required=True)
-    argument_parser.add_argument("-corpus", help="The path of the corpus directory", type=ex.dir_path, required=True)
-    argument_parser.add_argument("-evosuite", help="The path of the evosuite jar", type=ex.file_path, required=True)
+    argument_parser.add_argument("-sample", help="The path of the sample file", type=ex.check_file_path, required=True)
+    argument_parser.add_argument("-corpus", help="The path of the corpus directory", type=ex.check_dir_path, required=True)
+    argument_parser.add_argument("-evosuite", help="The path of the evosuite jar", type=ex.check_file_path, required=True)
+    argument_parser.add_argument("-executions", help="Number of executions per class", type=ex.check_positive_int, required=True)
     argument_parser.add_argument("-write_status", help="Write the status in the status file", action='store_true')
 
     group = argument_parser.add_mutually_exclusive_group(required=False)
@@ -462,19 +463,19 @@ if __name__ == "__main__":
         '-Dnumber_of_mutations': None,
         '-Denable_landscape_analysis': 'true',
         '-Denable_fitness_history': 'true',
-        '-Denable_parameter_control': 'false',
+        '-Denable_parameter_control': 'true',
         '-Drandom_seed': 42,
         '-Dpc_at': 0.3,
-        '-Dpc_population': None,
-        '-Dpc_p_test_insertion': None,
+        '-Dpc_population': 25,
+        '-Dpc_p_test_insertion': 1.0,
         '-Dpc_crossover_rate': None,
         '-Dpc_number_of_mutations': None,
         '-Dpc_rank_bias': None,
-        '-Dpc_prediction': 'NONE'
+        '-Dpc_prediction': 'HIGH_STDEV_RELATIVE_LOW_COVERAGE'
     }
 
     runner = ex.ExperimentRunner(initial_sample_file=args.sample,
-                                 executions_per_class=4,
+                                 executions_per_class=args.executions,
                                  hostname=socket.gethostname(),
                                  start_time=datetime.now(),
                                  random=False,

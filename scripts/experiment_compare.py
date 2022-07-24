@@ -26,8 +26,9 @@ def setup_argparse():
     argument_parser = argparse.ArgumentParser(
         description="Compares the experiment results from two runs (a & b) of the the experiment_runner",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    argument_parser.add_argument("-a", help="The directory path of the run a", type=ex.dir_path, required=True)
-    argument_parser.add_argument("-b", help="The directory path of the run b", type=ex.dir_path, required=True)
+    argument_parser.add_argument("-a", help="The directory path of the run a", type=ex.check_dir_path, required=True)
+    argument_parser.add_argument("-b", help="The directory path of the run b", type=ex.check_dir_path, required=True)
+    argument_parser.add_argument("-only_pc", help="compares only classes with pc=yes", action='store_true')
 
     return argument_parser
 
@@ -58,7 +59,8 @@ def main():
     logging.info("Total tests in B:\t\t" + str(len(dataframe[dataframe['set'].eq('B')].index)))
     logging.info("Total tests in B with PC:\t" + str(len(dataframe[dataframe['set'].eq('B') & dataframe["_ParameterControlled"].eq("yes")].index)))
 
-    # dataframe = dataframe[dataframe['set'].eq('A') | (dataframe['set'].eq('B') & dataframe["_ParameterControlled"].eq("yes"))]
+    if args.only_pc:
+        dataframe = dataframe[dataframe['set'].eq('A') | (dataframe['set'].eq('B') & dataframe["_ParameterControlled"].eq("yes"))]
 
     dataframe = ex.clean(dataframe)
     dataframe = ex.add_additional_columns(dataframe)
