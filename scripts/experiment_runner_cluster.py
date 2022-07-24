@@ -31,11 +31,6 @@ LOCATION_SAMPLE_REMOTE = "/home/user/Benchmark/samples/18 - kifetew selected cla
 LOCATION_CORPUS_REMOTE = "/home/user/Benchmark/ntjc-ts-SBSTa-20220718"
 # the command for python on the remote machines
 REMOTE_PYTHON_COMMAND = 'python3'
-# remote computer
-COPY_JAR = True
-COPY_SCRIPT = True
-COPY_LIB = True
-COPY_SAMPLE = True
 ACCEPT_EVERY_SSH_KEY = True
 CLUSTER_IPS = [
     '192.168.178.68',  # cluster0671
@@ -105,19 +100,19 @@ def start_remote(ip):
     """
     ssh = get_ssh(ip)
     with SCPClient(ssh.get_transport()) as scp:
-        if COPY_SCRIPT:
+        if args.copy_script:
             logging.info(f'copy script on {ip}...')
             scp.put(LOCATION_SCRIPT, LOCATION_SCRIPT_REMOTE)
 
-        if COPY_SAMPLE:
+        if args.copy_sample:
             logging.info(f'copy sample on {ip}...')
             scp.put(LOCATION_SAMPLE, LOCATION_SAMPLE_REMOTE)
 
-        if COPY_LIB:
+        if args.copy_lib:
             logging.info(f'copy lib on {ip}...')
             scp.put(LOCATION_LIB, LOCATION_LIB_REMOTE)
 
-        if COPY_JAR:
+        if args.copy_jar:
             logging.info(f'copy jar on {ip}...')
             scp.put(LOCATION_JAR, LOCATION_JAR_REMOTE)
 
@@ -225,7 +220,11 @@ def setup_argparse():
     group.add_argument("-ping", help="Ping the remotes", action='store_true')
     group.add_argument("-start", help="Start the script on the remotes", action='store_true')
 
-    argument_parser.add_argument("-executions", help="Number of executions per class", type=ex.check_positive_int)
+    argument_parser.add_argument("-executions", help="Required if using -start. Number of executions per class", type=ex.check_positive_int)
+    argument_parser.add_argument("-copy_script", help="Optional if using -start. Copy the script file to the cluster machines", action='store_true', default=False)
+    argument_parser.add_argument("-copy_jar", help="Optional if using -start. Copy the jar file to the cluster machines", action='store_true', default=False)
+    argument_parser.add_argument("-copy_lib", help="Optional if using -start. Copy the library file to the cluster machines", action='store_true', default=False)
+    argument_parser.add_argument("-copy_sample", help="Optional if using -start. Copy the sample file to the cluster machines", action='store_true', default=False)
 
     return argument_parser
 
