@@ -29,6 +29,7 @@ def setup_argparse():
     argument_parser.add_argument("-a", help="The directory path of the run a", type=ex.check_dir_path, required=True)
     argument_parser.add_argument("-b", help="The directory path of the run b", type=ex.check_dir_path, required=True)
     argument_parser.add_argument("-only_pc", help="compares only classes with pc=yes", action='store_true')
+    argument_parser.add_argument("-export", help="export the classes", action='store_true')
 
     return argument_parser
 
@@ -45,6 +46,43 @@ def get_dataframes():
     dataframe_b['set'] = 'B'
 
     return pd.concat([dataframe_a, dataframe_b], ignore_index=True)
+
+
+def compare(dataframe):
+    logging.info("compare...")
+    logging.info(f"coverage difference (sum):\t{dataframe['Coverage difference (b-a)'].sum()}")
+    logging.info(f"coverage difference (mean):\t{dataframe['Coverage difference (b-a)'].mean()}")
+    logging.info(f"coverage difference (median):\t{dataframe['Coverage difference (b-a)'].median()}")
+    logging.info(f"coverage difference (std):\t{dataframe['Coverage difference (b-a)'].std()}")
+    logging.info(f"coverage difference (min):\t{dataframe['Coverage difference (b-a)'].min()}")
+    logging.info(f"coverage difference (max):\t{dataframe['Coverage difference (b-a)'].max()}")
+
+    print(dataframe)
+
+
+def figures(dataframe, merged):
+    logging.info("plot...")
+
+    # histogram coverage difference
+    ax = merged.hist(column='Coverage difference (b-a)', bins=50)
+    ax[0][0].set_ylabel("Count")
+    ax[0][0].set_xlabel("Coverage difference (b-a)")
+    plt.title('Histogram - Coverage difference ($\\alpha - \\beta$)')
+    plt.tight_layout()
+    plt.show()
+
+    # histogram coverage compare
+    b = dataframe[dataframe['set'].eq('B')]
+    a = dataframe[dataframe['set'].eq('A') & dataframe['TARGET_CLASS'].isin(b['TARGET_CLASS'])]
+
+    ax = a.hist(column='EndCoverage', bins=20, alpha=0.5, legend=True)
+    ax = b.hist(column='EndCoverage', bins=20, alpha=0.5, ax=ax, legend=True)
+    ax[0][0].set_ylabel("Count")
+    ax[0][0].set_xlabel("Coverage")
+    ax[0][0].legend(["$\\alpha$", "$\\beta$"])
+    plt.title('Histogram - Coverage')
+    plt.tight_layout()
+    plt.show()
 
 
 def main():
@@ -94,34 +132,18 @@ def main():
     logging.info("Generations max (A):\t\t" + str(merged[('Generations_a', 'max')].max()))
     logging.info("Generations max (B):\t\t" + str(merged[('Generations_b', 'max')].max()))
 
-    merged['Coverage difference (a-b)'] = merged[('EndCoverage_a', 'median')] - merged[('EndCoverage_b', 'median')]
+    merged['Coverage difference (b-a)'] = merged[('EndCoverage_b', 'median')] - merged[('EndCoverage_a', 'median')]
 
-    logging.info(f"coverage difference (sum):\t{merged['Coverage difference (a-b)'].sum()}")
-    logging.info(f"coverage difference (mean):\t{merged['Coverage difference (a-b)'].mean()}")
-    logging.info(f"coverage difference (median):\t{merged['Coverage difference (a-b)'].median()}")
-    logging.info(f"coverage difference (std):\t{merged['Coverage difference (a-b)'].std()}")
-    logging.info(f"coverage difference (min):\t{merged['Coverage difference (a-b)'].min()}")
-    logging.info(f"coverage difference (max):\t{merged['Coverage difference (a-b)'].max()}")
+    if args.export:
+        group = merged.groupby(['TARGET_CLASS']).agg({
+            ('EndCoverage_a', 'median'): 'median',
+            ('EndCoverage_b', 'median'): 'median',
+            ('Coverage difference (b-a)', ''): 'median'
+        })
+        group.to_csv('export.csv')
 
-    logging.info("plot...")
-
-    # histogram
-    merged.hist(column='Coverage difference (a-b)', bins=50)
-    plt.show()
-
-    # difference
-    fig, ax = plt.subplots()
-    ax.scatter(merged[('EndCoverage_a', 'std')], merged['Coverage difference (a-b)'], s=SCATTER_POINT_SIZE)
-
-    ax.set_xlabel('Coverage A (std) at 20%')
-    ax.set_ylabel('Coverage difference (a-b)')
-
-    ax.spines["right"].set_visible(False)
-    ax.spines["top"].set_visible(False)
-
-    ax.set_title(f'BranchRatio - Coverage difference (a-b)')
-
-    plt.show()
+    compare(merged)
+    figures(dataframe, merged)
 
 
 if __name__ == "__main__":

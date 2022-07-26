@@ -14,7 +14,6 @@ from enum import IntEnum
 
 import pandas as pd
 from dateutil import parser
-
 # files and directories
 from pandas.errors import ParserError
 
