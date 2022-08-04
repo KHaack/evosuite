@@ -122,9 +122,22 @@ def get_project_class_path(project):
     return class_path
 
 
+def remove_results(path_class_dir):
+    """
+    Remove the execution results.
+    :param path_class_dir: The path of the class directory.
+    :return: None
+    """
+    file_path = os.path.join(path_class_dir, DIRECTORY_EXECUTION_REPORTS, str(runner.current_execution),
+                             "statistics.csv")
+
+    if os.path.exists(file_path):
+        os.remove(file_path)
+
+
 def move_results(path_class_dir, path_results):
     """
-    Move the exection results to the pathResults.
+    Move the execution results to the pathResults.
     :param path_class_dir: The path of the class directory.
     :param path_results: the destination of the results.
     :return: None
@@ -197,6 +210,7 @@ def run_execution(path_results, parameter, output, path_class_dir):
     :param path_class_dir: The class path.
     :return: True if succeeded
     """
+    remove_results(path_class_dir)
     proc = subprocess.Popen(parameter, stdout=output, stderr=output)
 
     try:
@@ -469,8 +483,8 @@ if __name__ == "__main__":
         '-Denable_parameter_control': 'true',
         '-Drandom_seed': 42,
         '-Dpc_at': 0.3,
-        '-Dpc_population': 10,
-        '-Dpc_p_test_insertion': 5.0,
+        '-Dpc_population': 25,
+        '-Dpc_p_test_insertion': 1.0,
         '-Dpc_crossover_rate': None,
         '-Dpc_number_of_mutations': None,
         '-Dpc_rank_bias': None,
