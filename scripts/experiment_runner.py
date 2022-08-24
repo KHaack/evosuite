@@ -476,19 +476,20 @@ if __name__ == "__main__":
         '-criterion': None,
         '-Dcrossover_rate': None,
         '-Dmutation_rate': None,
-        '-Dpopulation': None,
+        '-Dpopulation': 25,
+        '-Dp_test_insertion': 1.0,
         '-Dnumber_of_mutations': None,
         '-Denable_landscape_analysis': 'true',
         '-Denable_fitness_history': 'true',
-        '-Denable_parameter_control': 'true',
+        '-Denable_parameter_control': 'false',
         '-Drandom_seed': 42,
         '-Dpc_at': 0.3,
-        '-Dpc_population': 25,
-        '-Dpc_p_test_insertion': 1.0,
+        '-Dpc_population': None,
+        '-Dpc_p_test_insertion': None,
         '-Dpc_crossover_rate': None,
         '-Dpc_number_of_mutations': None,
         '-Dpc_rank_bias': None,
-        '-Dpc_prediction': 'HIGH_STDEV_RELATIVE_LOW_COVERAGE'
+        '-Dpc_prediction': 'NONE'
     }
 
     runner = ex.ExperimentRunner(initial_sample_file=args.sample,

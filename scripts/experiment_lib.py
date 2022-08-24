@@ -28,6 +28,27 @@ LOG_LEVEL = logging.INFO
 LOG_STREAM = sys.stdout
 
 
+def short_java_class(java_class_name):
+    """
+    Returns the short version of the passed java class name.
+    :param java_class_name: The java class name
+    :return:
+    """
+    parts = java_class_name.split('.')
+
+    if len(parts) == 1:
+        return java_class_name
+
+    short_name = ''
+
+    for i in range(len(parts) - 1):
+        short_name = short_name + parts[i][0] + '.'
+
+    short_name = short_name + parts[len(parts) - 1]
+
+    return short_name
+
+
 def get_script_path():
     """
     Returns the script path.

@@ -79,6 +79,25 @@ def prune_duplicate_leaves(model):
     prune_index(model.tree_, decisions)
 
 
+def create_report(title, model, y_test, y_prediction, make_plots=False):
+    if make_plots:
+        # confusion matrix
+        confusion_norm = confusion_matrix(y_test, y_prediction, labels=model.classes_, normalize='true')
+        disp = ConfusionMatrixDisplay(confusion_matrix=confusion_norm, display_labels=model.classes_)
+        disp.plot()
+        plt.title(f'Confusion matrix - {title}')
+        plt.show()
+
+    logging.info('get classification_report...')
+    report = classification_report(y_test, y_prediction, output_dict=True)
+    tn, fp, fn, tp = confusion_matrix(y_test, y_prediction, labels=model.classes_).ravel()
+
+    report['FPR'] = fp / (fp + tn)
+    report['TPR'] = tp / (tp + fn)
+
+    return report
+
+
 def predict(title, dataframe, target, model, features, make_plots=False, print_tree=False, prune_tree=False,
             export_prediction=False, upsample=False):
     count_true = len(dataframe[dataframe[target]])
@@ -145,13 +164,6 @@ def predict(title, dataframe, target, model, features, make_plots=False, print_t
         plt.tight_layout()
         plt.show()
 
-        # confusion matrix
-        confusion_norm = confusion_matrix(y_test, y_prediction, labels=model.classes_, normalize='true')
-        disp = ConfusionMatrixDisplay(confusion_matrix=confusion_norm, display_labels=model.classes_)
-        disp.plot()
-        plt.title(f'Confusion matrix - {title}')
-        plt.show()
-
         # dtreeviz
         viz = dtreeviz(model,
                        title=f'Decision tree - {title}',
@@ -161,13 +173,7 @@ def predict(title, dataframe, target, model, features, make_plots=False, print_t
                        class_names=['false', 'true'])
         viz.view()
 
-    logging.info('get classification_report...')
-    report = classification_report(y_test, y_prediction, output_dict=True)
-    tn, fp, fn, tp = confusion_matrix(y_test, y_prediction, labels=model.classes_).ravel()
-
-    report['FPR'] = fp / (fp + tn)
-    report['TPR'] = tp / (tp + fn)
-    return report
+    return create_report(title, model, y_test, y_prediction, make_plots)
 
 
 def compare_prediction(dataframe, targets, features, to_csv=False, upsample=True):
@@ -234,6 +240,7 @@ def setup_argparse():
     parser = argparse.ArgumentParser(description="Collect the experiment results and make a prediction",
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument("-results", help="The directory of the results", type=ex.check_dir_path, required=True)
+    parser.add_argument("-evaluation", help="The directory of the evaluation results", type=ex.check_dir_path, required=False)
 
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument("-single_prediction", help="Make the implemented prediction", action='store_true')
@@ -258,24 +265,26 @@ def add_additional_coverage(dataframe, column_name, folder):
     return merged
 
 
-def main():
-    path = os.path.join(PATH_WORKING_DIRECTORY, args.results)
+def get_dataframe(folder):
+    path = os.path.join(PATH_WORKING_DIRECTORY, folder)
     dataframe = ex.get_statistics(path)
     dataframe = ex.clean(dataframe)
     dataframe = ex.add_additional_columns(dataframe)
     dataframe = ex.filter_dataframe(dataframe, FILTER_MIN_EXECUTIONS)
 
-    dataframe = ex.get_measurements(dataframe, -1)
-    dataframe = add_additional_coverage(dataframe, 'EndCoverage POP125',
-                                        'C:\\Users\\kha\\Desktop\\Benchmark\\results\\33 PC with POP 125')
+    return ex.get_measurements(dataframe, -1)
+
+
+def main():
+    dataframe = get_dataframe(args.results)
+    dataframe = add_additional_coverage(dataframe, 'EndCoverage POP125', 'C:\\Users\\kha\\Desktop\\Benchmark\\results\\33 PC with POP 125')
     ex.print_result_infos(dataframe)
 
     dataframe['HIGH_STDEV_and_RELATIVE_LOW_COVERAGE'] = dataframe['RELATIVE_LOW_COVERAGE'] & dataframe['HIGH_STDEV']
     dataframe['WITH_STDEV_and_RELATIVE_LOW_COVERAGE'] = dataframe['RELATIVE_LOW_COVERAGE'] & dataframe['WITH_STDEV']
     dataframe['HIGH_STDEV_and_LOW_END_COVERAGE'] = dataframe['LOW_END_COVERAGE'] & dataframe['HIGH_STDEV']
     dataframe['HIGHER_WITH_POP125'] = dataframe['EndCoverage'].lt(dataframe['EndCoverage POP125'])
-    dataframe['HIGHER_WITH_POP125_and_RELATIVE_LOW_COVERAGE'] = dataframe['RELATIVE_LOW_COVERAGE'] & dataframe[
-        'HIGHER_WITH_POP125']
+    dataframe['HIGHER_WITH_POP125_and_RELATIVE_LOW_COVERAGE'] = dataframe['RELATIVE_LOW_COVERAGE'] & dataframe['HIGHER_WITH_POP125']
 
     targets = ['RELATIVE_LOW_COVERAGE',
                'LOW_END_COVERAGE',
@@ -284,8 +293,9 @@ def main():
                'HIGH_STDEV_and_RELATIVE_LOW_COVERAGE',
                'WITH_STDEV_and_RELATIVE_LOW_COVERAGE',
                'HIGH_STDEV_and_LOW_END_COVERAGE',
-               'HIGHER_WITH_POP125',
-               'HIGHER_WITH_POP125_and_RELATIVE_LOW_COVERAGE']
+              'HIGHER_WITH_POP125',
+              'HIGHER_WITH_POP125_and_RELATIVE_LOW_COVERAGE'
+               ]
     features = ['Branchless', 'GradientRatio', 'BranchRatio', 'Fitness', 'InformationContent', 'NeutralityRatio']
 
     if args.compare_predictions:
@@ -295,11 +305,22 @@ def main():
         dataframe = ex.get_measurements(dataframe, percentage)
         model = tree.DecisionTreeClassifier(max_depth=2, random_state=RANDOM_STATE, criterion="gini",
                                             class_weight='balanced')
-        predict("stdev > 0.1$ & $cov. max(cov.) * 0.8", dataframe, 'HIGH_STDEV_and_RELATIVE_LOW_COVERAGE', model,
+        target = 'HIGH_STDEV_and_RELATIVE_LOW_COVERAGE'
+        predict("Decision Tree applied on $S_1$", dataframe, target, model,
                 features,
                 make_plots=True, prune_tree=True, export_prediction=True, upsample=True)
 
-        # y_prediction = model.predict(x_test)
+        if args.evaluation is not None:
+            logging.info(f"evaluation results...")
+
+            dataframe_eval = get_dataframe(args.evaluation)
+            dataframe_eval['HIGH_STDEV_and_RELATIVE_LOW_COVERAGE'] = dataframe_eval['RELATIVE_LOW_COVERAGE'] & dataframe_eval['HIGH_STDEV']
+            x = dataframe_eval[features]
+            y = dataframe_eval[target].values
+            y_prediction = model.predict(x)
+            report = create_report('Decision Tree applied on $S_2$', model, y, y_prediction, make_plots=True)
+
+            print(report)
 
 
 if __name__ == "__main__":
