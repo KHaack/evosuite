@@ -10,6 +10,7 @@ import scipy.stats as stats
 import numpy as np
 
 import experiment_lib as ex
+import vargha_delaney as vd
 
 pd.options.mode.chained_assignment = None
 
@@ -64,6 +65,13 @@ def main():
     else:
         target_classes = np.unique(dataframe_b['TARGET_CLASS'].values)
 
+    logging.info("Java Classes for test:\t\t" + str(len(target_classes)))
+
+    significance_count = {
+        'up': 0,
+        'down': 0
+    }
+
     rows = []
     for target_class in target_classes:
         a = dataframe_a[dataframe_a['TARGET_CLASS'].eq(target_class)]
@@ -71,29 +79,43 @@ def main():
 
         if len(a) > 0 and len(b) > 0:
             mann = stats.mannwhitneyu(a['EndCoverage'], b['EndCoverage'], alternative='two-sided')
+            delta, interpretation = vd.VD_A(a['EndCoverage'], b['EndCoverage'])
+
+            if mann.pvalue <= 0.05 and (interpretation == 'large' or interpretation == 'medium'):
+                if b['EndCoverage'].mean() > a['EndCoverage'].mean():
+                    up = '$nearrow$'
+                    significance_count['up'] = significance_count['up'] + 1
+                else:
+                    up = '$searrow$'
+                    significance_count['down'] = significance_count['down'] + 1
+            else:
+                up = ''
 
             rows.append({
                 'CUT': ex.short_java_class(target_class),
-                'a median': round(a['EndCoverage'].median(), 3),
                 'a mean': round(a['EndCoverage'].mean(), 3),
                 'a std': round(a['EndCoverage'].std(), 3),
-                'b median': round(b['EndCoverage'].median(), 3),
                 'b mean': round(b['EndCoverage'].mean(), 3),
                 'b std': round(b['EndCoverage'].std(), 3),
-                'median diff (b - a)': round(b['EndCoverage'].median() - a['EndCoverage'].median(), 3),
-                'mean diff (b - a)': round(b['EndCoverage'].mean() - a['EndCoverage'].mean(), 3),
-                'statistic': mann.statistic,
-                'p-value': round(mann.pvalue, 3)
+                '$\\hat{A}_{12}$': delta,
+                'p-value': round(mann.pvalue, 3),
+                '': up,
+                'interpretation': interpretation
             })
 
-    df = pd.DataFrame(rows)
-    df = df.set_index('CUT')
-    df = df.sort_values('p-value', ascending=True)
+    logging.info("significant up:\t\t\t" + str(significance_count['up']))
+    logging.info("significant down:\t\t" + str(significance_count['down']))
 
-    print(df)
+    if len(rows) > 0:
+        df = pd.DataFrame(rows)
 
-    if args.export:
-        df.to_csv('export.csv')
+        df = df.set_index('CUT')
+        df = df.sort_values('p-value', ascending=True)
+
+        print(df)
+
+        if args.export:
+            df.to_csv('export.csv')
 
 
 if __name__ == "__main__":

@@ -26,8 +26,8 @@ LOCATION_SCRIPT = "C:\\Users\\kha\\repos\\evosuite\\scripts\\experiment_runner.p
 LOCATION_SCRIPT_REMOTE = "/home/user/Benchmark/experiment_runner.py"
 LOCATION_JAR = "C:\\Users\\kha\\repos\\evosuite\\master\\target\\evosuite-master-1.2.1-SNAPSHOT.jar"
 LOCATION_JAR_REMOTE = "/home/user/Benchmark/evosuite-master-1.2.1-SNAPSHOT.jar"
-LOCATION_SAMPLE = "C:\\Users\\kha\\Desktop\\Benchmark\\samples\\15 - kifetew selected classes - PART 1 - 204.txt"
-LOCATION_SAMPLE_REMOTE = "/home/user/Benchmark/samples/15 - kifetew selected classes - PART 1 - 204.txt"
+LOCATION_SAMPLE = "C:\\Users\\kha\\Desktop\\Benchmark\\samples\\18 - kifetew selected classes - PART 2 - 142.txt"
+LOCATION_SAMPLE_REMOTE = "/home/user/Benchmark/samples/18 - kifetew selected classes - PART 2 - 142.txt"
 LOCATION_CORPUS_REMOTE = "/home/user/Benchmark/ntjc-ts-SBSTa-20220718"
 # the command for python on the remote machines
 REMOTE_PYTHON_COMMAND = 'python3'
