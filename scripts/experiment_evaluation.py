@@ -14,6 +14,7 @@ import pandas as pd
 import scipy.stats as stats
 
 import experiment_lib as ex
+import seaborn as sns
 
 pd.options.mode.chained_assignment = None
 
@@ -36,7 +37,7 @@ def euclidean_distance(dataframe1, dataframe2, columns):
     return np.linalg.norm(dataframe1[columns].values - dataframe2[columns].values, axis=1)
 
 
-def foo_generations(title, original):
+def foo_generations(original):
     # generations
     rows = []
     for percentage in range(1, 11):
@@ -53,9 +54,11 @@ def foo_generations(title, original):
     ax = result.plot(kind='line', x='x', grid=True)
     ax.set_ylabel("Generations")
     ax.set_xlabel("Percentage")
+
     plt.title('Generations')
     plt.tight_layout()
     plt.xticks(np.arange(0, len(result['x'])), labels=result['x-label'])
+    plt.legend()
     plt.show()
 
     # generations with PC
@@ -147,10 +150,12 @@ def foo_generations(title, original):
     ax = plt.gca()
     ax.set_ylabel("Generations (mean)")
     ax.set_xlabel("Percentage")
+    ax.text(2.1, 600, 'POC', alpha=0.6)
 
     plt.title(f'Generations - default vs. parameter')
     plt.tight_layout()
-    plt.grid()
+    plt.grid(alpha=0.2)
+    plt.axvline(2, 0, 1600, linestyle='dotted', alpha=0.6)
     plt.legend()
     plt.xticks(np.arange(0, len(result['x'])), labels=result['x-label'])
     plt.show()
@@ -446,6 +451,31 @@ def plot(name, dataframe, x, y):
     plt.close(plot_file)
 
 
+def foo_analysis(dataframe):
+    dataframe = ex.get_measurements(dataframe, 10)
+    dataframe.info()
+
+    features = ['Fitness', 'Total_Branches', 'GradientBranches', 'BranchRatio', 'NeutralityVolume', 'NeutralityRatio', 'InformationContent']
+
+    for feature in features:
+        ax = dataframe.hist(column=feature, bins=100)
+        ax[0][0].set_ylabel("Count")
+        ax[0][0].set_xlabel(feature)
+        plt.title('Histogram - ' + feature + ' of $S_1$')
+        plt.tight_layout()
+        plt.show()
+
+    corr =  dataframe[features].corr()
+    fig, ax = plt.subplots()
+    mask = np.triu(np.ones_like(corr, dtype=bool))
+    cmap = sns.diverging_palette(230, 20, as_cmap=True)
+    sns.heatmap(corr, mask=mask, cmap=cmap, linewidths=1, center=0, square=True, cbar_kws={"shrink": .5})
+
+    plt.title('Correlation heatmap of $S_1$')
+    plt.tight_layout()
+    plt.show()
+
+
 def setup_argparse():
     """
     Setup the argparse.
@@ -478,8 +508,9 @@ def main():
     logging.info("start evaluation...")
 
     # foo_percentage_dif(dataframe)
-    foo_general_infos(original, dataframe)
-    # foo_generations('Probability test insert changed to 0.0', dataframe)
+    # foo_general_infos(original, dataframe)
+    foo_analysis(original)
+    # foo_generations(dataframe)
 
     # logging.info("@20%")
     # dataframe = ex.get_measurements(dataframe, 2)
